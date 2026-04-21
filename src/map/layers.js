@@ -36,10 +36,9 @@ function getDeltaItemKey(item, currentDate, previousDate, side, number) {
   return `${previousDate}_${currentDate}_${side}_${number}_${lat}_${lng}_${area}`;
 }
 
-function getFirmsZoneKey(summary) {
-  const zone = summary?.topZone;
+function getFirmsZoneKey(zone, windowDays) {
   if (!zone) return null;
-  return `${summary.windowDays}_${zone.category}_${zone.key}_${zone.count}`;
+  return `${windowDays}_${zone.category}_${zone.key}_${zone.count}`;
 }
 
 function createSideLabelHtml({ index, isGain, areaKm2, previousDate, currentDate, sectorName, nearestPlace }) {
@@ -414,34 +413,15 @@ function rebuildDeltaDynamicLayout(layerState) {
 
 function getCategoryColor(category) {
   if (category === 'front') {
-    return {
-      stroke: '#cc5500',
-      fill: '#ff7a00',
-      box: '#ff8800',
-    };
+    return { stroke: '#cc5500', fill: '#ff7a00', box: '#ff8800' };
   }
-
   if (category === 'ukrainian_rear') {
-    return {
-      stroke: '#c99200',
-      fill: '#ffd54a',
-      box: '#e0a800',
-    };
+    return { stroke: '#c99200', fill: '#ffd54a', box: '#e0a800' };
   }
-
   if (category === 'russian_rear') {
-    return {
-      stroke: '#8b1e3f',
-      fill: '#d63384',
-      box: '#b4235a',
-    };
+    return { stroke: '#8b1e3f', fill: '#d63384', box: '#b4235a' };
   }
-
-  return {
-    stroke: '#666',
-    fill: '#999',
-    box: '#777',
-  };
+  return { stroke: '#666666', fill: '#999999', box: '#777777' };
 }
 
 export function resetAllSavedDeltaLabels(layerState) {
@@ -456,105 +436,105 @@ export function resetAllSavedDeltaLabels(layerState) {
 export function renderFirmsHotspotBox(layerState, summary) {
   layerState.firmsHotspotLayer.clearLayers();
 
-  const zone = summary?.topZone;
-  if (!zone || !zone.bounds) return;
+  const zones = summary?.topThreeZones || [];
+  if (!zones.length) return;
 
-  const zoneKey = getFirmsZoneKey(summary);
-  const saved = zoneKey ? layerState.savedFirmsBoxPositions[zoneKey] : null;
+  zones.forEach((zone, idx) => {
+    const colors = getCategoryColor(zone.category);
+    const zoneKey = getFirmsZoneKey(zone, summary.windowDays);
+    const saved = zoneKey ? layerState.savedFirmsBoxPositions[zoneKey] : null;
 
-  const colors = getCategoryColor(zone.category);
+    const rectangle = L.rectangle(zone.bounds, {
+      color: colors.box,
+      weight: 2,
+      fillOpacity: 0,
+      dashArray: '8,6',
+    }).addTo(layerState.firmsHotspotLayer);
 
-  const rectangle = L.rectangle(zone.bounds, {
-    color: colors.box,
-    weight: 2,
-    fillOpacity: 0,
-    dashArray: '8,6',
-  }).addTo(layerState.firmsHotspotLayer);
+    const centerLat = (zone.bounds[0][0] + zone.bounds[1][0]) / 2;
+    const centerLng = (zone.bounds[0][1] + zone.bounds[1][1]) / 2;
+    const centerLatLng = L.latLng(centerLat, centerLng);
 
-  const centerLat = (zone.bounds[0][0] + zone.bounds[1][0]) / 2;
-  const centerLng = (zone.bounds[0][1] + zone.bounds[1][1]) / 2;
-  const centerLatLng = L.latLng(centerLat, centerLng);
+    const centerPoint = layerState.map.latLngToContainerPoint(centerLatLng);
+    const defaultPoint = L.point(centerPoint.x + 120, centerPoint.y - 90 - idx * 80);
+    const defaultLabelLatLng = layerState.map.containerPointToLatLng(defaultPoint);
 
-  const defaultLabelLatLng = layerState.map.containerPointToLatLng([
-    layerState.map.latLngToContainerPoint(centerLatLng).x + 120,
-    layerState.map.latLngToContainerPoint(centerLatLng).y - 80,
-  ]);
+    const labelLatLng = saved
+      ? L.latLng(saved.lat, saved.lng)
+      : defaultLabelLatLng;
 
-  const labelLatLng = saved
-    ? L.latLng(saved.lat, saved.lng)
-    : defaultLabelLatLng;
+    const leader = L.polyline([centerLatLng, labelLatLng], {
+      color: colors.box,
+      weight: 2,
+      opacity: 0.75,
+      dashArray: '4,4',
+    }).addTo(layerState.firmsHotspotLayer);
 
-  const leader = L.polyline([centerLatLng, labelLatLng], {
-    color: colors.box,
-    weight: 2,
-    opacity: 0.75,
-    dashArray: '4,4',
-  }).addTo(layerState.firmsHotspotLayer);
+    const label = L.marker(labelLatLng, {
+      draggable: true,
+      interactive: true,
+      icon: L.divIcon({
+        className: '',
+        html: `
+          <div style="
+            background: rgba(255,248,235,0.96);
+            border: 2px solid ${colors.box};
+            border-radius: 8px;
+            padding: 6px 8px;
+            font-size: 12px;
+            line-height: 1.3;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+            white-space: nowrap;
+          ">
+            <b>FIRMS zone #${idx + 1}</b><br>
+            ${zone.categoryLabel}<br>
+            ${zone.sectorName || 'Unknown sector'}<br>
+            ${zone.nearestPlace || 'Unknown place'}<br>
+            Hotspots: <b>${zone.count}</b>
+          </div>
+        `,
+        iconSize: [245, 88],
+        iconAnchor: [122, 44],
+      })
+    }).addTo(layerState.firmsHotspotLayer);
 
-  const label = L.marker(labelLatLng, {
-    draggable: true,
-    interactive: true,
-    icon: L.divIcon({
-      className: '',
-      html: `
-        <div style="
-          background: rgba(255,248,235,0.96);
-          border: 2px solid ${colors.box};
-          border-radius: 8px;
-          padding: 6px 8px;
-          font-size: 12px;
-          line-height: 1.3;
-          box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-          white-space: nowrap;
-        ">
-          <b>Most intense FIRMS zone</b><br>
-          ${zone.categoryLabel}<br>
-          ${zone.sectorName || 'Unknown sector'}<br>
-          ${zone.nearestPlace || 'Unknown place'}<br>
-          Hotspots: <b>${zone.count}</b>
-        </div>
-      `,
-      iconSize: [250, 88],
-      iconAnchor: [125, 44],
-    })
-  }).addTo(layerState.firmsHotspotLayer);
+    if (zoneKey) {
+      label.on('drag', (event) => {
+        const newLatLng = event.target.getLatLng();
+        leader.setLatLngs([centerLatLng, newLatLng]);
+      });
 
-  if (zoneKey) {
-    label.on('drag', (event) => {
-      const newLatLng = event.target.getLatLng();
-      leader.setLatLngs([centerLatLng, newLatLng]);
-    });
+      label.on('dragend', (event) => {
+        const newLatLng = event.target.getLatLng();
+        layerState.savedFirmsBoxPositions[zoneKey] = {
+          lat: newLatLng.lat,
+          lng: newLatLng.lng,
+        };
+        saveSavedJson(FIRMS_LABEL_STORAGE_KEY, layerState.savedFirmsBoxPositions);
+        leader.setLatLngs([centerLatLng, newLatLng]);
+      });
 
-    label.on('dragend', (event) => {
-      const newLatLng = event.target.getLatLng();
-      layerState.savedFirmsBoxPositions[zoneKey] = {
-        lat: newLatLng.lat,
-        lng: newLatLng.lng,
-      };
-      saveSavedJson(FIRMS_LABEL_STORAGE_KEY, layerState.savedFirmsBoxPositions);
-      leader.setLatLngs([centerLatLng, newLatLng]);
-    });
+      label.on('contextmenu', () => {
+        delete layerState.savedFirmsBoxPositions[zoneKey];
+        saveSavedJson(FIRMS_LABEL_STORAGE_KEY, layerState.savedFirmsBoxPositions);
+        label.setLatLng(defaultLabelLatLng);
+        leader.setLatLngs([centerLatLng, defaultLabelLatLng]);
+      });
+    }
 
-    label.on('contextmenu', () => {
-      delete layerState.savedFirmsBoxPositions[zoneKey];
-      saveSavedJson(FIRMS_LABEL_STORAGE_KEY, layerState.savedFirmsBoxPositions);
-      label.setLatLng(defaultLabelLatLng);
-      leader.setLatLngs([centerLatLng, defaultLabelLatLng]);
-    });
-  }
+    const popupHtml = `
+      <b>FIRMS zone #${idx + 1}</b><br>
+      <b>Category:</b> ${zone.categoryLabel}<br>
+      <b>Sector:</b> ${zone.sectorName || 'Unknown sector'}<br>
+      <b>Near:</b> ${zone.nearestPlace || 'Unknown place'}<br>
+      <b>Hotspots:</b> ${zone.count}<br>
+      <b>Window:</b> ${summary.windowDays} days
+    `;
 
-  const popupHtml = `
-    <b>Most intense FIRMS zone</b><br>
-    <b>Category:</b> ${zone.categoryLabel}<br>
-    <b>Sector:</b> ${zone.sectorName || 'Unknown sector'}<br>
-    <b>Near:</b> ${zone.nearestPlace || 'Unknown place'}<br>
-    <b>Hotspots:</b> ${zone.count}<br>
-    <b>Window:</b> ${summary.windowDays} days
-  `;
-
-  rectangle.bindPopup(popupHtml);
-  leader.bindPopup(popupHtml);
-  label.bindPopup(popupHtml);
+    rectangle.bindPopup(popupHtml);
+    leader.bindPopup(popupHtml);
+    label.bindPopup(popupHtml);
+  });
 }
 
 export function createLayers(map) {
