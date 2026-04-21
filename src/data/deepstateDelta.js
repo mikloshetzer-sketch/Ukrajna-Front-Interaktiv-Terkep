@@ -24,8 +24,9 @@ function flattenPolygonFeatures(geojson) {
 
   turf.flattenEach(fc, (feature) => {
     if (!feature?.geometry) return;
-    const t = feature.geometry.type;
-    if (t === 'Polygon' || t === 'MultiPolygon') {
+
+    const type = feature.geometry.type;
+    if (type === 'Polygon' || type === 'MultiPolygon') {
       features.push(feature);
     }
   });
@@ -40,8 +41,8 @@ function mergeAllPolygons(features) {
 
   for (let i = 1; i < features.length; i += 1) {
     try {
-      const next = turf.union(merged, features[i]);
-      if (next) merged = next;
+      const unionResult = turf.union(merged, features[i]);
+      if (unionResult) merged = unionResult;
     } catch (error) {
       console.warn('Union hiba:', error);
     }
@@ -52,6 +53,7 @@ function mergeAllPolygons(features) {
 
 function differenceSafe(a, b) {
   if (!a || !b) return null;
+
   try {
     const diff = turf.difference(a, b);
     return ensureFeature(diff);
@@ -64,11 +66,13 @@ function differenceSafe(a, b) {
 function explodeToFeatures(feature) {
   if (!feature) return [];
 
-  const out = [];
+  const result = [];
+
   turf.flattenEach(turf.featureCollection([feature]), (f) => {
-    if (f?.geometry) out.push(f);
+    if (f?.geometry) result.push(f);
   });
-  return out;
+
+  return result;
 }
 
 function representativePoint(feature) {
@@ -78,7 +82,9 @@ function representativePoint(feature) {
       lng: pt.geometry.coordinates[0],
       lat: pt.geometry.coordinates[1],
     };
-  } catch {
+  } catch (error) {
+    console.warn('pointOnFeature hiba, center fallback:', error);
+
     const pt = turf.center(feature);
     return {
       lng: pt.geometry.coordinates[0],
@@ -90,21 +96,26 @@ function representativePoint(feature) {
 function areaKm2(feature) {
   try {
     return turf.area(feature) / 1_000_000;
-  } catch {
+  } catch (error) {
+    console.warn('Area hiba:', error);
     return 0;
   }
 }
 
 function radiusMetersFromKm2(km2) {
-  if (km2 <= 0) return 1500;
+  if (km2 <= 0) return 5000;
+
   const r = Math.sqrt((km2 * 1_000_000) / Math.PI);
-  return Math.max(1500, Math.min(r, 30000));
+  const scaled = r * 2.8;
+
+  return Math.max(5000, Math.min(scaled, 60000));
 }
 
 function buildItems(feature, type) {
   return explodeToFeatures(feature)
     .map((f) => {
       const km2 = areaKm2(f);
+
       if (km2 < 0.03) return null;
 
       const pt = representativePoint(f);
@@ -133,7 +144,10 @@ export function computeNaiveDailyDelta(previousGeoJson, currentGeoJson) {
       gained: [],
       lost: [],
       all: [],
-      totals: { gainedKm2: 0, lostKm2: 0 },
+      totals: {
+        gainedKm2: 0,
+        lostKm2: 0,
+      },
     };
   }
 
