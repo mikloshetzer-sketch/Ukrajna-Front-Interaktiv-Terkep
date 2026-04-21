@@ -1,10 +1,12 @@
+import { FRONT_SECTORS } from '../data/frontSectors.js';
+
 function popupFromProps(props) {
   return Object.entries(props || {})
     .map(([k, v]) => `<div><b>${k}:</b> ${String(v)}</div>`)
     .join('');
 }
 
-function createSideLabelHtml({ index, isGain, areaKm2, previousDate, currentDate }) {
+function createSideLabelHtml({ index, isGain, areaKm2, previousDate, currentDate, sectorName, nearestPlace }) {
   const borderColor = isGain ? '#ff0000' : '#004dff';
   const badgeColor = isGain ? '#ff0000' : '#004dff';
   const title = isGain ? 'Russian territorial gain' : 'Ukrainian recapture';
@@ -18,7 +20,7 @@ function createSideLabelHtml({ index, isGain, areaKm2, previousDate, currentDate
       font-size: 12px;
       line-height: 1.35;
       box-shadow: 0 2px 8px rgba(0,0,0,0.28);
-      min-width: 210px;
+      min-width: 220px;
       color: #111;
       white-space: normal;
     ">
@@ -38,6 +40,8 @@ function createSideLabelHtml({ index, isGain, areaKm2, previousDate, currentDate
         ">${index}</span>
         <b>${title}</b>
       </div>
+      <div><b>Sector:</b> ${sectorName || 'Unknown sector'}</div>
+      <div><b>Near:</b> ${nearestPlace || 'Unknown place'}</div>
       <div><b>Change:</b> ${areaKm2.toFixed(2)} km²</div>
       <div style="color:#666;">${previousDate} → ${currentDate}</div>
     </div>
@@ -68,7 +72,7 @@ function createNumberIcon(number, color) {
   });
 }
 
-function createLabelIcon({ index, isGain, areaKm2, previousDate, currentDate, side }) {
+function createLabelIcon({ index, isGain, areaKm2, previousDate, currentDate, side, sectorName, nearestPlace }) {
   return L.divIcon({
     className: '',
     html: createSideLabelHtml({
@@ -77,9 +81,11 @@ function createLabelIcon({ index, isGain, areaKm2, previousDate, currentDate, si
       areaKm2,
       previousDate,
       currentDate,
+      sectorName,
+      nearestPlace,
     }),
-    iconSize: [220, 84],
-    iconAnchor: side === 'left' ? [220, 42] : [0, 42],
+    iconSize: [230, 102],
+    iconAnchor: side === 'left' ? [230, 51] : [0, 51],
   });
 }
 
@@ -96,9 +102,8 @@ function getPixelOffsetForSide(map, side, rowIndex) {
   else baseX = 70;
 
   const x = side === 'left' ? -baseX : baseX;
-
-  const rowSpacing = 92;
-  const y = (rowIndex - 1) * rowSpacing - 40;
+  const rowSpacing = 110;
+  const y = (rowIndex - 1) * rowSpacing - 45;
 
   return { x, y };
 }
@@ -106,7 +111,6 @@ function getPixelOffsetForSide(map, side, rowIndex) {
 function getLabelLatLngFromBase(map, baseLatLng, side, rowIndex) {
   const basePoint = map.latLngToContainerPoint(baseLatLng);
   const offset = getPixelOffsetForSide(map, side, rowIndex);
-
   const labelPoint = L.point(basePoint.x + offset.x, basePoint.y + offset.y);
   return map.containerPointToLatLng(labelPoint);
 }
@@ -115,12 +119,62 @@ function getLeaderColor(isGain) {
   return isGain ? '#b91c1c' : '#1d4ed8';
 }
 
-function buildPopupHtml(number, isGain, previousDate, currentDate, areaKm2) {
+function buildPopupHtml(number, isGain, previousDate, currentDate, areaKm2, sectorName, nearestPlace) {
   return `
     <b>#${number} – ${isGain ? 'Russian territorial gain' : 'Ukrainian recapture'}</b><br>
+    <b>Sector:</b> ${sectorName || 'Unknown sector'}<br>
+    <b>Near:</b> ${nearestPlace || 'Unknown place'}<br>
     ${previousDate} → ${currentDate}<br>
-    Change: <b>${areaKm2.toFixed(2)} km²</b>
+    <b>Change:</b> ${areaKm2.toFixed(2)} km²
   `;
+}
+
+function createSectorLabelIcon(name) {
+  return L.divIcon({
+    className: '',
+    html: `
+      <div style="
+        background: rgba(255,255,255,0.82);
+        border: 1px solid rgba(60,60,60,0.35);
+        border-radius: 8px;
+        padding: 4px 8px;
+        font-size: 13px;
+        font-weight: bold;
+        color: #1f2937;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+        white-space: nowrap;
+      ">${name}</div>
+    `,
+    iconSize: [120, 24],
+    iconAnchor: [60, 12],
+  });
+}
+
+function rebuildFrontSectorLayer(layerState) {
+  layerState.frontSectorLayer.clearLayers();
+
+  const sectorPolygons = L.geoJSON(FRONT_SECTORS, {
+    style: {
+      color: '#555',
+      weight: 1.5,
+      opacity: 0.55,
+      fillOpacity: 0,
+      dashArray: '6,4',
+    },
+    onEachFeature: (feature, layer) => {
+      layer.bindPopup(`<b>${feature.properties.name}</b>`);
+    }
+  });
+
+  sectorPolygons.addTo(layerState.frontSectorLayer);
+
+  FRONT_SECTORS.features.forEach((feature) => {
+    const marker = L.marker(
+      [feature.properties.labelLat, feature.properties.labelLng],
+      { icon: createSectorLabelIcon(feature.properties.name) }
+    );
+    marker.addTo(layerState.frontSectorLayer);
+  });
 }
 
 function rebuildDeltaDynamicLayout(layerState) {
@@ -168,10 +222,20 @@ function rebuildDeltaDynamicLayout(layerState) {
         previousDate,
         currentDate,
         side: 'right',
+        sectorName: item.sectorName,
+        nearestPlace: item.nearestPlace,
       })
     }).addTo(layerState.deltaLayer);
 
-    const popupHtml = buildPopupHtml(number, true, previousDate, currentDate, item.areaKm2);
+    const popupHtml = buildPopupHtml(
+      number,
+      true,
+      previousDate,
+      currentDate,
+      item.areaKm2,
+      item.sectorName,
+      item.nearestPlace
+    );
 
     circle.bindPopup(popupHtml);
     centerNumberMarker.bindPopup(popupHtml);
@@ -212,10 +276,20 @@ function rebuildDeltaDynamicLayout(layerState) {
         previousDate,
         currentDate,
         side: 'left',
+        sectorName: item.sectorName,
+        nearestPlace: item.nearestPlace,
       })
     }).addTo(layerState.deltaLayer);
 
-    const popupHtml = buildPopupHtml(number, false, previousDate, currentDate, item.areaKm2);
+    const popupHtml = buildPopupHtml(
+      number,
+      false,
+      previousDate,
+      currentDate,
+      item.areaKm2,
+      item.sectorName,
+      item.nearestPlace
+    );
 
     circle.bindPopup(popupHtml);
     centerNumberMarker.bindPopup(popupHtml);
@@ -246,6 +320,7 @@ export function createLayers(map) {
     }
   }).addTo(map);
 
+  const frontSectorLayer = L.layerGroup().addTo(map);
   const firmsLayer = L.layerGroup();
   const osintLayer = L.layerGroup();
 
@@ -254,10 +329,13 @@ export function createLayers(map) {
     occupiedLayer,
     deltaLayer,
     borderLayer,
+    frontSectorLayer,
     firmsLayer,
     osintLayer,
     lastDeltaPayload: null,
   };
+
+  rebuildFrontSectorLayer(layerState);
 
   map.on('zoomend moveend resize', () => {
     if (layerState.lastDeltaPayload && map.hasLayer(layerState.deltaLayer)) {
@@ -279,12 +357,7 @@ export function replaceBorderLayer(map, layerState, data) {
 }
 
 export function renderDeltaLayer(layerState, delta, currentDate, previousDate) {
-  layerState.lastDeltaPayload = {
-    delta,
-    currentDate,
-    previousDate,
-  };
-
+  layerState.lastDeltaPayload = { delta, currentDate, previousDate };
   rebuildDeltaDynamicLayout(layerState);
 }
 
