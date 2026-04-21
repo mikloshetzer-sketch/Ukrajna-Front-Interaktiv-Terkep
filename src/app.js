@@ -1,0 +1,198 @@
+import { initMap } from './map/initMap.js';
+import { createLayers, replaceOccupiedLayer, replaceBorderLayer, renderDeltaLayer, renderFirmsLayer, renderOsintLayer } from './map/layers.js';
+import { fetchDeepStateIndex, fetchDeepStateByFilename } from './data/deepstate.js';
+import { computeNaiveDailyDelta } from './data/deepstateDelta.js';
+import { fetchFirmsLayer } from './data/firms.js';
+import { fetchOfficialOsint } from './data/osintOfficial.js';
+import { fetchIswOsint } from './data/osintIsw.js';
+import { bindTimeline, setTimelineBounds, setTimelineValue } from './ui/timeline.js';
+import { createPlayer } from './ui/player.js';
+import { clamp } from './utils/date.js';
+
+const bordersUrl = 'https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson';
+const borderCountries = new Set(['Ukraine', 'Russia', 'Belarus', 'Poland', 'Slovakia', 'Hungary', 'Romania', 'Moldova']);
+
+const dom = {
+  statusText: document.getElementById('statusText'),
+  currentDate: document.getElementById('currentDate'),
+  timeline: document.getElementById('timeline'),
+  deltaSummary: document.getElementById('deltaSummary'),
+  btnLatest: document.getElementById('btnLatest'),
+  btnFit: document.getElementById('btnFit'),
+  btnMinus7: document.getElementById('btnMinus7'),
+  btnMinus30: document.getElementById('btnMinus30'),
+  btnToday: document.getElementById('btnToday'),
+  btnPlay: document.getElementById('btnPlay'),
+  btnPause: document.getElementById('btnPause'),
+  speedSelect: document.getElementById('speedSelect'),
+  toggleOccupied: document.getElementById('toggleOccupied'),
+  toggleDelta: document.getElementById('toggleDelta'),
+  toggleBorders: document.getElementById('toggleBorders'),
+  toggleFirms: document.getElementById('toggleFirms'),
+  toggleOsint: document.getElementById('toggleOsint'),
+  firmsWindow: document.getElementById('firmsWindow'),
+};
+
+const appState = {
+  index: [],
+  currentIndex: 0,
+  cache: new Map(),
+};
+
+const map = initMap();
+const layerState = createLayers(map);
+
+function setStatus(text) {
+  dom.statusText.textContent = text;
+}
+
+async function fetchJson(url) {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return response.json();
+}
+
+async function loadBorders() {
+  const countries = await fetchJson(bordersUrl);
+  const filtered = {
+    type: 'FeatureCollection',
+    features: (countries.features || []).filter(feature => {
+      const name = feature?.properties?.ADMIN || feature?.properties?.name || feature?.properties?.NAME;
+      return borderCountries.has(name);
+    }),
+  };
+  replaceBorderLayer(map, layerState, filtered);
+}
+
+async function getGeoJsonAt(index) {
+  const item = appState.index[index];
+  if (!item) return null;
+  if (!appState.cache.has(item.filename)) {
+    const data = await fetchDeepStateByFilename(item.filename);
+    appState.cache.set(item.filename, data);
+  }
+  return appState.cache.get(item.filename);
+}
+
+function updateDeltaSummary(delta) {
+  const gainCount = delta.gained.length;
+  const lossCount = delta.lost.length;
+  const gainArea = delta.gained.reduce((sum, item) => sum + item.areaKm2, 0);
+  const lossArea = delta.lost.reduce((sum, item) => sum + item.areaKm2, 0);
+
+  dom.deltaSummary.innerHTML = `
+    Orosz területszerzés: <strong>${gainCount}</strong> változási pont, kb. <strong>${gainArea.toFixed(2)} km²</strong><br>
+    Ukrán visszaszerzés: <strong>${lossCount}</strong> változási pont, kb. <strong>${lossArea.toFixed(2)} km²</strong>
+  `;
+}
+
+async function renderAtIndex(index) {
+  const item = appState.index[index];
+  if (!item) return;
+
+  setStatus(`Betöltés: ${item.date}`);
+  dom.currentDate.textContent = item.date;
+  setTimelineValue(dom.timeline, index);
+  appState.currentIndex = index;
+
+  const currentGeoJson = await getGeoJsonAt(index);
+  replaceOccupiedLayer(map, layerState, currentGeoJson);
+
+  if (index > 0) {
+    const previousItem = appState.index[index - 1];
+    const previousGeoJson = await getGeoJsonAt(index - 1);
+    const delta = computeNaiveDailyDelta(previousGeoJson, currentGeoJson);
+    renderDeltaLayer(layerState, delta, item.date, previousItem.date);
+    updateDeltaSummary(delta);
+  } else {
+    layerState.deltaLayer.clearLayers();
+    dom.deltaSummary.textContent = 'A legelső betöltött naphoz nincs előző napi összehasonlítás.';
+  }
+
+  setStatus(`Betöltve: ${item.date}`);
+}
+
+async function refreshFirms() {
+  if (!dom.toggleFirms.checked) {
+    layerState.firmsLayer.clearLayers();
+    return;
+  }
+  const firms = await fetchFirmsLayer(Number(dom.firmsWindow.value));
+  renderFirmsLayer(layerState, firms);
+  if (!map.hasLayer(layerState.firmsLayer)) layerState.firmsLayer.addTo(map);
+}
+
+async function refreshOsint() {
+  if (!dom.toggleOsint.checked) {
+    layerState.osintLayer.clearLayers();
+    return;
+  }
+  const [official, isw] = await Promise.all([fetchOfficialOsint(), fetchIswOsint()]);
+  renderOsintLayer(layerState, [...official, ...isw]);
+  if (!map.hasLayer(layerState.osintLayer)) layerState.osintLayer.addTo(map);
+}
+
+function bindLayerToggles() {
+  dom.toggleOccupied.addEventListener('change', () => {
+    if (dom.toggleOccupied.checked) layerState.occupiedLayer.addTo(map);
+    else map.removeLayer(layerState.occupiedLayer);
+  });
+
+  dom.toggleDelta.addEventListener('change', () => {
+    if (dom.toggleDelta.checked) layerState.deltaLayer.addTo(map);
+    else map.removeLayer(layerState.deltaLayer);
+  });
+
+  dom.toggleBorders.addEventListener('change', () => {
+    if (dom.toggleBorders.checked) layerState.borderLayer.addTo(map);
+    else map.removeLayer(layerState.borderLayer);
+  });
+
+  dom.toggleFirms.addEventListener('change', refreshFirms);
+  dom.toggleOsint.addEventListener('change', refreshOsint);
+  dom.firmsWindow.addEventListener('change', refreshFirms);
+}
+
+bindTimeline({
+  input: dom.timeline,
+  onChange: async (value) => {
+    await renderAtIndex(value);
+  },
+});
+
+const player = createPlayer({
+  onTick: async (value) => renderAtIndex(value),
+  getMaxIndex: () => appState.index.length - 1,
+  getCurrentIndex: () => appState.currentIndex,
+  setCurrentIndex: (value) => { appState.currentIndex = value; },
+});
+
+function bindButtons() {
+  dom.btnFit.addEventListener('click', () => map.setView([48.5, 33.5], 6));
+  dom.btnLatest.addEventListener('click', () => renderAtIndex(appState.index.length - 1));
+  dom.btnToday.addEventListener('click', () => renderAtIndex(appState.index.length - 1));
+  dom.btnMinus7.addEventListener('click', () => renderAtIndex(clamp(appState.currentIndex - 7, 0, appState.index.length - 1)));
+  dom.btnMinus30.addEventListener('click', () => renderAtIndex(clamp(appState.currentIndex - 30, 0, appState.index.length - 1)));
+  dom.btnPlay.addEventListener('click', () => player.play(Number(dom.speedSelect.value)));
+  dom.btnPause.addEventListener('click', () => player.stop());
+}
+
+async function init() {
+  try {
+    setStatus('DeepState index betöltése…');
+    const files = await fetchDeepStateIndex();
+    appState.index = files.map(item => ({ filename: item.name, date: item.date }));
+    setTimelineBounds(dom.timeline, appState.index.length - 1);
+
+    await loadBorders();
+    await renderAtIndex(appState.index.length - 1);
+    bindLayerToggles();
+    bindButtons();
+    setStatus('Kész');
+  } catch (error) {
+    console.error(error);
+    setStatus(`Hiba: ${error.message}`);
+  }
+}
+
+init();
