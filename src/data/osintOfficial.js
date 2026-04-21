@@ -1,11 +1,6 @@
 export async function fetchOfficialOsint() {
   return [
-    {
-      title: 'Minta hivatalos ukrán napi jelentés pont',
-      source: 'Ukrán hivatalos jelentés – placeholder',
-      lat: 48.45,
-      lon: 37.97,
-      type: 'official',
-    },
+    { lat: 48.59, lng: 37.99, title: 'Hivatalos jelentés minta', place: 'Bakhmut térsége', sourceType: 'Ukrán hivatalos', date: 'minta' },
+    { lat: 47.85, lng: 35.14, title: 'Hivatalos jelentés minta', place: 'Zaporizzsja irány', sourceType: 'Ukrán hivatalos', date: 'minta' },
   ];
 }
