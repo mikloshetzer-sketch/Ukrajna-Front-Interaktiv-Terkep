@@ -6,13 +6,24 @@ function popupFromProps(props) {
 
 export function createLayers(map) {
   const occupiedLayer = L.geoJSON(null, {
-    style: { color: '#c0392b', weight: 1, fillColor: '#c0392b', fillOpacity: 0.33 }
+    style: {
+      color: '#c0392b',
+      weight: 1,
+      fillColor: '#c0392b',
+      fillOpacity: 0.33
+    }
   }).addTo(map);
 
   const deltaLayer = L.layerGroup().addTo(map);
 
   const borderLayer = L.geoJSON(null, {
-    style: { color: '#34495e', weight: 2, fillOpacity: 0, opacity: 0.9, dashArray: '4,4' }
+    style: {
+      color: '#34495e',
+      weight: 2,
+      fillOpacity: 0,
+      opacity: 0.9,
+      dashArray: '4,4'
+    }
   }).addTo(map);
 
   const firmsLayer = L.layerGroup();
@@ -41,10 +52,10 @@ export function renderDeltaLayer(layerState, delta, currentDate, previousDate) {
 
     const circle = L.circle([item.lat, item.lng], {
       radius: item.radiusMeters,
-      color: isGain ? '#8b1111' : '#1246a0',
-      fillColor: isGain ? '#d23030' : '#2962ff',
-      fillOpacity: 0.18,
-      weight: 2,
+      color: isGain ? '#ff0000' : '#004dff',
+      fillColor: isGain ? '#ff3b3b' : '#3b82ff',
+      fillOpacity: 0.28,
+      weight: 3,
     });
 
     circle.bindPopup(`
@@ -59,6 +70,7 @@ export function renderDeltaLayer(layerState, delta, currentDate, previousDate) {
 
 export function renderFirmsLayer(layerState, points) {
   layerState.firmsLayer.clearLayers();
+
   points.forEach(point => {
     L.circleMarker([point.lat, point.lng], {
       radius: 5,
@@ -73,6 +85,7 @@ export function renderFirmsLayer(layerState, points) {
 
 export function renderOsintLayer(layerState, points) {
   layerState.osintLayer.clearLayers();
+
   points.forEach(point => {
     L.circleMarker([point.lat, point.lng], {
       radius: 5,
