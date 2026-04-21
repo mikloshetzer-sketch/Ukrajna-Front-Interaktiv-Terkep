@@ -84,12 +84,20 @@ export function getNearestPlace(lat, lng, sectorId = null) {
     return {
       name: 'Unknown location',
       distanceKm: null,
+      label: 'Unknown location',
     };
   }
+
+  const roundedDistance = Math.round(bestDistance);
+  const label =
+    roundedDistance <= 3
+      ? `${best.name} area`
+      : `near ${best.name} (${roundedDistance} km)`;
 
   return {
     name: best.name,
     distanceKm: bestDistance,
+    label,
   };
 }
 
@@ -102,7 +110,7 @@ export function enrichDeltaItemsWithPlaceNames(delta) {
       ...item,
       sectorName: sector.name,
       sectorShortName: sector.shortName,
-      nearestPlace: nearest.name,
+      nearestPlace: nearest.label,
       nearestPlaceDistanceKm: nearest.distanceKm,
     };
   };
