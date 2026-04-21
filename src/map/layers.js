@@ -44,20 +44,189 @@ function createSideLabelHtml({ index, isGain, areaKm2, previousDate, currentDate
   `;
 }
 
-function getSideLabelLatLng(map, index, side) {
+function getDynamicSideX(map, side) {
   const size = map.getSize();
+  const zoom = map.getZoom();
 
+  let margin;
+  if (zoom <= 6) margin = 180;
+  else if (zoom === 7) margin = 150;
+  else if (zoom === 8) margin = 125;
+  else if (zoom === 9) margin = 105;
+  else if (zoom === 10) margin = 90;
+  else margin = 75;
+
+  return side === 'left' ? margin : size.x - margin;
+}
+
+function getSideLabelLatLng(map, index, side) {
   const startY = 110;
   const stepY = 96;
   const y = startY + (index - 1) * stepY;
-
-  const x = side === 'left' ? 180 : size.x - 180;
+  const x = getDynamicSideX(map, side);
 
   return map.containerPointToLatLng([x, y]);
 }
 
 function getLeaderColor(isGain) {
   return isGain ? '#b91c1c' : '#1d4ed8';
+}
+
+function createNumberIcon(number, color) {
+  return L.divIcon({
+    className: '',
+    html: `
+      <div style="
+        width: 28px;
+        height: 28px;
+        border-radius: 999px;
+        background: ${color};
+        color: white;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-weight:bold;
+        font-size:13px;
+        border: 2px solid white;
+        box-shadow: 0 1px 6px rgba(0,0,0,0.35);
+      ">${number}</div>
+    `,
+    iconSize: [28, 28],
+    iconAnchor: [14, 14],
+  });
+}
+
+function createLabelIcon({ index, isGain, areaKm2, previousDate, currentDate, side }) {
+  return L.divIcon({
+    className: '',
+    html: createSideLabelHtml({
+      index,
+      isGain,
+      areaKm2,
+      previousDate,
+      currentDate,
+    }),
+    iconSize: [220, 84],
+    iconAnchor: side === 'left' ? [220, 42] : [0, 42],
+  });
+}
+
+function clearDeltaDynamicObjects(layerState) {
+  layerState.deltaLayer.clearLayers();
+  layerState.deltaDynamicItems = [];
+}
+
+function rebuildDeltaDynamicLayout(layerState) {
+  const map = layerState.map;
+  if (!map || !layerState.lastDeltaPayload) return;
+
+  layerState.deltaLayer.clearLayers();
+  layerState.deltaDynamicItems = [];
+
+  const { delta, currentDate, previousDate } = layerState.lastDeltaPayload;
+  const items = delta.all || [];
+
+  const gains = items.filter(item => item.type === 'gain');
+  const losses = items.filter(item => item.type === 'loss');
+
+  let gainIndex = 1;
+  let lossIndex = 1;
+
+  gains.forEach((item) => {
+    const number = gainIndex++;
+    const baseLatLng = L.latLng(item.lat, item.lng);
+    const labelLatLng = getSideLabelLatLng(map, number, 'right');
+
+    const circle = L.circle(baseLatLng, {
+      radius: item.radiusMeters,
+      color: '#ff0000',
+      fillColor: '#ff3b3b',
+      fillOpacity: 0.24,
+      weight: 3,
+    }).addTo(layerState.deltaLayer);
+
+    const centerNumberMarker = L.marker(baseLatLng, {
+      icon: createNumberIcon(number, '#ff0000')
+    }).addTo(layerState.deltaLayer);
+
+    const leader = L.polyline([baseLatLng, labelLatLng], {
+      color: getLeaderColor(true),
+      weight: 2,
+      opacity: 0.75,
+      dashArray: '4,4',
+    }).addTo(layerState.deltaLayer);
+
+    const label = L.marker(labelLatLng, {
+      interactive: true,
+      icon: createLabelIcon({
+        index: number,
+        isGain: true,
+        areaKm2: item.areaKm2,
+        previousDate,
+        currentDate,
+        side: 'right',
+      })
+    }).addTo(layerState.deltaLayer);
+
+    const popupHtml = `
+      <b>#${number} – Russian territorial gain</b><br>
+      ${previousDate} → ${currentDate}<br>
+      Change: <b>${item.areaKm2.toFixed(2)} km²</b>
+    `;
+
+    circle.bindPopup(popupHtml);
+    centerNumberMarker.bindPopup(popupHtml);
+    leader.bindPopup(popupHtml);
+    label.bindPopup(popupHtml);
+  });
+
+  losses.forEach((item) => {
+    const number = lossIndex++;
+    const baseLatLng = L.latLng(item.lat, item.lng);
+    const labelLatLng = getSideLabelLatLng(map, number, 'left');
+
+    const circle = L.circle(baseLatLng, {
+      radius: item.radiusMeters,
+      color: '#004dff',
+      fillColor: '#3b82ff',
+      fillOpacity: 0.24,
+      weight: 3,
+    }).addTo(layerState.deltaLayer);
+
+    const centerNumberMarker = L.marker(baseLatLng, {
+      icon: createNumberIcon(number, '#004dff')
+    }).addTo(layerState.deltaLayer);
+
+    const leader = L.polyline([baseLatLng, labelLatLng], {
+      color: getLeaderColor(false),
+      weight: 2,
+      opacity: 0.75,
+      dashArray: '4,4',
+    }).addTo(layerState.deltaLayer);
+
+    const label = L.marker(labelLatLng, {
+      interactive: true,
+      icon: createLabelIcon({
+        index: number,
+        isGain: false,
+        areaKm2: item.areaKm2,
+        previousDate,
+        currentDate,
+        side: 'left',
+      })
+    }).addTo(layerState.deltaLayer);
+
+    const popupHtml = `
+      <b>#${number} – Ukrainian recapture</b><br>
+      ${previousDate} → ${currentDate}<br>
+      Change: <b>${item.areaKm2.toFixed(2)} km²</b>
+    `;
+
+    circle.bindPopup(popupHtml);
+    centerNumberMarker.bindPopup(popupHtml);
+    leader.bindPopup(popupHtml);
+    label.bindPopup(popupHtml);
+  });
 }
 
 export function createLayers(map) {
@@ -85,7 +254,24 @@ export function createLayers(map) {
   const firmsLayer = L.layerGroup();
   const osintLayer = L.layerGroup();
 
-  return { occupiedLayer, deltaLayer, borderLayer, firmsLayer, osintLayer };
+  const layerState = {
+    map,
+    occupiedLayer,
+    deltaLayer,
+    borderLayer,
+    firmsLayer,
+    osintLayer,
+    lastDeltaPayload: null,
+    deltaDynamicItems: [],
+  };
+
+  map.on('zoomend moveend resize', () => {
+    if (layerState.lastDeltaPayload && map.hasLayer(layerState.deltaLayer)) {
+      rebuildDeltaDynamicLayout(layerState);
+    }
+  });
+
+  return layerState;
 }
 
 export function replaceOccupiedLayer(map, layerState, data) {
@@ -99,159 +285,13 @@ export function replaceBorderLayer(map, layerState, data) {
 }
 
 export function renderDeltaLayer(layerState, delta, currentDate, previousDate) {
-  layerState.deltaLayer.clearLayers();
+  layerState.lastDeltaPayload = {
+    delta,
+    currentDate,
+    previousDate,
+  };
 
-  const items = delta.all || [];
-
-  const gains = items.filter(item => item.type === 'gain');
-  const losses = items.filter(item => item.type === 'loss');
-
-  let gainIndex = 1;
-  let lossIndex = 1;
-
-  gains.forEach((item) => {
-    const number = gainIndex++;
-    const baseLatLng = L.latLng(item.lat, item.lng);
-    const labelLatLng = getSideLabelLatLng(layerState.occupiedLayer._map, number, 'right');
-
-    const circle = L.circle(baseLatLng, {
-      radius: item.radiusMeters,
-      color: '#ff0000',
-      fillColor: '#ff3b3b',
-      fillOpacity: 0.24,
-      weight: 3,
-    }).addTo(layerState.deltaLayer);
-
-    const centerNumberMarker = L.marker(baseLatLng, {
-      icon: L.divIcon({
-        className: '',
-        html: `
-          <div style="
-            width: 28px;
-            height: 28px;
-            border-radius: 999px;
-            background: #ff0000;
-            color: white;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            font-weight:bold;
-            font-size:13px;
-            border: 2px solid white;
-            box-shadow: 0 1px 6px rgba(0,0,0,0.35);
-          ">${number}</div>
-        `,
-        iconSize: [28, 28],
-        iconAnchor: [14, 14],
-      })
-    }).addTo(layerState.deltaLayer);
-
-    const leader = L.polyline([baseLatLng, labelLatLng], {
-      color: getLeaderColor(true),
-      weight: 2,
-      opacity: 0.75,
-      dashArray: '4,4',
-    }).addTo(layerState.deltaLayer);
-
-    const label = L.marker(labelLatLng, {
-      interactive: true,
-      icon: L.divIcon({
-        className: '',
-        html: createSideLabelHtml({
-          index: number,
-          isGain: true,
-          areaKm2: item.areaKm2,
-          previousDate,
-          currentDate,
-        }),
-        iconSize: [220, 84],
-        iconAnchor: [0, 42],
-      })
-    }).addTo(layerState.deltaLayer);
-
-    const popupHtml = `
-      <b>#${number} – Russian territorial gain</b><br>
-      ${previousDate} → ${currentDate}<br>
-      Change: <b>${item.areaKm2.toFixed(2)} km²</b>
-    `;
-
-    circle.bindPopup(popupHtml);
-    centerNumberMarker.bindPopup(popupHtml);
-    leader.bindPopup(popupHtml);
-    label.bindPopup(popupHtml);
-  });
-
-  losses.forEach((item) => {
-    const number = lossIndex++;
-    const baseLatLng = L.latLng(item.lat, item.lng);
-    const labelLatLng = getSideLabelLatLng(layerState.occupiedLayer._map, number, 'left');
-
-    const circle = L.circle(baseLatLng, {
-      radius: item.radiusMeters,
-      color: '#004dff',
-      fillColor: '#3b82ff',
-      fillOpacity: 0.24,
-      weight: 3,
-    }).addTo(layerState.deltaLayer);
-
-    const centerNumberMarker = L.marker(baseLatLng, {
-      icon: L.divIcon({
-        className: '',
-        html: `
-          <div style="
-            width: 28px;
-            height: 28px;
-            border-radius: 999px;
-            background: #004dff;
-            color: white;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            font-weight:bold;
-            font-size:13px;
-            border: 2px solid white;
-            box-shadow: 0 1px 6px rgba(0,0,0,0.35);
-          ">${number}</div>
-        `,
-        iconSize: [28, 28],
-        iconAnchor: [14, 14],
-      })
-    }).addTo(layerState.deltaLayer);
-
-    const leader = L.polyline([baseLatLng, labelLatLng], {
-      color: getLeaderColor(false),
-      weight: 2,
-      opacity: 0.75,
-      dashArray: '4,4',
-    }).addTo(layerState.deltaLayer);
-
-    const label = L.marker(labelLatLng, {
-      interactive: true,
-      icon: L.divIcon({
-        className: '',
-        html: createSideLabelHtml({
-          index: number,
-          isGain: false,
-          areaKm2: item.areaKm2,
-          previousDate,
-          currentDate,
-        }),
-        iconSize: [220, 84],
-        iconAnchor: [220, 42],
-      })
-    }).addTo(layerState.deltaLayer);
-
-    const popupHtml = `
-      <b>#${number} – Ukrainian recapture</b><br>
-      ${previousDate} → ${currentDate}<br>
-      Change: <b>${item.areaKm2.toFixed(2)} km²</b>
-    `;
-
-    circle.bindPopup(popupHtml);
-    centerNumberMarker.bindPopup(popupHtml);
-    leader.bindPopup(popupHtml);
-    label.bindPopup(popupHtml);
-  });
+  rebuildDeltaDynamicLayout(layerState);
 }
 
 export function renderFirmsLayer(layerState, points) {
