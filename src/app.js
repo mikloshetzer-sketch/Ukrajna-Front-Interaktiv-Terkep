@@ -5,7 +5,8 @@ import {
   replaceBorderLayer,
   renderDeltaLayer,
   renderFirmsLayer,
-  renderOsintLayer
+  renderOsintLayer,
+  resetAllSavedDeltaLabels
 } from './map/layers.js';
 import { fetchDeepStateIndex, fetchDeepStateByFilename } from './data/deepstate.js';
 import { computeNaiveDailyDelta } from './data/deepstateDelta.js';
@@ -40,6 +41,7 @@ const dom = {
   btnMinus7: document.getElementById('btnMinus7'),
   btnMinus30: document.getElementById('btnMinus30'),
   btnToday: document.getElementById('btnToday'),
+  btnResetLabels: document.getElementById('btnResetLabels'),
 
   btnPlay: document.getElementById('btnPlay'),
   btnPause: document.getElementById('btnPause'),
@@ -163,6 +165,10 @@ async function renderAtIndex(index) {
     dom.deltaSummary.textContent = 'A legelső betöltött naphoz nincs előző napi összehasonlítás.';
   }
 
+  if (dom.toggleFirms.checked) {
+    await refreshFirms();
+  }
+
   setStatus(`Betöltve: ${item.date}`);
 }
 
@@ -277,6 +283,10 @@ function bindControls(player) {
 
   dom.btnPause.addEventListener('click', () => {
     player.stop();
+  });
+
+  dom.btnResetLabels?.addEventListener('click', () => {
+    resetAllSavedDeltaLabels(layerState);
   });
 }
 
