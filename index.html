@@ -3,184 +3,97 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ukrajna front – interaktív térkép</title>
+  <title>Ukrajna–Oroszország frontkövető</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-  <style>
-    html, body { height: 100%; margin: 0; font-family: Arial, sans-serif; }
-    #app { display: grid; grid-template-columns: 390px 1fr; height: 100%; }
-    #sidebar { padding: 16px; border-right: 1px solid #ddd; overflow: auto; background: #fafafa; }
-    #map { height: 100%; width: 100%; }
-    h1 { font-size: 20px; margin: 0 0 10px; }
-    h2 { font-size: 15px; margin: 18px 0 8px; }
-    .muted { color: #555; font-size: 13px; line-height: 1.45; }
-    .box { background: white; border: 1px solid #ddd; border-radius: 10px; padding: 12px; margin-bottom: 12px; }
-    .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
-    button, input[type="file"], input[type="url"], select, input[type="date"] {
-      width: 100%; box-sizing: border-box; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 14px;
-    }
-    button { cursor: pointer; background: #111; color: white; border: none; }
-    button.secondary { background: #f1f1f1; color: #111; border: 1px solid #ccc; }
-    label { display: block; font-size: 13px; margin: 8px 0 4px; }
-    .legend-item { display: flex; align-items: center; gap: 8px; margin: 6px 0; font-size: 13px; }
-    .swatch { width: 14px; height: 14px; border-radius: 3px; }
-    code { background: #f3f3f3; padding: 2px 4px; border-radius: 4px; }
-    ul { margin: 8px 0 0 18px; padding: 0; }
-    .small { font-size: 12px; color: #666; }
-    .status { font-size: 12px; color: #444; margin-top: 8px; line-height: 1.4; }
-    .pill { display: inline-block; font-size: 12px; padding: 4px 8px; border-radius: 999px; background: #f1f1f1; margin: 2px 4px 0 0; }
-    .events-list { max-height: 190px; overflow: auto; border: 1px solid #eee; border-radius: 8px; padding: 8px; background: #fff; }
-    .event-item { border-bottom: 1px solid #eee; padding: 8px 0; }
-    .event-item:last-child { border-bottom: none; }
-    .event-title { font-weight: bold; font-size: 13px; }
-    .event-meta { font-size: 12px; color: #666; }
-    a.source-link { color: #1d4ed8; text-decoration: none; }
-    @media (max-width: 900px) {
-      #app { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
-      #sidebar { border-right: none; border-bottom: 1px solid #ddd; max-height: 52vh; }
-    }
-  </style>
+  <link rel="stylesheet" href="./styles/main.css" />
 </head>
 <body>
   <div id="app">
     <aside id="sidebar">
-      <h1>Ukrajna front – interaktív térkép</h1>
-      <p class="muted">Ez a verzió már tud aktuális megszállt területet automatikusan tölteni a napi DeepState-adatfájlokból, időléptetve visszanézni a történeti állapotot, és külön rátenni az országhatárokat. Az eseményekhez saját GeoJSON-t tudsz betölteni.</p>
+      <h1>Ukrajna–Oroszország frontkövető</h1>
+      <p class="muted">
+        DeepState-alapú napi fronthelyzet, történeti visszanézés 2024-01-01-től, lejátszás,
+        napi területi delta és opcionális FIRMS/OSINT rétegek.
+      </p>
 
-      <div class="box">
-        <h2>Gyors vezérlés</h2>
-        <div class="row"><button id="loadLatest">Legfrissebb megszállt terület betöltése</button></div>
-        <div class="row"><button id="fitUkraine" class="secondary">Vissza Ukrajnára</button></div>
-        <div class="row"><button id="toggleOccupied">Megszállt terület ki/be</button></div>
-        <div class="row"><button id="toggleBorders">Országhatárok ki/be</button></div>
-        <div class="row"><button id="toggleEvents">Események ki/be</button></div>
-        <div id="status" class="status">Állapot: indulás…</div>
-      </div>
-
-      <div class="box">
-        <h2>Idővonal / történeti nézet</h2>
-        <label for="historySelect">Elérhető napi állapot</label>
-        <select id="historySelect">
-          <option value="">Fájlok betöltése…</option>
-        </select>
-        <div class="row"><button id="loadHistoryDate">Kiválasztott dátum betöltése</button></div>
-        <div class="small">A lista a GitHub napi adatfájljait olvassa be. A réteg a megszállt terület változását mutatja.</div>
-      </div>
-
-      <div class="box">
-        <h2>Események betöltése</h2>
-        <label for="eventsFile">Esemény GeoJSON fájlból</label>
-        <input id="eventsFile" type="file" accept=".geojson,.json" />
-        <label for="eventsUrl">Esemény GeoJSON URL-ről</label>
-        <input id="eventsUrl" type="url" placeholder="https://.../events.geojson" />
-        <div class="row"><button id="loadEventsUrl">Esemény URL betöltése</button></div>
-        <div class="small">Ajánlott mezők: <code>title</code>, <code>date</code>, <code>type</code>, <code>source</code>, <code>url</code>.</div>
-      </div>
-
-      <div class="box">
-        <h2>Források és jelmagyarázat</h2>
-        <div class="legend-item"><span class="swatch" style="background:#c0392b"></span> Megszállt terület</div>
-        <div class="legend-item"><span class="swatch" style="background:#34495e"></span> Országhatárok</div>
-        <div class="legend-item"><span class="swatch" style="background:#2980b9"></span> Események</div>
-        <div class="small" style="margin-top:8px;">
-          <span class="pill">DeepState daily polygons</span>
-          <span class="pill">ország-határok overlay</span>
-          <span class="pill">saját esemény feed</span>
+      <section class="panel">
+        <h2>Fő vezérlés</h2>
+        <div class="grid-2">
+          <button id="btnLatest">Legfrissebb</button>
+          <button id="btnFit" class="secondary">Ukrajna nézet</button>
         </div>
-      </div>
+        <div class="grid-3 top-gap">
+          <button id="btnMinus7" class="secondary">-7 nap</button>
+          <button id="btnMinus30" class="secondary">-30 nap</button>
+          <button id="btnToday" class="secondary">Legfrissebb</button>
+        </div>
+        <div class="status-wrap">
+          <div><strong>Dátum:</strong> <span id="currentDate">–</span></div>
+          <div><strong>Állapot:</strong> <span id="statusText">Indulás…</span></div>
+        </div>
+      </section>
 
-      <div class="box">
-        <h2>Betöltött események</h2>
-        <div id="eventsList" class="events-list"><div class="small">Még nincs betöltött esemény.</div></div>
-      </div>
+      <section class="panel">
+        <h2>Időcsúszka és lejátszás</h2>
+        <input id="timeline" type="range" min="0" max="0" step="1" value="0" />
+        <div class="grid-3 top-gap">
+          <button id="btnPlay">Lejátszás</button>
+          <button id="btnPause" class="secondary">Szünet</button>
+          <select id="speedSelect">
+            <option value="1200">Lassú</option>
+            <option value="700" selected>Normál</option>
+            <option value="300">Gyors</option>
+          </select>
+        </div>
+        <div class="small top-gap">A lejátszás napi léptékben váltja a DeepState történeti állapotokat.</div>
+      </section>
+
+      <section class="panel">
+        <h2>Rétegek</h2>
+        <label class="toggle"><input id="toggleOccupied" type="checkbox" checked /> Megszállt terület</label>
+        <label class="toggle"><input id="toggleDelta" type="checkbox" checked /> Napi területi delta</label>
+        <label class="toggle"><input id="toggleBorders" type="checkbox" checked /> Országhatárok</label>
+        <label class="toggle"><input id="toggleFirms" type="checkbox" /> FIRMS hőanomáliák</label>
+        <label class="toggle"><input id="toggleOsint" type="checkbox" /> OSINT pontok</label>
+      </section>
+
+      <section class="panel">
+        <h2>FIRMS</h2>
+        <select id="firmsWindow">
+          <option value="3">3 nap</option>
+          <option value="10">10 nap</option>
+          <option value="30">30 nap</option>
+        </select>
+        <div class="small top-gap">
+          Ebben a starter verzióban a FIRMS modul helye és kapcsolója készen van. A tényleges adatkapcsolat külön modulban bővíthető.
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Napi delta</h2>
+        <div id="deltaSummary" class="small">Még nincs számolt változás.</div>
+        <div class="legend top-gap">
+          <div><span class="swatch gain"></span> Orosz területszerzés</div>
+          <div><span class="swatch loss"></span> Ukrán visszaszerzés</div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>OSINT feed</h2>
+        <div class="small">
+          A starter verzióban minta OSINT pontok jeleníthetők meg. A hivatalos ukrán jelentések és ISW feldolgozása külön modulokba van bontva.
+        </div>
+      </section>
     </aside>
-    <main id="map"></main>
+
+    <main>
+      <div id="map"></div>
+    </main>
   </div>
 
-  <script>
-    const map = L.map('map', { zoomControl: true }).setView([48.5, 33.5], 6);
-
-    const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '&copy; OpenStreetMap'
-    }).addTo(map);
-
-    const carto = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      maxZoom: 20,
-      attribution: '&copy; OpenStreetMap &copy; CARTO'
-    });
-
-    const esriSat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-      maxZoom: 19,
-      attribution: 'Tiles &copy; Esri'
-    });
-
-    L.control.layers(
-      { 'OpenStreetMap': osm, 'CARTO Light': carto, 'Műholdkép (Esri)': esriSat },
-      {},
-      { collapsed: false }
-    ).addTo(map);
-
-    const occupiedStyle = {
-      color: '#c0392b', weight: 1, fillColor: '#c0392b', fillOpacity: 0.34
-    };
-
-    const borderStyle = {
-      color: '#34495e', weight: 2, fillOpacity: 0, opacity: 0.9, dashArray: '4,4'
-    };
-
-    function pointToLayer(feature, latlng) {
-      return L.circleMarker(latlng, {
-        radius: 6,
-        color: '#1f5f8b',
-        weight: 1,
-        fillColor: '#2980b9',
-        fillOpacity: 0.9
-      });
-    }
-
-    function popupContent(feature) {
-      const props = feature?.properties || {};
-      const entries = Object.entries(props);
-      if (!entries.length) return '<b>Esemény</b><br>Nincs metaadat';
-      const title = props.title ? `<div style="font-weight:bold;margin-bottom:6px;">${escapeHtml(String(props.title))}</div>` : '';
-      const main = entries
-        .filter(([k]) => k !== 'title')
-        .map(([k, v]) => {
-          if (k === 'url') {
-            return `<div><b>${escapeHtml(k)}:</b> <a class="source-link" target="_blank" rel="noopener noreferrer" href="${escapeAttr(String(v))}">forrás</a></div>`;
-          }
-          return `<div><b>${escapeHtml(k)}:</b> ${escapeHtml(String(v))}</div>`;
-        })
-        .join('');
-      return title + main;
-    }
-
-    function escapeHtml(str) {
-      return str.replace(/[&<>"']/g, s => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[s]));
-    }
-
-    function escapeAttr(str) {
-      return escapeHtml(str);
-    }
-
-    function setStatus(text) {
-      document.getElementById('status').textContent = `Állapot: ${text}`;
-    }
-
-    let occupiedLayer = L.geoJSON(null, { style: occupiedStyle }).addTo(map);
-    let bordersLayer = L.geoJSON(null, { style: borderStyle }).addTo(map);
-    
-    (async function init() {
-      try {
-        renderEventsList(sampleEvents);
-        await Promise.allSettled([loadHistoryIndex(), loadBorders()]);
-        await loadLatestOccupied();
-      } catch (err) {
-        setStatus(`indítási hiba: ${err.message}`);
-      }
-    })();
-  </script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script type="module" src="./src/app.js"></script>
 </body>
 </html>
+
 
