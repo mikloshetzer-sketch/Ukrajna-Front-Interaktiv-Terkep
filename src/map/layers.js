@@ -44,34 +44,6 @@ function createSideLabelHtml({ index, isGain, areaKm2, previousDate, currentDate
   `;
 }
 
-function getDynamicSideX(map, side) {
-  const size = map.getSize();
-  const zoom = map.getZoom();
-
-  let margin;
-  if (zoom <= 6) margin = 180;
-  else if (zoom === 7) margin = 150;
-  else if (zoom === 8) margin = 125;
-  else if (zoom === 9) margin = 105;
-  else if (zoom === 10) margin = 90;
-  else margin = 75;
-
-  return side === 'left' ? margin : size.x - margin;
-}
-
-function getSideLabelLatLng(map, index, side) {
-  const startY = 110;
-  const stepY = 96;
-  const y = startY + (index - 1) * stepY;
-  const x = getDynamicSideX(map, side);
-
-  return map.containerPointToLatLng([x, y]);
-}
-
-function getLeaderColor(isGain) {
-  return isGain ? '#b91c1c' : '#1d4ed8';
-}
-
 function createNumberIcon(number, color) {
   return L.divIcon({
     className: '',
@@ -111,9 +83,44 @@ function createLabelIcon({ index, isGain, areaKm2, previousDate, currentDate, si
   });
 }
 
-function clearDeltaDynamicObjects(layerState) {
-  layerState.deltaLayer.clearLayers();
-  layerState.deltaDynamicItems = [];
+function getPixelOffsetForSide(map, side, rowIndex) {
+  const zoom = map.getZoom();
+
+  let baseX;
+  if (zoom <= 6) baseX = 260;
+  else if (zoom === 7) baseX = 220;
+  else if (zoom === 8) baseX = 180;
+  else if (zoom === 9) baseX = 145;
+  else if (zoom === 10) baseX = 115;
+  else if (zoom === 11) baseX = 90;
+  else baseX = 70;
+
+  const x = side === 'left' ? -baseX : baseX;
+
+  const rowSpacing = 92;
+  const y = (rowIndex - 1) * rowSpacing - 40;
+
+  return { x, y };
+}
+
+function getLabelLatLngFromBase(map, baseLatLng, side, rowIndex) {
+  const basePoint = map.latLngToContainerPoint(baseLatLng);
+  const offset = getPixelOffsetForSide(map, side, rowIndex);
+
+  const labelPoint = L.point(basePoint.x + offset.x, basePoint.y + offset.y);
+  return map.containerPointToLatLng(labelPoint);
+}
+
+function getLeaderColor(isGain) {
+  return isGain ? '#b91c1c' : '#1d4ed8';
+}
+
+function buildPopupHtml(number, isGain, previousDate, currentDate, areaKm2) {
+  return `
+    <b>#${number} – ${isGain ? 'Russian territorial gain' : 'Ukrainian recapture'}</b><br>
+    ${previousDate} → ${currentDate}<br>
+    Change: <b>${areaKm2.toFixed(2)} km²</b>
+  `;
 }
 
 function rebuildDeltaDynamicLayout(layerState) {
@@ -121,7 +128,6 @@ function rebuildDeltaDynamicLayout(layerState) {
   if (!map || !layerState.lastDeltaPayload) return;
 
   layerState.deltaLayer.clearLayers();
-  layerState.deltaDynamicItems = [];
 
   const { delta, currentDate, previousDate } = layerState.lastDeltaPayload;
   const items = delta.all || [];
@@ -129,13 +135,10 @@ function rebuildDeltaDynamicLayout(layerState) {
   const gains = items.filter(item => item.type === 'gain');
   const losses = items.filter(item => item.type === 'loss');
 
-  let gainIndex = 1;
-  let lossIndex = 1;
-
-  gains.forEach((item) => {
-    const number = gainIndex++;
+  gains.forEach((item, idx) => {
+    const number = idx + 1;
     const baseLatLng = L.latLng(item.lat, item.lng);
-    const labelLatLng = getSideLabelLatLng(map, number, 'right');
+    const labelLatLng = getLabelLatLngFromBase(map, baseLatLng, 'right', number);
 
     const circle = L.circle(baseLatLng, {
       radius: item.radiusMeters,
@@ -168,11 +171,7 @@ function rebuildDeltaDynamicLayout(layerState) {
       })
     }).addTo(layerState.deltaLayer);
 
-    const popupHtml = `
-      <b>#${number} – Russian territorial gain</b><br>
-      ${previousDate} → ${currentDate}<br>
-      Change: <b>${item.areaKm2.toFixed(2)} km²</b>
-    `;
+    const popupHtml = buildPopupHtml(number, true, previousDate, currentDate, item.areaKm2);
 
     circle.bindPopup(popupHtml);
     centerNumberMarker.bindPopup(popupHtml);
@@ -180,10 +179,10 @@ function rebuildDeltaDynamicLayout(layerState) {
     label.bindPopup(popupHtml);
   });
 
-  losses.forEach((item) => {
-    const number = lossIndex++;
+  losses.forEach((item, idx) => {
+    const number = idx + 1;
     const baseLatLng = L.latLng(item.lat, item.lng);
-    const labelLatLng = getSideLabelLatLng(map, number, 'left');
+    const labelLatLng = getLabelLatLngFromBase(map, baseLatLng, 'left', number);
 
     const circle = L.circle(baseLatLng, {
       radius: item.radiusMeters,
@@ -216,11 +215,7 @@ function rebuildDeltaDynamicLayout(layerState) {
       })
     }).addTo(layerState.deltaLayer);
 
-    const popupHtml = `
-      <b>#${number} – Ukrainian recapture</b><br>
-      ${previousDate} → ${currentDate}<br>
-      Change: <b>${item.areaKm2.toFixed(2)} km²</b>
-    `;
+    const popupHtml = buildPopupHtml(number, false, previousDate, currentDate, item.areaKm2);
 
     circle.bindPopup(popupHtml);
     centerNumberMarker.bindPopup(popupHtml);
@@ -262,7 +257,6 @@ export function createLayers(map) {
     firmsLayer,
     osintLayer,
     lastDeltaPayload: null,
-    deltaDynamicItems: [],
   };
 
   map.on('zoomend moveend resize', () => {
