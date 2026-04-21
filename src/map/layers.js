@@ -405,6 +405,15 @@ function rebuildDeltaDynamicLayout(layerState) {
   });
 }
 
+export function resetAllSavedDeltaLabels(layerState) {
+  layerState.savedLabelPositions = {};
+  saveSavedLabelPositions(layerState.savedLabelPositions);
+
+  if (layerState.lastDeltaPayload) {
+    rebuildDeltaDynamicLayout(layerState);
+  }
+}
+
 export function createLayers(map) {
   const occupiedLayer = L.geoJSON(null, {
     style: {
