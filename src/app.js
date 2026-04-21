@@ -6,12 +6,14 @@ import {
   renderDeltaLayer,
   renderFirmsLayer,
   renderOsintLayer,
+  renderFirmsHotspotBox,
   resetAllSavedDeltaLabels
 } from './map/layers.js';
 import { fetchDeepStateIndex, fetchDeepStateByFilename } from './data/deepstate.js';
 import { computeNaiveDailyDelta } from './data/deepstateDelta.js';
 import { enrichDeltaItemsWithPlaceNames } from './data/placeLookup.js';
 import { fetchFirmsLayer } from './data/firms.js';
+import { summarizeFirmsHotspots } from './data/firmsSummary.js';
 import { fetchOfficialOsint } from './data/osintOfficial.js';
 import { fetchIswOsint } from './data/osintIsw.js';
 import { bindTimeline, setTimelineBounds, setTimelineValue } from './ui/timeline.js';
@@ -35,6 +37,7 @@ const dom = {
   currentDate: document.getElementById('currentDate'),
   timeline: document.getElementById('timeline'),
   deltaSummary: document.getElementById('deltaSummary'),
+  firmsSummary: document.getElementById('firmsSummary'),
 
   btnLatest: document.getElementById('btnLatest'),
   btnFit: document.getElementById('btnFit'),
@@ -129,6 +132,25 @@ function updateDeltaSummary(delta) {
   `;
 }
 
+function updateFirmsSummary(summary) {
+  if (!dom.firmsSummary) return;
+
+  const zone = summary?.topZone;
+  if (!zone) {
+    dom.firmsSummary.innerHTML = 'No FIRMS hotspot summary available.';
+    return;
+  }
+
+  dom.firmsSummary.innerHTML = `
+    <b>Most intense zone</b><br>
+    Sector: <strong>${zone.sectorName || 'Unknown sector'}</strong><br>
+    Near: <strong>${zone.nearestPlace || 'Unknown place'}</strong><br>
+    Hotspots: <strong>${zone.count}</strong><br>
+    Window: <strong>${summary.windowDays} days</strong><br>
+    Total FIRMS points loaded: <strong>${summary.totalPoints}</strong>
+  `;
+}
+
 async function renderAtIndex(index) {
   const item = appState.index[index];
   if (!item) return;
@@ -176,17 +198,30 @@ async function refreshFirms() {
   try {
     if (!dom.toggleFirms.checked) {
       layerState.firmsLayer.clearLayers();
+      layerState.firmsHotspotLayer.clearLayers();
       if (map.hasLayer(layerState.firmsLayer)) {
         map.removeLayer(layerState.firmsLayer);
       }
+      if (map.hasLayer(layerState.firmsHotspotLayer)) {
+        map.removeLayer(layerState.firmsHotspotLayer);
+      }
+      updateFirmsSummary(null);
       return;
     }
 
-    const firms = await fetchFirmsLayer(Number(dom.firmsWindow.value));
+    const windowDays = Number(dom.firmsWindow.value);
+    const firms = await fetchFirmsLayer(windowDays);
     renderFirmsLayer(layerState, firms);
+
+    const summary = summarizeFirmsHotspots(firms, windowDays);
+    renderFirmsHotspotBox(layerState, summary);
+    updateFirmsSummary(summary);
 
     if (!map.hasLayer(layerState.firmsLayer)) {
       layerState.firmsLayer.addTo(map);
+    }
+    if (!map.hasLayer(layerState.firmsHotspotLayer)) {
+      layerState.firmsHotspotLayer.addTo(map);
     }
   } catch (error) {
     console.error('FIRMS hiba:', error);
