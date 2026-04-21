@@ -2,7 +2,7 @@ import csv
 import io
 import json
 import os
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 import requests
 
@@ -12,25 +12,56 @@ if not MAP_KEY:
     raise RuntimeError("Missing FIRMS_MAP_KEY secret")
 
 BASE = "https://firms.modaps.eosdis.nasa.gov/api/area/csv"
+
 DATASETS = [
     "VIIRS_NOAA21_NRT",
     "VIIRS_NOAA20_NRT",
     "VIIRS_SNPP_NRT",
 ]
 
-# Ukraine + surrounding war theatre bbox
+# west,south,east,north
 AREA = "21,43,42,53"
 
-def fetch_dataset(dataset: str, days: int):
-    url = f"{BASE}/{MAP_KEY}/{dataset}/{AREA}/{days}"
-    resp = requests.get(url, timeout=120)
+SESSION = requests.Session()
+
+
+def chunk_ranges(total_days: int):
+    """
+    Split a window like 10 or 30 days into FIRMS-compatible chunks of max 5 days.
+    Returns tuples: (chunk_start_date, chunk_len)
+    """
+    end_date = datetime.now(timezone.utc).date()
+    start_date = end_date - timedelta(days=total_days - 1)
+
+    chunks = []
+    cursor = start_date
+
+    while cursor <= end_date:
+      remaining = (end_date - cursor).days + 1
+      chunk_len = min(5, remaining)
+      chunks.append((cursor.isoformat(), chunk_len))
+      cursor += timedelta(days=chunk_len)
+
+    return chunks
+
+
+def fetch_dataset_chunk(dataset: str, chunk_start_date: str, chunk_len: int):
+    """
+    FIRMS area API supports DAY_RANGE only 1..5.
+    /api/area/csv/[MAP_KEY]/[SOURCE]/[AREA_COORDINATES]/[DAY_RANGE]/[DATE]
+    Returns data for DATE .. DATE + DAY_RANGE - 1
+    """
+    url = f"{BASE}/{MAP_KEY}/{dataset}/{AREA}/{chunk_len}/{chunk_start_date}"
+    resp = SESSION.get(url, timeout=120)
     resp.raise_for_status()
+
     text = resp.text.strip()
     if not text:
-      return []
+        return []
 
     reader = csv.DictReader(io.StringIO(text))
     rows = []
+
     for row in reader:
         try:
             confidence = row.get("confidence", "")
@@ -54,21 +85,33 @@ def fetch_dataset(dataset: str, days: int):
 
     return rows
 
+
+def fetch_dataset(dataset: str, total_days: int):
+    rows = []
+    for chunk_start_date, chunk_len in chunk_ranges(total_days):
+        rows.extend(fetch_dataset_chunk(dataset, chunk_start_date, chunk_len))
+    return rows
+
+
 def filter_points(points):
     filtered = []
+
     for p in points:
         conf = str(p.get("confidence", "")).lower()
         frp = p.get("frp") or 0
         brightness = p.get("brightness") or 0
 
-        # keep stronger events / medium-high confidence
+        # Keep stronger events / medium-high confidence
         if conf in {"h", "high"} or frp >= 3 or brightness >= 330:
             filtered.append(p)
+
     return filtered
+
 
 def dedupe(points):
     seen = set()
     out = []
+
     for p in points:
         key = (
             round(p["lat"], 4),
@@ -81,10 +124,13 @@ def dedupe(points):
             continue
         seen.add(key)
         out.append(p)
+
     return out
+
 
 def write_json(days: int):
     all_points = []
+
     for dataset in DATASETS:
         all_points.extend(fetch_dataset(dataset, days))
 
@@ -99,9 +145,11 @@ def write_json(days: int):
     with open(f"data/firms_{days}.json", "w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False)
 
+
 def main():
     for days in (3, 10, 30):
         write_json(days)
+
 
 if __name__ == "__main__":
     main()
