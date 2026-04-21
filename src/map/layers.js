@@ -10,9 +10,11 @@ export function createLayers(map) {
   }).addTo(map);
 
   const deltaLayer = L.layerGroup().addTo(map);
+
   const borderLayer = L.geoJSON(null, {
     style: { color: '#34495e', weight: 2, fillOpacity: 0, opacity: 0.9, dashArray: '4,4' }
   }).addTo(map);
+
   const firmsLayer = L.layerGroup();
   const osintLayer = L.layerGroup();
 
@@ -22,10 +24,6 @@ export function createLayers(map) {
 export function replaceOccupiedLayer(map, layerState, data) {
   layerState.occupiedLayer.clearLayers();
   layerState.occupiedLayer.addData(data);
-  try {
-    const bounds = layerState.occupiedLayer.getBounds();
-    if (bounds.isValid()) map.fitBounds(bounds.pad(0.2));
-  } catch {}
 }
 
 export function replaceBorderLayer(map, layerState, data) {
@@ -36,24 +34,26 @@ export function replaceBorderLayer(map, layerState, data) {
 export function renderDeltaLayer(layerState, delta, currentDate, previousDate) {
   layerState.deltaLayer.clearLayers();
 
-  delta.gained.forEach(item => {
-    L.circleMarker([item.lat, item.lng], {
-      radius: 8,
-      color: '#8b1111',
-      fillColor: '#d23030',
-      fillOpacity: 0.8,
-      weight: 1,
-    }).bindPopup(`<b>Orosz területszerzés</b><br>${previousDate} → ${currentDate}<br>Kb. ${item.areaKm2.toFixed(2)} km²`).addTo(layerState.deltaLayer);
-  });
+  const items = delta.all || [];
 
-  delta.lost.forEach(item => {
-    L.circleMarker([item.lat, item.lng], {
-      radius: 8,
-      color: '#1246a0',
-      fillColor: '#2962ff',
-      fillOpacity: 0.8,
-      weight: 1,
-    }).bindPopup(`<b>Ukrán visszaszerzés</b><br>${previousDate} → ${currentDate}<br>Kb. ${item.areaKm2.toFixed(2)} km²`).addTo(layerState.deltaLayer);
+  items.forEach(item => {
+    const isGain = item.type === 'gain';
+
+    const circle = L.circle([item.lat, item.lng], {
+      radius: item.radiusMeters,
+      color: isGain ? '#8b1111' : '#1246a0',
+      fillColor: isGain ? '#d23030' : '#2962ff',
+      fillOpacity: 0.18,
+      weight: 2,
+    });
+
+    circle.bindPopup(`
+      <b>${isGain ? 'Orosz területszerzés' : 'Ukrán visszaszerzés'}</b><br>
+      ${previousDate} → ${currentDate}<br>
+      Változás: <b>${item.areaKm2.toFixed(2)} km²</b>
+    `);
+
+    circle.addTo(layerState.deltaLayer);
   });
 }
 
@@ -66,7 +66,8 @@ export function renderFirmsLayer(layerState, points) {
       fillColor: '#ff7a00',
       fillOpacity: 0.7,
       weight: 1,
-    }).bindPopup(`<b>FIRMS hőanomália</b><br>${popupFromProps(point)}`).addTo(layerState.firmsLayer);
+    }).bindPopup(`<b>FIRMS</b><br>${popupFromProps(point)}`)
+      .addTo(layerState.firmsLayer);
   });
 }
 
@@ -79,6 +80,7 @@ export function renderOsintLayer(layerState, points) {
       fillColor: '#2980b9',
       fillOpacity: 0.85,
       weight: 1,
-    }).bindPopup(`<b>${point.sourceType || 'OSINT'}</b><br>${popupFromProps(point)}`).addTo(layerState.osintLayer);
+    }).bindPopup(`<b>${point.sourceType || 'OSINT'}</b><br>${popupFromProps(point)}`)
+      .addTo(layerState.osintLayer);
   });
 }
