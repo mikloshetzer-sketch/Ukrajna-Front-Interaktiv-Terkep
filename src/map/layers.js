@@ -215,6 +215,7 @@ function rebuildDeltaDynamicLayout(layerState) {
 
     const label = L.marker(labelLatLng, {
       interactive: true,
+      draggable: true,
       icon: createLabelIcon({
         index: number,
         isGain: true,
@@ -226,6 +227,13 @@ function rebuildDeltaDynamicLayout(layerState) {
         nearestPlace: item.nearestPlace,
       })
     }).addTo(layerState.deltaLayer);
+
+    leader.setLatLngs([baseLatLng, labelLatLng]);
+
+    label.on('drag', (event) => {
+      const newLatLng = event.target.getLatLng();
+      leader.setLatLngs([baseLatLng, newLatLng]);
+    });
 
     const popupHtml = buildPopupHtml(
       number,
@@ -269,6 +277,7 @@ function rebuildDeltaDynamicLayout(layerState) {
 
     const label = L.marker(labelLatLng, {
       interactive: true,
+      draggable: true,
       icon: createLabelIcon({
         index: number,
         isGain: false,
@@ -280,6 +289,13 @@ function rebuildDeltaDynamicLayout(layerState) {
         nearestPlace: item.nearestPlace,
       })
     }).addTo(layerState.deltaLayer);
+
+    leader.setLatLngs([baseLatLng, labelLatLng]);
+
+    label.on('drag', (event) => {
+      const newLatLng = event.target.getLatLng();
+      leader.setLatLngs([baseLatLng, newLatLng]);
+    });
 
     const popupHtml = buildPopupHtml(
       number,
