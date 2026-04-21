@@ -414,6 +414,61 @@ export function resetAllSavedDeltaLabels(layerState) {
   }
 }
 
+export function renderFirmsHotspotBox(layerState, summary) {
+  layerState.firmsHotspotLayer.clearLayers();
+
+  const zone = summary?.topZone;
+  if (!zone || !zone.bounds) return;
+
+  const rectangle = L.rectangle(zone.bounds, {
+    color: '#ff8800',
+    weight: 2,
+    fillOpacity: 0,
+    dashArray: '8,6',
+  }).addTo(layerState.firmsHotspotLayer);
+
+  const centerLat =
+    (zone.bounds[0][0] + zone.bounds[1][0]) / 2;
+  const centerLng =
+    (zone.bounds[0][1] + zone.bounds[1][1]) / 2;
+
+  const label = L.marker([centerLat, centerLng], {
+    icon: L.divIcon({
+      className: '',
+      html: `
+        <div style="
+          background: rgba(255,248,235,0.96);
+          border: 2px solid #ff8800;
+          border-radius: 8px;
+          padding: 6px 8px;
+          font-size: 12px;
+          line-height: 1.3;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+          white-space: nowrap;
+        ">
+          <b>Most intense FIRMS zone</b><br>
+          ${zone.sectorName || 'Unknown sector'}<br>
+          ${zone.nearestPlace || 'Unknown place'}<br>
+          Hotspots: <b>${zone.count}</b>
+        </div>
+      `,
+      iconSize: [220, 70],
+      iconAnchor: [110, 35],
+    })
+  }).addTo(layerState.firmsHotspotLayer);
+
+  const popupHtml = `
+    <b>Most intense FIRMS zone</b><br>
+    <b>Sector:</b> ${zone.sectorName || 'Unknown sector'}<br>
+    <b>Near:</b> ${zone.nearestPlace || 'Unknown place'}<br>
+    <b>Hotspots:</b> ${zone.count}<br>
+    <b>Window:</b> ${summary.windowDays} days
+  `;
+
+  rectangle.bindPopup(popupHtml);
+  label.bindPopup(popupHtml);
+}
+
 export function createLayers(map) {
   const occupiedLayer = L.geoJSON(null, {
     style: {
@@ -438,6 +493,7 @@ export function createLayers(map) {
 
   const frontSectorLayer = L.layerGroup().addTo(map);
   const firmsLayer = L.layerGroup();
+  const firmsHotspotLayer = L.layerGroup();
   const osintLayer = L.layerGroup();
 
   const layerState = {
@@ -447,6 +503,7 @@ export function createLayers(map) {
     borderLayer,
     frontSectorLayer,
     firmsLayer,
+    firmsHotspotLayer,
     osintLayer,
     lastDeltaPayload: null,
     savedLabelPositions: loadSavedLabelPositions(),
