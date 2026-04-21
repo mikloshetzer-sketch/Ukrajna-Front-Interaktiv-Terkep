@@ -1,43 +1,67 @@
-import { featureRepresentativePoint, roughAreaKm2 } from '../utils/geo.js';
+function flattenCoordinates(geometry) {
+  if (!geometry) return [];
+  const { type, coordinates } = geometry;
+  if (type === 'Polygon') return coordinates.flat(1);
+  if (type === 'MultiPolygon') return coordinates.flat(2);
+  return [];
+}
 
-function signatureFromFeature(feature) {
-  const geometry = feature?.geometry;
-  if (!geometry) return null;
-  return JSON.stringify(geometry);
+function centroidFromFeature(feature) {
+  const coords = flattenCoordinates(feature.geometry);
+  if (!coords.length) return null;
+
+  let sumLng = 0;
+  let sumLat = 0;
+
+  coords.forEach(([lng, lat]) => {
+    sumLng += lng;
+    sumLat += lat;
+  });
+
+  return { lng: sumLng / coords.length, lat: sumLat / coords.length };
+}
+
+function pseudoAreaKm2(feature) {
+  const coords = flattenCoordinates(feature.geometry);
+  return Math.max(0.5, coords.length * 0.2);
+}
+
+function keyForFeature(feature) {
+  const c = centroidFromFeature(feature);
+  if (!c) return null;
+  return `${c.lat.toFixed(3)}|${c.lng.toFixed(3)}`;
 }
 
 export function computeNaiveDailyDelta(previousGeoJson, currentGeoJson) {
-  const prevFeatures = previousGeoJson?.features ?? [];
-  const currFeatures = currentGeoJson?.features ?? [];
+  const prev = new Map();
+  const curr = new Map();
 
-  const prevSet = new Set(prevFeatures.map(signatureFromFeature).filter(Boolean));
-  const currSet = new Set(currFeatures.map(signatureFromFeature).filter(Boolean));
+  (previousGeoJson?.features || []).forEach(feature => {
+    const key = keyForFeature(feature);
+    if (key) prev.set(key, feature);
+  });
 
-  const gained = currFeatures
-    .filter(feature => {
-      const sig = signatureFromFeature(feature);
-      return sig && !prevSet.has(sig);
-    })
-    .map(feature => ({
-      type: 'gain',
-      point: featureRepresentativePoint(feature),
-      areaKm2: roughAreaKm2(feature),
-      feature,
-    }))
-    .filter(item => item.point);
+  (currentGeoJson?.features || []).forEach(feature => {
+    const key = keyForFeature(feature);
+    if (key) curr.set(key, feature);
+  });
 
-  const lost = prevFeatures
-    .filter(feature => {
-      const sig = signatureFromFeature(feature);
-      return sig && !currSet.has(sig);
-    })
-    .map(feature => ({
-      type: 'loss',
-      point: featureRepresentativePoint(feature),
-      areaKm2: roughAreaKm2(feature),
-      feature,
-    }))
-    .filter(item => item.point);
+  const gained = [];
+  const lost = [];
+
+  curr.forEach((feature, key) => {
+    if (!prev.has(key)) {
+      const c = centroidFromFeature(feature);
+      if (c) gained.push({ ...c, areaKm2: pseudoAreaKm2(feature) });
+    }
+  });
+
+  prev.forEach((feature, key) => {
+    if (!curr.has(key)) {
+      const c = centroidFromFeature(feature);
+      if (c) lost.push({ ...c, areaKm2: pseudoAreaKm2(feature) });
+    }
+  });
 
   return { gained, lost };
 }
