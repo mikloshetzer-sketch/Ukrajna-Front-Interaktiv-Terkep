@@ -19,6 +19,7 @@ function flattenToPolygons(featureCollection) {
 
   turf.flattenEach(featureCollection, (feature) => {
     if (!feature || !feature.geometry) return;
+
     const type = feature.geometry.type;
     if (type === 'Polygon' || type === 'MultiPolygon') {
       result.push(feature);
@@ -28,19 +29,23 @@ function flattenToPolygons(featureCollection) {
   return turf.featureCollection(result);
 }
 
-function safeUnionAll(featureCollection) {
+function dissolveSequentially(featureCollection) {
   const features = (featureCollection?.features || []).filter(Boolean);
 
-  if (!features.length) return turf.featureCollection([]);
+  if (!features.length) {
+    return turf.featureCollection([]);
+  }
 
   let merged = features[0];
 
   for (let i = 1; i < features.length; i += 1) {
     try {
-      merged = turf.union(merged, features[i]) || merged;
-    } catch (e) {
-      // ha egy union hibára fut, nem állítjuk meg az egészet
-      console.warn('Union hiba:', e);
+      const unionResult = turf.union(merged, features[i]);
+      if (unionResult) {
+        merged = unionResult;
+      }
+    } catch (error) {
+      console.warn('Union hiba, feature kihagyva:', error);
     }
   }
 
@@ -51,18 +56,22 @@ function safeDifference(a, b) {
   try {
     const diff = turf.difference(a, b);
     return normalizeFeatureCollection(diff);
-  } catch (e) {
-    console.warn('Difference hiba:', e);
+  } catch (error) {
+    console.warn('Difference hiba:', error);
     return turf.featureCollection([]);
   }
 }
 
-function splitFeatures(featureCollection) {
-  const out = [];
+function splitToSingleFeatures(featureCollection) {
+  const items = [];
+
   turf.flattenEach(featureCollection, (feature) => {
-    if (feature?.geometry) out.push(feature);
+    if (feature?.geometry) {
+      items.push(feature);
+    }
   });
-  return out;
+
+  return items;
 }
 
 function getRepresentativePoint(feature) {
@@ -72,7 +81,8 @@ function getRepresentativePoint(feature) {
       lng: point.geometry.coordinates[0],
       lat: point.geometry.coordinates[1],
     };
-  } catch {
+  } catch (error) {
+    console.warn('pointOnFeature hiba, center fallback:', error);
     const center = turf.center(feature);
     return {
       lng: center.geometry.coordinates[0],
@@ -84,26 +94,36 @@ function getRepresentativePoint(feature) {
 function getAreaKm2(feature) {
   try {
     return turf.area(feature) / 1_000_000;
-  } catch {
+  } catch (error) {
+    console.warn('Area hiba:', error);
     return 0;
   }
 }
 
 function getRadiusMetersFromAreaKm2(areaKm2) {
-  // Egyenértékű kör sugara, de láthatóság miatt korlátozva
-  const radius = Math.sqrt((areaKm2 * 1_000_000) / Math.PI);
-  return Math.max(1500, Math.min(radius, 30000));
+  if (!areaKm2 || areaKm2 <= 0) {
+    return 1500;
+  }
+
+  const equivalentCircleRadius = Math.sqrt((areaKm2 * 1_000_000) / Math.PI);
+
+  return Math.max(1500, Math.min(equivalentCircleRadius, 30000));
 }
 
 function buildChangeItems(featureCollection, changeType) {
-  const features = splitFeatures(featureCollection);
+  const features = splitToSingleFeatures(featureCollection);
 
   return features
     .map((feature) => {
       const areaKm2 = getAreaKm2(feature);
-      if (areaKm2 <= 0.05) return null;
+
+      // kis zajok kiszűrése
+      if (areaKm2 < 0.05) {
+        return null;
+      }
 
       const point = getRepresentativePoint(feature);
+
       return {
         type: changeType,
         feature,
@@ -117,30 +137,30 @@ function buildChangeItems(featureCollection, changeType) {
 }
 
 export function computeNaiveDailyDelta(previousGeoJson, currentGeoJson) {
-  const prevFc = flattenToPolygons(normalizeFeatureCollection(previousGeoJson));
-  const currFc = flattenToPolygons(normalizeFeatureCollection(currentGeoJson));
+  const previousFc = flattenToPolygons(normalizeFeatureCollection(previousGeoJson));
+  const currentFc = flattenToPolygons(normalizeFeatureCollection(currentGeoJson));
 
-  // Egységesített napi megszállt terület
-  const prevMerged = safeUnionAll(prevFc);
-  const currMerged = safeUnionAll(currFc);
+  // Egységes napi megszállt terület előállítása
+  const previousMerged = dissolveSequentially(previousFc);
+  const currentMerged = dissolveSequentially(currentFc);
 
-  // Orosz területszerzés = mai megszállt terület - tegnapi megszállt terület
-  const gainedArea = safeDifference(currMerged, prevMerged);
+  // Orosz területszerzés: mai - tegnapi
+  const gainedAreas = safeDifference(currentMerged, previousMerged);
 
-  // Ukrán visszaszerzés = tegnapi megszállt terület - mai megszállt terület
-  const lostArea = safeDifference(prevMerged, currMerged);
+  // Ukrán visszaszerzés: tegnapi - mai
+  const lostAreas = safeDifference(previousMerged, currentMerged);
 
-  const gained = buildChangeItems(gainedArea, 'gain');
-  const lost = buildChangeItems(lostArea, 'loss');
+  const gained = buildChangeItems(gainedAreas, 'gain');
+  const lost = buildChangeItems(lostAreas, 'loss');
 
-  const allChanges = [...gained, ...lost]
+  const all = [...gained, ...lost]
     .sort((a, b) => b.areaKm2 - a.areaKm2)
     .slice(0, 5);
 
   return {
-    gained: allChanges.filter((item) => item.type === 'gain'),
-    lost: allChanges.filter((item) => item.type === 'loss'),
-    all: allChanges,
+    gained: all.filter(item => item.type === 'gain'),
+    lost: all.filter(item => item.type === 'loss'),
+    all,
     totals: {
       gainedKm2: gained.reduce((sum, item) => sum + item.areaKm2, 0),
       lostKm2: lost.reduce((sum, item) => sum + item.areaKm2, 0),
