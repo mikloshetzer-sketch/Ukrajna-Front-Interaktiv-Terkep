@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ukrajna front – interaktív térkép</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <style>
+    html, body { height: 100%; margin: 0; font-family: Arial, sans-serif; }
+    #app { display: grid; grid-template-columns: 390px 1fr; height: 100%; }
+    #sidebar { padding: 16px; border-right: 1px solid #ddd; overflow: auto; background: #fafafa; }
+    #map { height: 100%; width: 100%; }
+    h1 { font-size: 20px; margin: 0 0 10px; }
+    h2 { font-size: 15px; margin: 18px 0 8px; }
+    .muted { color: #555; font-size: 13px; line-height: 1.45; }
+    .box { background: white; border: 1px solid #ddd; border-radius: 10px; padding: 12px; margin-bottom: 12px; }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+    button, input[type="file"], input[type="url"], select, input[type="date"] {
+      width: 100%; box-sizing: border-box; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 14px;
+    }
+    button { cursor: pointer; background: #111; color: white; border: none; }
+    button.secondary { background: #f1f1f1; color: #111; border: 1px solid #ccc; }
+    label { display: block; font-size: 13px; margin: 8px 0 4px; }
+    .legend-item { display: flex; align-items: center; gap: 8px; margin: 6px 0; font-size: 13px; }
+    .swatch { width: 14px; height: 14px; border-radius: 3px; }
+    code { background: #f3f3f3; padding: 2px 4px; border-radius: 4px; }
+    ul { margin: 8px 0 0 18px; padding: 0; }
+    .small { font-size: 12px; color: #666; }
+    .status { font-size: 12px; color: #444; margin-top: 8px; line-height: 1.4; }
+    .pill { display: inline-block; font-size: 12px; padding: 4px 8px; border-radius: 999px; background: #f1f1f1; margin: 2px 4px 0 0; }
+    .events-list { max-height: 190px; overflow: auto; border: 1px solid #eee; border-radius: 8px; padding: 8px; background: #fff; }
+    .event-item { border-bottom: 1px solid #eee; padding: 8px 0; }
+    .event-item:last-child { border-bottom: none; }
+    .event-title { font-weight: bold; font-size: 13px; }
+    .event-meta { font-size: 12px; color: #666; }
+    a.source-link { color: #1d4ed8; text-decoration: none; }
+    @media (max-width: 900px) {
+      #app { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+      #sidebar { border-right: none; border-bottom: 1px solid #ddd; max-height: 52vh; }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <aside id="sidebar">
+      <h1>Ukrajna front – interaktív térkép</h1>
+      <p class="muted">Ez a verzió már tud aktuális megszállt területet automatikusan tölteni a napi DeepState-adatfájlokból, időléptetve visszanézni a történeti állapotot, és külön rátenni az országhatárokat. Az eseményekhez saját GeoJSON-t tudsz betölteni.</p>
+
+      <div class="box">
+        <h2>Gyors vezérlés</h2>
+        <div class="row"><button id="loadLatest">Legfrissebb megszállt terület betöltése</button></div>
+        <div class="row"><button id="fitUkraine" class="secondary">Vissza Ukrajnára</button></div>
+        <div class="row"><button id="toggleOccupied">Megszállt terület ki/be</button></div>
+        <div class="row"><button id="toggleBorders">Országhatárok ki/be</button></div>
+        <div class="row"><button id="toggleEvents">Események ki/be</button></div>
+        <div id="status" class="status">Állapot: indulás…</div>
+      </div>
+
+      <div class="box">
+        <h2>Idővonal / történeti nézet</h2>
+        <label for="historySelect">Elérhető napi állapot</label>
+        <select id="historySelect">
+          <option value="">Fájlok betöltése…</option>
+        </select>
+        <div class="row"><button id="loadHistoryDate">Kiválasztott dátum betöltése</button></div>
+        <div class="small">A lista a GitHub napi adatfájljait olvassa be. A réteg a megszállt terület változását mutatja.</div>
+      </div>
+
+      <div class="box">
+        <h2>Események betöltése</h2>
+        <label for="eventsFile">Esemény GeoJSON fájlból</label>
+        <input id="eventsFile" type="file" accept=".geojson,.json" />
+        <label for="eventsUrl">Esemény GeoJSON URL-ről</label>
+        <input id="eventsUrl" type="url" placeholder="https://.../events.geojson" />
+        <div class="row"><button id="loadEventsUrl">Esemény URL betöltése</button></div>
+        <div class="small">Ajánlott mezők: <code>title</code>, <code>date</code>, <code>type</code>, <code>source</code>, <code>url</code>.</div>
+      </div>
+
+      <div class="box">
+        <h2>Források és jelmagyarázat</h2>
+        <div class="legend-item"><span class="swatch" style="background:#c0392b"></span> Megszállt terület</div>
+        <div class="legend-item"><span class="swatch" style="background:#34495e"></span> Országhatárok</div>
+        <div class="legend-item"><span class="swatch" style="background:#2980b9"></span> Események</div>
+        <div class="small" style="margin-top:8px;">
+          <span class="pill">DeepState daily polygons</span>
+          <span class="pill">ország-határok overlay</span>
+          <span class="pill">saját esemény feed</span>
+        </div>
+      </div>
+
+      <div class="box">
+        <h2>Betöltött események</h2>
+        <div id="eventsList" class="events-list"><div class="small">Még nincs betöltött esemény.</div></div>
+      </div>
+    </aside>
+    <main id="map"></main>
+  </div>
+
+  <script>
+    const map = L.map('map', { zoomControl: true }).setView([48.5, 33.5], 6);
+
+    const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+
+    const carto = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      maxZoom: 20,
+      attribution: '&copy; OpenStreetMap &copy; CARTO'
+    });
+
+    const esriSat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 19,
+      attribution: 'Tiles &copy; Esri'
+    });
+
+    L.control.layers(
+      { 'OpenStreetMap': osm, 'CARTO Light': carto, 'Műholdkép (Esri)': esriSat },
+      {},
+      { collapsed: false }
+    ).addTo(map);
+
+    const occupiedStyle = {
+      color: '#c0392b', weight: 1, fillColor: '#c0392b', fillOpacity: 0.34
+    };
+
+    const borderStyle = {
+      color: '#34495e', weight: 2, fillOpacity: 0, opacity: 0.9, dashArray: '4,4'
+    };
+
+    function pointToLayer(feature, latlng) {
+      return L.circleMarker(latlng, {
+        radius: 6,
+        color: '#1f5f8b',
+        weight: 1,
+        fillColor: '#2980b9',
+        fillOpacity: 0.9
+      });
+    }
+
+    function popupContent(feature) {
+      const props = feature?.properties || {};
+      const entries = Object.entries(props);
+      if (!entries.length) return '<b>Esemény</b><br>Nincs metaadat';
+      const title = props.title ? `<div style="font-weight:bold;margin-bottom:6px;">${escapeHtml(String(props.title))}</div>` : '';
+      const main = entries
+        .filter(([k]) => k !== 'title')
+        .map(([k, v]) => {
+          if (k === 'url') {
+            return `<div><b>${escapeHtml(k)}:</b> <a class="source-link" target="_blank" rel="noopener noreferrer" href="${escapeAttr(String(v))}">forrás</a></div>`;
+          }
+          return `<div><b>${escapeHtml(k)}:</b> ${escapeHtml(String(v))}</div>`;
+        })
+        .join('');
+      return title + main;
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/[&<>"']/g, s => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[s]));
+    }
+
+    function escapeAttr(str) {
+      return escapeHtml(str);
+    }
+
+    function setStatus(text) {
+      document.getElementById('status').textContent = `Állapot: ${text}`;
+    }
+
+    let occupiedLayer = L.geoJSON(null, { style: occupiedStyle }).addTo(map);
+    let bordersLayer = L.geoJSON(null, { style: borderStyle }).addTo(map);
+    let eventsLayer = L.geoJSON(sampleEvents, {
+      pointToLayer,
+      onEachFeature: (feature, layer) => layer.bindPopup(popupContent(feature))
+    }).addTo(map);
+
+    const deepStateApi = 'https://api.github.com/repos/cyterat/deepstate-map-data/contents/data';
+    const deepStateRawBase = 'https://cdn.jsdelivr.net/gh/cyterat/deepstate-map-data@main/data/';
+    const bordersUrl = 'https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson';
+    const borderCountries = new Set(['Ukraine', 'Russia', 'Belarus', 'Poland', 'Slovakia', 'Hungary', 'Romania', 'Moldova']);
+
+    let historyFiles = [];
+
+    function replaceOccupied(data, label = 'ismeretlen dátum') {
+      if (occupiedLayer) map.removeLayer(occupiedLayer);
+      occupiedLayer = L.geoJSON(data, { style: occupiedStyle }).addTo(map);
+      try {
+        const bounds = occupiedLayer.getBounds();
+        if (bounds.isValid()) map.fitBounds(bounds.pad(1.4));
+      } catch (_) {
+        fitUkraine();
+      }
+      setStatus(`megszállt terület betöltve: ${label}`);
+    }
+
+    function replaceBorders(data) {
+      if (bordersLayer) map.removeLayer(bordersLayer);
+      bordersLayer = L.geoJSON(data, { style: borderStyle }).addTo(map);
+      setStatus('országhatárok betöltve');
+    }
+
+    function replaceEvents(data, label = 'esemény feed') {
+      if (eventsLayer) map.removeLayer(eventsLayer);
+      eventsLayer = L.geoJSON(data, {
+        pointToLayer,
+        onEachFeature: (feature, layer) => layer.bindPopup(popupContent(feature))
+      }).addTo(map);
+      renderEventsList(data);
+      setStatus(`események betöltve: ${label}`);
+    }
+
+    function toggleLayer(layer) {
+      if (map.hasLayer(layer)) map.removeLayer(layer);
+      else layer.addTo(map);
+    }
+
+    function fitUkraine() {
+      map.setView([48.5, 33.5], 6);
+    }
+
+    async function fetchJson(url) {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+      return await res.json();
+    }
+
+    function sortHistoryFiles(items) {
+      return items
+        .filter(item => item.name && /^deepstatemap_data_\d{8}\.geojson$/i.test(item.name))
+        .sort((a, b) => b.name.localeCompare(a.name));
+    }
+
+    function humanDateFromFilename(name) {
+      const m = name.match(/(\d{4})(\d{2})(\d{2})/);
+      if (!m) return name;
+      return `${m[1]}-${m[2]}-${m[3]}`;
+    }
+
+    async function loadHistoryIndex() {
+      setStatus('történeti fájllista lekérése…');
+      const items = await fetchJson(deepStateApi);
+      historyFiles = sortHistoryFiles(items);
+      const select = document.getElementById('historySelect');
+      select.innerHTML = '';
+      if (!historyFiles.length) {
+        const opt = document.createElement('option');
+        opt.value = '';
+        opt.textContent = 'Nem található napi fájl';
+        select.appendChild(opt);
+        setStatus('nem található napi DeepState fájl');
+        return;
+      }
+      for (const file of historyFiles) {
+        const opt = document.createElement('option');
+        opt.value = file.name;
+        opt.textContent = humanDateFromFilename(file.name);
+        select.appendChild(opt);
+      }
+      setStatus(`betöltve ${historyFiles.length} napi állapot`);
+    }
+
+    async function loadLatestOccupied() {
+      if (!historyFiles.length) await loadHistoryIndex();
+      if (!historyFiles.length) throw new Error('Nincs elérhető history fájl');
+      const latest = historyFiles[0].name;
+      const data = await fetchJson(deepStateRawBase + latest);
+      replaceOccupied(data, humanDateFromFilename(latest));
+      document.getElementById('historySelect').value = latest;
+    }
+
+    async function loadSelectedHistory() {
+      const file = document.getElementById('historySelect').value;
+      if (!file) return;
+      setStatus(`betöltés: ${humanDateFromFilename(file)}…`);
+      const data = await fetchJson(deepStateRawBase + file);
+      replaceOccupied(data, humanDateFromFilename(file));
+    }
+
+    async function loadBorders() {
+      setStatus('országhatárok betöltése…');
+      const allCountries = await fetchJson(bordersUrl);
+      const filtered = {
+        type: 'FeatureCollection',
+        features: (allCountries.features || []).filter(f => {
+          const name = f?.properties?.ADMIN || f?.properties?.name || f?.properties?.NAME;
+          return borderCountries.has(name);
+        })
+      };
+      replaceBorders(filtered);
+    }
+
+    function renderEventsList(geojson) {
+      const root = document.getElementById('eventsList');
+      const features = (geojson?.features || []).filter(f => f?.geometry?.type === 'Point');
+      if (!features.length) {
+        root.innerHTML = '<div class="small">Nincs megjeleníthető pont-esemény.</div>';
+        return;
+      }
+      const sorted = features.slice().sort((a, b) => String(b?.properties?.date || '').localeCompare(String(a?.properties?.date || '')));
+      root.innerHTML = sorted.slice(0, 100).map(f => {
+        const p = f.properties || {};
+        const title = escapeHtml(String(p.title || p.name || 'Névtelen esemény'));
+        const date = escapeHtml(String(p.date || 'ismeretlen dátum'));
+        const type = escapeHtml(String(p.type || 'nincs típus'));
+        const source = p.url
+          ? `<a class="source-link" target="_blank" rel="noopener noreferrer" href="${escapeAttr(String(p.url))}">${escapeHtml(String(p.source || 'forrás'))}</a>`
+          : escapeHtml(String(p.source || 'forrás nélkül'));
+        return `<div class="event-item"><div class="event-title">${title}</div><div class="event-meta">${date} · ${type}</div><div class="event-meta">${source}</div></div>`;
+      }).join('');
+    }
+
+    async function handleFileInput(inputId, onLoad, label) {
+      const input = document.getElementById(inputId);
+      input.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        try {
+          setStatus(`${label} fájl olvasása…`);
+          const text = await file.text();
+          const json = JSON.parse(text);
+          onLoad(json, file.name);
+        } catch (err) {
+          alert(`Nem sikerült beolvasni a fájlt: ${err.message}`);
+          setStatus('fájlbetöltési hiba');
+        }
+      });
+    }
+
+    document.getElementById('loadLatest').onclick = async () => {
+      try { await loadLatestOccupied(); } catch (err) { setStatus(`hiba: ${err.message}`); alert(err.message); }
+    };
+    document.getElementById('fitUkraine').onclick = fitUkraine;
+    document.getElementById('toggleOccupied').onclick = () => toggleLayer(occupiedLayer);
+    document.getElementById('toggleBorders').onclick = () => toggleLayer(bordersLayer);
+    document.getElementById('toggleEvents').onclick = () => toggleLayer(eventsLayer);
+    document.getElementById('loadHistoryDate').onclick = async () => {
+      try { await loadSelectedHistory(); } catch (err) { setStatus(`hiba: ${err.message}`); alert(err.message); }
+    };
+    document.getElementById('loadEventsUrl').onclick = async () => {
+      const url = document.getElementById('eventsUrl').value.trim();
+      if (!url) return;
+      try {
+        setStatus('esemény URL betöltése…');
+        const data = await fetchJson(url);
+        replaceEvents(data, url);
+      } catch (err) {
+        setStatus(`hiba: ${err.message}`);
+        alert(`Nem sikerült betölteni az eseményeket: ${err.message}`);
+      }
+    };
+
+    handleFileInput('eventsFile', replaceEvents, 'esemény');
+
+    const sampleEvents = {
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          properties: {
+            title: 'Példa harcérintkezés',
+            date: '2026-04-21',
+            type: 'frontesemény',
+            source: 'kézi minta',
+            url: 'https://deepstatemap.live/en'
+          },
+          geometry: { type: 'Point', coordinates: [37.78, 48.00] }
+        },
+        {
+          type: 'Feature',
+          properties: {
+            title: 'Példa logisztikai csapás',
+            date: '2026-04-20',
+            type: 'mélységi csapás',
+            source: 'kézi minta',
+            url: 'https://deepstatemap.live/en'
+          },
+          geometry: { type: 'Point', coordinates: [35.04, 48.46] }
+        }
+      ]
+    };
+
+    (async function init() {
+      try {
+        renderEventsList(sampleEvents);
+        await Promise.allSettled([loadHistoryIndex(), loadBorders()]);
+        await loadLatestOccupied();
+      } catch (err) {
+        setStatus(`indítási hiba: ${err.message}`);
+      }
+    })();
+  </script>
+</body>
+</html>
