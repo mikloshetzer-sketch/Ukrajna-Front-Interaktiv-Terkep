@@ -4,36 +4,23 @@ function popupFromProps(props) {
     .join('');
 }
 
-function getLabelOffset(index, isGain) {
-  const patterns = [
-    { x: 90, y: -70 },
-    { x: 110, y: -20 },
-    { x: 95, y: 40 },
-    { x: -110, y: -55 },
-    { x: -120, y: 25 },
-  ];
-
-  const chosen = patterns[index % patterns.length];
-
-  // kis variáció a két típus között, hogy kevésbé üljenek egymásra
-  if (isGain) {
-    return { x: chosen.x, y: chosen.y };
-  }
-
-  return { x: chosen.x + (chosen.x > 0 ? 18 : -18), y: chosen.y + 12 };
+function metersToLatLngOffset(lat, offsetX, offsetY) {
+  const latOffset = offsetY / 111320;
+  const lngOffset = offsetX / (111320 * Math.cos((lat * Math.PI) / 180));
+  return { latOffset, lngOffset };
 }
 
 function buildDeltaLabelHtml({ index, isGain, areaKm2, previousDate, currentDate }) {
   return `
     <div style="
-      background: rgba(255,255,255,0.96);
+      background: rgba(255,255,255,0.97);
       padding: 8px 10px;
       border-radius: 10px;
       border: 2px solid ${isGain ? '#ff0000' : '#004dff'};
       font-size: 12px;
       line-height: 1.35;
       box-shadow: 0 2px 8px rgba(0,0,0,0.28);
-      min-width: 170px;
+      min-width: 180px;
       color: #111;
       white-space: normal;
     ">
@@ -56,6 +43,76 @@ function buildDeltaLabelHtml({ index, isGain, areaKm2, previousDate, currentDate
       <div style="color:#666;">${previousDate} → ${currentDate}</div>
     </div>
   `;
+}
+
+function rectanglesOverlap(a, b) {
+  return !(
+    a.right < b.left ||
+    a.left > b.right ||
+    a.bottom < b.top ||
+    a.top > b.bottom
+  );
+}
+
+function buildCandidateOffsets(baseRadius) {
+  const r = Math.max(baseRadius + 12000, 28000);
+
+  return [
+    { x: r, y: -r * 0.35 },
+    { x: r * 0.9, y: r * 0.45 },
+    { x: -r, y: -r * 0.35 },
+    { x: -r * 0.9, y: r * 0.45 },
+    { x: 0, y: -r },
+    { x: 0, y: r },
+    { x: r * 1.25, y: 0 },
+    { x: -r * 1.25, y: 0 },
+    { x: r * 1.1, y: -r * 0.8 },
+    { x: -r * 1.1, y: -r * 0.8 },
+    { x: r * 1.1, y: r * 0.8 },
+    { x: -r * 1.1, y: r * 0.8 },
+  ];
+}
+
+function estimateLabelRect(map, latlng, widthPx = 190, heightPx = 82) {
+  const p = map.latLngToContainerPoint(latlng);
+  return {
+    left: p.x - widthPx / 2,
+    right: p.x + widthPx / 2,
+    top: p.y - heightPx / 2,
+    bottom: p.y + heightPx / 2,
+  };
+}
+
+function chooseBestLabelPosition(map, baseLatLng, radiusMeters, placedRects) {
+  const candidates = buildCandidateOffsets(radiusMeters);
+
+  for (const candidate of candidates) {
+    const { latOffset, lngOffset } = metersToLatLngOffset(baseLatLng.lat, candidate.x, candidate.y);
+
+    const labelLatLng = L.latLng(
+      baseLatLng.lat + latOffset,
+      baseLatLng.lng + lngOffset
+    );
+
+    const rect = estimateLabelRect(map, labelLatLng);
+
+    const collides = placedRects.some(existing => rectanglesOverlap(rect, existing));
+    if (!collides) {
+      placedRects.push(rect);
+      return { labelLatLng, candidate };
+    }
+  }
+
+  const fallback = candidates[candidates.length - 1];
+  const { latOffset, lngOffset } = metersToLatLngOffset(baseLatLng.lat, fallback.x, fallback.y);
+
+  const labelLatLng = L.latLng(
+    baseLatLng.lat + latOffset,
+    baseLatLng.lng + lngOffset
+  );
+
+  placedRects.push(estimateLabelRect(map, labelLatLng));
+  return { labelLatLng, candidate: fallback };
 }
 
 export function createLayers(map) {
@@ -100,21 +157,21 @@ export function renderDeltaLayer(layerState, delta, currentDate, previousDate) {
   layerState.deltaLayer.clearLayers();
 
   const items = delta.all || [];
+  const placedRects = [];
   let sequence = 1;
 
-  items.forEach((item, idx) => {
+  items.forEach((item) => {
     const isGain = item.type === 'gain';
     const number = sequence++;
-    const offset = getLabelOffset(idx, isGain);
-
     const baseLatLng = L.latLng(item.lat, item.lng);
 
-    const labelLatLng = L.latLng(
-      item.lat + (offset.y / 111320),
-      item.lng + (offset.x / (111320 * Math.cos(item.lat * Math.PI / 180)))
+    const { labelLatLng, candidate } = chooseBestLabelPosition(
+      layerState.occupiedLayer._map,
+      baseLatLng,
+      item.radiusMeters,
+      placedRects
     );
 
-    // Fő kör a változás köré
     const circle = L.circle(baseLatLng, {
       radius: item.radiusMeters,
       color: isGain ? '#ff0000' : '#004dff',
@@ -123,7 +180,6 @@ export function renderDeltaLayer(layerState, delta, currentDate, previousDate) {
       weight: 3,
     }).addTo(layerState.deltaLayer);
 
-    // Sorszámozott központi jelölő a kör közepén
     const centerNumberMarker = L.marker(baseLatLng, {
       icon: L.divIcon({
         className: '',
@@ -148,15 +204,13 @@ export function renderDeltaLayer(layerState, delta, currentDate, previousDate) {
       })
     }).addTo(layerState.deltaLayer);
 
-    // Összekötő vonal
     const leader = L.polyline([baseLatLng, labelLatLng], {
       color: isGain ? '#b91c1c' : '#1d4ed8',
       weight: 2,
-      opacity: 0.75,
+      opacity: 0.78,
       dashArray: '4,4',
     }).addTo(layerState.deltaLayer);
 
-    // Eltolt szövegdoboz
     const label = L.marker(labelLatLng, {
       icon: L.divIcon({
         className: '',
@@ -167,8 +221,11 @@ export function renderDeltaLayer(layerState, delta, currentDate, previousDate) {
           previousDate,
           currentDate,
         }),
-        iconSize: [180, 76],
-        iconAnchor: offset.x >= 0 ? [0, 38] : [180, 38],
+        iconSize: [190, 82],
+        iconAnchor: [
+          candidate.x >= 0 ? 0 : 190,
+          41
+        ],
       })
     }).addTo(layerState.deltaLayer);
 
