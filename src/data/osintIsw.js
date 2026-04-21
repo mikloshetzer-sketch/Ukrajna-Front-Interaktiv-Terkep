@@ -1,11 +1,6 @@
 export async function fetchIswOsint() {
   return [
-    {
-      title: 'Minta ISW pont',
-      source: 'ISW – placeholder',
-      lat: 47.98,
-      lon: 37.73,
-      type: 'isw',
-    },
+    { lat: 49.03, lng: 37.74, title: 'ISW minta', place: 'Kupjanszk irány', sourceType: 'ISW', date: 'minta' },
+    { lat: 48.01, lng: 37.80, title: 'ISW minta', place: 'Avdijivka / Donyeck irány', sourceType: 'ISW', date: 'minta' },
   ];
 }
