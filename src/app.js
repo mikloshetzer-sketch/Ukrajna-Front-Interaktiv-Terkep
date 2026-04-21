@@ -13,7 +13,7 @@ import { fetchDeepStateIndex, fetchDeepStateByFilename } from './data/deepstate.
 import { computeNaiveDailyDelta } from './data/deepstateDelta.js';
 import { enrichDeltaItemsWithPlaceNames } from './data/placeLookup.js';
 import { fetchFirmsLayer } from './data/firms.js';
-import { summarizeFirmsHotspots } from './data/firmsSummary.js';
+import { categorizeFirmsPoints, summarizeFirmsHotspots } from './data/firmsSummary.js';
 import { fetchOfficialOsint } from './data/osintOfficial.js';
 import { fetchIswOsint } from './data/osintIsw.js';
 import { bindTimeline, setTimelineBounds, setTimelineValue } from './ui/timeline.js';
@@ -143,11 +143,18 @@ function updateFirmsSummary(summary) {
 
   dom.firmsSummary.innerHTML = `
     <b>Most intense zone</b><br>
+    Category: <strong>${zone.categoryLabel}</strong><br>
     Sector: <strong>${zone.sectorName || 'Unknown sector'}</strong><br>
     Near: <strong>${zone.nearestPlace || 'Unknown place'}</strong><br>
     Hotspots: <strong>${zone.count}</strong><br>
     Window: <strong>${summary.windowDays} days</strong><br>
-    Total FIRMS points loaded: <strong>${summary.totalPoints}</strong>
+    Total loaded: <strong>${summary.totalPoints}</strong>
+    <hr style="margin:6px 0;">
+    <b>Category counts</b><br>
+    Front-adjacent: <strong>${summary.countsByCategory.front}</strong><br>
+    Ukrainian rear-area: <strong>${summary.countsByCategory.ukrainianRear}</strong><br>
+    Russian rear-area: <strong>${summary.countsByCategory.russianRear}</strong><br>
+    Other: <strong>${summary.countsByCategory.other}</strong>
   `;
 }
 
@@ -210,7 +217,9 @@ async function refreshFirms() {
     }
 
     const windowDays = Number(dom.firmsWindow.value);
-    const firms = await fetchFirmsLayer(windowDays);
+    const firmsRaw = await fetchFirmsLayer(windowDays);
+    const firms = categorizeFirmsPoints(firmsRaw);
+
     renderFirmsLayer(layerState, firms);
 
     const summary = summarizeFirmsHotspots(firms, windowDays);
