@@ -132,29 +132,30 @@ function updateDeltaSummary(delta) {
   `;
 }
 
+function zoneLine(zone, idx) {
+  if (!zone) return `#${idx}: n/a`;
+  return `#${idx}: ${zone.categoryLabel} / ${zone.sectorShortName || zone.sectorName || 'Unknown'} / ${zone.nearestPlace || 'Unknown'} / ${zone.count}`;
+}
+
 function updateFirmsSummary(summary) {
   if (!dom.firmsSummary) return;
 
-  const zone = summary?.topZone;
-  if (!zone) {
+  if (!summary?.topZone) {
     dom.firmsSummary.innerHTML = 'No FIRMS hotspot summary available.';
     return;
   }
 
   dom.firmsSummary.innerHTML = `
-    <b>Most intense zone</b><br>
-    Category: <strong>${zone.categoryLabel}</strong><br>
-    Sector: <strong>${zone.sectorName || 'Unknown sector'}</strong><br>
-    Near: <strong>${zone.nearestPlace || 'Unknown place'}</strong><br>
-    Hotspots: <strong>${zone.count}</strong><br>
-    Window: <strong>${summary.windowDays} days</strong><br>
-    Total loaded: <strong>${summary.totalPoints}</strong>
+    <b>Top 3 FIRMS zones</b><br>
+    ${summary.topThreeZones.map((zone, idx) => `${zoneLine(zone, idx + 1)}`).join('<br>')}
     <hr style="margin:6px 0;">
     <b>Category counts</b><br>
     Front-adjacent: <strong>${summary.countsByCategory.front}</strong><br>
     Ukrainian rear-area: <strong>${summary.countsByCategory.ukrainianRear}</strong><br>
     Russian rear-area: <strong>${summary.countsByCategory.russianRear}</strong><br>
-    Other: <strong>${summary.countsByCategory.other}</strong>
+    Other / grey: <strong>${summary.countsByCategory.other}</strong><br>
+    Window: <strong>${summary.windowDays} days</strong><br>
+    Total loaded: <strong>${summary.totalPoints}</strong>
   `;
 }
 
