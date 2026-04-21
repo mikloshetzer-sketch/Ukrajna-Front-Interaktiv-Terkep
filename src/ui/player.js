@@ -1,27 +1,29 @@
 export function createPlayer({ onTick, getMaxIndex, getCurrentIndex, setCurrentIndex }) {
   let timer = null;
 
-  function play(speedMs) {
-    stop();
-    timer = window.setInterval(() => {
-      const current = getCurrentIndex();
-      const max = getMaxIndex();
-      if (current >= max) {
-        stop();
-        return;
-      }
-      const next = current + 1;
-      setCurrentIndex(next);
-      onTick(next);
-    }, speedMs);
-  }
+  return {
+    play(speedMs) {
+      if (timer) clearInterval(timer);
 
-  function stop() {
-    if (timer) {
-      window.clearInterval(timer);
+      timer = setInterval(async () => {
+        const max = getMaxIndex();
+        let current = getCurrentIndex();
+
+        if (current >= max) {
+          clearInterval(timer);
+          timer = null;
+          return;
+        }
+
+        current += 1;
+        setCurrentIndex(current);
+        await onTick(current);
+      }, speedMs);
+    },
+
+    stop() {
+      if (timer) clearInterval(timer);
       timer = null;
     }
-  }
-
-  return { play, stop };
+  };
 }
