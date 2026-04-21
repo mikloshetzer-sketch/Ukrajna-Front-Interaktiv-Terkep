@@ -1,9 +1,38 @@
 import { FRONT_SECTORS } from '../data/frontSectors.js';
 
+const DELTA_LABEL_STORAGE_KEY = 'ukraine_front_delta_label_positions_v1';
+
 function popupFromProps(props) {
   return Object.entries(props || {})
     .map(([k, v]) => `<div><b>${k}:</b> ${String(v)}</div>`)
     .join('');
+}
+
+function loadSavedLabelPositions() {
+  try {
+    const raw = localStorage.getItem(DELTA_LABEL_STORAGE_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch (error) {
+    console.warn('Could not load saved label positions:', error);
+    return {};
+  }
+}
+
+function saveSavedLabelPositions(data) {
+  try {
+    localStorage.setItem(DELTA_LABEL_STORAGE_KEY, JSON.stringify(data));
+  } catch (error) {
+    console.warn('Could not save label positions:', error);
+  }
+}
+
+function getDeltaItemKey(item, currentDate, previousDate, side, number) {
+  const lat = Number(item.lat).toFixed(4);
+  const lng = Number(item.lng).toFixed(4);
+  const area = Number(item.areaKm2).toFixed(2);
+  return `${previousDate}_${currentDate}_${side}_${number}_${lat}_${lng}_${area}`;
 }
 
 function createSideLabelHtml({ index, isGain, areaKm2, previousDate, currentDate, sectorName, nearestPlace }) {
@@ -177,6 +206,54 @@ function rebuildFrontSectorLayer(layerState) {
   });
 }
 
+function getSavedOrDefaultLabelLatLng(layerState, item, currentDate, previousDate, side, number, baseLatLng) {
+  const key = getDeltaItemKey(item, currentDate, previousDate, side, number);
+  const saved = layerState.savedLabelPositions[key];
+
+  if (saved && typeof saved.lat === 'number' && typeof saved.lng === 'number') {
+    return L.latLng(saved.lat, saved.lng);
+  }
+
+  return getLabelLatLngFromBase(layerState.map, baseLatLng, side, number);
+}
+
+function rememberLabelPosition(layerState, key, latlng) {
+  layerState.savedLabelPositions[key] = {
+    lat: latlng.lat,
+    lng: latlng.lng,
+  };
+  saveSavedLabelPositions(layerState.savedLabelPositions);
+}
+
+function clearSavedLabelPosition(layerState, key) {
+  if (layerState.savedLabelPositions[key]) {
+    delete layerState.savedLabelPositions[key];
+    saveSavedLabelPositions(layerState.savedLabelPositions);
+  }
+}
+
+function attachDragPersistence(layerState, { label, leader, baseLatLng, item, currentDate, previousDate, side, number }) {
+  const key = getDeltaItemKey(item, currentDate, previousDate, side, number);
+
+  label.on('drag', (event) => {
+    const newLatLng = event.target.getLatLng();
+    leader.setLatLngs([baseLatLng, newLatLng]);
+  });
+
+  label.on('dragend', (event) => {
+    const newLatLng = event.target.getLatLng();
+    rememberLabelPosition(layerState, key, newLatLng);
+    leader.setLatLngs([baseLatLng, newLatLng]);
+  });
+
+  label.on('contextmenu', () => {
+    clearSavedLabelPosition(layerState, key);
+    const defaultLatLng = getLabelLatLngFromBase(layerState.map, baseLatLng, side, number);
+    label.setLatLng(defaultLatLng);
+    leader.setLatLngs([baseLatLng, defaultLatLng]);
+  });
+}
+
 function rebuildDeltaDynamicLayout(layerState) {
   const map = layerState.map;
   if (!map || !layerState.lastDeltaPayload) return;
@@ -191,8 +268,11 @@ function rebuildDeltaDynamicLayout(layerState) {
 
   gains.forEach((item, idx) => {
     const number = idx + 1;
+    const side = 'right';
     const baseLatLng = L.latLng(item.lat, item.lng);
-    const labelLatLng = getLabelLatLngFromBase(map, baseLatLng, 'right', number);
+    const labelLatLng = getSavedOrDefaultLabelLatLng(
+      layerState, item, currentDate, previousDate, side, number, baseLatLng
+    );
 
     const circle = L.circle(baseLatLng, {
       radius: item.radiusMeters,
@@ -222,17 +302,21 @@ function rebuildDeltaDynamicLayout(layerState) {
         areaKm2: item.areaKm2,
         previousDate,
         currentDate,
-        side: 'right',
+        side,
         sectorName: item.sectorName,
         nearestPlace: item.nearestPlace,
       })
     }).addTo(layerState.deltaLayer);
 
-    leader.setLatLngs([baseLatLng, labelLatLng]);
-
-    label.on('drag', (event) => {
-      const newLatLng = event.target.getLatLng();
-      leader.setLatLngs([baseLatLng, newLatLng]);
+    attachDragPersistence(layerState, {
+      label,
+      leader,
+      baseLatLng,
+      item,
+      currentDate,
+      previousDate,
+      side,
+      number,
     });
 
     const popupHtml = buildPopupHtml(
@@ -253,8 +337,11 @@ function rebuildDeltaDynamicLayout(layerState) {
 
   losses.forEach((item, idx) => {
     const number = idx + 1;
+    const side = 'left';
     const baseLatLng = L.latLng(item.lat, item.lng);
-    const labelLatLng = getLabelLatLngFromBase(map, baseLatLng, 'left', number);
+    const labelLatLng = getSavedOrDefaultLabelLatLng(
+      layerState, item, currentDate, previousDate, side, number, baseLatLng
+    );
 
     const circle = L.circle(baseLatLng, {
       radius: item.radiusMeters,
@@ -284,17 +371,21 @@ function rebuildDeltaDynamicLayout(layerState) {
         areaKm2: item.areaKm2,
         previousDate,
         currentDate,
-        side: 'left',
+        side,
         sectorName: item.sectorName,
         nearestPlace: item.nearestPlace,
       })
     }).addTo(layerState.deltaLayer);
 
-    leader.setLatLngs([baseLatLng, labelLatLng]);
-
-    label.on('drag', (event) => {
-      const newLatLng = event.target.getLatLng();
-      leader.setLatLngs([baseLatLng, newLatLng]);
+    attachDragPersistence(layerState, {
+      label,
+      leader,
+      baseLatLng,
+      item,
+      currentDate,
+      previousDate,
+      side,
+      number,
     });
 
     const popupHtml = buildPopupHtml(
@@ -349,6 +440,7 @@ export function createLayers(map) {
     firmsLayer,
     osintLayer,
     lastDeltaPayload: null,
+    savedLabelPositions: loadSavedLabelPositions(),
   };
 
   rebuildFrontSectorLayer(layerState);
