@@ -9,6 +9,7 @@ import {
 } from './map/layers.js';
 import { fetchDeepStateIndex, fetchDeepStateByFilename } from './data/deepstate.js';
 import { computeNaiveDailyDelta } from './data/deepstateDelta.js';
+import { enrichDeltaItemsWithPlaceNames } from './data/placeLookup.js';
 import { fetchFirmsLayer } from './data/firms.js';
 import { fetchOfficialOsint } from './data/osintOfficial.js';
 import { fetchIswOsint } from './data/osintIsw.js';
@@ -109,10 +110,20 @@ function updateDeltaSummary(delta) {
   const lossArea = delta?.totals?.lostKm2 || 0;
   const shown = delta?.all?.length || 0;
 
+  const gainText = (delta.gained || [])
+    .map((item, i) => `#${i + 1}: ${item.sectorShortName || item.sectorName || 'Unknown'} / ${item.nearestPlace || 'Unknown place'}`)
+    .join('<br>');
+
+  const lossText = (delta.lost || [])
+    .map((item, i) => `#${i + 1}: ${item.sectorShortName || item.sectorName || 'Unknown'} / ${item.nearestPlace || 'Unknown place'}`)
+    .join('<br>');
+
   dom.deltaSummary.innerHTML = `
-    Megjelenített változások: <strong>${shown}</strong> / max. 5<br>
-    Orosz területszerzés összesen: <strong>${gainArea.toFixed(2)} km²</strong><br>
-    Ukrán visszaszerzés összesen: <strong>${lossArea.toFixed(2)} km²</strong>
+    Shown changes: <strong>${shown}</strong> / max. 5<br>
+    Russian territorial gain total: <strong>${gainArea.toFixed(2)} km²</strong><br>
+    Ukrainian recapture total: <strong>${lossArea.toFixed(2)} km²</strong>
+    ${gainText ? `<hr style="margin:6px 0;"><div><b>Gain list</b><br>${gainText}</div>` : ''}
+    ${lossText ? `<hr style="margin:6px 0;"><div><b>Recapture list</b><br>${lossText}</div>` : ''}
   `;
 }
 
@@ -138,7 +149,9 @@ async function renderAtIndex(index) {
     const previousGeoJson = await getGeoJsonAt(index - 1);
 
     if (previousGeoJson) {
-      const delta = computeNaiveDailyDelta(previousGeoJson, currentGeoJson);
+      const rawDelta = computeNaiveDailyDelta(previousGeoJson, currentGeoJson);
+      const delta = enrichDeltaItemsWithPlaceNames(rawDelta);
+
       renderDeltaLayer(layerState, delta, item.date, previousItem.date);
       updateDeltaSummary(delta);
     } else {
