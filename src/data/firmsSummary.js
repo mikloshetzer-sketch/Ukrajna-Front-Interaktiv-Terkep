@@ -65,6 +65,36 @@ const RUSSIAN_REAR_ZONES = {
   ]
 };
 
+const ROMANIA_ZONE = {
+  type: 'Feature',
+  properties: { name: 'Romania' },
+  geometry: {
+    type: 'Polygon',
+    coordinates: [[
+      [20.5, 43.5],
+      [30.5, 43.5],
+      [30.5, 48.7],
+      [20.5, 48.7],
+      [20.5, 43.5]
+    ]]
+  }
+};
+
+const MOLDOVA_ZONE = {
+  type: 'Feature',
+  properties: { name: 'Moldova' },
+  geometry: {
+    type: 'Polygon',
+    coordinates: [[
+      [26.2, 45.3],
+      [30.3, 45.3],
+      [30.3, 48.8],
+      [26.2, 48.8],
+      [26.2, 45.3]
+    ]]
+  }
+};
+
 const UKRAINIAN_REAR_ZONE = {
   type: 'Feature',
   properties: { name: 'Ukraine rear area' },
@@ -80,19 +110,31 @@ const UKRAINIAN_REAR_ZONE = {
   }
 };
 
-function haversineKm(lat1, lng1, lat2, lng2) {
-  const R = 6371;
-  const toRad = (deg) => deg * Math.PI / 180;
+function makeGridKey(lat, lng, cellSizeDeg) {
+  const latIdx = Math.floor(lat / cellSizeDeg);
+  const lngIdx = Math.floor(lng / cellSizeDeg);
+  return `${latIdx}:${lngIdx}`;
+}
 
-  const dLat = toRad(lat2 - lat1);
-  const dLng = toRad(lng2 - lng1);
+function buildBounds(points, paddingDeg = 0.12) {
+  const lats = points.map(p => Number(p.lat));
+  const lngs = points.map(p => Number(p.lng));
 
-  const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-    Math.sin(dLng / 2) ** 2;
+  const minLat = Math.min(...lats) - paddingDeg;
+  const maxLat = Math.max(...lats) + paddingDeg;
+  const minLng = Math.min(...lngs) - paddingDeg;
+  const maxLng = Math.max(...lngs) + paddingDeg;
 
-  return 2 * R * Math.asin(Math.sqrt(a));
+  return [
+    [minLat, minLng],
+    [maxLat, maxLng],
+  ];
+}
+
+function getCentroid(points) {
+  const lat = points.reduce((sum, p) => sum + Number(p.lat), 0) / points.length;
+  const lng = points.reduce((sum, p) => sum + Number(p.lng), 0) / points.length;
+  return { lat, lng };
 }
 
 function pointInFeatureCollection(point, featureCollection) {
@@ -142,6 +184,9 @@ export function categorizeFirmsPoints(points = []) {
     const nearest = getNearestPlace(lat, lng, sector.id);
     const distanceToFrontKm = minDistanceToFrontSectorsKm(lat, lng);
 
+    const inRomania = turf.booleanPointInPolygon(turfPoint, ROMANIA_ZONE);
+    const inMoldova = turf.booleanPointInPolygon(turfPoint, MOLDOVA_ZONE);
+
     let category = 'other';
     let categoryLabel = 'Other hotspot';
 
@@ -151,6 +196,11 @@ export function categorizeFirmsPoints(points = []) {
     } else if (pointInFeatureCollection(turfPoint, RUSSIAN_REAR_ZONES)) {
       category = 'russian_rear';
       categoryLabel = 'Russian rear-area / possible deep-strike hotspot';
+    } else if (inRomania || inMoldova) {
+      category = 'other';
+      categoryLabel = inRomania
+        ? 'Romania / border-region hotspot'
+        : 'Moldova / border-region hotspot';
     } else if (turf.booleanPointInPolygon(turfPoint, UKRAINIAN_REAR_ZONE)) {
       category = 'ukrainian_rear';
       categoryLabel = 'Ukrainian rear-area hotspot';
@@ -169,35 +219,8 @@ export function categorizeFirmsPoints(points = []) {
   });
 }
 
-function makeGridKey(lat, lng, cellSizeDeg) {
-  const latIdx = Math.floor(lat / cellSizeDeg);
-  const lngIdx = Math.floor(lng / cellSizeDeg);
-  return `${latIdx}:${lngIdx}`;
-}
-
-function buildBounds(points, paddingDeg = 0.12) {
-  const lats = points.map(p => Number(p.lat));
-  const lngs = points.map(p => Number(p.lng));
-
-  const minLat = Math.min(...lats) - paddingDeg;
-  const maxLat = Math.max(...lats) + paddingDeg;
-  const minLng = Math.min(...lngs) - paddingDeg;
-  const maxLng = Math.max(...lngs) + paddingDeg;
-
-  return [
-    [minLat, minLng],
-    [maxLat, maxLng],
-  ];
-}
-
-function getCentroid(points) {
-  const lat = points.reduce((sum, p) => sum + Number(p.lat), 0) / points.length;
-  const lng = points.reduce((sum, p) => sum + Number(p.lng), 0) / points.length;
-  return { lat, lng };
-}
-
 function summarizeCategory(points, windowDays) {
-  if (!points.length) return null;
+  if (!points.length) return [];
 
   const cellSizeDeg = 0.35;
   const buckets = new Map();
@@ -216,35 +239,31 @@ function summarizeCategory(points, windowDays) {
     buckets.get(key).push(point);
   }
 
-  let bestKey = null;
-  let bestPoints = [];
+  const zones = [];
 
   for (const [key, bucketPoints] of buckets.entries()) {
-    if (bucketPoints.length > bestPoints.length) {
-      bestKey = key;
-      bestPoints = bucketPoints;
-    }
+    if (!bucketPoints.length) continue;
+
+    const centroid = getCentroid(bucketPoints);
+    const sector = getSectorForPoint(centroid.lat, centroid.lng);
+    const nearest = getNearestPlace(centroid.lat, centroid.lng, sector.id);
+    const bounds = buildBounds(bucketPoints);
+
+    zones.push({
+      key,
+      count: bucketPoints.length,
+      bounds,
+      centroid,
+      sectorName: sector.name,
+      sectorShortName: sector.shortName,
+      nearestPlace: nearest.label,
+      category: bucketPoints[0].category,
+      categoryLabel: bucketPoints[0].categoryLabel,
+      windowDays,
+    });
   }
 
-  if (!bestKey || !bestPoints.length) return null;
-
-  const centroid = getCentroid(bestPoints);
-  const sector = getSectorForPoint(centroid.lat, centroid.lng);
-  const nearest = getNearestPlace(centroid.lat, centroid.lng, sector.id);
-  const bounds = buildBounds(bestPoints);
-
-  return {
-    key: bestKey,
-    count: bestPoints.length,
-    bounds,
-    centroid,
-    sectorName: sector.name,
-    sectorShortName: sector.shortName,
-    nearestPlace: nearest.label,
-    category: bestPoints[0].category,
-    categoryLabel: bestPoints[0].categoryLabel,
-    windowDays,
-  };
+  return zones.sort((a, b) => b.count - a.count);
 }
 
 export function summarizeFirmsHotspots(points = [], windowDays = 3) {
@@ -255,13 +274,17 @@ export function summarizeFirmsHotspots(points = [], windowDays = 3) {
   const russianRear = categorized.filter(p => p.category === 'russian_rear');
   const other = categorized.filter(p => p.category === 'other');
 
-  const topFront = summarizeCategory(front, windowDays);
-  const topUkrainianRear = summarizeCategory(ukrainianRear, windowDays);
-  const topRussianRear = summarizeCategory(russianRear, windowDays);
-  const topOther = summarizeCategory(other, windowDays);
+  const frontZones = summarizeCategory(front, windowDays);
+  const ukrainianRearZones = summarizeCategory(ukrainianRear, windowDays);
+  const russianRearZones = summarizeCategory(russianRear, windowDays);
+  const otherZones = summarizeCategory(other, windowDays);
 
-  const candidates = [topFront, topUkrainianRear, topRussianRear, topOther].filter(Boolean);
-  const topZone = candidates.sort((a, b) => b.count - a.count)[0] || null;
+  const allZones = [
+    ...frontZones,
+    ...ukrainianRearZones,
+    ...russianRearZones,
+    ...otherZones,
+  ].sort((a, b) => b.count - a.count);
 
   return {
     windowDays,
@@ -272,10 +295,11 @@ export function summarizeFirmsHotspots(points = [], windowDays = 3) {
       russianRear: russianRear.length,
       other: other.length,
     },
-    topZone,
-    topFront,
-    topUkrainianRear,
-    topRussianRear,
-    topOther,
+    topZone: allZones[0] || null,
+    topFront: frontZones[0] || null,
+    topUkrainianRear: ukrainianRearZones[0] || null,
+    topRussianRear: russianRearZones[0] || null,
+    topOther: otherZones[0] || null,
+    topThreeZones: allZones.slice(0, 3),
   };
 }
