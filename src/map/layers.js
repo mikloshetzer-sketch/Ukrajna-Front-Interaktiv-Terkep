@@ -1,6 +1,7 @@
 import { FRONT_SECTORS } from '../data/frontSectors.js';
 
 const DELTA_LABEL_STORAGE_KEY = 'ukraine_front_delta_label_positions_v1';
+const FIRMS_LABEL_STORAGE_KEY = 'ukraine_front_firms_box_positions_v1';
 
 function popupFromProps(props) {
   return Object.entries(props || {})
@@ -8,23 +9,23 @@ function popupFromProps(props) {
     .join('');
 }
 
-function loadSavedLabelPositions() {
+function loadSavedJson(key) {
   try {
-    const raw = localStorage.getItem(DELTA_LABEL_STORAGE_KEY);
+    const raw = localStorage.getItem(key);
     if (!raw) return {};
     const parsed = JSON.parse(raw);
     return parsed && typeof parsed === 'object' ? parsed : {};
   } catch (error) {
-    console.warn('Could not load saved label positions:', error);
+    console.warn(`Could not load saved JSON for ${key}:`, error);
     return {};
   }
 }
 
-function saveSavedLabelPositions(data) {
+function saveSavedJson(key, data) {
   try {
-    localStorage.setItem(DELTA_LABEL_STORAGE_KEY, JSON.stringify(data));
+    localStorage.setItem(key, JSON.stringify(data));
   } catch (error) {
-    console.warn('Could not save label positions:', error);
+    console.warn(`Could not save JSON for ${key}:`, error);
   }
 }
 
@@ -33,6 +34,12 @@ function getDeltaItemKey(item, currentDate, previousDate, side, number) {
   const lng = Number(item.lng).toFixed(4);
   const area = Number(item.areaKm2).toFixed(2);
   return `${previousDate}_${currentDate}_${side}_${number}_${lat}_${lng}_${area}`;
+}
+
+function getFirmsZoneKey(summary) {
+  const zone = summary?.topZone;
+  if (!zone) return null;
+  return `${summary.windowDays}_${zone.category}_${zone.key}_${zone.count}`;
 }
 
 function createSideLabelHtml({ index, isGain, areaKm2, previousDate, currentDate, sectorName, nearestPlace }) {
@@ -208,7 +215,7 @@ function rebuildFrontSectorLayer(layerState) {
 
 function getSavedOrDefaultLabelLatLng(layerState, item, currentDate, previousDate, side, number, baseLatLng) {
   const key = getDeltaItemKey(item, currentDate, previousDate, side, number);
-  const saved = layerState.savedLabelPositions[key];
+  const saved = layerState.savedDeltaLabelPositions[key];
 
   if (saved && typeof saved.lat === 'number' && typeof saved.lng === 'number') {
     return L.latLng(saved.lat, saved.lng);
@@ -217,18 +224,18 @@ function getSavedOrDefaultLabelLatLng(layerState, item, currentDate, previousDat
   return getLabelLatLngFromBase(layerState.map, baseLatLng, side, number);
 }
 
-function rememberLabelPosition(layerState, key, latlng) {
-  layerState.savedLabelPositions[key] = {
+function rememberDeltaLabelPosition(layerState, key, latlng) {
+  layerState.savedDeltaLabelPositions[key] = {
     lat: latlng.lat,
     lng: latlng.lng,
   };
-  saveSavedLabelPositions(layerState.savedLabelPositions);
+  saveSavedJson(DELTA_LABEL_STORAGE_KEY, layerState.savedDeltaLabelPositions);
 }
 
-function clearSavedLabelPosition(layerState, key) {
-  if (layerState.savedLabelPositions[key]) {
-    delete layerState.savedLabelPositions[key];
-    saveSavedLabelPositions(layerState.savedLabelPositions);
+function clearSavedDeltaLabelPosition(layerState, key) {
+  if (layerState.savedDeltaLabelPositions[key]) {
+    delete layerState.savedDeltaLabelPositions[key];
+    saveSavedJson(DELTA_LABEL_STORAGE_KEY, layerState.savedDeltaLabelPositions);
   }
 }
 
@@ -242,12 +249,12 @@ function attachDragPersistence(layerState, { label, leader, baseLatLng, item, cu
 
   label.on('dragend', (event) => {
     const newLatLng = event.target.getLatLng();
-    rememberLabelPosition(layerState, key, newLatLng);
+    rememberDeltaLabelPosition(layerState, key, newLatLng);
     leader.setLatLngs([baseLatLng, newLatLng]);
   });
 
   label.on('contextmenu', () => {
-    clearSavedLabelPosition(layerState, key);
+    clearSavedDeltaLabelPosition(layerState, key);
     const defaultLatLng = getLabelLatLngFromBase(layerState.map, baseLatLng, side, number);
     label.setLatLng(defaultLatLng);
     leader.setLatLngs([baseLatLng, defaultLatLng]);
@@ -405,9 +412,41 @@ function rebuildDeltaDynamicLayout(layerState) {
   });
 }
 
+function getCategoryColor(category) {
+  if (category === 'front') {
+    return {
+      stroke: '#cc5500',
+      fill: '#ff7a00',
+      box: '#ff8800',
+    };
+  }
+
+  if (category === 'ukrainian_rear') {
+    return {
+      stroke: '#c99200',
+      fill: '#ffd54a',
+      box: '#e0a800',
+    };
+  }
+
+  if (category === 'russian_rear') {
+    return {
+      stroke: '#8b1e3f',
+      fill: '#d63384',
+      box: '#b4235a',
+    };
+  }
+
+  return {
+    stroke: '#666',
+    fill: '#999',
+    box: '#777',
+  };
+}
+
 export function resetAllSavedDeltaLabels(layerState) {
-  layerState.savedLabelPositions = {};
-  saveSavedLabelPositions(layerState.savedLabelPositions);
+  layerState.savedDeltaLabelPositions = {};
+  saveSavedJson(DELTA_LABEL_STORAGE_KEY, layerState.savedDeltaLabelPositions);
 
   if (layerState.lastDeltaPayload) {
     rebuildDeltaDynamicLayout(layerState);
@@ -420,25 +459,47 @@ export function renderFirmsHotspotBox(layerState, summary) {
   const zone = summary?.topZone;
   if (!zone || !zone.bounds) return;
 
+  const zoneKey = getFirmsZoneKey(summary);
+  const saved = zoneKey ? layerState.savedFirmsBoxPositions[zoneKey] : null;
+
+  const colors = getCategoryColor(zone.category);
+
   const rectangle = L.rectangle(zone.bounds, {
-    color: '#ff8800',
+    color: colors.box,
     weight: 2,
     fillOpacity: 0,
     dashArray: '8,6',
   }).addTo(layerState.firmsHotspotLayer);
 
-  const centerLat =
-    (zone.bounds[0][0] + zone.bounds[1][0]) / 2;
-  const centerLng =
-    (zone.bounds[0][1] + zone.bounds[1][1]) / 2;
+  const centerLat = (zone.bounds[0][0] + zone.bounds[1][0]) / 2;
+  const centerLng = (zone.bounds[0][1] + zone.bounds[1][1]) / 2;
+  const centerLatLng = L.latLng(centerLat, centerLng);
 
-  const label = L.marker([centerLat, centerLng], {
+  const defaultLabelLatLng = layerState.map.containerPointToLatLng([
+    layerState.map.latLngToContainerPoint(centerLatLng).x + 120,
+    layerState.map.latLngToContainerPoint(centerLatLng).y - 80,
+  ]);
+
+  const labelLatLng = saved
+    ? L.latLng(saved.lat, saved.lng)
+    : defaultLabelLatLng;
+
+  const leader = L.polyline([centerLatLng, labelLatLng], {
+    color: colors.box,
+    weight: 2,
+    opacity: 0.75,
+    dashArray: '4,4',
+  }).addTo(layerState.firmsHotspotLayer);
+
+  const label = L.marker(labelLatLng, {
+    draggable: true,
+    interactive: true,
     icon: L.divIcon({
       className: '',
       html: `
         <div style="
           background: rgba(255,248,235,0.96);
-          border: 2px solid #ff8800;
+          border: 2px solid ${colors.box};
           border-radius: 8px;
           padding: 6px 8px;
           font-size: 12px;
@@ -447,18 +508,44 @@ export function renderFirmsHotspotBox(layerState, summary) {
           white-space: nowrap;
         ">
           <b>Most intense FIRMS zone</b><br>
+          ${zone.categoryLabel}<br>
           ${zone.sectorName || 'Unknown sector'}<br>
           ${zone.nearestPlace || 'Unknown place'}<br>
           Hotspots: <b>${zone.count}</b>
         </div>
       `,
-      iconSize: [220, 70],
-      iconAnchor: [110, 35],
+      iconSize: [250, 88],
+      iconAnchor: [125, 44],
     })
   }).addTo(layerState.firmsHotspotLayer);
 
+  if (zoneKey) {
+    label.on('drag', (event) => {
+      const newLatLng = event.target.getLatLng();
+      leader.setLatLngs([centerLatLng, newLatLng]);
+    });
+
+    label.on('dragend', (event) => {
+      const newLatLng = event.target.getLatLng();
+      layerState.savedFirmsBoxPositions[zoneKey] = {
+        lat: newLatLng.lat,
+        lng: newLatLng.lng,
+      };
+      saveSavedJson(FIRMS_LABEL_STORAGE_KEY, layerState.savedFirmsBoxPositions);
+      leader.setLatLngs([centerLatLng, newLatLng]);
+    });
+
+    label.on('contextmenu', () => {
+      delete layerState.savedFirmsBoxPositions[zoneKey];
+      saveSavedJson(FIRMS_LABEL_STORAGE_KEY, layerState.savedFirmsBoxPositions);
+      label.setLatLng(defaultLabelLatLng);
+      leader.setLatLngs([centerLatLng, defaultLabelLatLng]);
+    });
+  }
+
   const popupHtml = `
     <b>Most intense FIRMS zone</b><br>
+    <b>Category:</b> ${zone.categoryLabel}<br>
     <b>Sector:</b> ${zone.sectorName || 'Unknown sector'}<br>
     <b>Near:</b> ${zone.nearestPlace || 'Unknown place'}<br>
     <b>Hotspots:</b> ${zone.count}<br>
@@ -466,6 +553,7 @@ export function renderFirmsHotspotBox(layerState, summary) {
   `;
 
   rectangle.bindPopup(popupHtml);
+  leader.bindPopup(popupHtml);
   label.bindPopup(popupHtml);
 }
 
@@ -506,7 +594,8 @@ export function createLayers(map) {
     firmsHotspotLayer,
     osintLayer,
     lastDeltaPayload: null,
-    savedLabelPositions: loadSavedLabelPositions(),
+    savedDeltaLabelPositions: loadSavedJson(DELTA_LABEL_STORAGE_KEY),
+    savedFirmsBoxPositions: loadSavedJson(FIRMS_LABEL_STORAGE_KEY),
   };
 
   rebuildFrontSectorLayer(layerState);
@@ -539,14 +628,30 @@ export function renderFirmsLayer(layerState, points) {
   layerState.firmsLayer.clearLayers();
 
   points.forEach(point => {
+    const colors = getCategoryColor(point.category);
+
     L.circleMarker([point.lat, point.lng], {
       radius: 5,
-      color: '#cc5500',
-      fillColor: '#ff7a00',
-      fillOpacity: 0.7,
+      color: colors.stroke,
+      fillColor: colors.fill,
+      fillOpacity: 0.75,
       weight: 1,
-    }).bindPopup(`<b>FIRMS</b><br>${popupFromProps(point)}`)
-      .addTo(layerState.firmsLayer);
+    }).bindPopup(`
+      <b>FIRMS</b><br>
+      <b>Category:</b> ${point.categoryLabel || 'Unknown'}<br>
+      <b>Sector:</b> ${point.sectorName || 'Unknown sector'}<br>
+      <b>Near:</b> ${point.nearestPlace || 'Unknown place'}<br>
+      <b>Distance to front:</b> ${Number(point.distanceToFrontKm || 0).toFixed(1)} km<br>
+      ${popupFromProps({
+        acq_date: point.acq_date,
+        acq_time: point.acq_time,
+        confidence: point.confidence,
+        frp: point.frp,
+        source: point.source,
+        satellite: point.satellite,
+        daynight: point.daynight,
+      })}
+    `).addTo(layerState.firmsLayer);
   });
 }
 
