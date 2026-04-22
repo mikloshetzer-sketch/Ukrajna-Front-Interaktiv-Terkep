@@ -633,7 +633,7 @@ function buildAttackAxes() {
   const gains = (appState.latestDelta?.gained || []).slice(0, 3);
   const losses = (appState.latestDelta?.lost || []).slice(0, 2);
 
-  gains.forEach((item, idx) => {
+  gains.forEach((item) => {
     axes.push({
       side: 'ru',
       startLat: Number(item.lat) + 0.05,
@@ -642,13 +642,13 @@ function buildAttackAxes() {
       endLng: Number(item.lng),
       sectorName: item.sectorName,
       nearestPlace: item.nearestPlace,
-      label: `RU axis #${idx + 1}`,
+      label: `Russian push near ${item.nearestPlace || 'front sector'}`,
       note: `${item.areaKm2.toFixed(2)} km² daily gain`,
       weight: Math.min(7, 4 + item.areaKm2 / 2)
     });
   });
 
-  losses.forEach((item, idx) => {
+  losses.forEach((item) => {
     axes.push({
       side: 'ua',
       startLat: Number(item.lat) - 0.03,
@@ -657,7 +657,7 @@ function buildAttackAxes() {
       endLng: Number(item.lng),
       sectorName: item.sectorName,
       nearestPlace: item.nearestPlace,
-      label: `UA counter-axis #${idx + 1}`,
+      label: `Ukrainian counter-axis near ${item.nearestPlace || 'front sector'}`,
       note: `${item.areaKm2.toFixed(2)} km² recapture`,
       weight: Math.min(6, 3 + item.areaKm2 / 2)
     });
@@ -667,7 +667,7 @@ function buildAttackAxes() {
     .filter(cluster => String(cluster.category || '').toLowerCase().includes('assault'))
     .slice(0, 2);
 
-  topOsintAssaults.forEach((cluster, idx) => {
+  topOsintAssaults.forEach((cluster) => {
     axes.push({
       side: cluster.sourceType === 'Ukrainian official' ? 'ua' : 'ru',
       startLat: Number(cluster.lat) + 0.12,
@@ -676,7 +676,10 @@ function buildAttackAxes() {
       endLng: Number(cluster.lng),
       sectorName: cluster.sectorName,
       nearestPlace: cluster.nearestPlace,
-      label: `OSINT axis #${idx + 1}`,
+      label:
+        cluster.sourceType === 'Ukrainian official'
+          ? `Ukrainian pressure near ${cluster.nearestPlace || 'front sector'}`
+          : `Russian pressure near ${cluster.nearestPlace || 'front sector'}`,
       note: `${cluster.reportCount} assault reports`,
       weight: cluster.severity === 'CRITICAL' ? 7 : cluster.severity === 'HIGH' ? 6 : 5
     });
