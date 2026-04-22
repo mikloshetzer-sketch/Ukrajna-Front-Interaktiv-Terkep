@@ -209,11 +209,12 @@ function createOsintBoxIcon(item, index, color) {
         <div><b>Near:</b> ${item.nearestPlace || 'Unknown place'}</div>
         <div><b>Reports:</b> ${item.reportCount || 1}</div>
         <div><b>Top category:</b> ${categoryIcon} ${item.category || 'general military update'}</div>
+        <div><b>Severity:</b> ${item.severity || 'LOW'}</div>
         <div style="color:#444;">Latest: ${item.latestTitle || item.title || 'Untitled'}</div>
       </div>
     `,
-    iconSize: [270, 150],
-    iconAnchor: [0, 75],
+    iconSize: [275, 165],
+    iconAnchor: [0, 82],
   });
 }
 
@@ -689,6 +690,7 @@ export function renderOsintHighlights(layerState, osintSummary) {
       <b>Near:</b> ${item.nearestPlace || 'Unknown place'}<br>
       <b>Reports:</b> ${item.reportCount || 1}<br>
       <b>Top category:</b> ${categoryIcon} ${item.category || 'general military update'}<br>
+      <b>Severity:</b> ${item.severity || 'LOW'}<br>
       <b>Latest:</b> ${item.latestTitle || item.title || 'Untitled'}<br>
       ${item.urls?.length ? item.urls.map((url, i) => `<div><a href="${url}" target="_blank" rel="noopener noreferrer">Open source ${i + 1}</a></div>`).join('') : ''}
     `;
@@ -698,6 +700,24 @@ export function renderOsintHighlights(layerState, osintSummary) {
     leader.bindPopup(popupHtml);
     label.bindPopup(popupHtml);
   });
+}
+
+export function renderHeatmapLayer(layerState, points) {
+  if (!layerState.heatmapLayer) return;
+
+  const normalized = (points || [])
+    .filter(point =>
+      Number.isFinite(Number(point.lat)) &&
+      Number.isFinite(Number(point.lng)) &&
+      Number.isFinite(Number(point.weight))
+    )
+    .map(point => [
+      Number(point.lat),
+      Number(point.lng),
+      Math.max(0.08, Math.min(1, Number(point.weight)))
+    ]);
+
+  layerState.heatmapLayer.setLatLngs(normalized);
 }
 
 export function createLayers(map) {
@@ -728,6 +748,16 @@ export function createLayers(map) {
   const osintLayer = L.layerGroup();
   const osintHighlightLayer = L.layerGroup();
 
+  const heatmapLayer =
+    typeof L.heatLayer === 'function'
+      ? L.heatLayer([], {
+          radius: 24,
+          blur: 20,
+          maxZoom: 9,
+          minOpacity: 0.25
+        })
+      : null;
+
   const layerState = {
     map,
     occupiedLayer,
@@ -738,6 +768,7 @@ export function createLayers(map) {
     firmsHotspotLayer,
     osintLayer,
     osintHighlightLayer,
+    heatmapLayer,
     lastDeltaPayload: null,
     savedDeltaLabelPositions: loadSavedJson(DELTA_LABEL_STORAGE_KEY),
     savedFirmsBoxPositions: loadSavedJson(FIRMS_LABEL_STORAGE_KEY),
@@ -821,6 +852,7 @@ export function renderOsintLayer(layerState, points) {
       <b>Sector:</b> ${point.sectorName || 'Unknown sector'}<br>
       <b>Near:</b> ${point.nearestPlace || 'Unknown place'}<br>
       <b>Category:</b> ${categoryIcon} ${point.category || 'general military update'}<br>
+      <b>Severity:</b> ${point.severity || 'LOW'}<br>
       ${point.url ? `<div><a href="${point.url}" target="_blank" rel="noopener noreferrer">Open source</a></div>` : ''}
     `).addTo(layerState.osintLayer);
   });
