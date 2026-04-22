@@ -6,6 +6,7 @@ import {
   renderDeltaLayer,
   renderFirmsLayer,
   renderOsintLayer,
+  renderOsintHighlights,
   renderFirmsHotspotBox,
   resetAllSavedDeltaLabels
 } from './map/layers.js';
@@ -172,8 +173,8 @@ function updateOsintFeedList(summary) {
   }
 
   dom.osintFeedList.innerHTML = `
-    <b>Latest OSINT items</b><br>
-    ${summary.latest.map((item, idx) => `
+    <b>Top 5 OSINT items</b><br>
+    ${summary.topFive.map((item, idx) => `
       <div style="margin-bottom:8px;">
         <b>${idx + 1}. ${item.title || 'Untitled'}</b><br>
         ${item.sourceType || 'OSINT'} · ${item.date || 'Unknown date'}<br>
@@ -202,6 +203,7 @@ function updateDailyDashboard() {
   const topGain = summary.topGain;
   const topLoss = summary.topLoss;
   const topFirms = summary.topFirms;
+  const topOsint = summary.topOsint;
   const osint = summary.osintSummary;
 
   dom.dailyDashboard.innerHTML = `
@@ -216,6 +218,9 @@ function updateDailyDashboard() {
     <hr style="margin:6px 0;">
     <b>Top FIRMS zone</b><br>
     ${topFirms ? `${topFirms.categoryLabel} · ${topFirms.sectorShortName || topFirms.sectorName} · ${topFirms.nearestPlace} · ${topFirms.count} hotspots` : 'No FIRMS zone'}
+    <hr style="margin:6px 0;">
+    <b>Top OSINT event</b><br>
+    ${topOsint ? `${topOsint.sourceType} · ${topOsint.sectorShortName || topOsint.sectorName} · ${topOsint.nearestPlace}` : 'No OSINT event'}
     <hr style="margin:6px 0;">
     <b>OSINT feed</b><br>
     ${osint ? `Total ${osint.total} items · ISW ${osint.isw} · Official ${osint.official}` : 'No OSINT summary'}
@@ -321,9 +326,13 @@ async function refreshOsint() {
   try {
     if (!dom.toggleOsint.checked) {
       layerState.osintLayer.clearLayers();
+      layerState.osintHighlightLayer.clearLayers();
 
       if (map.hasLayer(layerState.osintLayer)) {
         map.removeLayer(layerState.osintLayer);
+      }
+      if (map.hasLayer(layerState.osintHighlightLayer)) {
+        map.removeLayer(layerState.osintHighlightLayer);
       }
 
       appState.latestOsintSummary = null;
@@ -338,11 +347,15 @@ async function refreshOsint() {
     const summary = summarizeOsintFeed(feed);
     appState.latestOsintSummary = summary;
 
+    renderOsintHighlights(layerState, summary);
     updateOsintFeedList(summary);
     updateDailyDashboard();
 
     if (!map.hasLayer(layerState.osintLayer)) {
       layerState.osintLayer.addTo(map);
+    }
+    if (!map.hasLayer(layerState.osintHighlightLayer)) {
+      layerState.osintHighlightLayer.addTo(map);
     }
   } catch (error) {
     console.error('OSINT hiba:', error);
