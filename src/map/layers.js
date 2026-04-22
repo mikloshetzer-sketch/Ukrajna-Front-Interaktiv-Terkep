@@ -459,9 +459,7 @@ export function renderFirmsHotspotBox(layerState, summary) {
     const defaultPoint = L.point(centerPoint.x + 120, centerPoint.y - 90 - idx * 80);
     const defaultLabelLatLng = layerState.map.containerPointToLatLng(defaultPoint);
 
-    const labelLatLng = saved
-      ? L.latLng(saved.lat, saved.lng)
-      : defaultLabelLatLng;
+    const labelLatLng = saved ? L.latLng(saved.lat, saved.lng) : defaultLabelLatLng;
 
     const leader = L.polyline([centerLatLng, labelLatLng], {
       color: colors.box,
@@ -639,13 +637,21 @@ export function renderOsintLayer(layerState, points) {
   layerState.osintLayer.clearLayers();
 
   points.forEach(point => {
+    const color = point.sourceType === 'ISW' ? '#7c3aed' : point.sourceType === 'Ukrainian official' ? '#15803d' : '#1f5f8b';
+
     L.circleMarker([point.lat, point.lng], {
-      radius: 5,
-      color: '#1f5f8b',
-      fillColor: '#2980b9',
+      radius: 6,
+      color,
+      fillColor: color,
       fillOpacity: 0.85,
       weight: 1,
-    }).bindPopup(`<b>${point.sourceType || 'OSINT'}</b><br>${popupFromProps(point)}`)
-      .addTo(layerState.osintLayer);
+    }).bindPopup(`
+      <b>${point.sourceType || 'OSINT'}</b><br>
+      <b>Title:</b> ${point.title || 'Untitled'}<br>
+      <b>Date:</b> ${point.date || 'Unknown'}<br>
+      <b>Sector:</b> ${point.sectorName || 'Unknown sector'}<br>
+      <b>Near:</b> ${point.nearestPlace || 'Unknown place'}<br>
+      ${point.url ? `<div><a href="${point.url}" target="_blank" rel="noopener noreferrer">Open source</a></div>` : ''}
+    `).addTo(layerState.osintLayer);
   });
 }
