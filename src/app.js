@@ -39,6 +39,7 @@ const dom = {
   deltaSummary: document.getElementById('deltaSummary'),
   firmsSummary: document.getElementById('firmsSummary'),
   dailyDashboard: document.getElementById('dailyDashboard'),
+  sectorBalanceSummary: document.getElementById('sectorBalanceSummary'),
   osintFeedList: document.getElementById('osintFeedList'),
 
   btnLatest: document.getElementById('btnLatest'),
@@ -234,6 +235,84 @@ function updateOsintFeedList(summary) {
   `;
 }
 
+function buildSectorBalance(delta, osintSummary) {
+  const sectors = new Map();
+
+  function ensureSector(name) {
+    if (!sectors.has(name)) {
+      sectors.set(name, {
+        name,
+        ruGainKm2: 0,
+        uaRecaptureKm2: 0,
+        osintClusters: 0,
+      });
+    }
+    return sectors.get(name);
+  }
+
+  (delta?.gained || []).forEach(item => {
+    const name = item.sectorShortName || item.sectorName || 'Unknown sector';
+    const sector = ensureSector(name);
+    sector.ruGainKm2 += Number(item.areaKm2 || 0);
+  });
+
+  (delta?.lost || []).forEach(item => {
+    const name = item.sectorShortName || item.sectorName || 'Unknown sector';
+    const sector = ensureSector(name);
+    sector.uaRecaptureKm2 += Number(item.areaKm2 || 0);
+  });
+
+  (osintSummary?.clusters || []).forEach(cluster => {
+    const name = cluster.sectorShortName || cluster.sectorName || 'Unknown sector';
+    const sector = ensureSector(name);
+    sector.osintClusters += 1;
+  });
+
+  return [...sectors.values()]
+    .filter(item => item.ruGainKm2 > 0 || item.uaRecaptureKm2 > 0 || item.osintClusters > 0)
+    .sort((a, b) => {
+      const aWeight = a.ruGainKm2 + a.uaRecaptureKm2 + a.osintClusters * 0.25;
+      const bWeight = b.ruGainKm2 + b.uaRecaptureKm2 + b.osintClusters * 0.25;
+      return bWeight - aWeight;
+    });
+}
+
+function updateSectorBalanceSummary() {
+  if (!dom.sectorBalanceSummary) return;
+
+  const rows = buildSectorBalance(appState.latestDelta, appState.latestOsintSummary);
+
+  if (!rows.length) {
+    dom.sectorBalanceSummary.innerHTML = 'Nincs még napi szektormérleg.';
+    return;
+  }
+
+  dom.sectorBalanceSummary.innerHTML = rows
+    .map(row => {
+      const ru = row.ruGainKm2 > 0
+        ? `<div><span style="color:#b91c1c;"><b>RU gain:</b> ${row.ruGainKm2.toFixed(2)} km²</span></div>`
+        : '';
+
+      const ua = row.uaRecaptureKm2 > 0
+        ? `<div><span style="color:#1d4ed8;"><b>UA recapture:</b> ${row.uaRecaptureKm2.toFixed(2)} km²</span></div>`
+        : '';
+
+      const osint = row.osintClusters > 0
+        ? `<div><span style="color:#444;"><b>OSINT clusters:</b> ${row.osintClusters}</span></div>`
+        : '';
+
+      return `
+        <div style="margin-bottom:10px;">
+          <div><b>${row.name}</b></div>
+          ${ru}
+          ${ua}
+          ${osint}
+        </div>
+      `;
+    })
+    .join('<hr style="margin:6px 0;">');
+}
+
 function updateDailyDashboard() {
   if (!dom.dailyDashboard) return;
 
@@ -322,6 +401,7 @@ async function renderAtIndex(index) {
   }
 
   updateDailyDashboard();
+  updateSectorBalanceSummary();
   setStatus(`Betöltve: ${item.date}`);
 }
 
@@ -385,6 +465,7 @@ async function refreshOsint() {
       appState.latestOsintSummary = null;
       updateOsintFeedList(null);
       updateDailyDashboard();
+      updateSectorBalanceSummary();
       return;
     }
 
@@ -397,6 +478,7 @@ async function refreshOsint() {
     renderOsintHighlights(layerState, summary);
     updateOsintFeedList(summary);
     updateDailyDashboard();
+    updateSectorBalanceSummary();
 
     if (!map.hasLayer(layerState.osintLayer)) {
       layerState.osintLayer.addTo(map);
