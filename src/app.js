@@ -40,6 +40,8 @@ const dom = {
   deltaSummary: document.getElementById('deltaSummary'),
   firmsSummary: document.getElementById('firmsSummary'),
   dailyDashboard: document.getElementById('dailyDashboard'),
+  autoOpsSummary: document.getElementById('autoOpsSummary'),
+  topThreatSectors: document.getElementById('topThreatSectors'),
   sectorBalanceSummary: document.getElementById('sectorBalanceSummary'),
   osintFeedList: document.getElementById('osintFeedList'),
 
@@ -416,6 +418,93 @@ function updateSectorBalanceSummary() {
     .join('<hr style="margin:6px 0;">');
 }
 
+function updateTopThreatSectors() {
+  if (!dom.topThreatSectors) return;
+
+  const rows = buildSectorBalance(
+    appState.latestDelta,
+    appState.latestOsintSummary,
+    appState.latestFirmsPoints
+  ).slice(0, 5);
+
+  if (!rows.length) {
+    dom.topThreatSectors.innerHTML = 'Nincs még threat ranking.';
+    return;
+  }
+
+  dom.topThreatSectors.innerHTML = rows.map((row, idx) => `
+    <div style="margin-bottom:8px;">
+      <b>#${idx + 1} ${row.name}</b><br>
+      Threat: ${getThreatBadge(row.threatLevel)}<br>
+      Score: <strong>${row.threatScore.toFixed(1)}</strong><br>
+      RU gain: ${row.ruGainKm2.toFixed(2)} km² · UA recapture: ${row.uaRecaptureKm2.toFixed(2)} km²<br>
+      OSINT: ${row.osintClusters} · FIRMS: ${row.firmsPoints}
+    </div>
+  `).join('<hr style="margin:6px 0;">');
+}
+
+function updateAutoOpsSummary() {
+  if (!dom.autoOpsSummary) return;
+
+  const sectors = buildSectorBalance(
+    appState.latestDelta,
+    appState.latestOsintSummary,
+    appState.latestFirmsPoints
+  );
+
+  const topThreat = sectors[0] || null;
+  const secondThreat = sectors[1] || null;
+  const topGain = (appState.latestDelta?.gained || [])[0] || null;
+  const topLoss = (appState.latestDelta?.lost || [])[0] || null;
+  const topFirms = appState.latestFirmsSummary?.topZone || null;
+  const topOsint = (appState.latestOsintSummary?.topFive || [])[0] || null;
+
+  if (!topThreat && !topGain && !topLoss && !topFirms && !topOsint) {
+    dom.autoOpsSummary.innerHTML = 'Nincs még automatikus összefoglaló.';
+    return;
+  }
+
+  const sentences = [];
+
+  if (topThreat) {
+    sentences.push(
+      `A napi összkép alapján a legmagasabb fenyegetési szint jelenleg a(z) <b>${topThreat.name}</b> szektorban látszik, ${getThreatBadge(topThreat.threatLevel)} besorolással.`
+    );
+  }
+
+  if (topGain) {
+    sentences.push(
+      `A legnagyobb orosz területszerzés a(z) <b>${topGain.sectorShortName || topGain.sectorName}</b> szektorban történt, ${topGain.nearestPlace} térségében, <b>${topGain.areaKm2.toFixed(2)} km²</b> nagyságrendben.`
+    );
+  }
+
+  if (topLoss) {
+    sentences.push(
+      `A legjelentősebb ukrán visszaszerzés a(z) <b>${topLoss.sectorShortName || topLoss.sectorName}</b> szektorban jelent meg, ${topLoss.nearestPlace} közelében, <b>${topLoss.areaKm2.toFixed(2)} km²</b> mértékben.`
+    );
+  }
+
+  if (topFirms) {
+    sentences.push(
+      `A FIRMS adatok alapján a legintenzívebb hőaktivitás a(z) <b>${topFirms.sectorShortName || topFirms.sectorName}</b> térségben koncentrálódott, ${topFirms.nearestPlace} közelében, <b>${topFirms.count}</b> hotspot értékkel.`
+    );
+  }
+
+  if (topOsint) {
+    sentences.push(
+      `Az OSINT feedben a legerősebb cluster a(z) <b>${topOsint.sectorShortName || topOsint.sectorName}</b> szektorhoz kapcsolódik ${topOsint.nearestPlace} környezetében, <b>${topOsint.reportCount}</b> jelentéssel és ${getThreatBadge(topOsint.severity || 'LOW')} severity szinttel.`
+    );
+  }
+
+  if (secondThreat) {
+    sentences.push(
+      `Másodlagos kiemelt aktivitás még a(z) <b>${secondThreat.name}</b> szektorban látható, ahol a kombinált delta, OSINT és FIRMS terhelés továbbra is emelkedett.`
+    );
+  }
+
+  dom.autoOpsSummary.innerHTML = sentences.map(sentence => `<div style="margin-bottom:8px;">${sentence}</div>`).join('');
+}
+
 function updateDailyDashboard() {
   if (!dom.dailyDashboard) return;
 
@@ -578,6 +667,8 @@ async function renderAtIndex(index) {
   }
 
   updateDailyDashboard();
+  updateAutoOpsSummary();
+  updateTopThreatSectors();
   updateSectorBalanceSummary();
   refreshHeatmap();
   setStatus(`Betöltve: ${item.date}`);
@@ -600,6 +691,8 @@ async function refreshFirms() {
       appState.latestFirmsPoints = [];
       updateFirmsSummary(null);
       updateDailyDashboard();
+      updateAutoOpsSummary();
+      updateTopThreatSectors();
       updateSectorBalanceSummary();
       refreshHeatmap();
       return;
@@ -618,6 +711,8 @@ async function refreshFirms() {
     renderFirmsHotspotBox(layerState, summary);
     updateFirmsSummary(summary);
     updateDailyDashboard();
+    updateAutoOpsSummary();
+    updateTopThreatSectors();
     updateSectorBalanceSummary();
     refreshHeatmap();
 
@@ -649,6 +744,8 @@ async function refreshOsint() {
       appState.latestOsintSummary = null;
       updateOsintFeedList(null);
       updateDailyDashboard();
+      updateAutoOpsSummary();
+      updateTopThreatSectors();
       updateSectorBalanceSummary();
       refreshHeatmap();
       return;
@@ -677,6 +774,8 @@ async function refreshOsint() {
     renderOsintHighlights(layerState, summary);
     updateOsintFeedList(summary);
     updateDailyDashboard();
+    updateAutoOpsSummary();
+    updateTopThreatSectors();
     updateSectorBalanceSummary();
     refreshHeatmap();
 
