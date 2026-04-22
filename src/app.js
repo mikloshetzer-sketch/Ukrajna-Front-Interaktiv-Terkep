@@ -8,6 +8,7 @@ import {
   renderOsintLayer,
   renderOsintHighlights,
   renderFirmsHotspotBox,
+  renderHeatmapLayer,
   resetAllSavedDeltaLabels
 } from './map/layers.js';
 import { fetchDeepStateIndex, fetchDeepStateByFilename } from './data/deepstate.js';
@@ -58,6 +59,7 @@ const dom = {
   toggleBorders: document.getElementById('toggleBorders'),
   toggleFirms: document.getElementById('toggleFirms'),
   toggleOsint: document.getElementById('toggleOsint'),
+  toggleHeatmap: document.getElementById('toggleHeatmap'),
 
   firmsWindow: document.getElementById('firmsWindow'),
 };
@@ -68,7 +70,9 @@ const appState = {
   cache: new Map(),
   latestDelta: null,
   latestFirmsSummary: null,
+  latestFirmsPoints: [],
   latestOsintSummary: null,
+  latestHeatmapPoints: [],
 };
 
 const map = initMap();
@@ -93,6 +97,72 @@ function getOsintCategoryIcon(category) {
   if (normalized.includes('armor') || normalized.includes('armour') || normalized.includes('tank')) return '🪖';
 
   return '📍';
+}
+
+function getThreatLevel(score) {
+  if (score >= 11) return 'CRITICAL';
+  if (score >= 7) return 'HIGH';
+  if (score >= 4) return 'MEDIUM';
+  return 'LOW';
+}
+
+function getThreatBadge(level) {
+  if (level === 'CRITICAL') return '<span style="color:#7f1d1d;"><b>CRITICAL</b></span>';
+  if (level === 'HIGH') return '<span style="color:#b91c1c;"><b>HIGH</b></span>';
+  if (level === 'MEDIUM') return '<span style="color:#b45309;"><b>MEDIUM</b></span>';
+  return '<span style="color:#166534;"><b>LOW</b></span>';
+}
+
+function getClusterSeverity(cluster) {
+  let score = 0;
+
+  score += Math.min(Number(cluster.reportCount || 1), 4);
+
+  if (cluster.sourceType === 'Ukrainian official') score += 2;
+  else if (cluster.sourceType === 'ISW') score += 1;
+
+  const category = String(cluster.category || '').toLowerCase();
+  if (category.includes('assault')) score += 3;
+  else if (category.includes('drone')) score += 2;
+  else if (category.includes('missile')) score += 3;
+  else if (category.includes('air defense')) score += 2;
+  else if (category.includes('artillery')) score += 2;
+  else if (category.includes('logistics')) score += 1;
+
+  if ((cluster.sectorShortName || cluster.sectorName || '').toLowerCase().includes('outside')) {
+    score -= 1;
+  }
+
+  return getThreatLevel(score);
+}
+
+function addClusterSeverity(summary) {
+  if (!summary) return null;
+
+  const clusters = (summary.clusters || []).map(cluster => ({
+    ...cluster,
+    severity: getClusterSeverity(cluster),
+  }));
+
+  const topFive = clusters
+    .slice()
+    .sort((a, b) => {
+      const severityOrder = { CRITICAL: 4, HIGH: 3, MEDIUM: 2, LOW: 1 };
+      const sevDiff = (severityOrder[b.severity] || 0) - (severityOrder[a.severity] || 0);
+      if (sevDiff !== 0) return sevDiff;
+
+      const impDiff = (b.importance || 0) - (a.importance || 0);
+      if (impDiff !== 0) return impDiff;
+
+      return (b.reportCount || 0) - (a.reportCount || 0);
+    })
+    .slice(0, 5);
+
+  return {
+    ...summary,
+    clusters,
+    topFive,
+  };
 }
 
 async function fetchJson(url) {
@@ -218,6 +288,7 @@ function updateOsintFeedList(summary) {
           ${item.sourceType || 'OSINT'} · ${item.date || 'Unknown date'}<br>
           ${item.sectorShortName || item.sectorName || 'Unknown sector'} · ${item.nearestPlace || 'Unknown place'}<br>
           Reports: ${item.reportCount || 1} · Category: ${icon} ${item.category || 'general military update'}<br>
+          Severity: ${getThreatBadge(item.severity || 'LOW')}<br>
           <span style="color:#444;">Latest: ${item.latestTitle || item.title || 'Untitled'}</span>
           ${item.urls?.length ? item.urls.map((url, i) => `<div><a href="${url}" target="_blank" rel="noopener noreferrer">Open source ${i + 1}</a></div>`).join('') : ''}
         </div>
@@ -235,7 +306,7 @@ function updateOsintFeedList(summary) {
   `;
 }
 
-function buildSectorBalance(delta, osintSummary) {
+function buildSectorBalance(delta, osintSummary, firmsPoints) {
   const sectors = new Map();
 
   function ensureSector(name) {
@@ -245,6 +316,9 @@ function buildSectorBalance(delta, osintSummary) {
         ruGainKm2: 0,
         uaRecaptureKm2: 0,
         osintClusters: 0,
+        firmsPoints: 0,
+        threatScore: 0,
+        threatLevel: 'LOW',
       });
     }
     return sectors.get(name);
@@ -266,21 +340,44 @@ function buildSectorBalance(delta, osintSummary) {
     const name = cluster.sectorShortName || cluster.sectorName || 'Unknown sector';
     const sector = ensureSector(name);
     sector.osintClusters += 1;
+
+    if (cluster.severity === 'CRITICAL') sector.threatScore += 4;
+    else if (cluster.severity === 'HIGH') sector.threatScore += 3;
+    else if (cluster.severity === 'MEDIUM') sector.threatScore += 2;
+    else sector.threatScore += 1;
+  });
+
+  (firmsPoints || []).forEach(point => {
+    const name = point.sectorShortName || point.sectorName || 'Unknown sector';
+    const sector = ensureSector(name);
+    sector.firmsPoints += 1;
+  });
+
+  [...sectors.values()].forEach(sector => {
+    sector.threatScore += Math.min(sector.ruGainKm2 / 2, 4);
+    sector.threatScore += Math.min(sector.uaRecaptureKm2 / 2, 3);
+    sector.threatScore += Math.min(sector.firmsPoints / 8, 4);
+    sector.threatLevel = getThreatLevel(sector.threatScore);
   });
 
   return [...sectors.values()]
-    .filter(item => item.ruGainKm2 > 0 || item.uaRecaptureKm2 > 0 || item.osintClusters > 0)
-    .sort((a, b) => {
-      const aWeight = a.ruGainKm2 + a.uaRecaptureKm2 + a.osintClusters * 0.25;
-      const bWeight = b.ruGainKm2 + b.uaRecaptureKm2 + b.osintClusters * 0.25;
-      return bWeight - aWeight;
-    });
+    .filter(item =>
+      item.ruGainKm2 > 0 ||
+      item.uaRecaptureKm2 > 0 ||
+      item.osintClusters > 0 ||
+      item.firmsPoints > 0
+    )
+    .sort((a, b) => b.threatScore - a.threatScore);
 }
 
 function updateSectorBalanceSummary() {
   if (!dom.sectorBalanceSummary) return;
 
-  const rows = buildSectorBalance(appState.latestDelta, appState.latestOsintSummary);
+  const rows = buildSectorBalance(
+    appState.latestDelta,
+    appState.latestOsintSummary,
+    appState.latestFirmsPoints
+  );
 
   if (!rows.length) {
     dom.sectorBalanceSummary.innerHTML = 'Nincs még napi szektormérleg.';
@@ -301,12 +398,18 @@ function updateSectorBalanceSummary() {
         ? `<div><span style="color:#444;"><b>OSINT clusters:</b> ${row.osintClusters}</span></div>`
         : '';
 
+      const firms = row.firmsPoints > 0
+        ? `<div><span style="color:#444;"><b>FIRMS points:</b> ${row.firmsPoints}</span></div>`
+        : '';
+
       return `
         <div style="margin-bottom:10px;">
           <div><b>${row.name}</b></div>
+          <div><b>Threat:</b> ${getThreatBadge(row.threatLevel)}</div>
           ${ru}
           ${ua}
           ${osint}
+          ${firms}
         </div>
       `;
     })
@@ -329,9 +432,19 @@ function updateDailyDashboard() {
   const topOsint = summary.topOsint;
   const osint = summary.osintSummary;
 
+  const sectorRows = buildSectorBalance(
+    appState.latestDelta,
+    appState.latestOsintSummary,
+    appState.latestFirmsPoints
+  );
+  const topThreatSector = sectorRows[0] || null;
+
   dom.dailyDashboard.innerHTML = `
     <b>Operational picture</b><br>
     Date: <strong>${summary.currentDate || 'n/a'}</strong>
+    <hr style="margin:6px 0;">
+    <b>Top threat sector</b><br>
+    ${topThreatSector ? `${topThreatSector.name} · ${getThreatBadge(topThreatSector.threatLevel)}` : 'No threat sector'}
     <hr style="margin:6px 0;">
     <b>Top Russian gain</b><br>
     ${topGain ? `${topGain.sectorShortName || topGain.sectorName} · ${topGain.nearestPlace} · ${topGain.areaKm2.toFixed(2)} km²` : 'No major gain'}
@@ -343,7 +456,7 @@ function updateDailyDashboard() {
     ${topFirms ? `${topFirms.categoryLabel} · ${topFirms.sectorShortName || topFirms.sectorName} · ${topFirms.nearestPlace} · ${topFirms.count} hotspots` : 'No FIRMS zone'}
     <hr style="margin:6px 0;">
     <b>Top OSINT cluster</b><br>
-    ${topOsint ? `${getOsintCategoryIcon(topOsint.category)} ${topOsint.sourceType} · ${topOsint.sectorShortName || topOsint.sectorName} · ${topOsint.nearestPlace} · ${topOsint.reportCount} reports` : 'No OSINT cluster'}
+    ${topOsint ? `${getOsintCategoryIcon(topOsint.category)} ${topOsint.sourceType} · ${topOsint.sectorShortName || topOsint.sectorName} · ${topOsint.nearestPlace} · ${topOsint.reportCount} reports · ${getThreatBadge(topOsint.severity || 'LOW')}` : 'No OSINT cluster'}
     <hr style="margin:6px 0;">
     <b>OSINT categories</b><br>
     ${osint ? buildOsintCategorySummary(osint) : 'No category summary'}
@@ -351,6 +464,70 @@ function updateDailyDashboard() {
     <b>OSINT feed</b><br>
     ${osint ? `Raw ${osint.total} items · Clusters ${osint.clusters?.length || 0} · ISW ${osint.isw} · Official ${osint.official}` : 'No OSINT summary'}
   `;
+}
+
+function buildHeatmapPoints() {
+  const points = [];
+
+  (appState.latestDelta?.gained || []).forEach(item => {
+    points.push({
+      lat: Number(item.lat),
+      lng: Number(item.lng),
+      weight: Math.min(1, 0.35 + Number(item.areaKm2 || 0) / 12)
+    });
+  });
+
+  (appState.latestDelta?.lost || []).forEach(item => {
+    points.push({
+      lat: Number(item.lat),
+      lng: Number(item.lng),
+      weight: Math.min(1, 0.30 + Number(item.areaKm2 || 0) / 14)
+    });
+  });
+
+  (appState.latestFirmsPoints || []).forEach(point => {
+    points.push({
+      lat: Number(point.lat),
+      lng: Number(point.lng),
+      weight: 0.12
+    });
+  });
+
+  (appState.latestOsintSummary?.clusters || []).forEach(cluster => {
+    let severityBoost = 0.2;
+    if (cluster.severity === 'CRITICAL') severityBoost = 0.5;
+    else if (cluster.severity === 'HIGH') severityBoost = 0.4;
+    else if (cluster.severity === 'MEDIUM') severityBoost = 0.3;
+
+    points.push({
+      lat: Number(cluster.lat),
+      lng: Number(cluster.lng),
+      weight: Math.min(1, severityBoost + Math.min(Number(cluster.reportCount || 1) * 0.08, 0.35))
+    });
+  });
+
+  return points.filter(point =>
+    Number.isFinite(point.lat) &&
+    Number.isFinite(point.lng) &&
+    Number.isFinite(point.weight)
+  );
+}
+
+function refreshHeatmap() {
+  appState.latestHeatmapPoints = buildHeatmapPoints();
+  renderHeatmapLayer(layerState, appState.latestHeatmapPoints);
+
+  if (!layerState.heatmapLayer) return;
+
+  if (dom.toggleHeatmap.checked) {
+    if (!map.hasLayer(layerState.heatmapLayer)) {
+      layerState.heatmapLayer.addTo(map);
+    }
+  } else {
+    if (map.hasLayer(layerState.heatmapLayer)) {
+      map.removeLayer(layerState.heatmapLayer);
+    }
+  }
 }
 
 async function renderAtIndex(index) {
@@ -402,6 +579,7 @@ async function renderAtIndex(index) {
 
   updateDailyDashboard();
   updateSectorBalanceSummary();
+  refreshHeatmap();
   setStatus(`Betöltve: ${item.date}`);
 }
 
@@ -419,8 +597,11 @@ async function refreshFirms() {
       }
 
       appState.latestFirmsSummary = null;
+      appState.latestFirmsPoints = [];
       updateFirmsSummary(null);
       updateDailyDashboard();
+      updateSectorBalanceSummary();
+      refreshHeatmap();
       return;
     }
 
@@ -428,6 +609,7 @@ async function refreshFirms() {
     const firmsRaw = await fetchFirmsLayer(windowDays);
     const firms = categorizeFirmsPoints(firmsRaw);
 
+    appState.latestFirmsPoints = firms;
     renderFirmsLayer(layerState, firms);
 
     const summary = summarizeFirmsHotspots(firms, windowDays);
@@ -436,6 +618,8 @@ async function refreshFirms() {
     renderFirmsHotspotBox(layerState, summary);
     updateFirmsSummary(summary);
     updateDailyDashboard();
+    updateSectorBalanceSummary();
+    refreshHeatmap();
 
     if (!map.hasLayer(layerState.firmsLayer)) {
       layerState.firmsLayer.addTo(map);
@@ -466,19 +650,35 @@ async function refreshOsint() {
       updateOsintFeedList(null);
       updateDailyDashboard();
       updateSectorBalanceSummary();
+      refreshHeatmap();
       return;
     }
 
     const feed = await fetchOsintFeed();
-    renderOsintLayer(layerState, feed);
-
-    const summary = summarizeOsintFeed(feed);
+    const summary = addClusterSeverity(summarizeOsintFeed(feed));
     appState.latestOsintSummary = summary;
 
+    const rawPointsWithSeverity = feed.map(point => {
+      const matchingCluster = (summary?.clusters || []).find(cluster =>
+        cluster.items?.some(item =>
+          Number(item.lat) === Number(point.lat) &&
+          Number(item.lng) === Number(point.lng) &&
+          item.title === point.title
+        )
+      );
+
+      return {
+        ...point,
+        severity: matchingCluster?.severity || 'LOW',
+      };
+    });
+
+    renderOsintLayer(layerState, rawPointsWithSeverity);
     renderOsintHighlights(layerState, summary);
     updateOsintFeedList(summary);
     updateDailyDashboard();
     updateSectorBalanceSummary();
+    refreshHeatmap();
 
     if (!map.hasLayer(layerState.osintLayer)) {
       layerState.osintLayer.addTo(map);
@@ -519,6 +719,7 @@ function bindLayerToggles() {
 
   dom.toggleFirms.addEventListener('change', refreshFirms);
   dom.toggleOsint.addEventListener('change', refreshOsint);
+  dom.toggleHeatmap.addEventListener('change', refreshHeatmap);
   dom.firmsWindow.addEventListener('change', refreshFirms);
 }
 
