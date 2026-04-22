@@ -77,6 +77,23 @@ function setStatus(text) {
   dom.statusText.textContent = text;
 }
 
+function getOsintCategoryIcon(category) {
+  const normalized = String(category || 'general').toLowerCase();
+
+  if (normalized.includes('drone')) return '🛸';
+  if (normalized.includes('missile')) return '🚀';
+  if (normalized.includes('air defense')) return '🛡';
+  if (normalized.includes('assault')) return '⚔';
+  if (normalized.includes('logistics')) return '🚛';
+  if (normalized.includes('artillery')) return '💥';
+  if (normalized.includes('electronic warfare')) return '📡';
+  if (normalized.includes('naval')) return '⚓';
+  if (normalized.includes('aviation')) return '✈';
+  if (normalized.includes('armor') || normalized.includes('armour') || normalized.includes('tank')) return '🪖';
+
+  return '📍';
+}
+
 async function fetchJson(url) {
   const response = await fetch(url);
   if (!response.ok) {
@@ -164,6 +181,24 @@ function updateFirmsSummary(summary) {
   `;
 }
 
+function buildOsintCategorySummary(summary) {
+  const counts = new Map();
+
+  (summary?.clusters || []).forEach(cluster => {
+    const category = cluster.category || 'general military update';
+    counts.set(category, (counts.get(category) || 0) + 1);
+  });
+
+  return [...counts.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([category, count]) => {
+      const icon = getOsintCategoryIcon(category);
+      return `<div>${icon} ${category}: <strong>${count}</strong></div>`;
+    })
+    .join('');
+}
+
 function updateOsintFeedList(summary) {
   if (!dom.osintFeedList) return;
 
@@ -174,16 +209,22 @@ function updateOsintFeedList(summary) {
 
   dom.osintFeedList.innerHTML = `
     <b>Top 5 OSINT clusters</b><br>
-    ${summary.topFive.map((item, idx) => `
-      <div style="margin-bottom:8px;">
-        <b>${idx + 1}. ${item.title || 'Untitled'}</b><br>
-        ${item.sourceType || 'OSINT'} · ${item.date || 'Unknown date'}<br>
-        ${item.sectorShortName || item.sectorName || 'Unknown sector'} · ${item.nearestPlace || 'Unknown place'}<br>
-        Reports: ${item.reportCount || 1} · Category: ${item.category || 'general military update'}<br>
-        <span style="color:#444;">Latest: ${item.latestTitle || item.title || 'Untitled'}</span>
-        ${item.urls?.length ? item.urls.map((url, i) => `<div><a href="${url}" target="_blank" rel="noopener noreferrer">Open source ${i + 1}</a></div>`).join('') : ''}
-      </div>
-    `).join('')}
+    ${summary.topFive.map((item, idx) => {
+      const icon = getOsintCategoryIcon(item.category);
+      return `
+        <div style="margin-bottom:8px;">
+          <b>${idx + 1}. ${icon} ${item.title || 'Untitled'}</b><br>
+          ${item.sourceType || 'OSINT'} · ${item.date || 'Unknown date'}<br>
+          ${item.sectorShortName || item.sectorName || 'Unknown sector'} · ${item.nearestPlace || 'Unknown place'}<br>
+          Reports: ${item.reportCount || 1} · Category: ${icon} ${item.category || 'general military update'}<br>
+          <span style="color:#444;">Latest: ${item.latestTitle || item.title || 'Untitled'}</span>
+          ${item.urls?.length ? item.urls.map((url, i) => `<div><a href="${url}" target="_blank" rel="noopener noreferrer">Open source ${i + 1}</a></div>`).join('') : ''}
+        </div>
+      `;
+    }).join('')}
+    <hr style="margin:6px 0;">
+    <b>OSINT categories</b><br>
+    ${buildOsintCategorySummary(summary)}
     <hr style="margin:6px 0;">
     Total raw items: <strong>${summary.total}</strong><br>
     Clusters: <strong>${summary.clusters?.length || 0}</strong><br>
@@ -223,7 +264,10 @@ function updateDailyDashboard() {
     ${topFirms ? `${topFirms.categoryLabel} · ${topFirms.sectorShortName || topFirms.sectorName} · ${topFirms.nearestPlace} · ${topFirms.count} hotspots` : 'No FIRMS zone'}
     <hr style="margin:6px 0;">
     <b>Top OSINT cluster</b><br>
-    ${topOsint ? `${topOsint.sourceType} · ${topOsint.sectorShortName || topOsint.sectorName} · ${topOsint.nearestPlace} · ${topOsint.reportCount} reports` : 'No OSINT cluster'}
+    ${topOsint ? `${getOsintCategoryIcon(topOsint.category)} ${topOsint.sourceType} · ${topOsint.sectorShortName || topOsint.sectorName} · ${topOsint.nearestPlace} · ${topOsint.reportCount} reports` : 'No OSINT cluster'}
+    <hr style="margin:6px 0;">
+    <b>OSINT categories</b><br>
+    ${osint ? buildOsintCategorySummary(osint) : 'No category summary'}
     <hr style="margin:6px 0;">
     <b>OSINT feed</b><br>
     ${osint ? `Raw ${osint.total} items · Clusters ${osint.clusters?.length || 0} · ISW ${osint.isw} · Official ${osint.official}` : 'No OSINT summary'}
