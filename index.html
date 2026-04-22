@@ -13,7 +13,7 @@
       <h1>Ukrajna–Oroszország frontkövető</h1>
       <p class="muted">
         DeepState-alapú napi fronthelyzet, történeti visszanézés 2024-01-01-től, lejátszás,
-        napi területi delta és opcionális FIRMS/OSINT rétegek.
+        napi területi delta, FIRMS hőanomáliák és OSINT feed.
       </p>
 
       <section class="panel">
@@ -22,11 +22,17 @@
           <button id="btnLatest">Legfrissebb</button>
           <button id="btnFit" class="secondary">Ukrajna nézet</button>
         </div>
+
         <div class="grid-3 top-gap">
           <button id="btnMinus7" class="secondary">-7 nap</button>
           <button id="btnMinus30" class="secondary">-30 nap</button>
           <button id="btnToday" class="secondary">Legfrissebb</button>
         </div>
+
+        <div class="grid-2 top-gap">
+          <button id="btnResetLabels" class="secondary">Reset all labels</button>
+        </div>
+
         <div class="status-wrap">
           <div><strong>Dátum:</strong> <span id="currentDate">–</span></div>
           <div><strong>Állapot:</strong> <span id="statusText">Indulás…</span></div>
@@ -36,6 +42,7 @@
       <section class="panel">
         <h2>Időcsúszka és lejátszás</h2>
         <input id="timeline" type="range" min="0" max="0" step="1" value="0" />
+
         <div class="grid-3 top-gap">
           <button id="btnPlay">Lejátszás</button>
           <button id="btnPause" class="secondary">Szünet</button>
@@ -45,7 +52,10 @@
             <option value="300">Gyors</option>
           </select>
         </div>
-        <div class="small top-gap">A lejátszás napi léptékben váltja a DeepState történeti állapotokat.</div>
+
+        <div class="small top-gap">
+          A lejátszás napi léptékben váltja a DeepState történeti állapotokat.
+        </div>
       </section>
 
       <section class="panel">
@@ -54,7 +64,7 @@
         <label class="toggle"><input id="toggleDelta" type="checkbox" checked /> Napi területi delta</label>
         <label class="toggle"><input id="toggleBorders" type="checkbox" checked /> Országhatárok</label>
         <label class="toggle"><input id="toggleFirms" type="checkbox" /> FIRMS hőanomáliák</label>
-        <label class="toggle"><input id="toggleOsint" type="checkbox" /> OSINT pontok</label>
+        <label class="toggle"><input id="toggleOsint" type="checkbox" /> OSINT feed</label>
       </section>
 
       <section class="panel">
@@ -64,14 +74,25 @@
           <option value="10">10 nap</option>
           <option value="30">30 nap</option>
         </select>
+
         <div class="small top-gap">
-          Starter nézet: demonstrációs FIRMS pontokkal. A tényleges NASA/FIRMS bekötés külön modulban bővíthető.
+          FIRMS thermal anomaly layer with local JSON updates.
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>FIRMS hotspot summary</h2>
+        <div id="firmsSummary" class="small">
+          No FIRMS summary yet.
         </div>
       </section>
 
       <section class="panel">
         <h2>Napi delta</h2>
-        <div id="deltaSummary" class="small">Még nincs számolt változás.</div>
+        <div id="deltaSummary" class="small">
+          Még nincs számolt változás.
+        </div>
+
         <div class="legend top-gap">
           <div><span class="swatch gain"></span> Orosz területszerzés</div>
           <div><span class="swatch loss"></span> Ukrán visszaszerzés</div>
@@ -79,9 +100,16 @@
       </section>
 
       <section class="panel">
+        <h2>Daily dashboard</h2>
+        <div id="dailyDashboard" class="small">
+          Dashboard not loaded yet.
+        </div>
+      </section>
+
+      <section class="panel">
         <h2>OSINT feed</h2>
-        <div class="small">
-          Starter nézet: minta hivatalos és ISW pontokkal. A valódi feedek külön modulokban cserélhetők.
+        <div id="osintFeedList" class="small">
+          No OSINT feed loaded yet.
         </div>
       </section>
     </aside>
