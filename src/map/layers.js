@@ -131,6 +131,24 @@ function createNumberIcon(number, color) {
   });
 }
 
+function createArrowHeadIcon(rotationDeg, color) {
+  return L.divIcon({
+    className: '',
+    html: `
+      <div style="
+        transform: rotate(${rotationDeg}deg);
+        color: ${color};
+        font-size: 24px;
+        font-weight: bold;
+        line-height: 1;
+        text-shadow: 0 1px 4px rgba(255,255,255,0.65);
+      ">➤</div>
+    `,
+    iconSize: [24, 24],
+    iconAnchor: [12, 12],
+  });
+}
+
 function createLabelIcon({ index, isGain, areaKm2, previousDate, currentDate, side, sectorName, nearestPlace }) {
   return L.divIcon({
     className: '',
@@ -215,6 +233,30 @@ function createOsintBoxIcon(item, index, color) {
     `,
     iconSize: [275, 165],
     iconAnchor: [0, 82],
+  });
+}
+
+function createBattleNodeIcon(label, color) {
+  return L.divIcon({
+    className: '',
+    html: `
+      <div style="
+        width: 42px;
+        height: 42px;
+        border-radius: 999px;
+        border: 3px solid ${color};
+        background: rgba(255,255,255,0.88);
+        color: ${color};
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-weight: bold;
+        font-size: 14px;
+        box-shadow: 0 0 0 6px rgba(255,255,255,0.18), 0 2px 8px rgba(0,0,0,0.28);
+      ">${label}</div>
+    `,
+    iconSize: [42, 42],
+    iconAnchor: [21, 21],
   });
 }
 
@@ -503,6 +545,12 @@ function getCategoryColor(category) {
   return { stroke: '#666666', fill: '#999999', box: '#777777' };
 }
 
+function angleBetween(start, end) {
+  const dy = end.lat - start.lat;
+  const dx = end.lng - start.lng;
+  return Math.atan2(dy, dx) * (180 / Math.PI);
+}
+
 export function resetAllSavedDeltaLabels(layerState) {
   layerState.savedDeltaLabelPositions = {};
   saveSavedJson(DELTA_LABEL_STORAGE_KEY, layerState.savedDeltaLabelPositions);
@@ -510,6 +558,107 @@ export function resetAllSavedDeltaLabels(layerState) {
   if (layerState.lastDeltaPayload) {
     rebuildDeltaDynamicLayout(layerState);
   }
+}
+
+export function replaceFrontlineLayer(layerState, data) {
+  layerState.frontlineLayer.clearLayers();
+  layerState.frontlineLayer.addData(data);
+}
+
+export function renderAttackAxes(layerState, axes = []) {
+  layerState.attackAxesLayer.clearLayers();
+
+  axes.forEach((axis, idx) => {
+    const start = L.latLng(axis.startLat, axis.startLng);
+    const end = L.latLng(axis.endLat, axis.endLng);
+    const color = axis.side === 'ru' ? '#c1121f' : '#0f766e';
+    const dashArray = axis.side === 'ru' ? null : '8,6';
+
+    const polyline = L.polyline([start, end], {
+      color,
+      weight: axis.weight || 5,
+      opacity: 0.82,
+      dashArray,
+      lineCap: 'round',
+    }).addTo(layerState.attackAxesLayer);
+
+    const rotation = angleBetween(start, end);
+    const arrow = L.marker(end, {
+      icon: createArrowHeadIcon(rotation, color)
+    }).addTo(layerState.attackAxesLayer);
+
+    const label = L.marker(
+      L.latLng((start.lat + end.lat) / 2, (start.lng + end.lng) / 2),
+      {
+        icon: L.divIcon({
+          className: '',
+          html: `
+            <div style="
+              background: rgba(255,255,255,0.9);
+              border: 2px solid ${color};
+              border-radius: 8px;
+              padding: 3px 7px;
+              font-size: 11px;
+              font-weight: bold;
+              color: #111;
+              white-space: nowrap;
+              box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+            ">${axis.label || `Axis ${idx + 1}`}</div>
+          `,
+          iconSize: [120, 24],
+          iconAnchor: [60, 12],
+        })
+      }
+    ).addTo(layerState.attackAxesLayer);
+
+    const popupHtml = `
+      <b>${axis.label || `Axis ${idx + 1}`}</b><br>
+      <b>Type:</b> ${axis.side === 'ru' ? 'Russian attack axis' : 'Ukrainian counter-axis'}<br>
+      <b>Sector:</b> ${axis.sectorName || 'Unknown sector'}<br>
+      <b>Near:</b> ${axis.nearestPlace || 'Unknown place'}<br>
+      ${axis.note ? `<b>Note:</b> ${axis.note}` : ''}
+    `;
+
+    polyline.bindPopup(popupHtml);
+    arrow.bindPopup(popupHtml);
+    label.bindPopup(popupHtml);
+  });
+}
+
+export function renderBattleNodes(layerState, nodes = []) {
+  layerState.battleNodesLayer.clearLayers();
+
+  nodes.forEach((node, idx) => {
+    const color =
+      node.level === 'CRITICAL' ? '#7f1d1d' :
+      node.level === 'HIGH' ? '#b91c1c' :
+      node.level === 'MEDIUM' ? '#b45309' :
+      '#166534';
+
+    const ring = L.circle([node.lat, node.lng], {
+      radius: node.radiusMeters || 16000,
+      color,
+      weight: 3,
+      fillOpacity: 0,
+      opacity: 0.85,
+    }).addTo(layerState.battleNodesLayer);
+
+    const marker = L.marker([node.lat, node.lng], {
+      icon: createBattleNodeIcon(String(idx + 1), color)
+    }).addTo(layerState.battleNodesLayer);
+
+    const popupHtml = `
+      <b>Battle node #${idx + 1}</b><br>
+      <b>Level:</b> ${node.level}<br>
+      <b>Sector:</b> ${node.sectorName || 'Unknown sector'}<br>
+      <b>Near:</b> ${node.nearestPlace || 'Unknown place'}<br>
+      <b>Reason:</b> ${node.reason || 'Combined activity'}<br>
+      <b>Score:</b> ${Number(node.score || 0).toFixed(1)}
+    `;
+
+    ring.bindPopup(popupHtml);
+    marker.bindPopup(popupHtml);
+  });
 }
 
 export function renderFirmsHotspotBox(layerState, summary) {
@@ -730,6 +879,15 @@ export function createLayers(map) {
     }
   }).addTo(map);
 
+  const frontlineLayer = L.geoJSON(null, {
+    style: {
+      color: '#991b1b',
+      weight: 4,
+      opacity: 0.95,
+      fillOpacity: 0,
+    }
+  }).addTo(map);
+
   const deltaLayer = L.layerGroup().addTo(map);
 
   const borderLayer = L.geoJSON(null, {
@@ -743,6 +901,8 @@ export function createLayers(map) {
   }).addTo(map);
 
   const frontSectorLayer = L.layerGroup().addTo(map);
+  const attackAxesLayer = L.layerGroup().addTo(map);
+  const battleNodesLayer = L.layerGroup().addTo(map);
   const firmsLayer = L.layerGroup();
   const firmsHotspotLayer = L.layerGroup();
   const osintLayer = L.layerGroup();
@@ -761,9 +921,12 @@ export function createLayers(map) {
   const layerState = {
     map,
     occupiedLayer,
+    frontlineLayer,
     deltaLayer,
     borderLayer,
     frontSectorLayer,
+    attackAxesLayer,
+    battleNodesLayer,
     firmsLayer,
     firmsHotspotLayer,
     osintLayer,
