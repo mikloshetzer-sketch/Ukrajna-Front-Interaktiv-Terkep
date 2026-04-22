@@ -551,6 +551,80 @@ function angleBetween(start, end) {
   return Math.atan2(dy, dx) * (180 / Math.PI);
 }
 
+function offsetLatLng(map, lat, lng, dx, dy) {
+  const p = map.latLngToContainerPoint([lat, lng]);
+  const p2 = L.point(p.x + dx, p.y + dy);
+  const ll = map.containerPointToLatLng(p2);
+  return { lat: ll.lat, lng: ll.lng };
+}
+
+function buildSpreadOffsets(count, radius = 34) {
+  const offsets = [];
+  if (count <= 1) return [{ dx: 0, dy: 0 }];
+
+  for (let i = 0; i < count; i += 1) {
+    const angle = (Math.PI * 2 * i) / count - Math.PI / 2;
+    offsets.push({
+      dx: Math.cos(angle) * radius,
+      dy: Math.sin(angle) * radius,
+    });
+  }
+  return offsets;
+}
+
+function applyCollisionSpread(map, points, thresholdPx = 44, spreadRadius = 36) {
+  if (!points.length) return [];
+
+  const groups = [];
+  const assigned = new Array(points.length).fill(false);
+
+  for (let i = 0; i < points.length; i += 1) {
+    if (assigned[i]) continue;
+
+    const basePoint = map.latLngToContainerPoint([points[i].lat, points[i].lng]);
+    const group = [i];
+    assigned[i] = true;
+
+    for (let j = i + 1; j < points.length; j += 1) {
+      if (assigned[j]) continue;
+      const comparePoint = map.latLngToContainerPoint([points[j].lat, points[j].lng]);
+      const dist = basePoint.distanceTo(comparePoint);
+      if (dist <= thresholdPx) {
+        group.push(j);
+        assigned[j] = true;
+      }
+    }
+
+    groups.push(group);
+  }
+
+  const result = points.map(point => ({
+    ...point,
+    displayLat: point.lat,
+    displayLng: point.lng,
+    anchorLat: point.lat,
+    anchorLng: point.lng,
+  }));
+
+  groups.forEach(group => {
+    const offsets = buildSpreadOffsets(group.length, spreadRadius);
+    group.forEach((pointIndex, offsetIndex) => {
+      const original = points[pointIndex];
+      const displaced = offsetLatLng(
+        map,
+        original.lat,
+        original.lng,
+        offsets[offsetIndex].dx,
+        offsets[offsetIndex].dy
+      );
+      result[pointIndex].displayLat = displaced.lat;
+      result[pointIndex].displayLng = displaced.lng;
+    });
+  });
+
+  return result;
+}
+
 export function resetAllSavedDeltaLabels(layerState) {
   layerState.savedDeltaLabelPositions = {};
   saveSavedJson(DELTA_LABEL_STORAGE_KEY, layerState.savedDeltaLabelPositions);
@@ -567,8 +641,20 @@ export function replaceFrontlineLayer(layerState, data) {
 
 export function renderAttackAxes(layerState, axes = []) {
   layerState.attackAxesLayer.clearLayers();
+  if (!axes.length) return;
 
-  axes.forEach((axis, idx) => {
+  const prepared = applyCollisionSpread(
+    layerState.map,
+    axes.map(axis => ({
+      ...axis,
+      lat: (axis.startLat + axis.endLat) / 2,
+      lng: (axis.startLng + axis.endLng) / 2,
+    })),
+    56,
+    44
+  );
+
+  prepared.forEach((axis, idx) => {
     const start = L.latLng(axis.startLat, axis.startLng);
     const end = L.latLng(axis.endLat, axis.endLng);
     const color = axis.side === 'ru' ? '#c1121f' : '#0f766e';
@@ -582,34 +668,41 @@ export function renderAttackAxes(layerState, axes = []) {
       lineCap: 'round',
     }).addTo(layerState.attackAxesLayer);
 
-    const rotation = angleBetween(start, end);
     const arrow = L.marker(end, {
-      icon: createArrowHeadIcon(rotation, color)
+      icon: createArrowHeadIcon(angleBetween(start, end), color)
     }).addTo(layerState.attackAxesLayer);
 
-    const label = L.marker(
-      L.latLng((start.lat + end.lat) / 2, (start.lng + end.lng) / 2),
-      {
-        icon: L.divIcon({
-          className: '',
-          html: `
-            <div style="
-              background: rgba(255,255,255,0.9);
-              border: 2px solid ${color};
-              border-radius: 8px;
-              padding: 3px 7px;
-              font-size: 11px;
-              font-weight: bold;
-              color: #111;
-              white-space: nowrap;
-              box-shadow: 0 1px 5px rgba(0,0,0,0.2);
-            ">${axis.label || `Axis ${idx + 1}`}</div>
-          `,
-          iconSize: [120, 24],
-          iconAnchor: [60, 12],
-        })
-      }
-    ).addTo(layerState.attackAxesLayer);
+    const labelAnchor = L.latLng(axis.displayLat, axis.displayLng);
+    const leader = L.polyline([
+      L.latLng((axis.startLat + axis.endLat) / 2, (axis.startLng + axis.endLng) / 2),
+      labelAnchor
+    ], {
+      color,
+      weight: 1.5,
+      opacity: 0.55,
+      dashArray: '4,4'
+    }).addTo(layerState.attackAxesLayer);
+
+    const label = L.marker(labelAnchor, {
+      icon: L.divIcon({
+        className: '',
+        html: `
+          <div style="
+            background: rgba(255,255,255,0.92);
+            border: 2px solid ${color};
+            border-radius: 8px;
+            padding: 3px 7px;
+            font-size: 11px;
+            font-weight: bold;
+            color: #111;
+            white-space: nowrap;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+          ">${axis.label || `Axis ${idx + 1}`}</div>
+        `,
+        iconSize: [120, 24],
+        iconAnchor: [60, 12],
+      })
+    }).addTo(layerState.attackAxesLayer);
 
     const popupHtml = `
       <b>${axis.label || `Axis ${idx + 1}`}</b><br>
@@ -621,21 +714,28 @@ export function renderAttackAxes(layerState, axes = []) {
 
     polyline.bindPopup(popupHtml);
     arrow.bindPopup(popupHtml);
+    leader.bindPopup(popupHtml);
     label.bindPopup(popupHtml);
   });
 }
 
 export function renderBattleNodes(layerState, nodes = []) {
   layerState.battleNodesLayer.clearLayers();
+  if (!nodes.length) return;
 
-  nodes.forEach((node, idx) => {
+  const prepared = applyCollisionSpread(layerState.map, nodes, 52, 42);
+
+  prepared.forEach((node, idx) => {
     const color =
       node.level === 'CRITICAL' ? '#7f1d1d' :
       node.level === 'HIGH' ? '#b91c1c' :
       node.level === 'MEDIUM' ? '#b45309' :
       '#166534';
 
-    const ring = L.circle([node.lat, node.lng], {
+    const realCenter = L.latLng(node.anchorLat, node.anchorLng);
+    const displayCenter = L.latLng(node.displayLat, node.displayLng);
+
+    const ring = L.circle(realCenter, {
       radius: node.radiusMeters || 16000,
       color,
       weight: 3,
@@ -643,7 +743,14 @@ export function renderBattleNodes(layerState, nodes = []) {
       opacity: 0.85,
     }).addTo(layerState.battleNodesLayer);
 
-    const marker = L.marker([node.lat, node.lng], {
+    const leader = L.polyline([realCenter, displayCenter], {
+      color,
+      weight: 2,
+      opacity: 0.65,
+      dashArray: '4,4',
+    }).addTo(layerState.battleNodesLayer);
+
+    const marker = L.marker(displayCenter, {
       icon: createBattleNodeIcon(String(idx + 1), color)
     }).addTo(layerState.battleNodesLayer);
 
@@ -657,6 +764,7 @@ export function renderBattleNodes(layerState, nodes = []) {
     `;
 
     ring.bindPopup(popupHtml);
+    leader.bindPopup(popupHtml);
     marker.bindPopup(popupHtml);
   });
 }
