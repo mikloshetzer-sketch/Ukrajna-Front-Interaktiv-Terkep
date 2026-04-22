@@ -14,8 +14,7 @@ import { computeNaiveDailyDelta } from './data/deepstateDelta.js';
 import { enrichDeltaItemsWithPlaceNames } from './data/placeLookup.js';
 import { fetchFirmsLayer } from './data/firms.js';
 import { categorizeFirmsPoints, summarizeFirmsHotspots } from './data/firmsSummary.js';
-import { fetchOfficialOsint } from './data/osintOfficial.js';
-import { fetchIswOsint } from './data/osintIsw.js';
+import { fetchOsintFeed, summarizeOsintFeed, buildDashboardSummary } from './data/osintFeeds.js';
 import { bindTimeline, setTimelineBounds, setTimelineValue } from './ui/timeline.js';
 import { createPlayer } from './ui/player.js';
 import { clamp } from './utils/date.js';
@@ -38,6 +37,8 @@ const dom = {
   timeline: document.getElementById('timeline'),
   deltaSummary: document.getElementById('deltaSummary'),
   firmsSummary: document.getElementById('firmsSummary'),
+  dailyDashboard: document.getElementById('dailyDashboard'),
+  osintFeedList: document.getElementById('osintFeedList'),
 
   btnLatest: document.getElementById('btnLatest'),
   btnFit: document.getElementById('btnFit'),
@@ -63,6 +64,9 @@ const appState = {
   index: [],
   currentIndex: 0,
   cache: new Map(),
+  latestDelta: null,
+  latestFirmsSummary: null,
+  latestOsintSummary: null,
 };
 
 const map = initMap();
@@ -159,6 +163,65 @@ function updateFirmsSummary(summary) {
   `;
 }
 
+function updateOsintFeedList(summary) {
+  if (!dom.osintFeedList) return;
+
+  if (!summary || !summary.latest.length) {
+    dom.osintFeedList.innerHTML = 'No OSINT feed loaded yet.';
+    return;
+  }
+
+  dom.osintFeedList.innerHTML = `
+    <b>Latest OSINT items</b><br>
+    ${summary.latest.map((item, idx) => `
+      <div style="margin-bottom:8px;">
+        <b>${idx + 1}. ${item.title || 'Untitled'}</b><br>
+        ${item.sourceType || 'OSINT'} · ${item.date || 'Unknown date'}<br>
+        ${item.sectorShortName || item.sectorName || 'Unknown sector'} · ${item.nearestPlace || 'Unknown place'}
+        ${item.url ? `<div><a href="${item.url}" target="_blank" rel="noopener noreferrer">Open source</a></div>` : ''}
+      </div>
+    `).join('')}
+    <hr style="margin:6px 0;">
+    Total: <strong>${summary.total}</strong><br>
+    ISW: <strong>${summary.isw}</strong><br>
+    Ukrainian official: <strong>${summary.official}</strong><br>
+    Other: <strong>${summary.other}</strong>
+  `;
+}
+
+function updateDailyDashboard() {
+  if (!dom.dailyDashboard) return;
+
+  const summary = buildDashboardSummary({
+    currentDate: dom.currentDate.textContent,
+    delta: appState.latestDelta,
+    firmsSummary: appState.latestFirmsSummary,
+    osintSummary: appState.latestOsintSummary,
+  });
+
+  const topGain = summary.topGain;
+  const topLoss = summary.topLoss;
+  const topFirms = summary.topFirms;
+  const osint = summary.osintSummary;
+
+  dom.dailyDashboard.innerHTML = `
+    <b>Operational picture</b><br>
+    Date: <strong>${summary.currentDate || 'n/a'}</strong>
+    <hr style="margin:6px 0;">
+    <b>Top Russian gain</b><br>
+    ${topGain ? `${topGain.sectorShortName || topGain.sectorName} · ${topGain.nearestPlace} · ${topGain.areaKm2.toFixed(2)} km²` : 'No major gain'}
+    <hr style="margin:6px 0;">
+    <b>Top Ukrainian recapture</b><br>
+    ${topLoss ? `${topLoss.sectorShortName || topLoss.sectorName} · ${topLoss.nearestPlace} · ${topLoss.areaKm2.toFixed(2)} km²` : 'No major recapture'}
+    <hr style="margin:6px 0;">
+    <b>Top FIRMS zone</b><br>
+    ${topFirms ? `${topFirms.categoryLabel} · ${topFirms.sectorShortName || topFirms.sectorName} · ${topFirms.nearestPlace} · ${topFirms.count} hotspots` : 'No FIRMS zone'}
+    <hr style="margin:6px 0;">
+    <b>OSINT feed</b><br>
+    ${osint ? `Total ${osint.total} items · ISW ${osint.isw} · Official ${osint.official}` : 'No OSINT summary'}
+  `;
+}
+
 async function renderAtIndex(index) {
   const item = appState.index[index];
   if (!item) return;
@@ -184,21 +247,29 @@ async function renderAtIndex(index) {
       const rawDelta = computeNaiveDailyDelta(previousGeoJson, currentGeoJson);
       const delta = enrichDeltaItemsWithPlaceNames(rawDelta);
 
+      appState.latestDelta = delta;
       renderDeltaLayer(layerState, delta, item.date, previousItem.date);
       updateDeltaSummary(delta);
     } else {
       layerState.deltaLayer.clearLayers();
       dom.deltaSummary.textContent = 'Az előző napi adat nem érhető el.';
+      appState.latestDelta = null;
     }
   } else {
     layerState.deltaLayer.clearLayers();
     dom.deltaSummary.textContent = 'A legelső betöltött naphoz nincs előző napi összehasonlítás.';
+    appState.latestDelta = null;
   }
 
   if (dom.toggleFirms.checked) {
     await refreshFirms();
   }
 
+  if (dom.toggleOsint.checked) {
+    await refreshOsint();
+  }
+
+  updateDailyDashboard();
   setStatus(`Betöltve: ${item.date}`);
 }
 
@@ -213,7 +284,9 @@ async function refreshFirms() {
       if (map.hasLayer(layerState.firmsHotspotLayer)) {
         map.removeLayer(layerState.firmsHotspotLayer);
       }
+      appState.latestFirmsSummary = null;
       updateFirmsSummary(null);
+      updateDailyDashboard();
       return;
     }
 
@@ -224,8 +297,11 @@ async function refreshFirms() {
     renderFirmsLayer(layerState, firms);
 
     const summary = summarizeFirmsHotspots(firms, windowDays);
+    appState.latestFirmsSummary = summary;
+
     renderFirmsHotspotBox(layerState, summary);
     updateFirmsSummary(summary);
+    updateDailyDashboard();
 
     if (!map.hasLayer(layerState.firmsLayer)) {
       layerState.firmsLayer.addTo(map);
@@ -246,15 +322,20 @@ async function refreshOsint() {
       if (map.hasLayer(layerState.osintLayer)) {
         map.removeLayer(layerState.osintLayer);
       }
+      appState.latestOsintSummary = null;
+      updateOsintFeedList(null);
+      updateDailyDashboard();
       return;
     }
 
-    const [official, isw] = await Promise.all([
-      fetchOfficialOsint(),
-      fetchIswOsint()
-    ]);
+    const feed = await fetchOsintFeed();
+    renderOsintLayer(layerState, feed);
 
-    renderOsintLayer(layerState, [...official, ...isw]);
+    const summary = summarizeOsintFeed(feed);
+    appState.latestOsintSummary = summary;
+
+    updateOsintFeedList(summary);
+    updateDailyDashboard();
 
     if (!map.hasLayer(layerState.osintLayer)) {
       layerState.osintLayer.addTo(map);
