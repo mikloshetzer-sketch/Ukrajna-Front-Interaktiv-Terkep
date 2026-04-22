@@ -167,23 +167,26 @@ function updateFirmsSummary(summary) {
 function updateOsintFeedList(summary) {
   if (!dom.osintFeedList) return;
 
-  if (!summary || !summary.latest.length) {
+  if (!summary || !summary.topFive.length) {
     dom.osintFeedList.innerHTML = 'No OSINT feed loaded yet.';
     return;
   }
 
   dom.osintFeedList.innerHTML = `
-    <b>Top 5 OSINT items</b><br>
+    <b>Top 5 OSINT clusters</b><br>
     ${summary.topFive.map((item, idx) => `
       <div style="margin-bottom:8px;">
         <b>${idx + 1}. ${item.title || 'Untitled'}</b><br>
         ${item.sourceType || 'OSINT'} · ${item.date || 'Unknown date'}<br>
-        ${item.sectorShortName || item.sectorName || 'Unknown sector'} · ${item.nearestPlace || 'Unknown place'}
-        ${item.url ? `<div><a href="${item.url}" target="_blank" rel="noopener noreferrer">Open source</a></div>` : ''}
+        ${item.sectorShortName || item.sectorName || 'Unknown sector'} · ${item.nearestPlace || 'Unknown place'}<br>
+        Reports: ${item.reportCount || 1} · Category: ${item.category || 'general military update'}<br>
+        <span style="color:#444;">Latest: ${item.latestTitle || item.title || 'Untitled'}</span>
+        ${item.urls?.length ? item.urls.map((url, i) => `<div><a href="${url}" target="_blank" rel="noopener noreferrer">Open source ${i + 1}</a></div>`).join('') : ''}
       </div>
     `).join('')}
     <hr style="margin:6px 0;">
-    Total: <strong>${summary.total}</strong><br>
+    Total raw items: <strong>${summary.total}</strong><br>
+    Clusters: <strong>${summary.clusters?.length || 0}</strong><br>
     ISW: <strong>${summary.isw}</strong><br>
     Ukrainian official: <strong>${summary.official}</strong><br>
     Other: <strong>${summary.other}</strong>
@@ -219,11 +222,11 @@ function updateDailyDashboard() {
     <b>Top FIRMS zone</b><br>
     ${topFirms ? `${topFirms.categoryLabel} · ${topFirms.sectorShortName || topFirms.sectorName} · ${topFirms.nearestPlace} · ${topFirms.count} hotspots` : 'No FIRMS zone'}
     <hr style="margin:6px 0;">
-    <b>Top OSINT event</b><br>
-    ${topOsint ? `${topOsint.sourceType} · ${topOsint.sectorShortName || topOsint.sectorName} · ${topOsint.nearestPlace}` : 'No OSINT event'}
+    <b>Top OSINT cluster</b><br>
+    ${topOsint ? `${topOsint.sourceType} · ${topOsint.sectorShortName || topOsint.sectorName} · ${topOsint.nearestPlace} · ${topOsint.reportCount} reports` : 'No OSINT cluster'}
     <hr style="margin:6px 0;">
     <b>OSINT feed</b><br>
-    ${osint ? `Total ${osint.total} items · ISW ${osint.isw} · Official ${osint.official}` : 'No OSINT summary'}
+    ${osint ? `Raw ${osint.total} items · Clusters ${osint.clusters?.length || 0} · ISW ${osint.isw} · Official ${osint.official}` : 'No OSINT summary'}
   `;
 }
 
