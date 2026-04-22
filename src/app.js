@@ -3,12 +3,15 @@ import {
   createLayers,
   replaceOccupiedLayer,
   replaceBorderLayer,
+  replaceFrontlineLayer,
   renderDeltaLayer,
   renderFirmsLayer,
   renderOsintLayer,
   renderOsintHighlights,
   renderFirmsHotspotBox,
   renderHeatmapLayer,
+  renderAttackAxes,
+  renderBattleNodes,
   resetAllSavedDeltaLabels
 } from './map/layers.js';
 import { fetchDeepStateIndex, fetchDeepStateByFilename } from './data/deepstate.js';
@@ -57,6 +60,9 @@ const dom = {
   speedSelect: document.getElementById('speedSelect'),
 
   toggleOccupied: document.getElementById('toggleOccupied'),
+  toggleFrontline: document.getElementById('toggleFrontline'),
+  toggleAxes: document.getElementById('toggleAxes'),
+  toggleBattleNodes: document.getElementById('toggleBattleNodes'),
   toggleDelta: document.getElementById('toggleDelta'),
   toggleBorders: document.getElementById('toggleBorders'),
   toggleFirms: document.getElementById('toggleFirms'),
@@ -75,6 +81,8 @@ const appState = {
   latestFirmsPoints: [],
   latestOsintSummary: null,
   latestHeatmapPoints: [],
+  latestAttackAxes: [],
+  latestBattleNodes: [],
 };
 
 const map = initMap();
@@ -619,6 +627,147 @@ function refreshHeatmap() {
   }
 }
 
+function buildAttackAxes() {
+  const axes = [];
+
+  const gains = (appState.latestDelta?.gained || []).slice(0, 3);
+  const losses = (appState.latestDelta?.lost || []).slice(0, 2);
+
+  gains.forEach((item, idx) => {
+    axes.push({
+      side: 'ru',
+      startLat: Number(item.lat) + 0.05,
+      startLng: Number(item.lng) + 0.55,
+      endLat: Number(item.lat),
+      endLng: Number(item.lng),
+      sectorName: item.sectorName,
+      nearestPlace: item.nearestPlace,
+      label: `RU axis #${idx + 1}`,
+      note: `${item.areaKm2.toFixed(2)} km² daily gain`,
+      weight: Math.min(7, 4 + item.areaKm2 / 2)
+    });
+  });
+
+  losses.forEach((item, idx) => {
+    axes.push({
+      side: 'ua',
+      startLat: Number(item.lat) - 0.03,
+      startLng: Number(item.lng) - 0.45,
+      endLat: Number(item.lat),
+      endLng: Number(item.lng),
+      sectorName: item.sectorName,
+      nearestPlace: item.nearestPlace,
+      label: `UA counter-axis #${idx + 1}`,
+      note: `${item.areaKm2.toFixed(2)} km² recapture`,
+      weight: Math.min(6, 3 + item.areaKm2 / 2)
+    });
+  });
+
+  const topOsintAssaults = (appState.latestOsintSummary?.clusters || [])
+    .filter(cluster => String(cluster.category || '').toLowerCase().includes('assault'))
+    .slice(0, 2);
+
+  topOsintAssaults.forEach((cluster, idx) => {
+    axes.push({
+      side: cluster.sourceType === 'Ukrainian official' ? 'ua' : 'ru',
+      startLat: Number(cluster.lat) + 0.12,
+      startLng: Number(cluster.lng) + (cluster.sourceType === 'Ukrainian official' ? -0.4 : 0.45),
+      endLat: Number(cluster.lat),
+      endLng: Number(cluster.lng),
+      sectorName: cluster.sectorName,
+      nearestPlace: cluster.nearestPlace,
+      label: `OSINT axis #${idx + 1}`,
+      note: `${cluster.reportCount} assault reports`,
+      weight: cluster.severity === 'CRITICAL' ? 7 : cluster.severity === 'HIGH' ? 6 : 5
+    });
+  });
+
+  appState.latestAttackAxes = axes.slice(0, 5);
+  renderAttackAxes(layerState, appState.latestAttackAxes);
+
+  if (dom.toggleAxes.checked) {
+    if (!map.hasLayer(layerState.attackAxesLayer)) {
+      layerState.attackAxesLayer.addTo(map);
+    }
+  } else {
+    if (map.hasLayer(layerState.attackAxesLayer)) {
+      map.removeLayer(layerState.attackAxesLayer);
+    }
+  }
+}
+
+function buildBattleNodes() {
+  const nodes = [];
+
+  const sectorRows = buildSectorBalance(
+    appState.latestDelta,
+    appState.latestOsintSummary,
+    appState.latestFirmsPoints
+  ).slice(0, 5);
+
+  sectorRows.forEach((sectorRow) => {
+    const matchingDelta =
+      (appState.latestDelta?.gained || []).find(item => (item.sectorShortName || item.sectorName) === sectorRow.name) ||
+      (appState.latestDelta?.lost || []).find(item => (item.sectorShortName || item.sectorName) === sectorRow.name);
+
+    const matchingCluster =
+      (appState.latestOsintSummary?.clusters || []).find(cluster => (cluster.sectorShortName || cluster.sectorName) === sectorRow.name);
+
+    const matchingFirm =
+      (appState.latestFirmsSummary?.topThreeZones || []).find(zone => (zone.sectorShortName || zone.sectorName) === sectorRow.name);
+
+    let lat = 48.5;
+    let lng = 36.0;
+    let reason = 'Combined multi-source activity';
+
+    if (matchingCluster) {
+      lat = Number(matchingCluster.lat);
+      lng = Number(matchingCluster.lng);
+      reason = `OSINT cluster concentration`;
+    } else if (matchingDelta) {
+      lat = Number(matchingDelta.lat);
+      lng = Number(matchingDelta.lng);
+      reason = `Territorial delta activity`;
+    } else if (matchingFirm) {
+      lat = Number(matchingFirm.lat || ((matchingFirm.bounds?.[0]?.[0] + matchingFirm.bounds?.[1]?.[0]) / 2));
+      lng = Number(matchingFirm.lng || ((matchingFirm.bounds?.[0]?.[1] + matchingFirm.bounds?.[1]?.[1]) / 2));
+      reason = `FIRMS hotspot concentration`;
+    }
+
+    nodes.push({
+      lat,
+      lng,
+      sectorName: sectorRow.name,
+      nearestPlace:
+        matchingCluster?.nearestPlace ||
+        matchingDelta?.nearestPlace ||
+        matchingFirm?.nearestPlace ||
+        'Unknown place',
+      level: sectorRow.threatLevel,
+      score: sectorRow.threatScore,
+      reason,
+      radiusMeters:
+        sectorRow.threatLevel === 'CRITICAL' ? 26000 :
+        sectorRow.threatLevel === 'HIGH' ? 22000 :
+        sectorRow.threatLevel === 'MEDIUM' ? 18000 :
+        14000
+    });
+  });
+
+  appState.latestBattleNodes = nodes;
+  renderBattleNodes(layerState, appState.latestBattleNodes);
+
+  if (dom.toggleBattleNodes.checked) {
+    if (!map.hasLayer(layerState.battleNodesLayer)) {
+      layerState.battleNodesLayer.addTo(map);
+    }
+  } else {
+    if (map.hasLayer(layerState.battleNodesLayer)) {
+      map.removeLayer(layerState.battleNodesLayer);
+    }
+  }
+}
+
 async function renderAtIndex(index) {
   const item = appState.index[index];
   if (!item) return;
@@ -635,6 +784,7 @@ async function renderAtIndex(index) {
   }
 
   replaceOccupiedLayer(map, layerState, currentGeoJson);
+  replaceFrontlineLayer(layerState, currentGeoJson);
 
   if (index > 0) {
     const previousItem = appState.index[index - 1];
@@ -670,6 +820,8 @@ async function renderAtIndex(index) {
   updateAutoOpsSummary();
   updateTopThreatSectors();
   updateSectorBalanceSummary();
+  buildAttackAxes();
+  buildBattleNodes();
   refreshHeatmap();
   setStatus(`Betöltve: ${item.date}`);
 }
@@ -694,6 +846,8 @@ async function refreshFirms() {
       updateAutoOpsSummary();
       updateTopThreatSectors();
       updateSectorBalanceSummary();
+      buildAttackAxes();
+      buildBattleNodes();
       refreshHeatmap();
       return;
     }
@@ -714,6 +868,8 @@ async function refreshFirms() {
     updateAutoOpsSummary();
     updateTopThreatSectors();
     updateSectorBalanceSummary();
+    buildAttackAxes();
+    buildBattleNodes();
     refreshHeatmap();
 
     if (!map.hasLayer(layerState.firmsLayer)) {
@@ -747,6 +903,8 @@ async function refreshOsint() {
       updateAutoOpsSummary();
       updateTopThreatSectors();
       updateSectorBalanceSummary();
+      buildAttackAxes();
+      buildBattleNodes();
       refreshHeatmap();
       return;
     }
@@ -777,6 +935,8 @@ async function refreshOsint() {
     updateAutoOpsSummary();
     updateTopThreatSectors();
     updateSectorBalanceSummary();
+    buildAttackAxes();
+    buildBattleNodes();
     refreshHeatmap();
 
     if (!map.hasLayer(layerState.osintLayer)) {
@@ -797,6 +957,30 @@ function bindLayerToggles() {
       layerState.occupiedLayer.addTo(map);
     } else {
       map.removeLayer(layerState.occupiedLayer);
+    }
+  });
+
+  dom.toggleFrontline.addEventListener('change', () => {
+    if (dom.toggleFrontline.checked) {
+      layerState.frontlineLayer.addTo(map);
+    } else {
+      map.removeLayer(layerState.frontlineLayer);
+    }
+  });
+
+  dom.toggleAxes.addEventListener('change', () => {
+    if (dom.toggleAxes.checked) {
+      layerState.attackAxesLayer.addTo(map);
+    } else {
+      map.removeLayer(layerState.attackAxesLayer);
+    }
+  });
+
+  dom.toggleBattleNodes.addEventListener('change', () => {
+    if (dom.toggleBattleNodes.checked) {
+      layerState.battleNodesLayer.addTo(map);
+    } else {
+      map.removeLayer(layerState.battleNodesLayer);
     }
   });
 
