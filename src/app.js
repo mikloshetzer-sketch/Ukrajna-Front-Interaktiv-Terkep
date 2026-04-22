@@ -278,12 +278,14 @@ async function refreshFirms() {
     if (!dom.toggleFirms.checked) {
       layerState.firmsLayer.clearLayers();
       layerState.firmsHotspotLayer.clearLayers();
+
       if (map.hasLayer(layerState.firmsLayer)) {
         map.removeLayer(layerState.firmsLayer);
       }
       if (map.hasLayer(layerState.firmsHotspotLayer)) {
         map.removeLayer(layerState.firmsHotspotLayer);
       }
+
       appState.latestFirmsSummary = null;
       updateFirmsSummary(null);
       updateDailyDashboard();
@@ -319,9 +321,11 @@ async function refreshOsint() {
   try {
     if (!dom.toggleOsint.checked) {
       layerState.osintLayer.clearLayers();
+
       if (map.hasLayer(layerState.osintLayer)) {
         map.removeLayer(layerState.osintLayer);
       }
+
       appState.latestOsintSummary = null;
       updateOsintFeedList(null);
       updateDailyDashboard();
