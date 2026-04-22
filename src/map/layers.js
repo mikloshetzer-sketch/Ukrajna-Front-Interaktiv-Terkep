@@ -164,7 +164,7 @@ function createOsintBoxIcon(item, index, color) {
         font-size: 12px;
         line-height: 1.35;
         box-shadow: 0 2px 8px rgba(0,0,0,0.28);
-        min-width: 235px;
+        min-width: 245px;
         color: #111;
         white-space: normal;
       ">
@@ -184,14 +184,17 @@ function createOsintBoxIcon(item, index, color) {
           ">${index}</span>
           <b>${item.sourceType || 'OSINT'}</b>
         </div>
-        <div><b>${item.title || 'Untitled event'}</b></div>
+        <div><b>${item.title || 'Untitled cluster'}</b></div>
         <div>${item.date || 'Unknown date'}</div>
         <div><b>Sector:</b> ${item.sectorName || 'Unknown sector'}</div>
         <div><b>Near:</b> ${item.nearestPlace || 'Unknown place'}</div>
+        <div><b>Reports:</b> ${item.reportCount || 1}</div>
+        <div><b>Top category:</b> ${item.category || 'general military update'}</div>
+        <div style="color:#444;">Latest: ${item.latestTitle || item.title || 'Untitled'}</div>
       </div>
     `,
-    iconSize: [245, 110],
-    iconAnchor: [0, 55],
+    iconSize: [255, 145],
+    iconAnchor: [0, 72],
   });
 }
 
@@ -604,15 +607,15 @@ export function renderOsintHighlights(layerState, osintSummary) {
 
     const baseLatLng = L.latLng(item.lat, item.lng);
     const basePoint = layerState.map.latLngToContainerPoint(baseLatLng);
-    const sideX = basePoint.x < layerState.map.getSize().x / 2 ? 110 : -260;
-    const defaultPoint = L.point(basePoint.x + sideX, basePoint.y - 65 + idx * 14);
+    const sideX = basePoint.x < layerState.map.getSize().x / 2 ? 110 : -270;
+    const defaultPoint = L.point(basePoint.x + sideX, basePoint.y - 70 + idx * 18);
     const defaultLabelLatLng = layerState.map.containerPointToLatLng(defaultPoint);
 
     const saved = layerState.savedOsintBoxPositions[key];
     const labelLatLng = saved ? L.latLng(saved.lat, saved.lng) : defaultLabelLatLng;
 
     const marker = L.circleMarker(baseLatLng, {
-      radius: 7,
+      radius: 8,
       color,
       fillColor: color,
       fillOpacity: 0.9,
@@ -660,11 +663,14 @@ export function renderOsintHighlights(layerState, osintSummary) {
 
     const popupHtml = `
       <b>${item.sourceType || 'OSINT'} #${number}</b><br>
-      <b>Title:</b> ${item.title || 'Untitled'}<br>
+      <b>Cluster title:</b> ${item.title || 'Untitled'}<br>
       <b>Date:</b> ${item.date || 'Unknown'}<br>
       <b>Sector:</b> ${item.sectorName || 'Unknown sector'}<br>
       <b>Near:</b> ${item.nearestPlace || 'Unknown place'}<br>
-      ${item.url ? `<div><a href="${item.url}" target="_blank" rel="noopener noreferrer">Open source</a></div>` : ''}
+      <b>Reports:</b> ${item.reportCount || 1}<br>
+      <b>Top category:</b> ${item.category || 'general military update'}<br>
+      <b>Latest:</b> ${item.latestTitle || item.title || 'Untitled'}<br>
+      ${item.urls?.length ? item.urls.map((url, i) => `<div><a href="${url}" target="_blank" rel="noopener noreferrer">Open source ${i + 1}</a></div>`).join('') : ''}
     `;
 
     marker.bindPopup(popupHtml);
@@ -782,10 +788,10 @@ export function renderOsintLayer(layerState, points) {
     const color = getOsintColor(point.sourceType);
 
     L.circleMarker([point.lat, point.lng], {
-      radius: 6,
+      radius: 5,
       color,
       fillColor: color,
-      fillOpacity: 0.85,
+      fillOpacity: 0.55,
       weight: 1,
     }).bindPopup(`
       <b>${point.sourceType || 'OSINT'}</b><br>
@@ -793,6 +799,7 @@ export function renderOsintLayer(layerState, points) {
       <b>Date:</b> ${point.date || 'Unknown'}<br>
       <b>Sector:</b> ${point.sectorName || 'Unknown sector'}<br>
       <b>Near:</b> ${point.nearestPlace || 'Unknown place'}<br>
+      <b>Category:</b> ${point.category || 'general military update'}<br>
       ${point.url ? `<div><a href="${point.url}" target="_blank" rel="noopener noreferrer">Open source</a></div>` : ''}
     `).addTo(layerState.osintLayer);
   });
