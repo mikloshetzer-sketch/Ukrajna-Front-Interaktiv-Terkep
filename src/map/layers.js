@@ -2,6 +2,7 @@ import { FRONT_SECTORS } from '../data/frontSectors.js';
 
 const DELTA_LABEL_STORAGE_KEY = 'ukraine_front_delta_label_positions_v1';
 const FIRMS_LABEL_STORAGE_KEY = 'ukraine_front_firms_box_positions_v1';
+const OSINT_LABEL_STORAGE_KEY = 'ukraine_front_osint_box_positions_v1';
 
 function popupFromProps(props) {
   return Object.entries(props || {})
@@ -39,6 +40,12 @@ function getDeltaItemKey(item, currentDate, previousDate, side, number) {
 function getFirmsZoneKey(zone, windowDays) {
   if (!zone) return null;
   return `${windowDays}_${zone.category}_${zone.key}_${zone.count}`;
+}
+
+function getOsintItemKey(item, index) {
+  const lat = Number(item.lat).toFixed(4);
+  const lng = Number(item.lng).toFixed(4);
+  return `${index}_${item.sourceType || 'OSINT'}_${item.date || 'nodate'}_${lat}_${lng}_${item.title || 'untitled'}`;
 }
 
 function createSideLabelHtml({ index, isGain, areaKm2, previousDate, currentDate, sectorName, nearestPlace }) {
@@ -124,6 +131,70 @@ function createLabelIcon({ index, isGain, areaKm2, previousDate, currentDate, si
   });
 }
 
+function createSectorLabelIcon(name) {
+  return L.divIcon({
+    className: '',
+    html: `
+      <div style="
+        background: rgba(255,255,255,0.82);
+        border: 1px solid rgba(60,60,60,0.35);
+        border-radius: 8px;
+        padding: 4px 8px;
+        font-size: 13px;
+        font-weight: bold;
+        color: #1f2937;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+        white-space: nowrap;
+      ">${name}</div>
+    `,
+    iconSize: [120, 24],
+    iconAnchor: [60, 12],
+  });
+}
+
+function createOsintBoxIcon(item, index, color) {
+  return L.divIcon({
+    className: '',
+    html: `
+      <div style="
+        background: rgba(255,255,255,0.97);
+        border: 2px solid ${color};
+        border-radius: 10px;
+        padding: 8px 10px;
+        font-size: 12px;
+        line-height: 1.35;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.28);
+        min-width: 235px;
+        color: #111;
+        white-space: normal;
+      ">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+          <span style="
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            width:20px;
+            height:20px;
+            border-radius:999px;
+            background:${color};
+            color:#fff;
+            font-weight:bold;
+            font-size:12px;
+            flex: 0 0 20px;
+          ">${index}</span>
+          <b>${item.sourceType || 'OSINT'}</b>
+        </div>
+        <div><b>${item.title || 'Untitled event'}</b></div>
+        <div>${item.date || 'Unknown date'}</div>
+        <div><b>Sector:</b> ${item.sectorName || 'Unknown sector'}</div>
+        <div><b>Near:</b> ${item.nearestPlace || 'Unknown place'}</div>
+      </div>
+    `,
+    iconSize: [245, 110],
+    iconAnchor: [0, 55],
+  });
+}
+
 function getPixelOffsetForSide(map, side, rowIndex) {
   const zoom = map.getZoom();
 
@@ -154,6 +225,12 @@ function getLeaderColor(isGain) {
   return isGain ? '#b91c1c' : '#1d4ed8';
 }
 
+function getOsintColor(sourceType) {
+  if (sourceType === 'ISW') return '#7c3aed';
+  if (sourceType === 'Ukrainian official') return '#15803d';
+  return '#1f5f8b';
+}
+
 function buildPopupHtml(number, isGain, previousDate, currentDate, areaKm2, sectorName, nearestPlace) {
   return `
     <b>#${number} – ${isGain ? 'Russian territorial gain' : 'Ukrainian recapture'}</b><br>
@@ -162,27 +239,6 @@ function buildPopupHtml(number, isGain, previousDate, currentDate, areaKm2, sect
     ${previousDate} → ${currentDate}<br>
     <b>Change:</b> ${areaKm2.toFixed(2)} km²
   `;
-}
-
-function createSectorLabelIcon(name) {
-  return L.divIcon({
-    className: '',
-    html: `
-      <div style="
-        background: rgba(255,255,255,0.82);
-        border: 1px solid rgba(60,60,60,0.35);
-        border-radius: 8px;
-        padding: 4px 8px;
-        font-size: 13px;
-        font-weight: bold;
-        color: #1f2937;
-        box-shadow: 0 1px 4px rgba(0,0,0,0.15);
-        white-space: nowrap;
-      ">${name}</div>
-    `,
-    iconSize: [120, 24],
-    iconAnchor: [60, 12],
-  });
 }
 
 function rebuildFrontSectorLayer(layerState) {
@@ -535,6 +591,89 @@ export function renderFirmsHotspotBox(layerState, summary) {
   });
 }
 
+export function renderOsintHighlights(layerState, osintSummary) {
+  layerState.osintHighlightLayer.clearLayers();
+
+  const items = osintSummary?.topFive || [];
+  if (!items.length) return;
+
+  items.forEach((item, idx) => {
+    const number = idx + 1;
+    const color = getOsintColor(item.sourceType);
+    const key = getOsintItemKey(item, number);
+
+    const baseLatLng = L.latLng(item.lat, item.lng);
+    const basePoint = layerState.map.latLngToContainerPoint(baseLatLng);
+    const sideX = basePoint.x < layerState.map.getSize().x / 2 ? 110 : -260;
+    const defaultPoint = L.point(basePoint.x + sideX, basePoint.y - 65 + idx * 14);
+    const defaultLabelLatLng = layerState.map.containerPointToLatLng(defaultPoint);
+
+    const saved = layerState.savedOsintBoxPositions[key];
+    const labelLatLng = saved ? L.latLng(saved.lat, saved.lng) : defaultLabelLatLng;
+
+    const marker = L.circleMarker(baseLatLng, {
+      radius: 7,
+      color,
+      fillColor: color,
+      fillOpacity: 0.9,
+      weight: 2,
+    }).addTo(layerState.osintHighlightLayer);
+
+    const numberMarker = L.marker(baseLatLng, {
+      icon: createNumberIcon(number, color)
+    }).addTo(layerState.osintHighlightLayer);
+
+    const leader = L.polyline([baseLatLng, labelLatLng], {
+      color,
+      weight: 2,
+      opacity: 0.75,
+      dashArray: '4,4',
+    }).addTo(layerState.osintHighlightLayer);
+
+    const label = L.marker(labelLatLng, {
+      draggable: true,
+      interactive: true,
+      icon: createOsintBoxIcon(item, number, color)
+    }).addTo(layerState.osintHighlightLayer);
+
+    label.on('drag', (event) => {
+      const newLatLng = event.target.getLatLng();
+      leader.setLatLngs([baseLatLng, newLatLng]);
+    });
+
+    label.on('dragend', (event) => {
+      const newLatLng = event.target.getLatLng();
+      layerState.savedOsintBoxPositions[key] = {
+        lat: newLatLng.lat,
+        lng: newLatLng.lng,
+      };
+      saveSavedJson(OSINT_LABEL_STORAGE_KEY, layerState.savedOsintBoxPositions);
+      leader.setLatLngs([baseLatLng, newLatLng]);
+    });
+
+    label.on('contextmenu', () => {
+      delete layerState.savedOsintBoxPositions[key];
+      saveSavedJson(OSINT_LABEL_STORAGE_KEY, layerState.savedOsintBoxPositions);
+      label.setLatLng(defaultLabelLatLng);
+      leader.setLatLngs([baseLatLng, defaultLabelLatLng]);
+    });
+
+    const popupHtml = `
+      <b>${item.sourceType || 'OSINT'} #${number}</b><br>
+      <b>Title:</b> ${item.title || 'Untitled'}<br>
+      <b>Date:</b> ${item.date || 'Unknown'}<br>
+      <b>Sector:</b> ${item.sectorName || 'Unknown sector'}<br>
+      <b>Near:</b> ${item.nearestPlace || 'Unknown place'}<br>
+      ${item.url ? `<div><a href="${item.url}" target="_blank" rel="noopener noreferrer">Open source</a></div>` : ''}
+    `;
+
+    marker.bindPopup(popupHtml);
+    numberMarker.bindPopup(popupHtml);
+    leader.bindPopup(popupHtml);
+    label.bindPopup(popupHtml);
+  });
+}
+
 export function createLayers(map) {
   const occupiedLayer = L.geoJSON(null, {
     style: {
@@ -561,6 +700,7 @@ export function createLayers(map) {
   const firmsLayer = L.layerGroup();
   const firmsHotspotLayer = L.layerGroup();
   const osintLayer = L.layerGroup();
+  const osintHighlightLayer = L.layerGroup();
 
   const layerState = {
     map,
@@ -571,9 +711,11 @@ export function createLayers(map) {
     firmsLayer,
     firmsHotspotLayer,
     osintLayer,
+    osintHighlightLayer,
     lastDeltaPayload: null,
     savedDeltaLabelPositions: loadSavedJson(DELTA_LABEL_STORAGE_KEY),
     savedFirmsBoxPositions: loadSavedJson(FIRMS_LABEL_STORAGE_KEY),
+    savedOsintBoxPositions: loadSavedJson(OSINT_LABEL_STORAGE_KEY),
   };
 
   rebuildFrontSectorLayer(layerState);
@@ -637,7 +779,7 @@ export function renderOsintLayer(layerState, points) {
   layerState.osintLayer.clearLayers();
 
   points.forEach(point => {
-    const color = point.sourceType === 'ISW' ? '#7c3aed' : point.sourceType === 'Ukrainian official' ? '#15803d' : '#1f5f8b';
+    const color = getOsintColor(point.sourceType);
 
     L.circleMarker([point.lat, point.lng], {
       radius: 6,
