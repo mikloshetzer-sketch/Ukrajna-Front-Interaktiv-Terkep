@@ -48,6 +48,23 @@ function getOsintItemKey(item, index) {
   return `${index}_${item.sourceType || 'OSINT'}_${item.date || 'nodate'}_${lat}_${lng}_${item.title || 'untitled'}`;
 }
 
+function getOsintCategoryIcon(category) {
+  const normalized = String(category || 'general').toLowerCase();
+
+  if (normalized.includes('drone')) return '🛸';
+  if (normalized.includes('missile')) return '🚀';
+  if (normalized.includes('air defense')) return '🛡';
+  if (normalized.includes('assault')) return '⚔';
+  if (normalized.includes('logistics')) return '🚛';
+  if (normalized.includes('artillery')) return '💥';
+  if (normalized.includes('electronic warfare')) return '📡';
+  if (normalized.includes('naval')) return '⚓';
+  if (normalized.includes('aviation')) return '✈';
+  if (normalized.includes('armor') || normalized.includes('armour') || normalized.includes('tank')) return '🪖';
+
+  return '📍';
+}
+
 function createSideLabelHtml({ index, isGain, areaKm2, previousDate, currentDate, sectorName, nearestPlace }) {
   const borderColor = isGain ? '#ff0000' : '#004dff';
   const badgeColor = isGain ? '#ff0000' : '#004dff';
@@ -153,6 +170,8 @@ function createSectorLabelIcon(name) {
 }
 
 function createOsintBoxIcon(item, index, color) {
+  const categoryIcon = getOsintCategoryIcon(item.category);
+
   return L.divIcon({
     className: '',
     html: `
@@ -164,7 +183,7 @@ function createOsintBoxIcon(item, index, color) {
         font-size: 12px;
         line-height: 1.35;
         box-shadow: 0 2px 8px rgba(0,0,0,0.28);
-        min-width: 245px;
+        min-width: 255px;
         color: #111;
         white-space: normal;
       ">
@@ -184,17 +203,17 @@ function createOsintBoxIcon(item, index, color) {
           ">${index}</span>
           <b>${item.sourceType || 'OSINT'}</b>
         </div>
-        <div><b>${item.title || 'Untitled cluster'}</b></div>
+        <div><b>${categoryIcon} ${item.title || 'Untitled cluster'}</b></div>
         <div>${item.date || 'Unknown date'}</div>
         <div><b>Sector:</b> ${item.sectorName || 'Unknown sector'}</div>
         <div><b>Near:</b> ${item.nearestPlace || 'Unknown place'}</div>
         <div><b>Reports:</b> ${item.reportCount || 1}</div>
-        <div><b>Top category:</b> ${item.category || 'general military update'}</div>
+        <div><b>Top category:</b> ${categoryIcon} ${item.category || 'general military update'}</div>
         <div style="color:#444;">Latest: ${item.latestTitle || item.title || 'Untitled'}</div>
       </div>
     `,
-    iconSize: [255, 145],
-    iconAnchor: [0, 72],
+    iconSize: [270, 150],
+    iconAnchor: [0, 75],
   });
 }
 
@@ -661,14 +680,15 @@ export function renderOsintHighlights(layerState, osintSummary) {
       leader.setLatLngs([baseLatLng, defaultLabelLatLng]);
     });
 
+    const categoryIcon = getOsintCategoryIcon(item.category);
     const popupHtml = `
       <b>${item.sourceType || 'OSINT'} #${number}</b><br>
-      <b>Cluster title:</b> ${item.title || 'Untitled'}<br>
+      <b>Cluster title:</b> ${categoryIcon} ${item.title || 'Untitled'}<br>
       <b>Date:</b> ${item.date || 'Unknown'}<br>
       <b>Sector:</b> ${item.sectorName || 'Unknown sector'}<br>
       <b>Near:</b> ${item.nearestPlace || 'Unknown place'}<br>
       <b>Reports:</b> ${item.reportCount || 1}<br>
-      <b>Top category:</b> ${item.category || 'general military update'}<br>
+      <b>Top category:</b> ${categoryIcon} ${item.category || 'general military update'}<br>
       <b>Latest:</b> ${item.latestTitle || item.title || 'Untitled'}<br>
       ${item.urls?.length ? item.urls.map((url, i) => `<div><a href="${url}" target="_blank" rel="noopener noreferrer">Open source ${i + 1}</a></div>`).join('') : ''}
     `;
@@ -786,6 +806,7 @@ export function renderOsintLayer(layerState, points) {
 
   points.forEach(point => {
     const color = getOsintColor(point.sourceType);
+    const categoryIcon = getOsintCategoryIcon(point.category);
 
     L.circleMarker([point.lat, point.lng], {
       radius: 5,
@@ -795,11 +816,11 @@ export function renderOsintLayer(layerState, points) {
       weight: 1,
     }).bindPopup(`
       <b>${point.sourceType || 'OSINT'}</b><br>
-      <b>Title:</b> ${point.title || 'Untitled'}<br>
+      <b>Title:</b> ${categoryIcon} ${point.title || 'Untitled'}<br>
       <b>Date:</b> ${point.date || 'Unknown'}<br>
       <b>Sector:</b> ${point.sectorName || 'Unknown sector'}<br>
       <b>Near:</b> ${point.nearestPlace || 'Unknown place'}<br>
-      <b>Category:</b> ${point.category || 'general military update'}<br>
+      <b>Category:</b> ${categoryIcon} ${point.category || 'general military update'}<br>
       ${point.url ? `<div><a href="${point.url}" target="_blank" rel="noopener noreferrer">Open source</a></div>` : ''}
     `).addTo(layerState.osintLayer);
   });
