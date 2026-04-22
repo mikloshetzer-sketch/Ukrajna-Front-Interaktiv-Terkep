@@ -3,6 +3,7 @@ import { FRONT_SECTORS } from '../data/frontSectors.js';
 const DELTA_LABEL_STORAGE_KEY = 'ukraine_front_delta_label_positions_v1';
 const FIRMS_LABEL_STORAGE_KEY = 'ukraine_front_firms_box_positions_v1';
 const OSINT_LABEL_STORAGE_KEY = 'ukraine_front_osint_box_positions_v1';
+const AXIS_LABEL_STORAGE_KEY = 'ukraine_front_axis_label_positions_v1';
 
 function popupFromProps(props) {
   return Object.entries(props || {})
@@ -46,6 +47,18 @@ function getOsintItemKey(item, index) {
   const lat = Number(item.lat).toFixed(4);
   const lng = Number(item.lng).toFixed(4);
   return `${index}_${item.sourceType || 'OSINT'}_${item.date || 'nodate'}_${lat}_${lng}_${item.title || 'untitled'}`;
+}
+
+function getAxisKey(axis, index) {
+  return [
+    index,
+    axis.side || 'axis',
+    axis.label || 'axis',
+    Number(axis.startLat).toFixed(4),
+    Number(axis.startLng).toFixed(4),
+    Number(axis.endLat).toFixed(4),
+    Number(axis.endLng).toFixed(4),
+  ].join('_');
 }
 
 function getOsintCategoryIcon(category) {
@@ -257,6 +270,30 @@ function createBattleNodeIcon(label, color) {
     `,
     iconSize: [42, 42],
     iconAnchor: [21, 21],
+  });
+}
+
+function createAxisLabelIcon(axis, color) {
+  return L.divIcon({
+    className: '',
+    html: `
+      <div style="
+        background: rgba(255,255,255,0.94);
+        border: 2px solid ${color};
+        border-radius: 9px;
+        padding: 5px 8px;
+        font-size: 11px;
+        line-height: 1.25;
+        color: #111;
+        white-space: nowrap;
+        box-shadow: 0 2px 7px rgba(0,0,0,0.22);
+      ">
+        <div style="font-weight:bold;">${axis.label || 'Axis'}</div>
+        ${axis.note ? `<div style="color:#444;">${axis.note}</div>` : ''}
+      </div>
+    `,
+    iconSize: [180, 42],
+    iconAnchor: [90, 21],
   });
 }
 
@@ -657,6 +694,7 @@ export function renderAttackAxes(layerState, axes = []) {
   prepared.forEach((axis, idx) => {
     const start = L.latLng(axis.startLat, axis.startLng);
     const end = L.latLng(axis.endLat, axis.endLng);
+    const mid = L.latLng((axis.startLat + axis.endLat) / 2, (axis.startLng + axis.endLng) / 2);
     const color = axis.side === 'ru' ? '#c1121f' : '#0f766e';
     const dashArray = axis.side === 'ru' ? null : '8,6';
 
@@ -672,37 +710,45 @@ export function renderAttackAxes(layerState, axes = []) {
       icon: createArrowHeadIcon(angleBetween(start, end), color)
     }).addTo(layerState.attackAxesLayer);
 
-    const labelAnchor = L.latLng(axis.displayLat, axis.displayLng);
-    const leader = L.polyline([
-      L.latLng((axis.startLat + axis.endLat) / 2, (axis.startLng + axis.endLng) / 2),
-      labelAnchor
-    ], {
+    const axisKey = getAxisKey(axis, idx);
+    const saved = layerState.savedAxisLabelPositions[axisKey];
+
+    const defaultLabelLatLng = L.latLng(axis.displayLat, axis.displayLng);
+    const labelLatLng = saved ? L.latLng(saved.lat, saved.lng) : defaultLabelLatLng;
+
+    const leader = L.polyline([mid, labelLatLng], {
       color,
       weight: 1.5,
       opacity: 0.55,
       dashArray: '4,4'
     }).addTo(layerState.attackAxesLayer);
 
-    const label = L.marker(labelAnchor, {
-      icon: L.divIcon({
-        className: '',
-        html: `
-          <div style="
-            background: rgba(255,255,255,0.92);
-            border: 2px solid ${color};
-            border-radius: 8px;
-            padding: 3px 7px;
-            font-size: 11px;
-            font-weight: bold;
-            color: #111;
-            white-space: nowrap;
-            box-shadow: 0 1px 5px rgba(0,0,0,0.2);
-          ">${axis.label || `Axis ${idx + 1}`}</div>
-        `,
-        iconSize: [120, 24],
-        iconAnchor: [60, 12],
-      })
+    const label = L.marker(labelLatLng, {
+      draggable: true,
+      interactive: true,
+      icon: createAxisLabelIcon(axis, color)
     }).addTo(layerState.attackAxesLayer);
+
+    label.on('drag', (event) => {
+      leader.setLatLngs([mid, event.target.getLatLng()]);
+    });
+
+    label.on('dragend', (event) => {
+      const newLatLng = event.target.getLatLng();
+      layerState.savedAxisLabelPositions[axisKey] = {
+        lat: newLatLng.lat,
+        lng: newLatLng.lng,
+      };
+      saveSavedJson(AXIS_LABEL_STORAGE_KEY, layerState.savedAxisLabelPositions);
+      leader.setLatLngs([mid, newLatLng]);
+    });
+
+    label.on('contextmenu', () => {
+      delete layerState.savedAxisLabelPositions[axisKey];
+      saveSavedJson(AXIS_LABEL_STORAGE_KEY, layerState.savedAxisLabelPositions);
+      label.setLatLng(defaultLabelLatLng);
+      leader.setLatLngs([mid, defaultLabelLatLng]);
+    });
 
     const popupHtml = `
       <b>${axis.label || `Axis ${idx + 1}`}</b><br>
@@ -1044,6 +1090,7 @@ export function createLayers(map) {
     savedDeltaLabelPositions: loadSavedJson(DELTA_LABEL_STORAGE_KEY),
     savedFirmsBoxPositions: loadSavedJson(FIRMS_LABEL_STORAGE_KEY),
     savedOsintBoxPositions: loadSavedJson(OSINT_LABEL_STORAGE_KEY),
+    savedAxisLabelPositions: loadSavedJson(AXIS_LABEL_STORAGE_KEY),
   };
 
   rebuildFrontSectorLayer(layerState);
