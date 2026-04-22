@@ -13,7 +13,7 @@ HEADERS = {
 }
 
 ISW_URL = "https://understandingwar.org/analysis/russia-ukraine/"
-ARMYINFORM_EN_URL = "https://armyinform.com.ua/en/category/news/"
+ARMYINFORM_EN_URL = "https://armyinform.com.ua/en/"
 OUTPUT_FILE = "data/osint_feed.json"
 
 REFERENCE_PLACES = [
@@ -48,22 +48,55 @@ REFERENCE_PLACES = [
     {"name": "Sevastopol", "lat": 44.616, "lng": 33.525},
     {"name": "Melitopol", "lat": 46.848, "lng": 35.365},
     {"name": "Mariupol", "lat": 47.097, "lng": 37.543},
+    {"name": "Sloviansk", "lat": 48.853, "lng": 37.605},
 ]
 
 CATEGORY_RULES = [
-    ("drone strike", ["drone", "uav", "shahed"]),
-    ("missile strike", ["missile", "iskander", "kalibr", "rocket"]),
-    ("air defense", ["air defense", "patriot", "s-300", "s-400"]),
+    ("drone strike", ["drone", "uav", "shahed", "loitering munitions"]),
+    ("missile strike", ["missile", "iskander", "kalibr", "rocket", "storm shadow"]),
+    ("air defense", ["air defense", "destroyed uavs", "destroy enemy uavs", "mirage 2000"]),
     ("assault", ["assault", "offensive", "attack", "advance", "storm", "repelled", "fighting"]),
-    ("logistics", ["railway", "ammo", "warehouse", "depot", "fuel", "logistics"]),
+    ("logistics", ["railway", "ammo", "warehouse", "depot", "fuel", "logistics", "arsenal"]),
     ("occupation/admin", ["occupation", "administration", "passportization", "governor"]),
+]
+
+ISW_RELEVANT_PATTERNS = [
+    "campaign assessment",
+    "offensive",
+    "occupation update",
+    "strike",
+    "attack",
+    "front",
+    "ukraine",
+    "russia",
+]
+
+ARMYINFORM_RELEVANT_PATTERNS = [
+    "pokrovsk",
+    "kharkiv",
+    "kherson",
+    "kupiansk",
+    "zaporizhzhia",
+    "sumy",
+    "drone",
+    "uav",
+    "occupiers",
+    "enemy",
+    "russian",
+    "forces",
+    "strike",
+    "attack",
+    "general staff",
+    "front",
+    "artillery",
 ]
 
 STRONG_FRONT_PLACES = {
     "Pokrovsk", "Kostiantynivka", "Chasiv Yar", "Toretsk", "Kurakhove",
     "Siversk", "Kupiansk", "Vovchansk", "Borova", "Svatove", "Kreminna",
     "Lyman", "Avdiivka", "Bakhmut", "Orikhiv", "Robotyne", "Tokmak",
-    "Kherson", "Oleshky", "Nova Kakhovka", "Zaporizhzhia", "Sumy"
+    "Kherson", "Oleshky", "Nova Kakhovka", "Zaporizhzhia", "Sumy",
+    "Sloviansk", "Kharkiv"
 }
 
 
@@ -189,7 +222,17 @@ def scrape_isw():
         seen.add(full_url)
 
         low = title.lower()
-        if "campaign assessment" not in low and "occupation update" not in low and "ukraine" not in low and "russia" not in low:
+
+        if not any(p in low for p in ISW_RELEVANT_PATTERNS):
+            continue
+
+        # kiszűrjük a túl általános / tematikus oldalakat
+        if any(bad in low for bad in [
+            "russia in review",
+            "russian preparations for war",
+            "russian invasion of ukraine (2014",
+            "force generation & adaptation update",
+        ]):
             continue
 
         body_text = ""
@@ -201,7 +244,7 @@ def scrape_isw():
 
         best_place, place_score = choose_best_place(title, body_text)
         if not best_place:
-            best_place = {"name": "Pokrovsk", "lat": 48.281, "lng": 37.181}
+            continue
 
         category = classify_item(title, body_text[:3000])
 
@@ -228,23 +271,32 @@ def scrape_armyinform():
     items = []
     seen = set()
 
+    # főoldali news linkek
+    candidate_links = []
+
     for a in soup.select("a"):
         href = a.get("href") or ""
         title = normalize_whitespace(a.get_text(" ", strip=True))
+
         if not href or not title:
             continue
 
         full_url = urljoin(ARMYINFORM_EN_URL, href)
+        low = title.lower()
+
         if full_url in seen:
             continue
         seen.add(full_url)
 
-        low = title.lower()
-        if len(title) < 20:
-            continue
-        if not any(k in low for k in ["enemy", "russian", "forces", "strike", "attack", "general staff", "troops", "front", "repelled"]):
+        if len(title) < 18:
             continue
 
+        if not any(p in low for p in ARMYINFORM_RELEVANT_PATTERNS):
+            continue
+
+        candidate_links.append((title, full_url))
+
+    for title, full_url in candidate_links:
         body_text = ""
         try:
             body_html = fetch_html(full_url)
@@ -253,6 +305,8 @@ def scrape_armyinform():
             body_text = ""
 
         best_place, place_score = choose_best_place(title, body_text)
+
+        # ha a body-ben sincs hely, akkor ezt kihagyjuk
         if not best_place:
             continue
 
@@ -295,6 +349,20 @@ def dedupe_items(items):
     return out
 
 
+def diversify_locations(items, max_per_place=2):
+    counts = Counter()
+    out = []
+
+    for item in items:
+        key = (round(float(item["lat"]), 2), round(float(item["lng"]), 2))
+        if counts[key] >= max_per_place:
+            continue
+        counts[key] += 1
+        out.append(item)
+
+    return out
+
+
 def main():
     all_items = []
     all_items.extend(scrape_isw())
@@ -305,6 +373,7 @@ def main():
         key=lambda x: (x.get("importance", 0), x.get("date", "")),
         reverse=True
     )
+    all_items = diversify_locations(all_items, max_per_place=2)
 
     payload = {
         "updated_at": datetime.now(timezone.utc).isoformat(),
