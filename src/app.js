@@ -130,6 +130,8 @@ function getClusterSeverity(cluster) {
 
   if (cluster.sourceType === 'Ukrainian official') score += 2;
   else if (cluster.sourceType === 'ISW') score += 1;
+  else if (cluster.sourceType === 'GeoConfirmed') score += 2;
+  else if (cluster.sourceType === 'Critical Threats') score += 1;
 
   const category = String(cluster.category || '').toLowerCase();
   if (category.includes('assault')) score += 3;
@@ -138,6 +140,11 @@ function getClusterSeverity(cluster) {
   else if (category.includes('air defense')) score += 2;
   else if (category.includes('artillery')) score += 2;
   else if (category.includes('logistics')) score += 1;
+
+  const freshnessHours = Number(cluster.freshnessHours || 999);
+  if (freshnessHours <= 12) score += 2;
+  else if (freshnessHours <= 24) score += 1;
+  else if (freshnessHours <= 36) score += 0.5;
 
   if ((cluster.sectorShortName || cluster.sectorName || '').toLowerCase().includes('outside')) {
     score -= 1;
@@ -163,6 +170,9 @@ function addClusterSeverity(summary) {
 
       const impDiff = (b.importance || 0) - (a.importance || 0);
       if (impDiff !== 0) return impDiff;
+
+      const freshDiff = Number(a.freshnessHours || 999) - Number(b.freshnessHours || 999);
+      if (freshDiff !== 0) return freshDiff;
 
       return (b.reportCount || 0) - (a.reportCount || 0);
     })
@@ -288,17 +298,26 @@ function updateOsintFeedList(summary) {
     return;
   }
 
+  const modeText =
+    summary.mode === 'fresh'
+      ? `Fresh window: last <strong>${summary.freshnessWindowHours}h</strong>`
+      : summary.mode === 'fallback'
+        ? `Fallback mode: latest available date <strong>${summary.referenceDate || 'n/a'}</strong>`
+        : 'No fresh data';
+
   dom.osintFeedList.innerHTML = `
     <b>Top 5 OSINT clusters</b><br>
+    <div style="margin-bottom:8px;">${modeText}</div>
     ${summary.topFive.map((item, idx) => {
       const icon = getOsintCategoryIcon(item.category);
       return `
         <div style="margin-bottom:8px;">
           <b>${idx + 1}. ${icon} ${item.title || 'Untitled'}</b><br>
-          ${item.sourceType || 'OSINT'} · ${item.date || 'Unknown date'}<br>
+          ${item.sourceType || 'OSINT'} · ${item.date || 'Unknown date'} · ${item.freshnessLabel || 'UNKNOWN'}<br>
           ${item.sectorShortName || item.sectorName || 'Unknown sector'} · ${item.nearestPlace || 'Unknown place'}<br>
           Reports: ${item.reportCount || 1} · Category: ${icon} ${item.category || 'general military update'}<br>
           Severity: ${getThreatBadge(item.severity || 'LOW')}<br>
+          Freshness: <strong>${Number(item.freshnessHours || 0).toFixed(1)}h</strong><br>
           <span style="color:#444;">Latest: ${item.latestTitle || item.title || 'Untitled'}</span>
           ${item.urls?.length ? item.urls.map((url, i) => `<div><a href="${url}" target="_blank" rel="noopener noreferrer">Open source ${i + 1}</a></div>`).join('') : ''}
         </div>
@@ -500,7 +519,7 @@ function updateAutoOpsSummary() {
 
   if (topOsint) {
     sentences.push(
-      `Az OSINT feedben a legerősebb cluster a(z) <b>${topOsint.sectorShortName || topOsint.sectorName}</b> szektorhoz kapcsolódik ${topOsint.nearestPlace} környezetében, <b>${topOsint.reportCount}</b> jelentéssel és ${getThreatBadge(topOsint.severity || 'LOW')} severity szinttel.`
+      `Az OSINT feedben a legerősebb, friss cluster a(z) <b>${topOsint.sectorShortName || topOsint.sectorName}</b> szektorhoz kapcsolódik ${topOsint.nearestPlace} környezetében, <b>${topOsint.reportCount}</b> jelentéssel, ${topOsint.freshnessLabel || 'UNKNOWN'} státusszal és ${getThreatBadge(topOsint.severity || 'LOW')} severity szinttel.`
     );
   }
 
@@ -536,6 +555,13 @@ function updateDailyDashboard() {
   );
   const topThreatSector = sectorRows[0] || null;
 
+  const osintModeText =
+    osint?.mode === 'fresh'
+      ? `Fresh < ${osint.freshnessWindowHours}h`
+      : osint?.mode === 'fallback'
+        ? `Fallback ${osint.referenceDate || 'n/a'}`
+        : 'No OSINT';
+
   dom.dailyDashboard.innerHTML = `
     <b>Operational picture</b><br>
     Date: <strong>${summary.currentDate || 'n/a'}</strong>
@@ -553,7 +579,10 @@ function updateDailyDashboard() {
     ${topFirms ? `${topFirms.categoryLabel} · ${topFirms.sectorShortName || topFirms.sectorName} · ${topFirms.nearestPlace} · ${topFirms.count} hotspots` : 'No FIRMS zone'}
     <hr style="margin:6px 0;">
     <b>Top OSINT cluster</b><br>
-    ${topOsint ? `${getOsintCategoryIcon(topOsint.category)} ${topOsint.sourceType} · ${topOsint.sectorShortName || topOsint.sectorName} · ${topOsint.nearestPlace} · ${topOsint.reportCount} reports · ${getThreatBadge(topOsint.severity || 'LOW')}` : 'No OSINT cluster'}
+    ${topOsint ? `${getOsintCategoryIcon(topOsint.category)} ${topOsint.sourceType} · ${topOsint.sectorShortName || topOsint.sectorName} · ${topOsint.nearestPlace} · ${topOsint.reportCount} reports · ${topOsint.freshnessLabel || 'UNKNOWN'} · ${getThreatBadge(topOsint.severity || 'LOW')}` : 'No OSINT cluster'}
+    <hr style="margin:6px 0;">
+    <b>OSINT status</b><br>
+    ${osintModeText}
     <hr style="margin:6px 0;">
     <b>OSINT categories</b><br>
     ${osint ? buildOsintCategorySummary(osint) : 'No category summary'}
@@ -912,7 +941,11 @@ async function refreshOsint() {
       return;
     }
 
-    const feed = await fetchOsintFeed();
+    const feed = await fetchOsintFeed({
+      maxAgeHours: 36,
+      fallbackAgeHours: 96,
+    });
+
     const summary = addClusterSeverity(summarizeOsintFeed(feed));
     appState.latestOsintSummary = summary;
 
