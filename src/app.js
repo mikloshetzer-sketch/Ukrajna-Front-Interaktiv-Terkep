@@ -294,7 +294,7 @@ function updateOsintFeedList(summary) {
   if (!dom.osintFeedList) return;
 
   if (!summary || !summary.topFive.length) {
-    dom.osintFeedList.innerHTML = 'No OSINT feed loaded yet.';
+    dom.osintFeedList.innerHTML = 'No OSINT feed available.';
     return;
   }
 
@@ -983,7 +983,26 @@ async function refreshOsint() {
     }
   } catch (error) {
     console.error('OSINT hiba:', error);
-    setStatus(`OSINT hiba: ${error.message}`);
+
+    appState.latestOsintSummary = null;
+    layerState.osintLayer.clearLayers();
+    layerState.osintHighlightLayer.clearLayers();
+
+    if (map.hasLayer(layerState.osintLayer)) {
+      map.removeLayer(layerState.osintLayer);
+    }
+    if (map.hasLayer(layerState.osintHighlightLayer)) {
+      map.removeLayer(layerState.osintHighlightLayer);
+    }
+
+    updateOsintFeedList(null);
+    updateDailyDashboard();
+    updateAutoOpsSummary();
+    updateTopThreatSectors();
+    updateSectorBalanceSummary();
+    buildAttackAxes();
+    buildBattleNodes();
+    refreshHeatmap();
   }
 }
 
