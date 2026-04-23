@@ -1,4 +1,5 @@
 const OSINT_FEED_CANDIDATES = [
+  './data/osint_feed.json',
   './data/osint/osint.json',
   './data/osint/latest.json',
   './data/osint/feed.json',
@@ -517,10 +518,7 @@ export async function fetchOsintFeed(options = {}) {
   const fallbackAgeHours = Number(options.fallbackAgeHours || 96);
 
   const result = await fetchFirstAvailableJson();
-
-  if (!result.ok) {
-    return [];
-  }
+  if (!result.ok) return [];
 
   const rawItems = toItemsArray(result.json);
 
