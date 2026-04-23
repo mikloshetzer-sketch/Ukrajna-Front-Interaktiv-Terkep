@@ -3,19 +3,15 @@ const OSINT_FEED_CANDIDATES = [
   './data/osint/latest.json',
   './data/osint/feed.json',
   './data/osint/items.json',
+  './data/osint/combined.json',
+  './data/osint/latest_osint.json',
   './data/osint.json',
 ];
 
 const MS_IN_HOUR = 60 * 60 * 1000;
-const MS_IN_DAY = 24 * MS_IN_HOUR;
 
 function isFiniteNumber(value) {
   return Number.isFinite(Number(value));
-}
-
-function toNumberOrNull(value) {
-  const num = Number(value);
-  return Number.isFinite(num) ? num : null;
 }
 
 function safeDate(value) {
@@ -53,7 +49,12 @@ function normalizeSourceType(raw) {
 
   if (lower.includes('isw')) return 'ISW';
   if (lower.includes('critical threats')) return 'Critical Threats';
-  if (lower.includes('ukrainian') || lower.includes('general staff') || lower.includes('mod ukraine') || lower.includes('sbu')) {
+  if (
+    lower.includes('ukrainian') ||
+    lower.includes('general staff') ||
+    lower.includes('mod ukraine') ||
+    lower.includes('sbu')
+  ) {
     return 'Ukrainian official';
   }
   if (lower.includes('deepstate')) return 'DeepState';
@@ -70,7 +71,6 @@ function inferCategory(text) {
   const t = normalizeText(text);
 
   if (!t) return 'general military update';
-
   if (t.includes('drone')) return 'drone strike';
   if (t.includes('missile') || t.includes('storm shadow') || t.includes('iskander')) return 'missile strike';
   if (t.includes('air defense') || t.includes('sam') || t.includes('radar')) return 'air defense';
@@ -216,14 +216,24 @@ async function fetchFirstAvailableJson() {
         lastError = new Error(`HTTP ${response.status} – ${url}`);
         continue;
       }
+
       const json = await response.json();
-      return { json, url };
+      return {
+        ok: true,
+        json,
+        url,
+      };
     } catch (error) {
       lastError = error;
     }
   }
 
-  throw lastError || new Error('No OSINT feed source could be loaded.');
+  return {
+    ok: false,
+    json: null,
+    url: null,
+    error: lastError || new Error('No OSINT feed source could be loaded.'),
+  };
 }
 
 function normalizeOsintItem(raw, sourceUrl) {
@@ -292,7 +302,6 @@ function dedupeItems(items) {
     ].join('|');
 
     const existing = byKey.get(key);
-
     if (!existing) {
       byKey.set(key, item);
       return;
@@ -311,7 +320,6 @@ function dedupeItems(items) {
 
 function haversineKm(aLat, aLng, bLat, bLng) {
   const toRad = deg => (deg * Math.PI) / 180;
-
   const R = 6371;
   const dLat = toRad(bLat - aLat);
   const dLng = toRad(bLng - aLng);
@@ -508,11 +516,16 @@ export async function fetchOsintFeed(options = {}) {
   const maxAgeHours = Number(options.maxAgeHours || 36);
   const fallbackAgeHours = Number(options.fallbackAgeHours || 96);
 
-  const { json, url } = await fetchFirstAvailableJson();
-  const rawItems = toItemsArray(json);
+  const result = await fetchFirstAvailableJson();
+
+  if (!result.ok) {
+    return [];
+  }
+
+  const rawItems = toItemsArray(result.json);
 
   const normalized = rawItems
-    .map(item => normalizeOsintItem(item, url))
+    .map(item => normalizeOsintItem(item, result.url))
     .filter(item => isFiniteNumber(item.lat) && isFiniteNumber(item.lng));
 
   const deduped = dedupeItems(normalized);
