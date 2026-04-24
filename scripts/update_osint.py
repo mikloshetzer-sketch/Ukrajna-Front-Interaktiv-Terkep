@@ -12,7 +12,9 @@ OUTPUT_PATH = Path("data/osint_feed.json")
 RECENT_DAYS = 4
 MAX_ITEMS = 100
 
-HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; UkraineFrontDashboard/1.0)"}
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (compatible; UkraineFrontDashboard/1.0)"
+}
 
 SOURCES = [
     {
@@ -93,31 +95,57 @@ def parse_date_from_url(url):
     m = re.search(r"/(20\d{2})/(\d{2})/(\d{2})/", url)
     if not m:
         return None
-    return datetime(int(m.group(1)), int(m.group(2)), int(m.group(3)), tzinfo=timezone.utc)
+
+    return datetime(
+        int(m.group(1)),
+        int(m.group(2)),
+        int(m.group(3)),
+        tzinfo=timezone.utc,
+    )
 
 
 def parse_named_date(title, url):
     months = {
-        "january": 1, "february": 2, "march": 3, "april": 4,
-        "may": 5, "june": 6, "july": 7, "august": 8,
-        "september": 9, "october": 10, "november": 11, "december": 12,
+        "january": 1,
+        "february": 2,
+        "march": 3,
+        "april": 4,
+        "may": 5,
+        "june": 6,
+        "july": 7,
+        "august": 8,
+        "september": 9,
+        "october": 10,
+        "november": 11,
+        "december": 12,
     }
 
     text = f"{title} {url}".lower()
+
     m = re.search(
         r"(january|february|march|april|may|june|july|august|september|october|november|december)[-/\s]+(\d{1,2})[-/,\s]+(20\d{2})",
         text,
     )
+
     if not m:
         return None
 
-    return datetime(int(m.group(3)), months[m.group(1)], int(m.group(2)), tzinfo=timezone.utc)
+    return datetime(
+        int(m.group(3)),
+        months[m.group(1)],
+        int(m.group(2)),
+        tzinfo=timezone.utc,
+    )
 
 
 def is_recent(date_obj):
     if not date_obj:
         return False
-    return date_obj >= datetime.now(timezone.utc) - timedelta(days=RECENT_DAYS)
+
+    return (
+        date_obj >=
+        datetime.now(timezone.utc) - timedelta(days=RECENT_DAYS)
+    )
 
 
 def is_background(title, url):
@@ -137,14 +165,17 @@ def is_background(title, url):
 
 def infer_category(title, summary=""):
     text = f"{title} {summary}".lower()
+
     for category, words in CATEGORY_RULES:
         if any(w in text for w in words):
             return category
+
     return "general military update"
 
 
 def match_location(title, summary=""):
     text = f"{title} {summary}".lower()
+
     for loc in LOCATION_DB:
         if loc["name"].lower() in text:
             return loc
@@ -180,6 +211,7 @@ def make_item(title, url, source, date_obj, summary=""):
 def parse_armyinform(source):
     html = fetch_html(source["url"])
     soup = BeautifulSoup(html, "html.parser")
+
     items = []
     seen = set()
 
@@ -189,20 +221,38 @@ def parse_armyinform(source):
 
         if len(title) < 20:
             continue
+
         if "armyinform.com.ua/en/" not in url:
             continue
+
         if url in seen:
             continue
+
         seen.add(url)
 
         date_obj = parse_date_from_url(url)
+
         if not is_recent(date_obj):
             continue
+
         if is_background(title, url):
             continue
 
-        parent = clean(link.find_parent().get_text(" ") if link.find_parent() else title)
-        items.append(make_item(title, url, source, date_obj, parent))
+        parent = clean(
+            link.find_parent().get_text(" ")
+            if link.find_parent()
+            else title
+        )
+
+        items.append(
+            make_item(
+                title,
+                url,
+                source,
+                date_obj,
+                parent,
+            )
+        )
 
     return items[:20]
 
@@ -210,6 +260,7 @@ def parse_armyinform(source):
 def parse_isw(source):
     html = fetch_html(source["url"])
     soup = BeautifulSoup(html, "html.parser")
+
     items = []
     seen = set()
 
@@ -219,9 +270,11 @@ def parse_isw(source):
 
         if url in seen:
             continue
+
         seen.add(url)
 
         lower_url = url.lower()
+
         valid_daily = (
             "russian-offensive-campaign-assessment" in lower_url
             or "russian-occupation-update-" in lower_url
@@ -229,14 +282,24 @@ def parse_isw(source):
 
         if not valid_daily:
             continue
+
         if len(title) < 20:
             continue
 
         date_obj = parse_named_date(title, url)
+
         if not is_recent(date_obj):
             continue
 
-        items.append(make_item(title, url, source, date_obj, title))
+        items.append(
+            make_item(
+                title,
+                url,
+                source,
+                date_obj,
+                title,
+            )
+        )
 
     return items[:10]
 
@@ -244,49 +307,68 @@ def parse_isw(source):
 def parse_critical_threats(source):
     html = fetch_html(source["url"])
     soup = BeautifulSoup(html, "html.parser")
+
     items = []
     seen = set()
 
     for link in soup.find_all("a", href=True):
         title = clean(link.get_text(" "))
-        url = urljoin(source["url"], link["href"]).strip()
+        href = link.get("href", "").strip()
+
+        if not href:
+            continue
+
+        url = urljoin(source["url"], href).strip()
 
         if url in seen:
             continue
+
         seen.add(url)
 
-        lower_url = url.lower()
         lower_title = title.lower()
-
-        if "criticalthreats.org/analysis/" not in lower_url:
-            continue
+        lower_url = url.lower()
 
         valid = (
-            "russian-offensive-campaign-assessment" in lower_url
-            or "russian offensive campaign assessment" in lower_title
+            "russian offensive campaign assessment" in lower_title
+            or "russian-offensive-campaign-assessment" in lower_url
         )
 
         if not valid:
             continue
-        if len(title) < 20:
+
+        if len(title) < 15:
             continue
 
         date_obj = parse_named_date(title, url)
+
+        if not date_obj:
+            date_obj = parse_date_from_url(url)
+
         if not is_recent(date_obj):
             continue
 
-        items.append(make_item(title, url, source, date_obj, title))
+        items.append(
+            make_item(
+                title=title,
+                url=url,
+                source=source,
+                date_obj=date_obj,
+                summary=title,
+            )
+        )
 
     return items[:10]
 
 
 def dedupe(items):
     result = []
+
     seen_urls = set()
     seen_title_date = set()
 
     for item in items:
         url = item.get("url", "").strip().lower()
+
         title_date = (
             item.get("title", "").lower().strip(),
             item.get("date", ""),
@@ -295,11 +377,13 @@ def dedupe(items):
 
         if url in seen_urls:
             continue
+
         if title_date in seen_title_date:
             continue
 
         seen_urls.add(url)
         seen_title_date.add(title_date)
+
         result.append(item)
 
     return result
@@ -308,7 +392,10 @@ def dedupe(items):
 def trim(items):
     return sorted(
         items,
-        key=lambda x: (x.get("date", ""), int(x.get("importance", 0))),
+        key=lambda x: (
+            x.get("date", ""),
+            int(x.get("importance", 0)),
+        ),
         reverse=True,
     )[:MAX_ITEMS]
 
@@ -320,14 +407,18 @@ def main():
         try:
             if source["kind"] == "armyinform":
                 parsed = parse_armyinform(source)
+
             elif source["kind"] == "isw":
                 parsed = parse_isw(source)
+
             elif source["kind"] == "critical_threats":
                 parsed = parse_critical_threats(source)
+
             else:
                 parsed = []
 
             print(f"{source['name']}: {len(parsed)} valid items")
+
             new_items.extend(parsed)
 
         except Exception as exc:
