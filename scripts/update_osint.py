@@ -9,8 +9,8 @@ from bs4 import BeautifulSoup
 
 
 OUTPUT_PATH = Path("data/osint_feed.json")
-RECENT_DAYS = 3
-MAX_ITEMS = 80
+RECENT_DAYS = 4
+MAX_ITEMS = 100
 
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; UkraineFrontDashboard/1.0)"}
 
@@ -18,7 +18,7 @@ SOURCES = [
     {
         "name": "ArmyInform",
         "sourceType": "Ukrainian official",
-        "url": "https://armyinform.com.ua/en/category/main-news/",
+        "url": "https://armyinform.com.ua/en/category/latest-news/",
         "kind": "armyinform",
         "importance": 8,
     },
@@ -28,6 +28,13 @@ SOURCES = [
         "url": "https://understandingwar.org/analysis/russia-ukraine/russian-offensive-campaign",
         "kind": "isw",
         "importance": 9,
+    },
+    {
+        "name": "Critical Threats",
+        "sourceType": "Critical Threats",
+        "url": "https://www.criticalthreats.org/analysis",
+        "kind": "critical_threats",
+        "importance": 8,
     },
 ]
 
@@ -44,6 +51,7 @@ LOCATION_DB = [
     {"name": "Zaporizhzhia", "lat": 47.838, "lng": 35.139, "sector": "Zaporizhzhia sector"},
     {"name": "Kherson", "lat": 46.635, "lng": 32.616, "sector": "Kherson sector"},
     {"name": "Crimea", "lat": 45.300, "lng": 34.400, "sector": "Crimea"},
+    {"name": "Sevastopol", "lat": 44.616, "lng": 33.525, "sector": "Crimea"},
     {"name": "Belgorod", "lat": 50.595, "lng": 36.587, "sector": "Russian rear area"},
     {"name": "Kursk", "lat": 51.730, "lng": 36.193, "sector": "Russian rear area"},
     {"name": "Bryansk", "lat": 53.243, "lng": 34.364, "sector": "Russian rear area"},
@@ -88,7 +96,7 @@ def parse_date_from_url(url):
     return datetime(int(m.group(1)), int(m.group(2)), int(m.group(3)), tzinfo=timezone.utc)
 
 
-def parse_isw_date(title, url):
+def parse_named_date(title, url):
     months = {
         "january": 1, "february": 2, "march": 3, "april": 4,
         "may": 5, "june": 6, "july": 7, "august": 8,
@@ -214,7 +222,6 @@ def parse_isw(source):
         seen.add(url)
 
         lower_url = url.lower()
-
         valid_daily = (
             "russian-offensive-campaign-assessment" in lower_url
             or "russian-occupation-update-" in lower_url
@@ -225,7 +232,46 @@ def parse_isw(source):
         if len(title) < 20:
             continue
 
-        date_obj = parse_isw_date(title, url)
+        date_obj = parse_named_date(title, url)
+        if not is_recent(date_obj):
+            continue
+
+        items.append(make_item(title, url, source, date_obj, title))
+
+    return items[:10]
+
+
+def parse_critical_threats(source):
+    html = fetch_html(source["url"])
+    soup = BeautifulSoup(html, "html.parser")
+    items = []
+    seen = set()
+
+    for link in soup.find_all("a", href=True):
+        title = clean(link.get_text(" "))
+        url = urljoin(source["url"], link["href"]).strip()
+
+        if url in seen:
+            continue
+        seen.add(url)
+
+        lower_url = url.lower()
+        lower_title = title.lower()
+
+        if "criticalthreats.org/analysis/" not in lower_url:
+            continue
+
+        valid = (
+            "russian-offensive-campaign-assessment" in lower_url
+            or "russian offensive campaign assessment" in lower_title
+        )
+
+        if not valid:
+            continue
+        if len(title) < 20:
+            continue
+
+        date_obj = parse_named_date(title, url)
         if not is_recent(date_obj):
             continue
 
@@ -276,6 +322,8 @@ def main():
                 parsed = parse_armyinform(source)
             elif source["kind"] == "isw":
                 parsed = parse_isw(source)
+            elif source["kind"] == "critical_threats":
+                parsed = parse_critical_threats(source)
             else:
                 parsed = []
 
@@ -285,7 +333,6 @@ def main():
         except Exception as exc:
             print(f"WARNING: {source['name']} failed: {exc}")
 
-    # IMPORTANT: do not merge old bad items anymore.
     clean_items = trim(dedupe(new_items))
 
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
