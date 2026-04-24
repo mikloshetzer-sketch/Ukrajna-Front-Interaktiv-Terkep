@@ -196,6 +196,13 @@ def make_item(title, url, source, date_obj, summary=""):
         "date": date_obj.date().isoformat(),
         "sourceType": source["sourceType"],
         "sourceName": source["name"],
+        "sources": [
+            {
+                "name": source["name"],
+                "type": source["sourceType"],
+                "url": url.strip(),
+            }
+        ],
         "category": infer_category(title, summary),
         "importance": source["importance"],
         "lat": loc["lat"],
@@ -204,7 +211,10 @@ def make_item(title, url, source, date_obj, summary=""):
         "sectorName": loc["sector"],
         "sectorShortName": loc["sector"],
         "url": url.strip(),
+        "urls": [url.strip()],
         "summary": clean(summary)[:400],
+        "multiSource": False,
+        "sourceCount": 1,
     }
 
 
@@ -360,9 +370,61 @@ def parse_critical_threats(source):
     return items[:10]
 
 
+def canonical_title(title):
+    text = clean(title).lower()
+    text = re.sub(r"\s+", " ", text)
+    return text
+
+
+def merge_same_event(items):
+    merged = {}
+
+    for item in items:
+        key = (
+            canonical_title(item.get("title", "")),
+            item.get("date", ""),
+        )
+
+        if key not in merged:
+            merged[key] = item
+            continue
+
+        existing = merged[key]
+
+        existing_sources = existing.get("sources", [])
+        existing_source_names = {s.get("name") for s in existing_sources}
+
+        for src in item.get("sources", []):
+            if src.get("name") not in existing_source_names:
+                existing_sources.append(src)
+                existing_source_names.add(src.get("name"))
+
+        existing["sources"] = existing_sources
+        existing["sourceCount"] = len(existing_sources)
+        existing["multiSource"] = len(existing_sources) > 1
+
+        existing_urls = existing.get("urls", [])
+        for url in item.get("urls", []):
+            if url not in existing_urls:
+                existing_urls.append(url)
+
+        existing["urls"] = existing_urls
+        existing["url"] = existing_urls[0] if existing_urls else existing.get("url", "")
+
+        source_names = [s.get("name") for s in existing_sources if s.get("name")]
+        existing["sourceName"] = " + ".join(source_names)
+        existing["sourceType"] = "Multi-source" if len(source_names) > 1 else existing.get("sourceType", "OSINT")
+
+        existing["importance"] = max(
+            int(existing.get("importance", 0)),
+            int(item.get("importance", 0)),
+        ) + (1 if existing["multiSource"] else 0)
+
+    return list(merged.values())
+
+
 def dedupe(items):
     result = []
-
     seen_urls = set()
     seen_title_date = set()
 
@@ -372,7 +434,6 @@ def dedupe(items):
         title_date = (
             item.get("title", "").lower().strip(),
             item.get("date", ""),
-            item.get("sourceType", ""),
         )
 
         if url in seen_urls:
@@ -395,6 +456,7 @@ def trim(items):
         key=lambda x: (
             x.get("date", ""),
             int(x.get("importance", 0)),
+            int(x.get("sourceCount", 1)),
         ),
         reverse=True,
     )[:MAX_ITEMS]
@@ -424,7 +486,7 @@ def main():
         except Exception as exc:
             print(f"WARNING: {source['name']} failed: {exc}")
 
-    clean_items = trim(dedupe(new_items))
+    clean_items = trim(dedupe(merge_same_event(new_items)))
 
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 
