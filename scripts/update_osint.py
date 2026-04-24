@@ -1,6 +1,6 @@
 import json
 import re
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from urllib.parse import urljoin
 
@@ -10,27 +10,26 @@ from bs4 import BeautifulSoup
 
 OUTPUT_PATH = Path("data/osint_feed.json")
 
-USER_AGENT = (
-    "Mozilla/5.0 (compatible; UkraineFrontDashboard/1.0; "
-    "+https://github.com/mikloshetzer-sketch/Ukrajna-Front-Interaktiv-Terkep)"
-)
+RECENT_DAYS = 3
+MAX_ITEMS = 120
 
+USER_AGENT = "Mozilla/5.0 (compatible; UkraineFrontDashboard/1.0)"
 HEADERS = {"User-Agent": USER_AGENT}
 
-SOURCE_PAGES = [
+SOURCES = [
     {
         "name": "ArmyInform",
         "sourceType": "Ukrainian official",
         "url": "https://armyinform.com.ua/en/category/main-news/",
-        "kind": "wordpress_list",
-        "importance": 10,
+        "kind": "armyinform",
+        "importance": 8,
     },
     {
-        "name": "Militarnyi",
-        "sourceType": "Ukrainian official",
-        "url": "https://militarnyi.com/en/",
-        "kind": "generic_list",
-        "importance": 8,
+        "name": "ISW",
+        "sourceType": "ISW",
+        "url": "https://understandingwar.org/analysis/russia-ukraine/russian-offensive-campaign",
+        "kind": "isw",
+        "importance": 9,
     },
 ]
 
@@ -44,194 +43,147 @@ LOCATION_DB = [
     {"name": "Bakhmut", "lat": 48.594, "lng": 38.000, "sector": "Donetsk sector"},
     {"name": "Avdiivka", "lat": 48.139, "lng": 37.742, "sector": "Donetsk sector"},
     {"name": "Kurakhove", "lat": 47.985, "lng": 37.282, "sector": "Donetsk sector"},
-    {"name": "Velyka Novosilka", "lat": 47.845, "lng": 36.837, "sector": "Donetsk sector"},
     {"name": "Lyman", "lat": 48.989, "lng": 37.810, "sector": "Luhansk sector"},
     {"name": "Kreminna", "lat": 49.049, "lng": 38.217, "sector": "Luhansk sector"},
     {"name": "Svatove", "lat": 49.410, "lng": 38.150, "sector": "Luhansk sector"},
-    {"name": "Kupiansk", "lat": 49.710, "lng": 37.615, "sector": "Kharkiv border sector"},
-    {"name": "Vovchansk", "lat": 50.290, "lng": 36.941, "sector": "Kharkiv border sector"},
-    {"name": "Kharkiv", "lat": 49.993, "lng": 36.230, "sector": "Kharkiv border sector"},
-    {"name": "Borova", "lat": 49.377, "lng": 37.622, "sector": "Luhansk sector"},
+    {"name": "Kupiansk", "lat": 49.710, "lng": 37.615, "sector": "Kharkiv sector"},
+    {"name": "Vovchansk", "lat": 50.290, "lng": 36.941, "sector": "Kharkiv sector"},
+    {"name": "Kharkiv", "lat": 49.993, "lng": 36.230, "sector": "Kharkiv sector"},
     {"name": "Orikhiv", "lat": 47.568, "lng": 35.785, "sector": "Zaporizhzhia sector"},
     {"name": "Robotyne", "lat": 47.444, "lng": 35.836, "sector": "Zaporizhzhia sector"},
-    {"name": "Tokmak", "lat": 47.255, "lng": 35.705, "sector": "Zaporizhzhia sector"},
-    {"name": "Melitopol", "lat": 46.848, "lng": 35.367, "sector": "Zaporizhzhia sector"},
     {"name": "Zaporizhzhia", "lat": 47.838, "lng": 35.139, "sector": "Zaporizhzhia sector"},
     {"name": "Kherson", "lat": 46.635, "lng": 32.616, "sector": "Kherson sector"},
-    {"name": "Nova Kakhovka", "lat": 46.754, "lng": 33.348, "sector": "Kherson sector"},
-    {"name": "Oleshky", "lat": 46.625, "lng": 32.723, "sector": "Kherson sector"},
     {"name": "Crimea", "lat": 45.300, "lng": 34.400, "sector": "Crimea"},
     {"name": "Sevastopol", "lat": 44.616, "lng": 33.525, "sector": "Crimea"},
-    {"name": "Kerch", "lat": 45.356, "lng": 36.475, "sector": "Crimea"},
-    {"name": "Dzhankoi", "lat": 45.708, "lng": 34.393, "sector": "Crimea"},
     {"name": "Belgorod", "lat": 50.595, "lng": 36.587, "sector": "Russian rear area"},
     {"name": "Kursk", "lat": 51.730, "lng": 36.193, "sector": "Russian rear area"},
     {"name": "Bryansk", "lat": 53.243, "lng": 34.364, "sector": "Russian rear area"},
-    {"name": "Voronezh", "lat": 51.660, "lng": 39.200, "sector": "Russian rear area"},
     {"name": "Rostov", "lat": 47.235, "lng": 39.701, "sector": "Russian rear area"},
     {"name": "Krasnodar", "lat": 45.035, "lng": 38.975, "sector": "Russian rear area"},
-    {"name": "Novorossiysk", "lat": 44.723, "lng": 37.768, "sector": "Russian rear area"},
     {"name": "Tuapse", "lat": 44.104, "lng": 39.074, "sector": "Russian rear area"},
-    {"name": "Tikhoretsk", "lat": 45.854, "lng": 40.125, "sector": "Russian rear area"},
-    {"name": "Yeysk", "lat": 46.705, "lng": 38.273, "sector": "Russian rear area"},
 ]
 
-KEYWORD_CATEGORY_RULES = [
-    ("drone strike", ["drone", "uav", "shahed", "attack drones"]),
-    ("missile strike", ["missile", "storm shadow", "iskander", "kinzhal", "kalibr"]),
-    ("air defense", ["air defense", "patriot", "sam", "radar"]),
-    ("aviation", ["aircraft", "fighter", "su-34", "su-35", "mirage", "f-16", "aviation"]),
-    ("naval", ["fleet", "frigate", "naval", "seaport", "port"]),
+BACKGROUND_PHRASES = [
+    "what is known",
+    "explains",
+    "overview",
+    "history",
+    "fighter jets",
+    "ministry of defense explains",
+    "analysis page",
+    "russian offensive campaign assessment",
+    "russian offensive campaign",
+    "russian occupation update",
+]
+
+CATEGORY_RULES = [
+    ("drone strike", ["drone", "uav", "shahed"]),
+    ("missile strike", ["missile", "storm shadow", "iskander", "kalibr"]),
+    ("air defense", ["air defense", "sam", "radar", "patriot"]),
+    ("aviation", ["aircraft", "fighter", "aviation", "airbase", "airfield"]),
+    ("naval", ["fleet", "frigate", "naval", "port"]),
     ("logistics", ["rail", "logistics", "depot", "ammo", "warehouse", "supply"]),
     ("assault", ["assault", "offensive", "advance", "attack", "repelled", "storming"]),
     ("artillery", ["artillery", "shelling", "mlrs"]),
 ]
 
-STRIKE_WORDS = [
-    "hit",
-    "strike",
-    "struck",
-    "destroy",
-    "destroyed",
-    "explosion",
-    "attack",
-    "drone",
-    "missile",
-    "oil",
-    "depot",
-    "refinery",
-    "airbase",
-    "port",
-]
+
+def fetch_html(url):
+    r = requests.get(url, headers=HEADERS, timeout=30)
+    r.raise_for_status()
+    return r.text
 
 
-def fetch_html(url: str) -> str:
-    response = requests.get(url, headers=HEADERS, timeout=30)
-    response.raise_for_status()
-    return response.text
-
-
-def normalize_space(text: str) -> str:
+def clean(text):
     return re.sub(r"\s+", " ", text or "").strip()
 
 
-def parse_date_from_text(text: str):
-    text = normalize_space(text)
-    now = datetime.now(timezone.utc)
+def parse_date_from_url(url):
+    m = re.search(r"/(20\d{2})/(\d{2})/(\d{2})/", url)
+    if not m:
+        return None
+    return datetime(int(m.group(1)), int(m.group(2)), int(m.group(3)), tzinfo=timezone.utc)
 
-    patterns = [
-        r"(\d{1,2}:\d{2})\s+(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\s+([A-Za-z]+)\s+(\d{1,2}),\s+(\d{4})",
-        r"([A-Za-z]+)\s+(\d{1,2}),\s+(\d{4})",
-        r"(\d{4})-(\d{2})-(\d{2})",
-    ]
 
+def parse_isw_date(title, url):
     months = {
-        "january": 1,
-        "february": 2,
-        "march": 3,
-        "april": 4,
-        "may": 5,
-        "june": 6,
-        "july": 7,
-        "august": 8,
-        "september": 9,
-        "october": 10,
-        "november": 11,
-        "december": 12,
+        "january": 1, "february": 2, "march": 3, "april": 4,
+        "may": 5, "june": 6, "july": 7, "august": 8,
+        "september": 9, "october": 10, "november": 11, "december": 12,
     }
 
-    match = re.search(patterns[0], text, re.IGNORECASE)
-    if match:
-        month = months.get(match.group(3).lower())
-        if month:
-            return datetime(
-                int(match.group(5)),
-                month,
-                int(match.group(4)),
-                tzinfo=timezone.utc,
-            )
+    text = f"{title} {url}".lower()
+    m = re.search(
+        r"(january|february|march|april|may|june|july|august|september|october|november|december)[-/\s]+(\d{1,2})[-/,\s]+(20\d{2})",
+        text,
+    )
+    if not m:
+        return None
 
-    match = re.search(patterns[1], text, re.IGNORECASE)
-    if match:
-        month = months.get(match.group(1).lower())
-        if month:
-            return datetime(
-                int(match.group(3)),
-                month,
-                int(match.group(2)),
-                tzinfo=timezone.utc,
-            )
-
-    match = re.search(patterns[2], text)
-    if match:
-        return datetime(
-            int(match.group(1)),
-            int(match.group(2)),
-            int(match.group(3)),
-            tzinfo=timezone.utc,
-        )
-
-    return now
+    return datetime(int(m.group(3)), months[m.group(1)], int(m.group(2)), tzinfo=timezone.utc)
 
 
-def infer_category(title: str, summary: str = "") -> str:
+def is_recent(date_obj):
+    if not date_obj:
+        return False
+    now = datetime.now(timezone.utc)
+    return date_obj >= now - timedelta(days=RECENT_DAYS)
+
+
+def is_background(title, url):
+    text = f"{title} {url}".lower()
+
+    if any(p in text for p in BACKGROUND_PHRASES):
+        if "april" not in text and "2026" not in text:
+            return True
+
+    if "category" in url or "/analysis/russia-ukraine/russian-offensive-campaign" in url.rstrip("/"):
+        return True
+
+    return False
+
+
+def infer_category(title, summary=""):
     text = f"{title} {summary}".lower()
-    for category, words in KEYWORD_CATEGORY_RULES:
-        if any(word in text for word in words):
+    for category, words in CATEGORY_RULES:
+        if any(w in text for w in words):
             return category
     return "general military update"
 
 
-def infer_importance(title: str, source_importance: int) -> int:
-    text = title.lower()
-    score = source_importance
-
-    if any(word in text for word in STRIKE_WORDS):
-        score += 2
-    if "oil" in text or "refinery" in text or "depot" in text:
-        score += 2
-    if "front" in text or "offensive" in text or "assault" in text:
-        score += 1
-    if "general staff" in text or "operational update" in text:
-        score += 3
-
-    return min(score, 15)
-
-
-def match_location(title: str, summary: str = ""):
+def match_location(title, summary=""):
     text = f"{title} {summary}".lower()
-
     for loc in LOCATION_DB:
         if loc["name"].lower() in text:
             return loc
-
-    return {
-        "name": "Ukraine operational area",
-        "lat": 48.5,
-        "lng": 36.5,
-        "sector": "Outside main named sectors",
-    }
+    return None
 
 
-def make_item(title, url, source_type, date_obj, source_name, importance, summary=""):
-    title = normalize_space(title)
-    summary = normalize_space(summary)
+def make_item(title, url, source, date_obj, summary=""):
     loc = match_location(title, summary)
 
+    if not loc:
+        loc = {
+            "name": "Ukraine operational area",
+            "lat": 48.5,
+            "lng": 36.5,
+            "sector": "General operational area",
+        }
+
     return {
-        "title": title,
+        "title": clean(title),
         "date": date_obj.date().isoformat(),
-        "sourceType": source_type,
-        "sourceName": source_name,
+        "sourceType": source["sourceType"],
+        "sourceName": source["name"],
         "category": infer_category(title, summary),
-        "importance": infer_importance(title, importance),
+        "importance": source["importance"],
         "lat": loc["lat"],
         "lng": loc["lng"],
         "nearestPlace": loc["name"],
         "sectorName": loc["sector"],
         "sectorShortName": loc["sector"],
         "url": url,
-        "summary": summary,
+        "summary": clean(summary)[:400],
     }
 
 
@@ -239,97 +191,67 @@ def parse_armyinform(source):
     html = fetch_html(source["url"])
     soup = BeautifulSoup(html, "html.parser")
     items = []
-
-    links = soup.find_all("a", href=True)
-
     seen = set()
-    for link in links:
-        title = normalize_space(link.get_text(" "))
-        href = link["href"]
 
-        if not title or len(title) < 18:
-            continue
-        if "armyinform.com.ua" not in href and href.startswith("http"):
-            continue
-
-        url = urljoin(source["url"], href)
-        if url in seen:
-            continue
-        seen.add(url)
-
-        parent_text = normalize_space(link.find_parent().get_text(" ") if link.find_parent() else title)
-        date_obj = parse_date_from_text(parent_text)
-
-        if any(skip in title.lower() for skip in ["home", "about us", "latest news", "reports"]):
-            continue
-
-        items.append(
-            make_item(
-                title=title,
-                url=url,
-                source_type=source["sourceType"],
-                date_obj=date_obj,
-                source_name=source["name"],
-                importance=source["importance"],
-                summary=parent_text[:400],
-            )
-        )
-
-    return items[:25]
-
-
-def parse_generic_list(source):
-    html = fetch_html(source["url"])
-    soup = BeautifulSoup(html, "html.parser")
-    items = []
-
-    seen = set()
     for link in soup.find_all("a", href=True):
-        title = normalize_space(link.get_text(" "))
-        href = link["href"]
+        title = clean(link.get_text(" "))
+        url = urljoin(source["url"], link["href"])
 
-        if not title or len(title) < 25:
+        if len(title) < 20:
             continue
-
-        url = urljoin(source["url"], href)
+        if "armyinform.com.ua/en/" not in url:
+            continue
         if url in seen:
             continue
         seen.add(url)
 
-        parent_text = normalize_space(link.find_parent().get_text(" ") if link.find_parent() else title)
-        date_obj = parse_date_from_text(parent_text)
+        date_obj = parse_date_from_url(url)
+        if not is_recent(date_obj):
+            continue
+        if is_background(title, url):
+            continue
 
-        items.append(
-            make_item(
-                title=title,
-                url=url,
-                source_type=source["sourceType"],
-                date_obj=date_obj,
-                source_name=source["name"],
-                importance=source["importance"],
-                summary=parent_text[:400],
-            )
-        )
+        parent = clean(link.find_parent().get_text(" ") if link.find_parent() else title)
+
+        items.append(make_item(title, url, source, date_obj, parent))
 
     return items[:20]
 
 
-def dedupe_items(items):
-    result = []
+def parse_isw(source):
+    html = fetch_html(source["url"])
+    soup = BeautifulSoup(html, "html.parser")
+    items = []
     seen = set()
 
-    for item in items:
-        key = (
-            item["title"].lower().strip(),
-            item["date"],
-            item["sourceType"],
-        )
-        if key in seen:
-            continue
-        seen.add(key)
-        result.append(item)
+    for link in soup.find_all("a", href=True):
+        title = clean(link.get_text(" "))
+        url = urljoin(source["url"], link["href"])
 
-    return result
+        if url in seen:
+            continue
+        seen.add(url)
+
+        lower_url = url.lower()
+        lower_title = title.lower()
+
+        valid_daily = (
+            "russian-offensive-campaign-assessment" in lower_url
+            or "russian-occupation-update" in lower_url
+        )
+
+        if not valid_daily:
+            continue
+        if len(title) < 20:
+            continue
+
+        date_obj = parse_isw_date(title, url)
+        if not is_recent(date_obj):
+            continue
+
+        items.append(make_item(title, url, source, date_obj, title))
+
+    return items[:10]
 
 
 def load_existing_items():
@@ -348,34 +270,64 @@ def load_existing_items():
     return []
 
 
-def trim_recent_items(items, max_items=120):
-    def sort_key(item):
-        return (
-            item.get("date", ""),
-            int(item.get("importance", 0)),
-        )
+def dedupe(items):
+    result = []
+    seen = set()
 
-    return sorted(items, key=sort_key, reverse=True)[:max_items]
+    for item in items:
+        key = (
+            item.get("title", "").lower().strip(),
+            item.get("date", ""),
+            item.get("sourceType", ""),
+        )
+        if key in seen:
+            continue
+        seen.add(key)
+        result.append(item)
+
+    return result
+
+
+def trim(items):
+    cutoff = datetime.now(timezone.utc) - timedelta(days=RECENT_DAYS)
+
+    recent = []
+    for item in items:
+        try:
+            d = datetime.fromisoformat(item["date"]).replace(tzinfo=timezone.utc)
+        except Exception:
+            continue
+
+        if d >= cutoff:
+            recent.append(item)
+
+    return sorted(
+        recent,
+        key=lambda x: (x.get("date", ""), int(x.get("importance", 0))),
+        reverse=True,
+    )[:MAX_ITEMS]
 
 
 def main():
-    all_items = []
+    new_items = []
 
-    for source in SOURCE_PAGES:
+    for source in SOURCES:
         try:
-            if source["kind"] == "wordpress_list":
+            if source["kind"] == "armyinform":
                 parsed = parse_armyinform(source)
+            elif source["kind"] == "isw":
+                parsed = parse_isw(source)
             else:
-                parsed = parse_generic_list(source)
+                parsed = []
 
-            print(f"{source['name']}: {len(parsed)} items")
-            all_items.extend(parsed)
+            print(f"{source['name']}: {len(parsed)} valid items")
+            new_items.extend(parsed)
+
         except Exception as exc:
             print(f"WARNING: {source['name']} failed: {exc}")
 
     existing = load_existing_items()
-    merged = dedupe_items(all_items + existing)
-    merged = trim_recent_items(merged)
+    merged = trim(dedupe(new_items + existing))
 
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 
@@ -389,7 +341,7 @@ def main():
         encoding="utf-8",
     )
 
-    print(f"Wrote {len(merged)} OSINT items to {OUTPUT_PATH}")
+    print(f"Wrote {len(merged)} clean OSINT items to {OUTPUT_PATH}")
 
 
 if __name__ == "__main__":
