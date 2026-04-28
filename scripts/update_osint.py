@@ -1,6 +1,8 @@
 import json
 import re
+import xml.etree.ElementTree as ET
 from datetime import datetime, timezone, timedelta
+from email.utils import parsedate_to_datetime
 from pathlib import Path
 from urllib.parse import urljoin
 
@@ -38,26 +40,66 @@ SOURCES = [
         "kind": "critical_threats",
         "importance": 8,
     },
+    {
+        "name": "Portfolio",
+        "sourceType": "Hungarian media",
+        "url": "https://www.portfolio.hu/rss/all.xml",
+        "kind": "portfolio",
+        "importance": 6,
+    },
 ]
 
 LOCATION_DB = [
     {"name": "Pokrovsk", "lat": 48.282, "lng": 37.181, "sector": "Donetsk sector"},
+    {"name": "Pokrovszk", "lat": 48.282, "lng": 37.181, "sector": "Donetsk sector"},
+
     {"name": "Sloviansk", "lat": 48.866, "lng": 37.616, "sector": "Donetsk sector"},
+    {"name": "Szlovjanszk", "lat": 48.866, "lng": 37.616, "sector": "Donetsk sector"},
+
     {"name": "Kramatorsk", "lat": 48.738, "lng": 37.584, "sector": "Donetsk sector"},
     {"name": "Chasiv Yar", "lat": 48.588, "lng": 37.858, "sector": "Donetsk sector"},
+    {"name": "Csasziv Jar", "lat": 48.588, "lng": 37.858, "sector": "Donetsk sector"},
+
     {"name": "Lyman", "lat": 48.989, "lng": 37.810, "sector": "Luhansk sector"},
     {"name": "Kreminna", "lat": 49.049, "lng": 38.217, "sector": "Luhansk sector"},
+
     {"name": "Kupiansk", "lat": 49.710, "lng": 37.615, "sector": "Kharkiv sector"},
+    {"name": "Kupjanszk", "lat": 49.710, "lng": 37.615, "sector": "Kharkiv sector"},
+
     {"name": "Vovchansk", "lat": 50.290, "lng": 36.941, "sector": "Kharkiv sector"},
+    {"name": "Vovcsanszk", "lat": 50.290, "lng": 36.941, "sector": "Kharkiv sector"},
+
     {"name": "Kharkiv", "lat": 49.993, "lng": 36.230, "sector": "Kharkiv sector"},
+    {"name": "Harkiv", "lat": 49.993, "lng": 36.230, "sector": "Kharkiv sector"},
+
     {"name": "Zaporizhzhia", "lat": 47.838, "lng": 35.139, "sector": "Zaporizhzhia sector"},
+    {"name": "Zaporizzsja", "lat": 47.838, "lng": 35.139, "sector": "Zaporizhzhia sector"},
+
     {"name": "Kherson", "lat": 46.635, "lng": 32.616, "sector": "Kherson sector"},
+    {"name": "Herszon", "lat": 46.635, "lng": 32.616, "sector": "Kherson sector"},
+
     {"name": "Crimea", "lat": 45.300, "lng": 34.400, "sector": "Crimea"},
+    {"name": "Krím", "lat": 45.300, "lng": 34.400, "sector": "Crimea"},
+
     {"name": "Sevastopol", "lat": 44.616, "lng": 33.525, "sector": "Crimea"},
+    {"name": "Szevasztopol", "lat": 44.616, "lng": 33.525, "sector": "Crimea"},
+
     {"name": "Belgorod", "lat": 50.595, "lng": 36.587, "sector": "Russian rear area"},
     {"name": "Kursk", "lat": 51.730, "lng": 36.193, "sector": "Russian rear area"},
+    {"name": "Kurszk", "lat": 51.730, "lng": 36.193, "sector": "Russian rear area"},
     {"name": "Bryansk", "lat": 53.243, "lng": 34.364, "sector": "Russian rear area"},
+    {"name": "Brjanszk", "lat": 53.243, "lng": 34.364, "sector": "Russian rear area"},
     {"name": "Tuapse", "lat": 44.104, "lng": 39.074, "sector": "Russian rear area"},
+
+    {"name": "Donetsk", "lat": 48.015, "lng": 37.802, "sector": "Donetsk sector"},
+    {"name": "Donyeck", "lat": 48.015, "lng": 37.802, "sector": "Donetsk sector"},
+    {"name": "Avdiivka", "lat": 48.139, "lng": 37.742, "sector": "Donetsk sector"},
+    {"name": "Avgyijivka", "lat": 48.139, "lng": 37.742, "sector": "Donetsk sector"},
+    {"name": "Bakhmut", "lat": 48.595, "lng": 38.000, "sector": "Donetsk sector"},
+    {"name": "Bahmut", "lat": 48.595, "lng": 38.000, "sector": "Donetsk sector"},
+    {"name": "Toretsk", "lat": 48.398, "lng": 37.847, "sector": "Donetsk sector"},
+    {"name": "Dobropillia", "lat": 48.461, "lng": 37.085, "sector": "Donetsk sector"},
+    {"name": "Dobropillja", "lat": 48.461, "lng": 37.085, "sector": "Donetsk sector"},
 ]
 
 BACKGROUND_PHRASES = [
@@ -70,14 +112,14 @@ BACKGROUND_PHRASES = [
 ]
 
 CATEGORY_RULES = [
-    ("drone strike", ["drone", "uav", "shahed"]),
-    ("missile strike", ["missile", "storm shadow", "iskander", "kalibr"]),
-    ("air defense", ["air defense", "sam", "radar", "patriot"]),
-    ("aviation", ["aircraft", "fighter", "aviation", "airbase", "airfield"]),
-    ("naval", ["fleet", "frigate", "naval", "port"]),
-    ("logistics", ["rail", "logistics", "depot", "ammo", "warehouse", "supply"]),
-    ("assault", ["assault", "offensive", "advance", "attack", "repelled", "storming"]),
-    ("artillery", ["artillery", "shelling", "mlrs"]),
+    ("drone strike", ["drone", "uav", "shahed", "drón"]),
+    ("missile strike", ["missile", "storm shadow", "iskander", "kalibr", "rakéta"]),
+    ("air defense", ["air defense", "sam", "radar", "patriot", "légvédelem"]),
+    ("aviation", ["aircraft", "fighter", "aviation", "airbase", "airfield", "repülőgép"]),
+    ("naval", ["fleet", "frigate", "naval", "port", "flotta"]),
+    ("logistics", ["rail", "logistics", "depot", "ammo", "warehouse", "supply", "raktár"]),
+    ("assault", ["assault", "offensive", "advance", "attack", "repelled", "storming", "támadás", "offenzíva"]),
+    ("artillery", ["artillery", "shelling", "mlrs", "tüzérség"]),
 ]
 
 
@@ -88,7 +130,8 @@ def fetch_html(url):
 
 
 def clean(text):
-    return re.sub(r"\s+", " ", text or "").strip()
+    text = re.sub(r"<[^>]+>", " ", text or "")
+    return re.sub(r"\s+", " ", text).strip()
 
 
 def parse_date_from_url(url):
@@ -138,14 +181,21 @@ def parse_named_date(title, url):
     )
 
 
+def parse_rss_date(value):
+    try:
+        dt = parsedate_to_datetime(value)
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return dt.astimezone(timezone.utc)
+    except Exception:
+        return None
+
+
 def is_recent(date_obj):
     if not date_obj:
         return False
 
-    return (
-        date_obj >=
-        datetime.now(timezone.utc) - timedelta(days=RECENT_DAYS)
-    )
+    return date_obj >= datetime.now(timezone.utc) - timedelta(days=RECENT_DAYS)
 
 
 def is_background(title, url):
@@ -254,15 +304,7 @@ def parse_armyinform(source):
             else title
         )
 
-        items.append(
-            make_item(
-                title,
-                url,
-                source,
-                date_obj,
-                parent,
-            )
-        )
+        items.append(make_item(title, url, source, date_obj, parent))
 
     return items[:20]
 
@@ -301,15 +343,7 @@ def parse_isw(source):
         if not is_recent(date_obj):
             continue
 
-        items.append(
-            make_item(
-                title,
-                url,
-                source,
-                date_obj,
-                title,
-            )
-        )
+        items.append(make_item(title, url, source, date_obj, title))
 
     return items[:10]
 
@@ -370,6 +404,113 @@ def parse_critical_threats(source):
     return items[:10]
 
 
+def parse_portfolio(source):
+    xml_text = fetch_html(source["url"])
+    root = ET.fromstring(xml_text)
+
+    items = []
+    seen = set()
+
+    war_keywords = [
+        "ukrajna",
+        "ukrán",
+        "orosz-ukrán",
+        "orosz ukrán",
+        "oroszország",
+        "orosz",
+        "háború",
+        "front",
+        "támadás",
+        "offenzíva",
+        "rakéta",
+        "drón",
+        "légicsapás",
+        "bombázás",
+        "csapatok",
+        "pokrovszk",
+        "kupjanszk",
+        "harkiv",
+        "herszon",
+        "zaporizzsja",
+        "donyeck",
+        "krím",
+        "kurszk",
+        "belgorod",
+        "bahmut",
+        "avgyijivka",
+        "dobropillja",
+    ]
+
+    soft_exclude_keywords = [
+        "tőzsde",
+        "forint",
+        "olajár",
+        "gázár",
+        "részvény",
+        "kötvény",
+        "árfolyam",
+        "kamat",
+        "infláció",
+        "béketerv",
+        "diplomácia",
+        "választás",
+        "trump",
+        "putyin",
+        "zelenszkij",
+        "eu-csúcs",
+        "nato-csúcs",
+        "szankció",
+    ]
+
+    for entry in root.findall(".//item"):
+        title = clean(entry.findtext("title"))
+        url = clean(entry.findtext("link"))
+        summary = clean(entry.findtext("description"))
+        pub_date_raw = clean(entry.findtext("pubDate"))
+
+        if not title or not url:
+            continue
+
+        if url in seen:
+            continue
+
+        seen.add(url)
+
+        text = f"{title} {summary}".lower()
+
+        if not any(k in text for k in war_keywords):
+            continue
+
+        date_obj = parse_rss_date(pub_date_raw)
+
+        if not is_recent(date_obj):
+            continue
+
+        loc = match_location(title, summary)
+
+        # Portfolio esetében ne rakjunk általános, hely nélküli hírt a térképre.
+        if loc["name"] == "Ukraine operational area":
+            continue
+
+        # Gazdasági/diplomáciai cikkeket csak akkor engedünk át,
+        # ha konkrét helyszín is szerepel bennük.
+        if any(k in text for k in soft_exclude_keywords):
+            if loc["name"] == "Ukraine operational area":
+                continue
+
+        items.append(
+            make_item(
+                title=title,
+                url=url,
+                source=source,
+                date_obj=date_obj,
+                summary=summary,
+            )
+        )
+
+    return items[:20]
+
+
 def canonical_title(title):
     text = clean(title).lower()
     text = re.sub(r"\s+", " ", text)
@@ -404,6 +545,7 @@ def merge_same_event(items):
         existing["multiSource"] = len(existing_sources) > 1
 
         existing_urls = existing.get("urls", [])
+
         for url in item.get("urls", []):
             if url not in existing_urls:
                 existing_urls.append(url)
@@ -413,7 +555,9 @@ def merge_same_event(items):
 
         source_names = [s.get("name") for s in existing_sources if s.get("name")]
         existing["sourceName"] = " + ".join(source_names)
-        existing["sourceType"] = "Multi-source" if len(source_names) > 1 else existing.get("sourceType", "OSINT")
+        existing["sourceType"] = (
+            "Multi-source" if len(source_names) > 1 else existing.get("sourceType", "OSINT")
+        )
 
         existing["importance"] = max(
             int(existing.get("importance", 0)),
@@ -475,6 +619,9 @@ def main():
 
             elif source["kind"] == "critical_threats":
                 parsed = parse_critical_threats(source)
+
+            elif source["kind"] == "portfolio":
+                parsed = parse_portfolio(source)
 
             else:
                 parsed = []
