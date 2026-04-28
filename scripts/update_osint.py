@@ -52,45 +52,33 @@ SOURCES = [
 LOCATION_DB = [
     {"name": "Pokrovsk", "lat": 48.282, "lng": 37.181, "sector": "Donetsk sector"},
     {"name": "Pokrovszk", "lat": 48.282, "lng": 37.181, "sector": "Donetsk sector"},
-
     {"name": "Sloviansk", "lat": 48.866, "lng": 37.616, "sector": "Donetsk sector"},
     {"name": "Szlovjanszk", "lat": 48.866, "lng": 37.616, "sector": "Donetsk sector"},
-
     {"name": "Kramatorsk", "lat": 48.738, "lng": 37.584, "sector": "Donetsk sector"},
     {"name": "Chasiv Yar", "lat": 48.588, "lng": 37.858, "sector": "Donetsk sector"},
     {"name": "Csasziv Jar", "lat": 48.588, "lng": 37.858, "sector": "Donetsk sector"},
-
     {"name": "Lyman", "lat": 48.989, "lng": 37.810, "sector": "Luhansk sector"},
     {"name": "Kreminna", "lat": 49.049, "lng": 38.217, "sector": "Luhansk sector"},
-
     {"name": "Kupiansk", "lat": 49.710, "lng": 37.615, "sector": "Kharkiv sector"},
     {"name": "Kupjanszk", "lat": 49.710, "lng": 37.615, "sector": "Kharkiv sector"},
-
     {"name": "Vovchansk", "lat": 50.290, "lng": 36.941, "sector": "Kharkiv sector"},
     {"name": "Vovcsanszk", "lat": 50.290, "lng": 36.941, "sector": "Kharkiv sector"},
-
     {"name": "Kharkiv", "lat": 49.993, "lng": 36.230, "sector": "Kharkiv sector"},
     {"name": "Harkiv", "lat": 49.993, "lng": 36.230, "sector": "Kharkiv sector"},
-
     {"name": "Zaporizhzhia", "lat": 47.838, "lng": 35.139, "sector": "Zaporizhzhia sector"},
     {"name": "Zaporizzsja", "lat": 47.838, "lng": 35.139, "sector": "Zaporizhzhia sector"},
-
     {"name": "Kherson", "lat": 46.635, "lng": 32.616, "sector": "Kherson sector"},
     {"name": "Herszon", "lat": 46.635, "lng": 32.616, "sector": "Kherson sector"},
-
     {"name": "Crimea", "lat": 45.300, "lng": 34.400, "sector": "Crimea"},
     {"name": "Krím", "lat": 45.300, "lng": 34.400, "sector": "Crimea"},
-
     {"name": "Sevastopol", "lat": 44.616, "lng": 33.525, "sector": "Crimea"},
     {"name": "Szevasztopol", "lat": 44.616, "lng": 33.525, "sector": "Crimea"},
-
     {"name": "Belgorod", "lat": 50.595, "lng": 36.587, "sector": "Russian rear area"},
     {"name": "Kursk", "lat": 51.730, "lng": 36.193, "sector": "Russian rear area"},
     {"name": "Kurszk", "lat": 51.730, "lng": 36.193, "sector": "Russian rear area"},
     {"name": "Bryansk", "lat": 53.243, "lng": 34.364, "sector": "Russian rear area"},
     {"name": "Brjanszk", "lat": 53.243, "lng": 34.364, "sector": "Russian rear area"},
     {"name": "Tuapse", "lat": 44.104, "lng": 39.074, "sector": "Russian rear area"},
-
     {"name": "Donetsk", "lat": 48.015, "lng": 37.802, "sector": "Donetsk sector"},
     {"name": "Donyeck", "lat": 48.015, "lng": 37.802, "sector": "Donetsk sector"},
     {"name": "Avdiivka", "lat": 48.139, "lng": 37.742, "sector": "Donetsk sector"},
@@ -100,6 +88,33 @@ LOCATION_DB = [
     {"name": "Toretsk", "lat": 48.398, "lng": 37.847, "sector": "Donetsk sector"},
     {"name": "Dobropillia", "lat": 48.461, "lng": 37.085, "sector": "Donetsk sector"},
     {"name": "Dobropillja", "lat": 48.461, "lng": 37.085, "sector": "Donetsk sector"},
+
+    # Ukrainian rear area
+    {"name": "Kyiv", "lat": 50.450, "lng": 30.523, "sector": "Ukrainian rear area"},
+    {"name": "Kijev", "lat": 50.450, "lng": 30.523, "sector": "Ukrainian rear area"},
+    {"name": "Lviv", "lat": 49.839, "lng": 24.029, "sector": "Ukrainian rear area"},
+    {"name": "Lemberg", "lat": 49.839, "lng": 24.029, "sector": "Ukrainian rear area"},
+    {"name": "Odesa", "lat": 46.482, "lng": 30.723, "sector": "Ukrainian rear area"},
+    {"name": "Odessza", "lat": 46.482, "lng": 30.723, "sector": "Ukrainian rear area"},
+    {"name": "Dnipro", "lat": 48.464, "lng": 35.046, "sector": "Ukrainian rear area"},
+    {"name": "Mykolaiv", "lat": 46.975, "lng": 31.995, "sector": "Ukrainian rear area"},
+    {"name": "Mikolajiv", "lat": 46.975, "lng": 31.995, "sector": "Ukrainian rear area"},
+
+    # Russian rear area
+    {"name": "Moscow", "lat": 55.755, "lng": 37.617, "sector": "Russian rear area"},
+    {"name": "Moszkva", "lat": 55.755, "lng": 37.617, "sector": "Russian rear area"},
+    {"name": "Rostov", "lat": 47.235, "lng": 39.701, "sector": "Russian rear area"},
+    {"name": "Rosztov", "lat": 47.235, "lng": 39.701, "sector": "Russian rear area"},
+    {"name": "Voronezh", "lat": 51.661, "lng": 39.200, "sector": "Russian rear area"},
+    {"name": "Voronyezs", "lat": 51.661, "lng": 39.200, "sector": "Russian rear area"},
+    {"name": "Krasnodar", "lat": 45.035, "lng": 38.976, "sector": "Russian rear area"},
+    {"name": "Krasznodar", "lat": 45.035, "lng": 38.976, "sector": "Russian rear area"},
+    {"name": "Saratov", "lat": 51.533, "lng": 46.034, "sector": "Russian rear area"},
+    {"name": "Szaratov", "lat": 51.533, "lng": 46.034, "sector": "Russian rear area"},
+    {"name": "Volgograd", "lat": 48.708, "lng": 44.513, "sector": "Russian rear area"},
+    {"name": "Volgográd", "lat": 48.708, "lng": 44.513, "sector": "Russian rear area"},
+    {"name": "Nizhny Novgorod", "lat": 56.296, "lng": 43.936, "sector": "Russian rear area"},
+    {"name": "Nyizsnyij Novgorod", "lat": 56.296, "lng": 43.936, "sector": "Russian rear area"},
 ]
 
 BACKGROUND_PHRASES = [
@@ -112,8 +127,13 @@ BACKGROUND_PHRASES = [
 ]
 
 CATEGORY_RULES = [
+    ("rear area strike", [
+        "finomító", "olajfinomító", "üzemanyagraktár", "lőszerraktár",
+        "raktár", "repülőtér", "légibázis", "kikötő", "vasút",
+        "híd", "erőmű", "energetikai létesítmény", "infrastruktúra"
+    ]),
     ("drone strike", ["drone", "uav", "shahed", "drón"]),
-    ("missile strike", ["missile", "storm shadow", "iskander", "kalibr", "rakéta"]),
+    ("missile strike", ["missile", "storm shadow", "iskander", "kalibr", "rakéta", "rakétatámadás"]),
     ("air defense", ["air defense", "sam", "radar", "patriot", "légvédelem"]),
     ("aviation", ["aircraft", "fighter", "aviation", "airbase", "airfield", "repülőgép"]),
     ("naval", ["fleet", "frigate", "naval", "port", "flotta"]),
@@ -426,40 +446,34 @@ def parse_portfolio(source):
         "drón",
         "légicsapás",
         "bombázás",
+        "csapás",
+        "robbanás",
         "csapatok",
-        "pokrovszk",
-        "kupjanszk",
-        "harkiv",
-        "herszon",
-        "zaporizzsja",
-        "donyeck",
-        "krím",
-        "kurszk",
-        "belgorod",
-        "bahmut",
-        "avgyijivka",
-        "dobropillja",
     ]
 
-    soft_exclude_keywords = [
+    location_or_target_keywords = [
+        "pokrovszk", "kupjanszk", "harkiv", "herszon", "zaporizzsja",
+        "donyeck", "krím", "bahmut", "avgyijivka", "dobropillja",
+        "kijev", "kyiv", "lviv", "lemberg", "odessza", "odesa",
+        "dnipro", "mikolajiv", "mykolaiv",
+        "kurszk", "belgorod", "brjanszk", "bryansk", "moszkva",
+        "moscow", "rosztov", "rostov", "voronyezs", "voronezh",
+        "krasznodar", "krasnodar", "szaratov", "saratov",
+        "volgográd", "volgograd", "nyizsnyij novgorod",
+        "nizhny novgorod", "tuapse",
+        "finomító", "olajfinomító", "üzemanyagraktár", "lőszerraktár",
+        "raktár", "repülőtér", "légibázis", "kikötő", "vasút",
+        "híd", "energetikai létesítmény", "erőmű", "infrastruktúra",
+    ]
+
+    hard_exclude_keywords = [
         "tőzsde",
         "forint",
-        "olajár",
-        "gázár",
         "részvény",
         "kötvény",
         "árfolyam",
         "kamat",
         "infláció",
-        "béketerv",
-        "diplomácia",
-        "választás",
-        "trump",
-        "putyin",
-        "zelenszkij",
-        "eu-csúcs",
-        "nato-csúcs",
-        "szankció",
     ]
 
     for entry in root.findall(".//item"):
@@ -481,6 +495,12 @@ def parse_portfolio(source):
         if not any(k in text for k in war_keywords):
             continue
 
+        if any(k in text for k in hard_exclude_keywords):
+            continue
+
+        if not any(k in text for k in location_or_target_keywords):
+            continue
+
         date_obj = parse_rss_date(pub_date_raw)
 
         if not is_recent(date_obj):
@@ -488,15 +508,8 @@ def parse_portfolio(source):
 
         loc = match_location(title, summary)
 
-        # Portfolio esetében ne rakjunk általános, hely nélküli hírt a térképre.
         if loc["name"] == "Ukraine operational area":
             continue
-
-        # Gazdasági/diplomáciai cikkeket csak akkor engedünk át,
-        # ha konkrét helyszín is szerepel bennük.
-        if any(k in text for k in soft_exclude_keywords):
-            if loc["name"] == "Ukraine operational area":
-                continue
 
         items.append(
             make_item(
@@ -508,7 +521,7 @@ def parse_portfolio(source):
             )
         )
 
-    return items[:20]
+    return items[:25]
 
 
 def canonical_title(title):
