@@ -73,12 +73,6 @@ LOCATION_DB = [
     {"name": "Krím", "lat": 45.300, "lng": 34.400, "sector": "Crimea"},
     {"name": "Sevastopol", "lat": 44.616, "lng": 33.525, "sector": "Crimea"},
     {"name": "Szevasztopol", "lat": 44.616, "lng": 33.525, "sector": "Crimea"},
-    {"name": "Belgorod", "lat": 50.595, "lng": 36.587, "sector": "Russian rear area"},
-    {"name": "Kursk", "lat": 51.730, "lng": 36.193, "sector": "Russian rear area"},
-    {"name": "Kurszk", "lat": 51.730, "lng": 36.193, "sector": "Russian rear area"},
-    {"name": "Bryansk", "lat": 53.243, "lng": 34.364, "sector": "Russian rear area"},
-    {"name": "Brjanszk", "lat": 53.243, "lng": 34.364, "sector": "Russian rear area"},
-    {"name": "Tuapse", "lat": 44.104, "lng": 39.074, "sector": "Russian rear area"},
     {"name": "Donetsk", "lat": 48.015, "lng": 37.802, "sector": "Donetsk sector"},
     {"name": "Donyeck", "lat": 48.015, "lng": 37.802, "sector": "Donetsk sector"},
     {"name": "Avdiivka", "lat": 48.139, "lng": 37.742, "sector": "Donetsk sector"},
@@ -89,7 +83,6 @@ LOCATION_DB = [
     {"name": "Dobropillia", "lat": 48.461, "lng": 37.085, "sector": "Donetsk sector"},
     {"name": "Dobropillja", "lat": 48.461, "lng": 37.085, "sector": "Donetsk sector"},
 
-    # Ukrainian rear area
     {"name": "Kyiv", "lat": 50.450, "lng": 30.523, "sector": "Ukrainian rear area"},
     {"name": "Kijev", "lat": 50.450, "lng": 30.523, "sector": "Ukrainian rear area"},
     {"name": "Lviv", "lat": 49.839, "lng": 24.029, "sector": "Ukrainian rear area"},
@@ -100,7 +93,12 @@ LOCATION_DB = [
     {"name": "Mykolaiv", "lat": 46.975, "lng": 31.995, "sector": "Ukrainian rear area"},
     {"name": "Mikolajiv", "lat": 46.975, "lng": 31.995, "sector": "Ukrainian rear area"},
 
-    # Russian rear area
+    {"name": "Belgorod", "lat": 50.595, "lng": 36.587, "sector": "Russian rear area"},
+    {"name": "Kursk", "lat": 51.730, "lng": 36.193, "sector": "Russian rear area"},
+    {"name": "Kurszk", "lat": 51.730, "lng": 36.193, "sector": "Russian rear area"},
+    {"name": "Bryansk", "lat": 53.243, "lng": 34.364, "sector": "Russian rear area"},
+    {"name": "Brjanszk", "lat": 53.243, "lng": 34.364, "sector": "Russian rear area"},
+    {"name": "Tuapse", "lat": 44.104, "lng": 39.074, "sector": "Russian rear area"},
     {"name": "Moscow", "lat": 55.755, "lng": 37.617, "sector": "Russian rear area"},
     {"name": "Moszkva", "lat": 55.755, "lng": 37.617, "sector": "Russian rear area"},
     {"name": "Rostov", "lat": 47.235, "lng": 39.701, "sector": "Russian rear area"},
@@ -258,11 +256,68 @@ def match_location(title, summary=""):
     }
 
 
+def english_portfolio_text(title, summary, loc, category):
+    place = loc.get("name", "Ukraine operational area")
+    sector = loc.get("sector", "General operational area")
+
+    if category == "drone strike":
+        action = "Reported drone strike"
+    elif category == "missile strike":
+        action = "Reported missile strike"
+    elif category == "rear area strike":
+        action = "Reported rear-area strike"
+    elif category == "air defense":
+        action = "Reported air defense activity"
+    elif category == "aviation":
+        action = "Reported aviation-related military activity"
+    elif category == "naval":
+        action = "Reported naval-related military activity"
+    elif category == "logistics":
+        action = "Reported logistics-related military activity"
+    elif category == "assault":
+        action = "Reported ground assault or offensive activity"
+    elif category == "artillery":
+        action = "Reported artillery or shelling activity"
+    else:
+        action = "Reported military-related update"
+
+    if sector == "Russian rear area":
+        side_note = "The report concerns a Russian rear-area location."
+    elif sector == "Ukrainian rear area":
+        side_note = "The report concerns a Ukrainian rear-area location."
+    elif sector == "Crimea":
+        side_note = "The report concerns Crimea."
+    else:
+        side_note = "The report concerns the Russia-Ukraine war zone."
+
+    english_title = f"{action} near {place}"
+    english_summary = (
+        f"{action} near {place}. "
+        f"{side_note} "
+        f"Original source: Portfolio.hu. "
+        f"Sector: {sector}."
+    )
+
+    return english_title, english_summary
+
+
 def make_item(title, url, source, date_obj, summary=""):
     loc = match_location(title, summary)
+    category = infer_category(title, summary)
+
+    display_title = clean(title)
+    display_summary = clean(summary)[:400]
+
+    if source.get("kind") == "portfolio":
+        display_title, display_summary = english_portfolio_text(
+            title=title,
+            summary=summary,
+            loc=loc,
+            category=category,
+        )
 
     return {
-        "title": clean(title),
+        "title": display_title,
         "date": date_obj.date().isoformat(),
         "sourceType": source["sourceType"],
         "sourceName": source["name"],
@@ -273,7 +328,7 @@ def make_item(title, url, source, date_obj, summary=""):
                 "url": url.strip(),
             }
         ],
-        "category": infer_category(title, summary),
+        "category": category,
         "importance": source["importance"],
         "lat": loc["lat"],
         "lng": loc["lng"],
@@ -282,7 +337,7 @@ def make_item(title, url, source, date_obj, summary=""):
         "sectorShortName": loc["sector"],
         "url": url.strip(),
         "urls": [url.strip()],
-        "summary": clean(summary)[:400],
+        "summary": display_summary,
         "multiSource": False,
         "sourceCount": 1,
     }
@@ -432,23 +487,10 @@ def parse_portfolio(source):
     seen = set()
 
     war_keywords = [
-        "ukrajna",
-        "ukrán",
-        "orosz-ukrán",
-        "orosz ukrán",
-        "oroszország",
-        "orosz",
-        "háború",
-        "front",
-        "támadás",
-        "offenzíva",
-        "rakéta",
-        "drón",
-        "légicsapás",
-        "bombázás",
-        "csapás",
-        "robbanás",
-        "csapatok",
+        "ukrajna", "ukrán", "orosz-ukrán", "orosz ukrán",
+        "oroszország", "orosz", "háború", "front", "támadás",
+        "offenzíva", "rakéta", "drón", "légicsapás", "bombázás",
+        "csapás", "robbanás", "csapatok",
     ]
 
     location_or_target_keywords = [
@@ -467,13 +509,13 @@ def parse_portfolio(source):
     ]
 
     hard_exclude_keywords = [
-        "tőzsde",
-        "forint",
-        "részvény",
-        "kötvény",
-        "árfolyam",
-        "kamat",
-        "infláció",
+        "tőzsde", "forint", "részvény", "kötvény", "árfolyam",
+        "kamat", "infláció",
+
+        "hormuzi", "hormuz", "hormuzi-szoros",
+        "iráni", "irán", "izrael", "gáza", "gázai", "hamász",
+        "libanon", "vörös-tenger", "jemen", "húszi",
+        "tajvan", "kína",
     ]
 
     for entry in root.findall(".//item"):
@@ -544,7 +586,6 @@ def merge_same_event(items):
             continue
 
         existing = merged[key]
-
         existing_sources = existing.get("sources", [])
         existing_source_names = {s.get("name") for s in existing_sources}
 
@@ -558,7 +599,6 @@ def merge_same_event(items):
         existing["multiSource"] = len(existing_sources) > 1
 
         existing_urls = existing.get("urls", [])
-
         for url in item.get("urls", []):
             if url not in existing_urls:
                 existing_urls.append(url)
@@ -587,7 +627,6 @@ def dedupe(items):
 
     for item in items:
         url = item.get("url", "").strip().lower()
-
         title_date = (
             item.get("title", "").lower().strip(),
             item.get("date", ""),
@@ -601,7 +640,6 @@ def dedupe(items):
 
         seen_urls.add(url)
         seen_title_date.add(title_date)
-
         result.append(item)
 
     return result
@@ -626,21 +664,16 @@ def main():
         try:
             if source["kind"] == "armyinform":
                 parsed = parse_armyinform(source)
-
             elif source["kind"] == "isw":
                 parsed = parse_isw(source)
-
             elif source["kind"] == "critical_threats":
                 parsed = parse_critical_threats(source)
-
             elif source["kind"] == "portfolio":
                 parsed = parse_portfolio(source)
-
             else:
                 parsed = []
 
             print(f"{source['name']}: {len(parsed)} valid items")
-
             new_items.extend(parsed)
 
         except Exception as exc:
