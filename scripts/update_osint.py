@@ -485,6 +485,52 @@ def parse_critical_threats(source):
     return items[:10]
 
 
+def find_portfolio_live_articles():
+    tag_urls = [
+        "https://www.portfolio.hu/cimke/ukrajna%20h%C3%A1bor%C3%BA",
+        "https://www.portfolio.hu/cimke/orosz-ukr%C3%A1n%20h%C3%A1bor%C3%BA",
+        "https://www.portfolio.hu/rovat/global",
+    ]
+
+    live_urls = []
+    seen = set()
+
+    for tag_url in tag_urls:
+        try:
+            html = fetch_html(tag_url)
+            soup = BeautifulSoup(html, "html.parser")
+
+            for link in soup.find_all("a", href=True):
+                title = clean(link.get_text(" "))
+                url = urljoin(tag_url, link["href"]).strip()
+                text = f"{title} {url}".lower()
+
+                if "portfolio.hu" not in url:
+                    continue
+
+                valid = (
+                    "orosz-ukran" in url
+                    or "orosz-ukrán" in text
+                    or "ukran-frontrol" in url
+                    or "ukrán frontról" in text
+                    or "hireink-az-orosz-ukran" in url
+                    or "híreink az orosz-ukrán" in text
+                    or "ukrajna" in text
+                )
+
+                if not valid:
+                    continue
+
+                if url not in seen:
+                    seen.add(url)
+                    live_urls.append(url)
+
+        except Exception as exc:
+            print(f"WARNING: Portfolio tag page failed: {tag_url} - {exc}")
+
+    return live_urls[:8]
+
+
 def parse_portfolio_live_article(source, article_url, article_date_obj=None):
     html = fetch_html(article_url)
     soup = BeautifulSoup(html, "html.parser")
@@ -510,20 +556,22 @@ def parse_portfolio_live_article(source, article_url, article_date_obj=None):
         "donyeck", "bahmut", "dobropillja",
     ]
 
-    headings = soup.find_all(["h2", "h3", "h4"])
+    headings = soup.find_all(["h1", "h2", "h3", "h4"])
 
     for heading in headings:
         title = clean(heading.get_text(" "))
 
-        if len(title) < 8:
+        if len(title) < 6:
             continue
 
         block_parts = []
         current = heading.find_next_sibling()
 
-        while current and current.name not in ["h2", "h3", "h4"]:
-            if current.name in ["p", "blockquote", "li"]:
-                block_parts.append(clean(current.get_text(" ")))
+        while current and current.name not in ["h1", "h2", "h3", "h4"]:
+            if current.name in ["p", "blockquote", "li", "div"]:
+                block_text = clean(current.get_text(" "))
+                if block_text:
+                    block_parts.append(block_text)
             current = current.find_next_sibling()
 
         summary = clean(" ".join(block_parts))
@@ -561,99 +609,90 @@ def parse_portfolio_live_article(source, article_url, article_date_obj=None):
 
 
 def parse_portfolio(source):
-    xml_text = fetch_html(source["url"])
-    root = ET.fromstring(xml_text)
-
     items = []
-    seen = set()
+    seen_article_urls = set()
 
-    war_keywords = [
-        "ukrajna", "ukrán", "orosz-ukrán", "orosz ukrán",
-        "oroszország", "orosz", "háború", "front", "támadás",
-        "offenzíva", "rakéta", "drón", "légicsapás", "bombázás",
-        "csapás", "robbanás", "csapatok",
-    ]
+    live_urls = find_portfolio_live_articles()
 
-    location_or_target_keywords = [
-        "pokrovszk", "kupjanszk", "harkiv", "herszon", "zaporizzsja",
-        "donyeck", "krím", "bahmut", "avgyijivka", "dobropillja",
-        "kijev", "kyiv", "lviv", "lemberg", "odessza", "odesa",
-        "dnipro", "mikolajiv", "mykolaiv", "szumi", "sumy",
-        "sosztka", "shostka",
-        "kurszk", "belgorod", "brjanszk", "bryansk", "moszkva",
-        "moscow", "rosztov", "rostov", "voronyezs", "voronezh",
-        "krasznodar", "krasnodar", "szaratov", "saratov",
-        "volgográd", "volgograd", "nyizsnyij novgorod",
-        "nizhny novgorod", "tuapse", "tuapsze",
-        "finomító", "olajfinomító", "üzemanyagraktár", "lőszerraktár",
-        "raktár", "repülőtér", "légibázis", "kikötő", "vasút",
-        "híd", "energetikai létesítmény", "erőmű", "infrastruktúra",
-    ]
+    for live_url in live_urls:
+        try:
+            if live_url in seen_article_urls:
+                continue
 
-    hard_exclude_keywords = [
-        "tőzsde", "forint", "részvény", "kötvény", "árfolyam",
-        "kamat", "infláció", "hormuzi", "hormuz", "hormuzi-szoros",
-        "iráni", "irán", "izrael", "gáza", "gázai", "hamász",
-        "libanon", "vörös-tenger", "jemen", "húszi",
-        "tajvan", "kína",
-    ]
+            seen_article_urls.add(live_url)
 
-    for entry in root.findall(".//item"):
-        title = clean(entry.findtext("title"))
-        url = clean(entry.findtext("link"))
-        summary = clean(entry.findtext("description"))
-        pub_date_raw = clean(entry.findtext("pubDate"))
+            live_date = parse_date_from_url(live_url) or datetime.now(timezone.utc)
 
-        if not title or not url:
-            continue
+            if not is_recent(live_date):
+                continue
 
-        if url in seen:
-            continue
-
-        seen.add(url)
-
-        text = f"{title} {summary}".lower()
-
-        if any(k in text for k in hard_exclude_keywords):
-            continue
-
-        if not any(k in text for k in war_keywords):
-            continue
-
-        date_obj = parse_rss_date(pub_date_raw)
-
-        if not is_recent(date_obj):
-            continue
-
-        # Live Portfolio articles contain several separate event blocks.
-        if (
-            "hireink-az-orosz-ukran" in url
-            or "hireink-az-orosz-ukran-frontrol" in url
-            or "orosz-ukran-frontrol" in url
-            or "orosz-ukran-haboru" in url
-            or "hireink-az-orosz-ukran" in text
-        ):
-            live_items = parse_portfolio_live_article(source, url, date_obj)
+            live_items = parse_portfolio_live_article(source, live_url, live_date)
             items.extend(live_items)
-            continue
 
-        if not any(k in text for k in location_or_target_keywords):
-            continue
+        except Exception as exc:
+            print(f"WARNING: Portfolio live article failed: {live_url} - {exc}")
 
-        loc = match_location(title, summary)
+    try:
+        xml_text = fetch_html(source["url"])
+        root = ET.fromstring(xml_text)
 
-        if loc["name"] == "Ukraine operational area":
-            continue
+        for entry in root.findall(".//item"):
+            title = clean(entry.findtext("title"))
+            url = clean(entry.findtext("link"))
+            summary = clean(entry.findtext("description"))
+            pub_date_raw = clean(entry.findtext("pubDate"))
 
-        items.append(
-            make_item(
-                title=title,
-                url=url,
-                source=source,
-                date_obj=date_obj,
-                summary=summary,
+            if not title or not url:
+                continue
+
+            text = f"{title} {summary}".lower()
+
+            if any(k in text for k in [
+                "hormuzi", "hormuz", "iráni", "irán", "izrael", "gáza",
+                "gázai", "hamász", "jemen", "húszi", "tajvan", "kína",
+                "tőzsde", "forint", "részvény", "árfolyam",
+            ]):
+                continue
+
+            if not any(k in text for k in [
+                "ukrajna", "ukrán", "orosz-ukrán", "orosz ukrán",
+                "oroszország", "orosz", "háború", "front", "támadás",
+                "offenzíva", "rakéta", "drón", "csapás", "robbanás",
+            ]):
+                continue
+
+            date_obj = parse_rss_date(pub_date_raw)
+
+            if not is_recent(date_obj):
+                continue
+
+            if (
+                "orosz-ukran-frontrol" in url
+                or "hireink-az-orosz-ukran" in url
+                or "orosz-ukran-haboru" in url
+            ):
+                if url not in seen_article_urls:
+                    seen_article_urls.add(url)
+                    items.extend(parse_portfolio_live_article(source, url, date_obj))
+                continue
+
+            loc = match_location(title, summary)
+
+            if loc["name"] == "Ukraine operational area":
+                continue
+
+            items.append(
+                make_item(
+                    title=title,
+                    url=url,
+                    source=source,
+                    date_obj=date_obj,
+                    summary=summary,
+                )
             )
-        )
+
+    except Exception as exc:
+        print(f"WARNING: Portfolio RSS failed: {exc}")
 
     return items[:40]
 
@@ -715,7 +754,7 @@ def merge_same_event(items):
 
 def dedupe(items):
     result = []
-    seen_urls_title_place = set()
+    seen_keys = set()
 
     for item in items:
         key = (
@@ -725,10 +764,10 @@ def dedupe(items):
             item.get("nearestPlace", ""),
         )
 
-        if key in seen_urls_title_place:
+        if key in seen_keys:
             continue
 
-        seen_urls_title_place.add(key)
+        seen_keys.add(key)
         result.append(item)
 
     return result
