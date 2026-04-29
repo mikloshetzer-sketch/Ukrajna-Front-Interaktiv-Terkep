@@ -12,7 +12,7 @@ from bs4 import BeautifulSoup
 
 OUTPUT_PATH = Path("data/osint_feed.json")
 RECENT_DAYS = 4
-MAX_ITEMS = 100
+MAX_ITEMS = 120
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (compatible; UkraineFrontDashboard/1.0)"
@@ -92,6 +92,10 @@ LOCATION_DB = [
     {"name": "Dnipro", "lat": 48.464, "lng": 35.046, "sector": "Ukrainian rear area"},
     {"name": "Mykolaiv", "lat": 46.975, "lng": 31.995, "sector": "Ukrainian rear area"},
     {"name": "Mikolajiv", "lat": 46.975, "lng": 31.995, "sector": "Ukrainian rear area"},
+    {"name": "Sumy", "lat": 50.907, "lng": 34.799, "sector": "Ukrainian rear area"},
+    {"name": "Szumi", "lat": 50.907, "lng": 34.799, "sector": "Ukrainian rear area"},
+    {"name": "Shostka", "lat": 51.862, "lng": 33.469, "sector": "Ukrainian rear area"},
+    {"name": "Sosztka", "lat": 51.862, "lng": 33.469, "sector": "Ukrainian rear area"},
 
     {"name": "Belgorod", "lat": 50.595, "lng": 36.587, "sector": "Russian rear area"},
     {"name": "Kursk", "lat": 51.730, "lng": 36.193, "sector": "Russian rear area"},
@@ -99,6 +103,7 @@ LOCATION_DB = [
     {"name": "Bryansk", "lat": 53.243, "lng": 34.364, "sector": "Russian rear area"},
     {"name": "Brjanszk", "lat": 53.243, "lng": 34.364, "sector": "Russian rear area"},
     {"name": "Tuapse", "lat": 44.104, "lng": 39.074, "sector": "Russian rear area"},
+    {"name": "Tuapsze", "lat": 44.104, "lng": 39.074, "sector": "Russian rear area"},
     {"name": "Moscow", "lat": 55.755, "lng": 37.617, "sector": "Russian rear area"},
     {"name": "Moszkva", "lat": 55.755, "lng": 37.617, "sector": "Russian rear area"},
     {"name": "Rostov", "lat": 47.235, "lng": 39.701, "sector": "Russian rear area"},
@@ -128,7 +133,8 @@ CATEGORY_RULES = [
     ("rear area strike", [
         "finomító", "olajfinomító", "üzemanyagraktár", "lőszerraktár",
         "raktár", "repülőtér", "légibázis", "kikötő", "vasút",
-        "híd", "erőmű", "energetikai létesítmény", "infrastruktúra"
+        "híd", "erőmű", "energetikai létesítmény", "infrastruktúra",
+        "refinery", "airbase", "airfield", "depot", "warehouse"
     ]),
     ("drone strike", ["drone", "uav", "shahed", "drón"]),
     ("missile strike", ["missile", "storm shadow", "iskander", "kalibr", "rakéta", "rakétatámadás"]),
@@ -479,6 +485,81 @@ def parse_critical_threats(source):
     return items[:10]
 
 
+def parse_portfolio_live_article(source, article_url, article_date_obj=None):
+    html = fetch_html(article_url)
+    soup = BeautifulSoup(html, "html.parser")
+
+    items = []
+    seen = set()
+
+    hard_exclude_keywords = [
+        "hormuzi", "hormuz", "iráni", "irán", "izrael", "gáza",
+        "gázai", "hamász", "libanon", "vörös-tenger", "jemen",
+        "húszi", "tajvan", "kína", "tőzsde", "forint", "részvény",
+        "árfolyam", "kamat", "infláció",
+    ]
+
+    relevant_keywords = [
+        "ukrajna", "ukrán", "orosz", "oroszország", "háború",
+        "front", "drón", "rakéta", "támadás", "csapás",
+        "robbanás", "légvédelem", "olajfinomító", "finomító",
+        "tuapsze", "tuapszében", "szumi", "sosztka", "harkiv",
+        "odessza", "belgorod", "volgográd", "voronyezs",
+        "kurszk", "rosztov", "szaratov", "krím", "kijev",
+        "zaporizzsja", "herszon", "pokrovszk", "kupjanszk",
+        "donyeck", "bahmut", "dobropillja",
+    ]
+
+    headings = soup.find_all(["h2", "h3", "h4"])
+
+    for heading in headings:
+        title = clean(heading.get_text(" "))
+
+        if len(title) < 8:
+            continue
+
+        block_parts = []
+        current = heading.find_next_sibling()
+
+        while current and current.name not in ["h2", "h3", "h4"]:
+            if current.name in ["p", "blockquote", "li"]:
+                block_parts.append(clean(current.get_text(" ")))
+            current = current.find_next_sibling()
+
+        summary = clean(" ".join(block_parts))
+        text = f"{title} {summary}".lower()
+
+        if not any(k in text for k in relevant_keywords):
+            continue
+
+        if any(k in text for k in hard_exclude_keywords):
+            continue
+
+        loc = match_location(title, summary)
+
+        if loc["name"] == "Ukraine operational area":
+            continue
+
+        key = f"{title}-{loc['name']}"
+
+        if key in seen:
+            continue
+
+        seen.add(key)
+
+        items.append(
+            make_item(
+                title=title,
+                url=article_url,
+                source=source,
+                date_obj=article_date_obj or datetime.now(timezone.utc),
+                summary=summary or title,
+            )
+        )
+
+    return items[:30]
+
+
 def parse_portfolio(source):
     xml_text = fetch_html(source["url"])
     root = ET.fromstring(xml_text)
@@ -497,12 +578,13 @@ def parse_portfolio(source):
         "pokrovszk", "kupjanszk", "harkiv", "herszon", "zaporizzsja",
         "donyeck", "krím", "bahmut", "avgyijivka", "dobropillja",
         "kijev", "kyiv", "lviv", "lemberg", "odessza", "odesa",
-        "dnipro", "mikolajiv", "mykolaiv",
+        "dnipro", "mikolajiv", "mykolaiv", "szumi", "sumy",
+        "sosztka", "shostka",
         "kurszk", "belgorod", "brjanszk", "bryansk", "moszkva",
         "moscow", "rosztov", "rostov", "voronyezs", "voronezh",
         "krasznodar", "krasnodar", "szaratov", "saratov",
         "volgográd", "volgograd", "nyizsnyij novgorod",
-        "nizhny novgorod", "tuapse",
+        "nizhny novgorod", "tuapse", "tuapsze",
         "finomító", "olajfinomító", "üzemanyagraktár", "lőszerraktár",
         "raktár", "repülőtér", "légibázis", "kikötő", "vasút",
         "híd", "energetikai létesítmény", "erőmű", "infrastruktúra",
@@ -510,9 +592,7 @@ def parse_portfolio(source):
 
     hard_exclude_keywords = [
         "tőzsde", "forint", "részvény", "kötvény", "árfolyam",
-        "kamat", "infláció",
-
-        "hormuzi", "hormuz", "hormuzi-szoros",
+        "kamat", "infláció", "hormuzi", "hormuz", "hormuzi-szoros",
         "iráni", "irán", "izrael", "gáza", "gázai", "hamász",
         "libanon", "vörös-tenger", "jemen", "húszi",
         "tajvan", "kína",
@@ -534,18 +614,30 @@ def parse_portfolio(source):
 
         text = f"{title} {summary}".lower()
 
-        if not any(k in text for k in war_keywords):
-            continue
-
         if any(k in text for k in hard_exclude_keywords):
             continue
 
-        if not any(k in text for k in location_or_target_keywords):
+        if not any(k in text for k in war_keywords):
             continue
 
         date_obj = parse_rss_date(pub_date_raw)
 
         if not is_recent(date_obj):
+            continue
+
+        # Live Portfolio articles contain several separate event blocks.
+        if (
+            "hireink-az-orosz-ukran" in url
+            or "hireink-az-orosz-ukran-frontrol" in url
+            or "orosz-ukran-frontrol" in url
+            or "orosz-ukran-haboru" in url
+            or "hireink-az-orosz-ukran" in text
+        ):
+            live_items = parse_portfolio_live_article(source, url, date_obj)
+            items.extend(live_items)
+            continue
+
+        if not any(k in text for k in location_or_target_keywords):
             continue
 
         loc = match_location(title, summary)
@@ -563,7 +655,7 @@ def parse_portfolio(source):
             )
         )
 
-    return items[:25]
+    return items[:40]
 
 
 def canonical_title(title):
@@ -579,6 +671,7 @@ def merge_same_event(items):
         key = (
             canonical_title(item.get("title", "")),
             item.get("date", ""),
+            item.get("nearestPlace", ""),
         )
 
         if key not in merged:
@@ -622,24 +715,20 @@ def merge_same_event(items):
 
 def dedupe(items):
     result = []
-    seen_urls = set()
-    seen_title_date = set()
+    seen_urls_title_place = set()
 
     for item in items:
-        url = item.get("url", "").strip().lower()
-        title_date = (
+        key = (
+            item.get("url", "").strip().lower(),
             item.get("title", "").lower().strip(),
             item.get("date", ""),
+            item.get("nearestPlace", ""),
         )
 
-        if url in seen_urls:
+        if key in seen_urls_title_place:
             continue
 
-        if title_date in seen_title_date:
-            continue
-
-        seen_urls.add(url)
-        seen_title_date.add(title_date)
+        seen_urls_title_place.add(key)
         result.append(item)
 
     return result
