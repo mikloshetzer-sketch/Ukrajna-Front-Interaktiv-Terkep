@@ -24,6 +24,8 @@ import { bindTimeline, setTimelineBounds, setTimelineValue } from './ui/timeline
 import { createPlayer } from './ui/player.js';
 import { clamp } from './utils/date.js';
 
+const OSINT_FEED_LIMIT = 8;
+
 const bordersUrl = 'https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson';
 const borderCountries = new Set([
   'Ukraine',
@@ -132,6 +134,7 @@ function getClusterSeverity(cluster) {
   else if (cluster.sourceType === 'ISW') score += 1;
   else if (cluster.sourceType === 'GeoConfirmed') score += 2;
   else if (cluster.sourceType === 'Critical Threats') score += 1;
+  else if (cluster.sourceType === 'Hungarian media') score += 1;
 
   const category = String(cluster.category || '').toLowerCase();
   if (category.includes('assault')) score += 3;
@@ -140,6 +143,7 @@ function getClusterSeverity(cluster) {
   else if (category.includes('air defense')) score += 2;
   else if (category.includes('artillery')) score += 2;
   else if (category.includes('logistics')) score += 1;
+  else if (category.includes('rear area')) score += 2;
 
   const freshnessHours = Number(cluster.freshnessHours || 999);
   if (freshnessHours <= 12) score += 2;
@@ -176,7 +180,7 @@ function addClusterSeverity(summary) {
 
       return (b.reportCount || 0) - (a.reportCount || 0);
     })
-    .slice(0, 5);
+    .slice(0, OSINT_FEED_LIMIT);
 
   return {
     ...summary,
@@ -305,10 +309,12 @@ function updateOsintFeedList(summary) {
         ? `Fallback mode: latest available date <strong>${summary.referenceDate || 'n/a'}</strong>`
         : 'No fresh data';
 
+  const visibleItems = summary.topFive.slice(0, OSINT_FEED_LIMIT);
+
   dom.osintFeedList.innerHTML = `
-    <b>Top 5 OSINT clusters</b><br>
+    <b>Top ${OSINT_FEED_LIMIT} OSINT clusters</b><br>
     <div style="margin-bottom:8px;">${modeText}</div>
-    ${summary.topFive.map((item, idx) => {
+    ${visibleItems.map((item, idx) => {
       const icon = getOsintCategoryIcon(item.category);
       return `
         <div style="margin-bottom:8px;">
