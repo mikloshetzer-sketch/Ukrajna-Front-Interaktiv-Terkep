@@ -11,6 +11,9 @@ from bs4 import BeautifulSoup
 
 
 OUTPUT_PATH = Path("data/osint_feed.json")
+ARCHIVE_DIR = Path("data/osint_archive")
+ARCHIVE_INDEX_PATH = ARCHIVE_DIR / "index.json"
+
 RECENT_DAYS = 4
 MAX_ITEMS = 120
 
@@ -708,6 +711,16 @@ def canonical_title(title):
     return text
 
 
+def archive_key(item):
+    return (
+        item.get("date", ""),
+        item.get("sourceName", ""),
+        item.get("url", ""),
+        canonical_title(item.get("title", "")),
+        item.get("nearestPlace", ""),
+    )
+
+
 def merge_same_event(items):
     merged = {}
 
@@ -778,7 +791,7 @@ def keep_latest_portfolio_day(items):
         else:
             result.append(item)
 
-    print(f"Portfolio latest date kept: {latest_portfolio_date}")
+    print(f"Portfolio latest date kept in live feed: {latest_portfolio_date}")
 
     return result
 
@@ -788,12 +801,7 @@ def dedupe(items):
     seen_keys = set()
 
     for item in items:
-        key = (
-            item.get("url", "").strip().lower(),
-            item.get("title", "").lower().strip(),
-            item.get("date", ""),
-            item.get("nearestPlace", ""),
-        )
+        key = archive_key(item)
 
         if key in seen_keys:
             continue
@@ -814,6 +822,100 @@ def trim(items):
         ),
         reverse=True,
     )[:MAX_ITEMS]
+
+
+def read_json_file(path, fallback):
+    try:
+        if not path.exists():
+            return fallback
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return fallback
+
+
+def write_json_file(path, payload):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+
+
+def update_archive(items):
+    ARCHIVE_DIR.mkdir(parents=True, exist_ok=True)
+
+    grouped = {}
+
+    for item in items:
+        date_key = item.get("date")
+        if not date_key:
+            continue
+        grouped.setdefault(date_key, []).append(item)
+
+    written_dates = []
+
+    for date_key, date_items in grouped.items():
+        archive_path = ARCHIVE_DIR / f"{date_key}.json"
+
+        existing_payload = read_json_file(
+            archive_path,
+            {
+                "date": date_key,
+                "updated_at": None,
+                "items": [],
+            },
+        )
+
+        existing_items = existing_payload.get("items", [])
+        merged_items = dedupe(existing_items + date_items)
+        merged_items = trim(merged_items)
+
+        archive_payload = {
+            "date": date_key,
+            "updated_at": datetime.now(timezone.utc).isoformat(),
+            "items": merged_items,
+        }
+
+        write_json_file(archive_path, archive_payload)
+        written_dates.append(date_key)
+
+    rebuild_archive_index()
+
+    if written_dates:
+        print(f"Updated OSINT archive days: {', '.join(sorted(written_dates))}")
+
+
+def rebuild_archive_index():
+    ARCHIVE_DIR.mkdir(parents=True, exist_ok=True)
+
+    entries = []
+
+    for path in sorted(ARCHIVE_DIR.glob("*.json")):
+        if path.name == "index.json":
+            continue
+
+        payload = read_json_file(path, {})
+        date_key = payload.get("date") or path.stem
+        items = payload.get("items", [])
+
+        entries.append(
+            {
+                "date": date_key,
+                "file": f"{date_key}.json",
+                "itemCount": len(items),
+                "updated_at": payload.get("updated_at"),
+            }
+        )
+
+    entries.sort(key=lambda x: x.get("date", ""), reverse=True)
+
+    index_payload = {
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+        "count": len(entries),
+        "days": entries,
+    }
+
+    write_json_file(ARCHIVE_INDEX_PATH, index_payload)
 
 
 def main():
@@ -838,25 +940,26 @@ def main():
         except Exception as exc:
             print(f"WARNING: {source['name']} failed: {exc}")
 
+    merged_items = merge_same_event(new_items)
+
+    # Archívumba minden friss, feldolgozott nap bekerül.
+    update_archive(merged_items)
+
+    # Live feedben Portfolio-ból csak a legfrissebb nap marad.
     clean_items = trim(
         dedupe(
             keep_latest_portfolio_day(
-                merge_same_event(new_items)
+                merged_items
             )
         )
     )
-
-    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 
     payload = {
         "updated_at": datetime.now(timezone.utc).isoformat(),
         "items": clean_items,
     }
 
-    OUTPUT_PATH.write_text(
-        json.dumps(payload, ensure_ascii=False, indent=2),
-        encoding="utf-8",
-    )
+    write_json_file(OUTPUT_PATH, payload)
 
     print(f"Wrote {len(clean_items)} clean OSINT items to {OUTPUT_PATH}")
 
