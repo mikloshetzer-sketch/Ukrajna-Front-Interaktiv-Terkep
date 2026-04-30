@@ -1,0 +1,44 @@
+name: Update unit layer
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "45 6,18 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  update-units:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run unit updater
+        run: |
+          python scripts/update_units.py
+
+      - name: Commit updated unit files
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git add \
+            data/unit_seed.json \
+            data/unit_feed.json \
+            data/unit_archive \
+            scripts/update_units.py
+
+          if git diff --cached --quiet; then
+            echo "No unit changes"
+          else
+            git commit -m "Update unit layer"
+            git push
+          fi
