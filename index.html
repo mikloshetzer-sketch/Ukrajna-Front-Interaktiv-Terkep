@@ -13,7 +13,7 @@
       <h1>Ukrajna–Oroszország frontkövető</h1>
       <p class="muted">
         DeepState-alapú napi fronthelyzet, történeti visszanézés 2024-01-01-től, lejátszás,
-        napi területi delta, FIRMS hőanomáliák és OSINT feed.
+        napi területi delta, FIRMS hőanomáliák, OSINT feed és későbbi alakulat-réteg.
       </p>
 
       <section class="panel">
@@ -69,6 +69,32 @@
         <label class="toggle"><input id="toggleFirms" type="checkbox" /> FIRMS hőanomáliák</label>
         <label class="toggle"><input id="toggleOsint" type="checkbox" /> OSINT feed</label>
         <label class="toggle"><input id="toggleHeatmap" type="checkbox" /> Front activity heatmap</label>
+        <label class="toggle"><input id="toggleUnits" type="checkbox" /> Harcoló alakulatok</label>
+      </section>
+
+      <section class="panel">
+        <h2>OSINT archívum</h2>
+        <select id="osintArchiveDate">
+          <option value="">Live feed</option>
+        </select>
+        <div class="small top-gap">
+          A Live feed az aktuális <code>data/osint_feed.json</code> fájlt használja.
+          Archív dátum választásakor később a <code>data/osint_archive/YYYY-MM-DD.json</code> tölthető vissza.
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Harcoló alakulatok</h2>
+        <select id="unitLayerMode">
+          <option value="all">Mindkét oldal</option>
+          <option value="ukraine">Ukrán alakulatok</option>
+          <option value="russia">Orosz alakulatok</option>
+        </select>
+
+        <div id="unitLayerSummary" class="small top-gap">
+          Alakulat-réteg még nincs betöltve. Később ide jöhetnek például MilitaryLand / saját adatbázis alapján
+          dandár-, ezred- vagy zászlóaljszintű nyílt forrású pozíciók.
+        </div>
       </section>
 
       <section class="panel">
