@@ -3,9 +3,7 @@ name: Update OSINT feed
 on:
   workflow_dispatch:
   schedule:
-    - cron: "15 5 * * *"
-    - cron: "15 11 * * *"
-    - cron: "15 17 * * *"
+    - cron: "15 5,11,17 * * *"
 
 permissions:
   contents: write
@@ -28,14 +26,20 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests beautifulsoup4
 
-      - name: Update OSINT feed
+      - name: Run OSINT updater
         run: |
           python scripts/update_osint.py
 
-      - name: Commit updated OSINT feed
+      - name: Commit updated OSINT data
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add data/osint_feed.json
-          git diff --cached --quiet || git commit -m "Update OSINT feed"
-          git push
+
+          git add data/osint_feed.json data/osint_archive scripts/update_osint.py
+
+          if git diff --cached --quiet; then
+            echo "No OSINT changes to commit"
+          else
+            git commit -m "Update OSINT feed"
+            git push
+          fi
