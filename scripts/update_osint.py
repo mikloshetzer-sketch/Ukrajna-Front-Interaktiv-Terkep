@@ -159,47 +159,25 @@ def clean(text):
 
 
 def parse_date_from_url(url):
-    # Formátum: /2026/04/29/
     m = re.search(r"/(20\d{2})/(\d{2})/(\d{2})/", url)
     if m:
-        return datetime(
-            int(m.group(1)),
-            int(m.group(2)),
-            int(m.group(3)),
-            tzinfo=timezone.utc,
-        )
+        return datetime(int(m.group(1)), int(m.group(2)), int(m.group(3)), tzinfo=timezone.utc)
 
-    # Portfolio formátum: /global/20260429/...
     m = re.search(r"/(20\d{2})(\d{2})(\d{2})/", url)
     if m:
-        return datetime(
-            int(m.group(1)),
-            int(m.group(2)),
-            int(m.group(3)),
-            tzinfo=timezone.utc,
-        )
+        return datetime(int(m.group(1)), int(m.group(2)), int(m.group(3)), tzinfo=timezone.utc)
 
     return None
 
 
 def parse_named_date(title, url):
     months = {
-        "january": 1,
-        "february": 2,
-        "march": 3,
-        "april": 4,
-        "may": 5,
-        "june": 6,
-        "july": 7,
-        "august": 8,
-        "september": 9,
-        "october": 10,
-        "november": 11,
-        "december": 12,
+        "january": 1, "february": 2, "march": 3, "april": 4,
+        "may": 5, "june": 6, "july": 7, "august": 8,
+        "september": 9, "october": 10, "november": 11, "december": 12,
     }
 
     text = f"{title} {url}".lower()
-
     m = re.search(
         r"(january|february|march|april|may|june|july|august|september|october|november|december)[-/\s]+(\d{1,2})[-/,\s]+(20\d{2})",
         text,
@@ -208,12 +186,7 @@ def parse_named_date(title, url):
     if not m:
         return None
 
-    return datetime(
-        int(m.group(3)),
-        months[m.group(1)],
-        int(m.group(2)),
-        tzinfo=timezone.utc,
-    )
+    return datetime(int(m.group(3)), months[m.group(1)], int(m.group(2)), tzinfo=timezone.utc)
 
 
 def parse_rss_date(value):
@@ -239,12 +212,7 @@ def apply_time_to_date(date_obj, text):
         minute = int(m.group(2))
 
         if 0 <= hour <= 23 and 0 <= minute <= 59:
-            return date_obj.replace(
-                hour=hour,
-                minute=minute,
-                second=0,
-                microsecond=0,
-            )
+            return date_obj.replace(hour=hour, minute=minute, second=0, microsecond=0)
     except Exception:
         pass
 
@@ -416,11 +384,7 @@ def parse_armyinform(source):
         if is_background(title, url):
             continue
 
-        parent = clean(
-            link.find_parent().get_text(" ")
-            if link.find_parent()
-            else title
-        )
+        parent = clean(link.find_parent().get_text(" ") if link.find_parent() else title)
 
         items.append(make_item(title, url, source, date_obj, parent))
 
@@ -793,6 +757,32 @@ def merge_same_event(items):
     return list(merged.values())
 
 
+def keep_latest_portfolio_day(items):
+    portfolio_dates = [
+        item.get("date")
+        for item in items
+        if item.get("sourceName") == "Portfolio" and item.get("date")
+    ]
+
+    if not portfolio_dates:
+        return items
+
+    latest_portfolio_date = max(portfolio_dates)
+
+    result = []
+
+    for item in items:
+        if item.get("sourceName") == "Portfolio":
+            if item.get("date") == latest_portfolio_date:
+                result.append(item)
+        else:
+            result.append(item)
+
+    print(f"Portfolio latest date kept: {latest_portfolio_date}")
+
+    return result
+
+
 def dedupe(items):
     result = []
     seen_keys = set()
@@ -848,7 +838,13 @@ def main():
         except Exception as exc:
             print(f"WARNING: {source['name']} failed: {exc}")
 
-    clean_items = trim(dedupe(merge_same_event(new_items)))
+    clean_items = trim(
+        dedupe(
+            keep_latest_portfolio_day(
+                merge_same_event(new_items)
+            )
+        )
+    )
 
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 
