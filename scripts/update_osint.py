@@ -159,16 +159,27 @@ def clean(text):
 
 
 def parse_date_from_url(url):
+    # Formátum: /2026/04/29/
     m = re.search(r"/(20\d{2})/(\d{2})/(\d{2})/", url)
-    if not m:
-        return None
+    if m:
+        return datetime(
+            int(m.group(1)),
+            int(m.group(2)),
+            int(m.group(3)),
+            tzinfo=timezone.utc,
+        )
 
-    return datetime(
-        int(m.group(1)),
-        int(m.group(2)),
-        int(m.group(3)),
-        tzinfo=timezone.utc,
-    )
+    # Portfolio formátum: /global/20260429/...
+    m = re.search(r"/(20\d{2})(\d{2})(\d{2})/", url)
+    if m:
+        return datetime(
+            int(m.group(1)),
+            int(m.group(2)),
+            int(m.group(3)),
+            tzinfo=timezone.utc,
+        )
+
+    return None
 
 
 def parse_named_date(title, url):
@@ -213,6 +224,31 @@ def parse_rss_date(value):
         return dt.astimezone(timezone.utc)
     except Exception:
         return None
+
+
+def apply_time_to_date(date_obj, text):
+    if not date_obj:
+        return None
+
+    m = re.search(r"\b(\d{1,2}):(\d{2})\b", text or "")
+    if not m:
+        return date_obj
+
+    try:
+        hour = int(m.group(1))
+        minute = int(m.group(2))
+
+        if 0 <= hour <= 23 and 0 <= minute <= 59:
+            return date_obj.replace(
+                hour=hour,
+                minute=minute,
+                second=0,
+                microsecond=0,
+            )
+    except Exception:
+        pass
+
+    return date_obj
 
 
 def is_recent(date_obj):
@@ -325,6 +361,7 @@ def make_item(title, url, source, date_obj, summary=""):
     return {
         "title": display_title,
         "date": date_obj.date().isoformat(),
+        "datetime": date_obj.isoformat(),
         "sourceType": source["sourceType"],
         "sourceName": source["name"],
         "sources": [
@@ -538,6 +575,8 @@ def parse_portfolio_live_article(source, article_url, article_date_obj=None):
     items = []
     seen = set()
 
+    article_date = article_date_obj or parse_date_from_url(article_url) or datetime.now(timezone.utc)
+
     hard_exclude_keywords = [
         "hormuzi", "hormuz", "iráni", "irán", "izrael", "gáza",
         "gázai", "hamász", "libanon", "vörös-tenger", "jemen",
@@ -588,7 +627,9 @@ def parse_portfolio_live_article(source, article_url, article_date_obj=None):
         if loc["name"] == "Ukraine operational area":
             continue
 
-        key = f"{title}-{loc['name']}"
+        event_date = apply_time_to_date(article_date, f"{title} {summary}")
+
+        key = f"{title}-{loc['name']}-{event_date.isoformat()}"
 
         if key in seen:
             continue
@@ -600,7 +641,7 @@ def parse_portfolio_live_article(source, article_url, article_date_obj=None):
                 title=title,
                 url=article_url,
                 source=source,
-                date_obj=article_date_obj or datetime.now(timezone.utc),
+                date_obj=event_date,
                 summary=summary or title,
             )
         )
@@ -661,7 +702,7 @@ def parse_portfolio(source):
             ]):
                 continue
 
-            date_obj = parse_rss_date(pub_date_raw)
+            date_obj = parse_rss_date(pub_date_raw) or parse_date_from_url(url)
 
             if not is_recent(date_obj):
                 continue
@@ -777,7 +818,7 @@ def trim(items):
     return sorted(
         items,
         key=lambda x: (
-            x.get("date", ""),
+            x.get("datetime", x.get("date", "")),
             int(x.get("importance", 0)),
             int(x.get("sourceCount", 1)),
         ),
