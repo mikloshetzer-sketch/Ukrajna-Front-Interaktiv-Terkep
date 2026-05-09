@@ -83,6 +83,106 @@ function startStaticServer() {
   });
 }
 
+async function switchToCartoLight(page) {
+  console.log('Trying to switch base map to CARTO Light...');
+
+  await page.evaluate(() => {
+    const labels = Array.from(document.querySelectorAll('label'));
+
+    const cartoLabel = labels.find((label) =>
+      label.textContent &&
+      label.textContent.toLowerCase().includes('carto light')
+    );
+
+    if (cartoLabel) {
+      const input = cartoLabel.querySelector('input[type="radio"]');
+
+      if (input) {
+        input.click();
+        return;
+      }
+
+      cartoLabel.click();
+      return;
+    }
+
+    const inputs = Array.from(document.querySelectorAll('input[type="radio"]'));
+
+    const cartoInput = inputs.find((input) => {
+      const parentText = input.parentElement?.textContent?.toLowerCase() || '';
+      return parentText.includes('carto light');
+    });
+
+    if (cartoInput) {
+      cartoInput.click();
+    }
+  });
+
+  await page.waitForTimeout(5000);
+
+  console.log('Base map switch attempt completed.');
+}
+
+async function hideControlPanels(page) {
+  console.log('Hiding side panels and non-map layout elements...');
+
+  await page.addStyleTag({
+    content: `
+      body {
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        background: #ffffff !important;
+      }
+
+      .app-shell,
+      .layout,
+      .page,
+      main,
+      #app {
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      aside,
+      .sidebar,
+      .side-panel,
+      .control-panel,
+      .controls,
+      .left-panel,
+      .panel,
+      .toolbar,
+      .header,
+      header,
+      footer {
+        display: none !important;
+      }
+
+      .map-wrap,
+      .map-container,
+      #map,
+      .leaflet-container {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 1600px !important;
+        height: 1000px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        z-index: 999999 !important;
+      }
+
+      .leaflet-control-zoom {
+        display: none !important;
+      }
+    `
+  });
+
+  await page.waitForTimeout(2000);
+
+  console.log('Panels hidden.');
+}
+
 const server = await startStaticServer();
 
 const browser = await chromium.launch({
@@ -127,16 +227,38 @@ try {
   console.log('Leaflet container was not found in time. Screenshot will still be created for debugging.');
 }
 
-console.log('Waiting additional time for map tiles, layers and data...');
+console.log('Waiting for map layers and data...');
 
-await page.waitForTimeout(20000);
+await page.waitForTimeout(10000);
 
-console.log('Taking screenshot...');
+await switchToCartoLight(page);
 
-await page.screenshot({
-  path: OUTPUT_FILE,
-  fullPage: false
-});
+console.log('Waiting after CARTO Light switch...');
+
+await page.waitForTimeout(8000);
+
+await hideControlPanels(page);
+
+console.log('Waiting after layout cleanup...');
+
+await page.waitForTimeout(5000);
+
+const mapElement = await page.$('.leaflet-container');
+
+if (!mapElement) {
+  console.log('Map element not found. Taking full page screenshot as fallback.');
+
+  await page.screenshot({
+    path: OUTPUT_FILE,
+    fullPage: false
+  });
+} else {
+  console.log('Taking map-only screenshot...');
+
+  await mapElement.screenshot({
+    path: OUTPUT_FILE
+  });
+}
 
 await browser.close();
 server.close();
