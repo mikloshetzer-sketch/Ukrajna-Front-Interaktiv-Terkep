@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 
 const ROOT_DIR = process.cwd();
+
 const OUTPUT_DIR = path.join(ROOT_DIR, 'output');
 const OUTPUT_FILE = path.join(OUTPUT_DIR, 'daily-map.png');
 
@@ -31,7 +32,19 @@ await page.goto(indexUrl, {
   waitUntil: 'networkidle'
 });
 
-await page.waitForTimeout(5000);
+console.log('Waiting for Leaflet map container...');
+
+await page.waitForSelector('.leaflet-container', {
+  timeout: 30000
+});
+
+console.log('Leaflet container found.');
+
+console.log('Waiting additional time for layers and tiles...');
+
+await page.waitForTimeout(15000);
+
+console.log('Taking screenshot...');
 
 await page.screenshot({
   path: OUTPUT_FILE,
@@ -40,4 +53,4 @@ await page.screenshot({
 
 await browser.close();
 
-console.log(`PNG saved: ${OUTPUT_FILE}`);
+console.log(`PNG saved successfully: ${OUTPUT_FILE}`);
