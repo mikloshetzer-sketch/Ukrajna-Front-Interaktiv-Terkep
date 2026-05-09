@@ -1,0 +1,44 @@
+name: Render PNG snapshot
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "index.html"
+      - "src/**"
+      - "data/**"
+      - "scripts/render_png.js"
+      - "package.json"
+
+permissions:
+  contents: write
+
+jobs:
+  render-png:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Playwright browser
+        run: npx playwright install chromium
+
+      - name: Render PNG
+        run: npm run render:png
+
+      - name: Commit generated PNG
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Generate daily map PNG"
+          file_pattern: output/daily-map.png
