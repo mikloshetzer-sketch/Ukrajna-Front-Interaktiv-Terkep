@@ -100,6 +100,20 @@
       height: 320px !important;
     }
 
+    .empty-state {
+      padding: 28px;
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      border-radius: 16px;
+      color: #475569;
+      line-height: 1.6;
+      font-size: 16px;
+    }
+
+    .empty-state strong {
+      color: #0f172a;
+    }
+
     .table {
       width: 100%;
       border-collapse: collapse;
@@ -188,14 +202,18 @@
     <section class="main">
       <div class="card">
         <h2 class="section-title">Front Activity Index trend</h2>
-        <canvas id="faiChart"></canvas>
+        <div id="faiChartBox">
+          <canvas id="faiChart"></canvas>
+        </div>
       </div>
     </section>
 
     <section class="bottom">
       <div class="card">
         <h2 class="section-title">Index-összetevők trendje</h2>
-        <canvas id="componentsChart"></canvas>
+        <div id="componentsChartBox">
+          <canvas id="componentsChart"></canvas>
+        </div>
       </div>
 
       <div class="card">
@@ -240,14 +258,14 @@
       return Number(value);
     }
 
-    function avg(rows, key) {
-      if (!rows.length) return 0;
-      const sum = rows.reduce((acc, row) => acc + n(row[key]), 0);
-      return Math.round(sum / rows.length);
-    }
-
     function getFai(row) {
       return n(row.front_activity_index);
+    }
+
+    function averageFai(rows) {
+      if (!rows.length) return 0;
+      const sum = rows.reduce((acc, row) => acc + getFai(row), 0);
+      return Math.round(sum / rows.length);
     }
 
     function movingAverage(values, windowSize) {
@@ -260,6 +278,8 @@
     }
 
     function renderTopCards(data) {
+      if (!data.length) return;
+
       const latest = data[data.length - 1];
       const last7 = data.slice(-7);
       const last30 = data.slice(-30);
@@ -268,14 +288,30 @@
       document.getElementById("latestFai").textContent = getFai(latest);
       document.getElementById("latestStatus").textContent = latest.status || "UNKNOWN";
 
-      document.getElementById("avg7").textContent =
-        Math.round(last7.reduce((a, r) => a + getFai(r), 0) / Math.max(1, last7.length));
-
-      document.getElementById("avg30").textContent =
-        Math.round(last30.reduce((a, r) => a + getFai(r), 0) / Math.max(1, last30.length));
+      document.getElementById("avg7").textContent = averageFai(last7);
+      document.getElementById("avg30").textContent = averageFai(last30);
 
       document.getElementById("maxFai").textContent = getFai(maxRow);
       document.getElementById("maxDate").textContent = maxRow.date || "ismeretlen dátum";
+    }
+
+    function renderEmptyCharts(recordCount) {
+      document.getElementById("faiChartBox").innerHTML = `
+        <div class="empty-state">
+          <strong>Még nincs elég adat a trenddiagramhoz.</strong><br>
+          Jelenleg ${recordCount} napi rekord áll rendelkezésre.
+          A vonaldiagram legalább 2 napi adatponttól lesz értelmezhető.
+          A Build Front Activity Index workflow következő futása után itt már megjelenik az időbeli változás.
+        </div>
+      `;
+
+      document.getElementById("componentsChartBox").innerHTML = `
+        <div class="empty-state">
+          <strong>Az összetevő-trend még nem rajzolható.</strong><br>
+          Az OSINT density, FIRMS activity, active sectors és critical events idősora akkor lesz hasznos,
+          ha több nap adata áll rendelkezésre.
+        </div>
+      `;
     }
 
     function renderFaiChart(data) {
@@ -389,6 +425,9 @@
       if (!Array.isArray(data) || !data.length) {
         document.getElementById("note").textContent =
           "Nincs még historikus Front Activity adat. Futtasd le a Build Front Activity Index workflow-t legalább egyszer.";
+        document.getElementById("topDays").innerHTML =
+          "<tr><td colspan='3'>Nincs elérhető adat.</td></tr>";
+        renderEmptyCharts(0);
         return;
       }
 
@@ -396,12 +435,21 @@
         .filter(row => row && row.date)
         .sort((a, b) => String(a.date).localeCompare(String(b.date)));
 
+      renderTopCards(data);
+      renderTopDays(data);
+
+      if (data.length < 2) {
+        renderEmptyCharts(data.length);
+        document.getElementById("note").textContent =
+          "Jelenleg még csak " + data.length +
+          " napi rekord van a historikus adatfájlban. Ez nem hiba: a trendoldal a következő napi workflow-futások után kezd valódi idősoros képet adni.";
+        return;
+      }
+
       const chartData = data.slice(-90);
 
-      renderTopCards(data);
       renderFaiChart(chartData);
       renderComponentsChart(chartData);
-      renderTopDays(data);
 
       document.getElementById("note").textContent =
         "Megjelenített időszak: az utolsó legfeljebb 90 nap. Teljes historikus rekordok száma: " +
