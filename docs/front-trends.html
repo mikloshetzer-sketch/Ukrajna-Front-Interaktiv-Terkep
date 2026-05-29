@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Ukrajna Front – Activity Trends</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      background: #f1f5f9;
+      color: #111827;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: #f8fafc;
+      border-radius: 22px;
+      padding: 26px;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: 34px;
+    }
+
+    .hero p {
+      margin: 0;
+      color: #cbd5e1;
+      line-height: 1.5;
+    }
+
+    .grid4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+      border: 1px solid #e5e7eb;
+    }
+
+    .label {
+      font-size: 13px;
+      color: #64748b;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .value {
+      font-size: 34px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .sub {
+      font-size: 13px;
+      color: #64748b;
+      margin-top: 6px;
+    }
+
+    .main {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .bottom {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .section-title {
+      margin: 0 0 14px;
+      font-size: 22px;
+      color: #0f172a;
+    }
+
+    canvas {
+      width: 100% !important;
+      height: 320px !important;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .table th {
+      text-align: left;
+      color: #475569;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 9px 6px;
+    }
+
+    .table td {
+      border-bottom: 1px solid #e2e8f0;
+      padding: 9px 6px;
+      color: #334155;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #fee2e2;
+      color: #991b1b;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .note {
+      margin-top: 14px;
+      font-size: 13px;
+      color: #64748b;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 900px) {
+      .grid4, .bottom {
+        grid-template-columns: 1fr;
+      }
+
+      canvas {
+        height: 260px !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <section class="hero">
+      <h1>Ukrajna front – aktivitási trendek</h1>
+      <p>
+        A Front Activity Index historikus alakulása. Az oldal a mentett napi adatokból dolgozik,
+        így nemcsak az aktuális helyzetet, hanem az időbeli változást is mutatja.
+      </p>
+    </section>
+
+    <section class="grid4">
+      <div class="card">
+        <div class="label">Legfrissebb FAI</div>
+        <div class="value" id="latestFai">–</div>
+        <div class="sub" id="latestStatus">betöltés...</div>
+      </div>
+
+      <div class="card">
+        <div class="label">7 napos átlag</div>
+        <div class="value" id="avg7">–</div>
+        <div class="sub">rövid távú aktivitás</div>
+      </div>
+
+      <div class="card">
+        <div class="label">30 napos átlag</div>
+        <div class="value" id="avg30">–</div>
+        <div class="sub">középtávú trend</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Legmagasabb érték</div>
+        <div class="value" id="maxFai">–</div>
+        <div class="sub" id="maxDate">–</div>
+      </div>
+    </section>
+
+    <section class="main">
+      <div class="card">
+        <h2 class="section-title">Front Activity Index trend</h2>
+        <canvas id="faiChart"></canvas>
+      </div>
+    </section>
+
+    <section class="bottom">
+      <div class="card">
+        <h2 class="section-title">Index-összetevők trendje</h2>
+        <canvas id="componentsChart"></canvas>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">Legmagasabb aktivitású napok</h2>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Dátum</th>
+              <th>FAI</th>
+              <th>Státusz</th>
+            </tr>
+          </thead>
+          <tbody id="topDays">
+            <tr><td colspan="3">Adatok betöltése...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <div class="note" id="note">
+      Adatok betöltése...
+    </div>
+
+  </div>
+
+  <script>
+    const HISTORY_PATH = "../data/history/front_activity.json";
+
+    async function loadJson(path) {
+      try {
+        const res = await fetch(path, { cache: "no-store" });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return await res.json();
+      } catch (err) {
+        console.warn("Nem sikerült betölteni:", path, err);
+        return [];
+      }
+    }
+
+    function n(value) {
+      if (value === undefined || value === null || isNaN(value)) return 0;
+      return Number(value);
+    }
+
+    function avg(rows, key) {
+      if (!rows.length) return 0;
+      const sum = rows.reduce((acc, row) => acc + n(row[key]), 0);
+      return Math.round(sum / rows.length);
+    }
+
+    function getFai(row) {
+      return n(row.front_activity_index);
+    }
+
+    function movingAverage(values, windowSize) {
+      return values.map((_, i) => {
+        const start = Math.max(0, i - windowSize + 1);
+        const slice = values.slice(start, i + 1);
+        const sum = slice.reduce((a, b) => a + b, 0);
+        return Math.round(sum / slice.length);
+      });
+    }
+
+    function renderTopCards(data) {
+      const latest = data[data.length - 1];
+      const last7 = data.slice(-7);
+      const last30 = data.slice(-30);
+      const maxRow = [...data].sort((a, b) => getFai(b) - getFai(a))[0];
+
+      document.getElementById("latestFai").textContent = getFai(latest);
+      document.getElementById("latestStatus").textContent = latest.status || "UNKNOWN";
+
+      document.getElementById("avg7").textContent =
+        Math.round(last7.reduce((a, r) => a + getFai(r), 0) / Math.max(1, last7.length));
+
+      document.getElementById("avg30").textContent =
+        Math.round(last30.reduce((a, r) => a + getFai(r), 0) / Math.max(1, last30.length));
+
+      document.getElementById("maxFai").textContent = getFai(maxRow);
+      document.getElementById("maxDate").textContent = maxRow.date || "ismeretlen dátum";
+    }
+
+    function renderFaiChart(data) {
+      const labels = data.map(r => r.date);
+      const values = data.map(getFai);
+      const ma7 = movingAverage(values, 7);
+
+      new Chart(document.getElementById("faiChart"), {
+        type: "line",
+        data: {
+          labels,
+          datasets: [
+            {
+              label: "Front Activity Index",
+              data: values,
+              tension: 0.35,
+              fill: false
+            },
+            {
+              label: "7 napos mozgóátlag",
+              data: ma7,
+              tension: 0.35,
+              borderDash: [6, 4],
+              fill: false
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: true }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100
+            }
+          }
+        }
+      });
+    }
+
+    function renderComponentsChart(data) {
+      const labels = data.map(r => r.date);
+
+      new Chart(document.getElementById("componentsChart"), {
+        type: "line",
+        data: {
+          labels,
+          datasets: [
+            {
+              label: "OSINT density",
+              data: data.map(r => n(r.components?.osint_density)),
+              tension: 0.35,
+              fill: false
+            },
+            {
+              label: "FIRMS activity",
+              data: data.map(r => n(r.components?.firms_activity)),
+              tension: 0.35,
+              fill: false
+            },
+            {
+              label: "Active sectors",
+              data: data.map(r => n(r.components?.active_sectors)),
+              tension: 0.35,
+              fill: false
+            },
+            {
+              label: "Critical events",
+              data: data.map(r => n(r.components?.critical_events)),
+              tension: 0.35,
+              fill: false
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: true }
+          },
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+
+    function renderTopDays(data) {
+      const tbody = document.getElementById("topDays");
+      const top = [...data]
+        .sort((a, b) => getFai(b) - getFai(a))
+        .slice(0, 8);
+
+      tbody.innerHTML = top.map(row => `
+        <tr>
+          <td>${row.date || "ismeretlen"}</td>
+          <td><strong>${getFai(row)}</strong></td>
+          <td><span class="badge">${row.status || "UNKNOWN"}</span></td>
+        </tr>
+      `).join("");
+    }
+
+    async function init() {
+      let data = await loadJson(HISTORY_PATH);
+
+      if (!Array.isArray(data) || !data.length) {
+        document.getElementById("note").textContent =
+          "Nincs még historikus Front Activity adat. Futtasd le a Build Front Activity Index workflow-t legalább egyszer.";
+        return;
+      }
+
+      data = data
+        .filter(row => row && row.date)
+        .sort((a, b) => String(a.date).localeCompare(String(b.date)));
+
+      const chartData = data.slice(-90);
+
+      renderTopCards(data);
+      renderFaiChart(chartData);
+      renderComponentsChart(chartData);
+      renderTopDays(data);
+
+      document.getElementById("note").textContent =
+        "Megjelenített időszak: az utolsó legfeljebb 90 nap. Teljes historikus rekordok száma: " +
+        data.length +
+        ". A Front Activity Index nem hivatalos katonai mutató, hanem blogos elemzési és vizuális támogatási eszköz.";
+    }
+
+    init();
+  </script>
+</body>
+</html>
