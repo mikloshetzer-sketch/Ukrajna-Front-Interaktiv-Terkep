@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Ukrajna Front – Blog Card</title>
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
@@ -164,6 +166,13 @@
       color: #e5e7eb;
       font-weight: 700;
     }
+
+    .loading-error {
+      color: #fecaca;
+      line-height: 1.5;
+      font-size: 15px;
+      margin-top: 18px;
+    }
   </style>
 </head>
 
@@ -213,7 +222,7 @@
   </div>
 
   <script>
-    const FRONT_ACTIVITY_PATH = "../data/front_activity_latest.json";
+    const FRONT_ACTIVITY_PATH = "./data/front_activity_latest.json";
 
     document.getElementById("today").textContent =
       new Date().toLocaleDateString("hu-HU", {
@@ -240,10 +249,18 @@
 
     function renderSectors(sectors) {
       const box = document.getElementById("sectors");
-      const top = (sectors || []).slice(0, 6);
+
+      const top = (sectors || [])
+        .filter(s => s && s.sector && s.sector !== "Other / Unclassified")
+        .slice(0, 6);
 
       if (!top.length) {
-        box.innerHTML = "Nincs szektoradat.";
+        box.innerHTML = `
+          <div class="note">
+            Nincs még megbízhatóan besorolt aktív frontszektor.
+            Az OSINT-események jelentős része jelenleg besorolatlan.
+          </div>
+        `;
         return;
       }
 
@@ -323,25 +340,33 @@
       const data = await loadJson(FRONT_ACTIVITY_PATH);
 
       if (!data) {
-        document.getElementById("summary").textContent =
-          "Nem sikerült betölteni a Front Activity Index adatfájlt.";
+        document.getElementById("summary").innerHTML =
+          `<div class="loading-error">
+            Nem sikerült betölteni a Front Activity Index adatfájlt.<br>
+            Ellenőrizd: ./data/front_activity_latest.json
+          </div>`;
+        document.getElementById("sectors").textContent = "Nincs adat.";
+        document.getElementById("events").textContent = "Nincs adat.";
+        document.getElementById("updated").textContent = "Frissítés: adatbetöltési hiba";
         return;
       }
 
       const counts = data.counts || {};
       const fai = n(data.front_activity_index);
       const status = data.status || "UNKNOWN";
+
       const topSector = data.top_sectors && data.top_sectors.length
-        ? data.top_sectors[0].sector
-        : "nem azonosított";
+        ? data.top_sectors.find(s => s.sector !== "Other / Unclassified" && n(s.score) > 0)?.sector || "nincs besorolt szektor"
+        : "nincs besorolt szektor";
 
       document.getElementById("fai").textContent = fai;
       document.getElementById("status").textContent = status;
+
       document.getElementById("summary").innerHTML =
         `A mai aktivitási kép <strong>${status}</strong> szintet jelez. ` +
         `Az OSINT-feedben <strong>${n(counts.osint)}</strong> esemény, ` +
         `a 3 napos FIRMS-ablakban <strong>${n(counts.firms_3d)}</strong> hőanomália szerepel. ` +
-        `Legaktívabb szektor: <strong>${topSector}</strong>.`;
+        `Legaktívabb besorolt szektor: <strong>${topSector}</strong>.`;
 
       document.getElementById("updated").textContent =
         "Frissítés: " + (data.date || data.updated_utc || "ismeretlen");
