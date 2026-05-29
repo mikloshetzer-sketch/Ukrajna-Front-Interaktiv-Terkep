@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Ukrajna Front – Blog Card</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      background: #020617;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #e5e7eb;
+    }
+
+    .card {
+      width: 1200px;
+      height: 675px;
+      box-sizing: border-box;
+      padding: 34px;
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,0.22), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(239,68,68,0.20), transparent 36%),
+        linear-gradient(135deg, #020617, #111827 55%, #1e293b);
+      overflow: hidden;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 26px;
+    }
+
+    .title h1 {
+      margin: 0;
+      font-size: 42px;
+      color: #f8fafc;
+      letter-spacing: -0.8px;
+    }
+
+    .title p {
+      margin: 10px 0 0;
+      font-size: 18px;
+      color: #cbd5e1;
+    }
+
+    .date {
+      text-align: right;
+      color: #94a3b8;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .main {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 24px;
+    }
+
+    .panel {
+      background: rgba(15, 23, 42, 0.82);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 22px;
+      padding: 22px;
+      box-shadow: 0 18px 45px rgba(0,0,0,0.35);
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .metric {
+      background: rgba(30, 41, 59, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .metric-label {
+      color: #94a3b8;
+      font-size: 15px;
+      margin-bottom: 8px;
+    }
+
+    .metric-value {
+      font-size: 38px;
+      font-weight: 800;
+      color: #f8fafc;
+    }
+
+    .metric-sub {
+      color: #94a3b8;
+      font-size: 13px;
+      margin-top: 6px;
+    }
+
+    .section-title {
+      margin: 0 0 16px;
+      font-size: 22px;
+      color: #f8fafc;
+    }
+
+    .summary {
+      font-size: 18px;
+      line-height: 1.55;
+      color: #cbd5e1;
+      margin: 0;
+    }
+
+    .events {
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+    }
+
+    .event {
+      border-left: 5px solid #f97316;
+      padding-left: 14px;
+    }
+
+    .event-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #f8fafc;
+      line-height: 1.35;
+    }
+
+    .event-meta {
+      font-size: 13px;
+      color: #94a3b8;
+      margin-top: 4px;
+    }
+
+    .chart-wrap {
+      height: 210px;
+      margin-top: 18px;
+    }
+
+    canvas {
+      width: 100% !important;
+      height: 210px !important;
+    }
+
+    .footer {
+      margin-top: 22px;
+      display: flex;
+      justify-content: space-between;
+      color: #94a3b8;
+      font-size: 14px;
+    }
+
+    .brand {
+      color: #e5e7eb;
+      font-weight: 700;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+
+    <div class="header">
+      <div class="title">
+        <h1>Ukrajna fronthelyzet</h1>
+        <p>OSINT és FIRMS alapú napi vizuális összefoglaló</p>
+      </div>
+
+      <div class="date">
+        <div id="today">–</div>
+        <div>Blog dashboard</div>
+      </div>
+    </div>
+
+    <div class="main">
+
+      <div class="panel">
+        <div class="metrics">
+          <div class="metric">
+            <div class="metric-label">OSINT-események</div>
+            <div class="metric-value" id="osintCount">–</div>
+            <div class="metric-sub">aktuális feed</div>
+          </div>
+
+          <div class="metric">
+            <div class="metric-label">FIRMS 3 nap</div>
+            <div class="metric-value" id="firms3Count">–</div>
+            <div class="metric-sub">hőanomália</div>
+          </div>
+
+          <div class="metric">
+            <div class="metric-label">FIRMS 10 nap</div>
+            <div class="metric-value" id="firms10Count">–</div>
+            <div class="metric-sub">aktivitási jel</div>
+          </div>
+
+          <div class="metric">
+            <div class="metric-label">FIRMS 30 nap</div>
+            <div class="metric-value" id="firms30Count">–</div>
+            <div class="metric-sub">hosszabb trend</div>
+          </div>
+        </div>
+
+        <h2 class="section-title">Értelmezés</h2>
+        <p class="summary" id="summary">
+          A kártya a front menti aktivitás vizuális támogatására készült. Az OSINT-események és a FIRMS hőpontok
+          együtt segítenek jelezni, hol sűrűsödik a figyelem.
+        </p>
+
+        <div class="chart-wrap">
+          <canvas id="chart"></canvas>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2 class="section-title">Kiemelt események</h2>
+        <div class="events" id="events">
+          Adatok betöltése...
+        </div>
+      </div>
+
+    </div>
+
+    <div class="footer">
+      <div class="brand">Törésvonalak / Ukrajna Front Monitor</div>
+      <div>FIRMS-adatok értelmezése óvatosságot igényel</div>
+    </div>
+
+  </div>
+
+  <script>
+    const DATA_PATHS = {
+      osint: "../data/osint_feed.json",
+      firms3: "../data/firms_3.json",
+      firms10: "../data/firms_10.json",
+      firms30: "../data/firms_30.json"
+    };
+
+    document.getElementById("today").textContent =
+      new Date().toLocaleDateString("hu-HU", {
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      });
+
+    function asArray(data) {
+      if (Array.isArray(data)) return data;
+      if (Array.isArray(data.features)) return data.features;
+      if (Array.isArray(data.items)) return data.items;
+      if (Array.isArray(data.events)) return data.events;
+      return [];
+    }
+
+    async function loadJson(path) {
+      try {
+        const res = await fetch(path, { cache: "no-store" });
+        if (!res.ok) return [];
+        const data = await res.json();
+        return asArray(data);
+      } catch (err) {
+        console.warn("Nem sikerült betölteni:", path, err);
+        return [];
+      }
+    }
+
+    function getTitle(item) {
+      return item.title || item.name || item.headline || item.summary || "OSINT-esemény";
+    }
+
+    function getSource(item) {
+      return item.source || item.feed || item.tag || item.provider || "forrás nélkül";
+    }
+
+    function renderEvents(events) {
+      const box = document.getElementById("events");
+      const top = events.slice(0, 5);
+
+      if (!top.length) {
+        box.innerHTML = "<div class='event'><div class='event-title'>Nincs elérhető OSINT-feed.</div></div>";
+        return;
+      }
+
+      box.innerHTML = top.map(e => `
+        <div class="event">
+          <div class="event-title">${getTitle(e)}</div>
+          <div class="event-meta">${getSource(e)}</div>
+        </div>
+      `).join("");
+    }
+
+    function renderChart(osintCount, f3, f10, f30) {
+      new Chart(document.getElementById("chart"), {
+        type: "bar",
+        data: {
+          labels: ["OSINT", "FIRMS 3", "FIRMS 10", "FIRMS 30"],
+          datasets: [{
+            label: "Aktivitási mutató",
+            data: [osintCount, f3, f10, f30],
+            backgroundColor: [
+              "rgba(249,115,22,0.75)",
+              "rgba(239,68,68,0.72)",
+              "rgba(248,113,113,0.58)",
+              "rgba(148,163,184,0.48)"
+            ],
+            borderColor: [
+              "rgba(249,115,22,1)",
+              "rgba(239,68,68,1)",
+              "rgba(248,113,113,1)",
+              "rgba(148,163,184,1)"
+            ],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            x: {
+              ticks: { color: "#cbd5e1" },
+              grid: { color: "rgba(148,163,184,0.15)" }
+            },
+            y: {
+              ticks: { color: "#cbd5e1" },
+              grid: { color: "rgba(148,163,184,0.15)" }
+            }
+          }
+        }
+      });
+    }
+
+    async function init() {
+      const [osint, firms3, firms10, firms30] = await Promise.all([
+        loadJson(DATA_PATHS.osint),
+        loadJson(DATA_PATHS.firms3),
+        loadJson(DATA_PATHS.firms10),
+        loadJson(DATA_PATHS.firms30)
+      ]);
+
+      document.getElementById("osintCount").textContent = osint.length;
+      document.getElementById("firms3Count").textContent = firms3.length;
+      document.getElementById("firms10Count").textContent = firms10.length;
+      document.getElementById("firms30Count").textContent = firms30.length;
+
+      renderEvents(osint);
+      renderChart(osint.length, firms3.length, firms10.length, firms30.length);
+
+      if (osint.length || firms3.length) {
+        document.getElementById("summary").textContent =
+          "Az aktuális adatok alapján a front menti aktivitás több rétegben követhető: az OSINT-feed a jelentett eseményeket, a FIRMS-adat pedig a hőanomália-sűrűsödést mutatja. A kettő együtt jó vizuális támaszt ad egy napi blogbejegyzéshez.";
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
