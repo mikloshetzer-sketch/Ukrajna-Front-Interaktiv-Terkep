@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Ukrajna Front – Blog Dashboard</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      background: #0f172a;
+      color: #e5e7eb;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 22px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #111827, #1e293b);
+      border: 1px solid #334155;
+      border-radius: 18px;
+      padding: 22px;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+      color: #f9fafb;
+    }
+
+    .hero p {
+      margin: 0;
+      color: #cbd5e1;
+      line-height: 1.5;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .card {
+      background: #111827;
+      border: 1px solid #334155;
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    }
+
+    .label {
+      color: #94a3b8;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #f8fafc;
+    }
+
+    .sub {
+      color: #94a3b8;
+      font-size: 13px;
+      margin-top: 6px;
+    }
+
+    .main {
+      display: grid;
+      grid-template-columns: 1.45fr 0.9fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    #map {
+      height: 560px;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid #334155;
+      background: #020617;
+    }
+
+    .side {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .section-title {
+      margin: 0 0 12px;
+      font-size: 18px;
+      color: #f8fafc;
+    }
+
+    .event {
+      border-left: 4px solid #f97316;
+      padding-left: 12px;
+      margin-bottom: 12px;
+    }
+
+    .event-title {
+      font-weight: 700;
+      color: #f8fafc;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .event-meta {
+      color: #94a3b8;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .bottom {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    canvas {
+      width: 100% !important;
+      height: 240px !important;
+    }
+
+    .note {
+      color: #94a3b8;
+      font-size: 12px;
+      line-height: 1.45;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 900px) {
+      .grid, .main, .bottom {
+        grid-template-columns: 1fr;
+      }
+
+      #map {
+        height: 420px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <section class="hero">
+      <h1>Ukrajna fronthelyzet – vizuális napi dashboard</h1>
+      <p>
+        Blogbejegyzésekhez készült összefoglaló nézet. A térkép, az OSINT-események és a FIRMS hőanomáliák
+        a repo meglévő adatfájljaiból dolgoznak.
+      </p>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <div class="label">OSINT-események</div>
+        <div class="value" id="osintCount">–</div>
+        <div class="sub">aktuális feed alapján</div>
+      </div>
+
+      <div class="card">
+        <div class="label">FIRMS 3 nap</div>
+        <div class="value" id="firms3Count">–</div>
+        <div class="sub">hőanomália pontok</div>
+      </div>
+
+      <div class="card">
+        <div class="label">FIRMS 10 nap</div>
+        <div class="value" id="firms10Count">–</div>
+        <div class="sub">tartós aktivitási jel</div>
+      </div>
+
+      <div class="card">
+        <div class="label">FIRMS 30 nap</div>
+        <div class="value" id="firms30Count">–</div>
+        <div class="sub">hosszabb trend</div>
+      </div>
+    </section>
+
+    <section class="main">
+      <div id="map"></div>
+
+      <div class="side">
+        <div class="card">
+          <h2 class="section-title">Kiemelt OSINT-események</h2>
+          <div id="events">Adatok betöltése...</div>
+        </div>
+
+        <div class="card">
+          <h2 class="section-title">Blogos értelmezés</h2>
+          <p id="summary" style="line-height:1.55; color:#cbd5e1;">
+            Az aktuális adatok alapján a dashboard a frontvonalhoz közeli eseményeket, a hőanomáliákat és az OSINT-feed
+            sűrűsödési pontjait emeli ki.
+          </p>
+          <div class="note">
+            Megjegyzés: a FIRMS hőpont nem minden esetben jelent katonai eseményt. Erdőtűz, ipari hőforrás vagy technikai zaj is megjelenhet.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="bottom">
+      <div class="card">
+        <h2 class="section-title">FIRMS aktivitás</h2>
+        <canvas id="firmsChart"></canvas>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">OSINT–FIRMS összevetés</h2>
+        <canvas id="compareChart"></canvas>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    const DATA_PATHS = {
+      osint: "../data/osint_feed.json",
+      firms3: "../data/firms_3.json",
+      firms10: "../data/firms_10.json",
+      firms30: "../data/firms_30.json"
+    };
+
+    const map = L.map("map", {
+      zoomControl: false
+    }).setView([48.7, 37.7], 6);
+
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+      attribution: "&copy; OpenStreetMap &copy; CARTO"
+    }).addTo(map);
+
+    L.control.zoom({ position: "bottomright" }).addTo(map);
+
+    function asArray(data) {
+      if (Array.isArray(data)) return data;
+      if (Array.isArray(data.features)) return data.features;
+      if (Array.isArray(data.items)) return data.items;
+      if (Array.isArray(data.events)) return data.events;
+      return [];
+    }
+
+    async function loadJson(path) {
+      try {
+        const res = await fetch(path, { cache: "no-store" });
+        if (!res.ok) return [];
+        const data = await res.json();
+        return asArray(data);
+      } catch (err) {
+        console.warn("Nem sikerült betölteni:", path, err);
+        return [];
+      }
+    }
+
+    function getLat(item) {
+      return item.lat || item.latitude || item.geometry?.coordinates?.[1] || null;
+    }
+
+    function getLon(item) {
+      return item.lon || item.lng || item.longitude || item.geometry?.coordinates?.[0] || null;
+    }
+
+    function getTitle(item) {
+      return item.title || item.name || item.headline || item.summary || "OSINT-esemény";
+    }
+
+    function getSource(item) {
+      return item.source || item.feed || item.tag || item.provider || "forrás nélkül";
+    }
+
+    function drawOsint(events) {
+      const valid = events.filter(e => getLat(e) && getLon(e)).slice(0, 80);
+
+      valid.forEach(e => {
+        L.circleMarker([getLat(e), getLon(e)], {
+          radius: 6,
+          color: "#f97316",
+          fillColor: "#f97316",
+          fillOpacity: 0.8,
+          weight: 1
+        })
+        .bindPopup(`<b>${getTitle(e)}</b><br><small>${getSource(e)}</small>`)
+        .addTo(map);
+      });
+    }
+
+    function drawFirms(items) {
+      const valid = items.filter(e => getLat(e) && getLon(e)).slice(0, 400);
+
+      valid.forEach(e => {
+        L.circleMarker([getLat(e), getLon(e)], {
+          radius: 3,
+          color: "#ef4444",
+          fillColor: "#ef4444",
+          fillOpacity: 0.45,
+          weight: 0
+        }).addTo(map);
+      });
+    }
+
+    function renderEvents(events) {
+      const box = document.getElementById("events");
+      const top = events.slice(0, 6);
+
+      if (!top.length) {
+        box.innerHTML = "Nincs elérhető OSINT-feed.";
+        return;
+      }
+
+      box.innerHTML = top.map(e => `
+        <div class="event">
+          <div class="event-title">${getTitle(e)}</div>
+          <div class="event-meta">${getSource(e)}</div>
+        </div>
+      `).join("");
+    }
+
+    function renderCharts(osintCount, f3, f10, f30) {
+      new Chart(document.getElementById("firmsChart"), {
+        type: "bar",
+        data: {
+          labels: ["3 nap", "10 nap", "30 nap"],
+          datasets: [{
+            label: "FIRMS hőpontok",
+            data: [f3, f10, f30]
+          }]
+        },
+        options: {
+          plugins: {
+            legend: { labels: { color: "#e5e7eb" } }
+          },
+          scales: {
+            x: { ticks: { color: "#cbd5e1" }, grid: { color: "#334155" } },
+            y: { ticks: { color: "#cbd5e1" }, grid: { color: "#334155" } }
+          }
+        }
+      });
+
+      new Chart(document.getElementById("compareChart"), {
+        type: "bar",
+        data: {
+          labels: ["OSINT", "FIRMS 3 nap", "FIRMS 10 nap"],
+          datasets: [{
+            label: "Aktivitási mutató",
+            data: [osintCount, f3, f10]
+          }]
+        },
+        options: {
+          plugins: {
+            legend: { labels: { color: "#e5e7eb" } }
+          },
+          scales: {
+            x: { ticks: { color: "#cbd5e1" }, grid: { color: "#334155" } },
+            y: { ticks: { color: "#cbd5e1" }, grid: { color: "#334155" } }
+          }
+        }
+      });
+    }
+
+    async function init() {
+      const [osint, firms3, firms10, firms30] = await Promise.all([
+        loadJson(DATA_PATHS.osint),
+        loadJson(DATA_PATHS.firms3),
+        loadJson(DATA_PATHS.firms10),
+        loadJson(DATA_PATHS.firms30)
+      ]);
+
+      document.getElementById("osintCount").textContent = osint.length;
+      document.getElementById("firms3Count").textContent = firms3.length;
+      document.getElementById("firms10Count").textContent = firms10.length;
+      document.getElementById("firms30Count").textContent = firms30.length;
+
+      drawFirms(firms3);
+      drawOsint(osint);
+      renderEvents(osint);
+      renderCharts(osint.length, firms3.length, firms10.length, firms30.length);
+
+      if (osint.length > 0 || firms3.length > 0) {
+        document.getElementById("summary").textContent =
+          "A mai vizuális dashboard az OSINT-feed és a FIRMS hőanomália-adatok alapján jelzi, hol sűrűsödik a front menti aktivitás. A blogbejegyzésben ezt érdemes nem önálló bizonyítékként, hanem kiegészítő vizuális indikátorként használni.";
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
