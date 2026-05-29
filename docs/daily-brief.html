@@ -216,7 +216,7 @@
     <section class="hero">
       <h1>Ukrajna front – napi gyorsjelentés</h1>
       <p>
-        Blogbejegyzésekhez készült elemző nézet. Az oldal már az automatikusan generált
+        Blogbejegyzésekhez készült elemző nézet. Az oldal az automatikusan generált
         Front Activity Index adatait használja.
       </p>
     </section>
@@ -289,7 +289,7 @@
   </div>
 
   <script>
-    const FRONT_ACTIVITY_PATH = "../data/front_activity_latest.json";
+    const FRONT_ACTIVITY_PATH = "./data/front_activity_latest.json";
 
     async function loadJson(path) {
       try {
@@ -372,15 +372,20 @@
     }
 
     function renderSectorChart(sectors) {
-      const top = (sectors || []).slice(0, 6);
+      const top = (sectors || [])
+        .filter(s => s && s.sector && s.sector !== "Other / Unclassified")
+        .slice(0, 6);
+
+      const labels = top.length ? top.map(s => s.sector) : ["Nincs besorolt szektor"];
+      const values = top.length ? top.map(s => safeNumber(s.score)) : [0];
 
       new Chart(document.getElementById("sectorChart"), {
         type: "bar",
         data: {
-          labels: top.map(s => s.sector),
+          labels,
           datasets: [{
             label: "Aktivitási pont",
-            data: top.map(s => safeNumber(s.score))
+            data: values
           }]
         },
         options: {
@@ -400,6 +405,7 @@
 
       if (!data) {
         document.getElementById("briefText").textContent = "Nem sikerült betölteni a Front Activity Index adatfájlt.";
+        document.getElementById("updatedAt").textContent = "Hiba: ./data/front_activity_latest.json nem tölthető be.";
         return;
       }
 
