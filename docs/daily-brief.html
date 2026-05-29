@@ -123,6 +123,7 @@
       color: #64748b;
       font-size: 13px;
       margin-top: 5px;
+      line-height: 1.45;
     }
 
     .events {
@@ -158,6 +159,33 @@
       gap: 18px;
     }
 
+    .drivers {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .driver-row {
+      display: grid;
+      grid-template-columns: 150px 1fr 48px;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+
+    .bar-bg {
+      height: 10px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 10px;
+      background: #dc2626;
+      border-radius: 999px;
+    }
+
     canvas {
       width: 100% !important;
       height: 260px !important;
@@ -174,6 +202,10 @@
       .grid4, .main, .bottom {
         grid-template-columns: 1fr;
       }
+
+      .driver-row {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -184,7 +216,8 @@
     <section class="hero">
       <h1>Ukrajna front – napi gyorsjelentés</h1>
       <p>
-        Blogbejegyzésekhez készült elemző nézet. Az oldal az OSINT-feed és a FIRMS hőanomália-adatok alapján ad gyors vizuális támaszt.
+        Blogbejegyzésekhez készült elemző nézet. Az oldal már az automatikusan generált
+        Front Activity Index adatait használja.
       </p>
     </section>
 
@@ -192,7 +225,7 @@
       <div class="card">
         <div class="label">Front Activity Index</div>
         <div class="value" id="faiValue">–</div>
-        <div class="sub" id="faiStatus">számítás alatt</div>
+        <div class="sub" id="faiStatus">betöltés...</div>
       </div>
 
       <div class="card">
@@ -208,25 +241,24 @@
       </div>
 
       <div class="card">
-        <div class="label">FIRMS 30 nap</div>
-        <div class="value" id="firms30Count">–</div>
-        <div class="sub">hosszabb trend</div>
+        <div class="label">Aktív szektor</div>
+        <div class="value" id="sectorCount">–</div>
+        <div class="sub">OSINT + FIRMS alapján</div>
       </div>
     </section>
 
     <section class="main">
       <div class="card">
         <h2 class="section-title">Operatív kép</h2>
-        <div class="brief-text" id="briefText">
-          Adatok betöltése...
-        </div>
+        <div class="brief-text" id="briefText">Adatok betöltése...</div>
 
         <div class="index-box">
           <div class="index-number" id="bigIndex">–</div>
           <div>
             <div class="index-status" id="bigStatus">Front Activity Index</div>
             <div class="index-note">
-              A mutató az OSINT-események és a FIRMS hőanomália-adatok egyszerű súlyozott kombinációja. Nem hivatalos katonai mérőszám.
+              A mutató az OSINT-események, a FIRMS hőanomáliák, az aktív szektorok és a kritikus kulcsszavak alapján készül.
+              Nem hivatalos katonai mérőszám.
             </div>
           </div>
         </div>
@@ -240,171 +272,158 @@
 
     <section class="bottom">
       <div class="card">
-        <h2 class="section-title">Aktivitási összkép</h2>
-        <canvas id="activityChart"></canvas>
+        <h2 class="section-title">Mi mozgatja az indexet?</h2>
+        <div class="drivers" id="drivers">Adatok betöltése...</div>
       </div>
 
       <div class="card">
-        <h2 class="section-title">FIRMS-időablakok</h2>
-        <canvas id="firmsChart"></canvas>
+        <h2 class="section-title">Legaktívabb szektorok</h2>
+        <canvas id="sectorChart"></canvas>
       </div>
     </section>
 
-    <div class="note">
-      Megjegyzés: a FIRMS hőanomália nem minden esetben jelent katonai eseményt. Erdőtűz, ipari hőforrás vagy technikai zaj is megjelenhet. A dashboard célja a blogos értelmezés vizuális támogatása.
+    <div class="note" id="updatedAt">
+      Adatok betöltése...
     </div>
 
   </div>
 
   <script>
-    const DATA_PATHS = {
-      osint: "../data/osint_feed.json",
-      firms3: "../data/firms_3.json",
-      firms10: "../data/firms_10.json",
-      firms30: "../data/firms_30.json"
-    };
-
-    function asArray(data) {
-      if (Array.isArray(data)) return data;
-      if (Array.isArray(data.features)) return data.features;
-      if (Array.isArray(data.items)) return data.items;
-      if (Array.isArray(data.events)) return data.events;
-      return [];
-    }
+    const FRONT_ACTIVITY_PATH = "../data/front_activity_latest.json";
 
     async function loadJson(path) {
       try {
         const res = await fetch(path, { cache: "no-store" });
-        if (!res.ok) return [];
-        const data = await res.json();
-        return asArray(data);
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return await res.json();
       } catch (err) {
         console.warn("Nem sikerült betölteni:", path, err);
-        return [];
+        return null;
       }
     }
 
-    function getTitle(item) {
-      return item.title || item.name || item.headline || item.summary || "OSINT-esemény";
-    }
-
-    function getSource(item) {
-      return item.source || item.feed || item.tag || item.provider || "forrás nélkül";
-    }
-
-    function calcFAI(osintCount, f3, f10, f30) {
-      const osintScore = Math.min(osintCount * 4, 40);
-      const firmsShort = Math.min(f3 / 8, 30);
-      const firmsMedium = Math.min(f10 / 25, 20);
-      const firmsLong = Math.min(f30 / 90, 10);
-      return Math.round(Math.min(osintScore + firmsShort + firmsMedium + firmsLong, 100));
-    }
-
-    function faiStatus(value) {
-      if (value >= 80) return "CRITICAL";
-      if (value >= 60) return "HIGH";
-      if (value >= 40) return "ELEVATED";
-      if (value >= 20) return "MODERATE";
-      return "LOW";
+    function safeNumber(value) {
+      if (value === undefined || value === null || isNaN(value)) return 0;
+      return Number(value);
     }
 
     function renderEvents(events) {
       const box = document.getElementById("events");
-      const top = events.slice(0, 5);
 
-      if (!top.length) {
-        box.innerHTML = "<div class='event'><div class='event-title'>Nincs elérhető OSINT-esemény.</div></div>";
+      if (!events || !events.length) {
+        box.innerHTML = "<div class='event'><div class='event-title'>Nincs elérhető kiemelt esemény.</div></div>";
         return;
       }
 
-      box.innerHTML = top.map((e, i) => `
+      box.innerHTML = events.slice(0, 5).map((e, i) => `
         <div class="event">
-          <div class="event-title">${i + 1}. ${getTitle(e)}</div>
-          <div class="event-meta">${getSource(e)}</div>
+          <div class="event-title">${i + 1}. ${e.title || "OSINT-esemény"}</div>
+          <div class="event-meta">${e.source || "forrás nélkül"} · ${e.sector || "besorolatlan"}</div>
         </div>
       `).join("");
     }
 
-    function renderBrief(osintCount, f3, f10, f30, fai, status) {
-      const text = `
-        Az aktuális adatok alapján a front menti aktivitási kép <strong>${status}</strong> szintet jelez.
-        Az OSINT-feedben <strong>${osintCount}</strong> esemény szerepel, miközben a FIRMS rövid távú ablakában
-        <strong>${f3}</strong> hőanomália látható. A 10 és 30 napos adatok azt mutatják, hogy az aktivitás
-        nemcsak pillanatnyi jelként, hanem hosszabb mintázatként is vizsgálható. Blogbejegyzésben ezt érdemes
-        kiegészítő indikátorként használni, nem önálló bizonyítékként.
+    function renderBrief(data) {
+      const fai = safeNumber(data.front_activity_index);
+      const status = data.status || "UNKNOWN";
+      const counts = data.counts || {};
+      const topSector = data.top_sectors && data.top_sectors.length
+        ? data.top_sectors[0].sector
+        : "nem azonosított";
+
+      document.getElementById("briefText").innerHTML = `
+        Az aktuális Front Activity Index <strong>${fai}</strong> pont, ami <strong>${status}</strong> szintet jelez.
+        A rendszer <strong>${safeNumber(counts.osint)}</strong> OSINT-eseményt,
+        <strong>${safeNumber(counts.firms_3d)}</strong> rövid távú FIRMS hőanomáliát és
+        <strong>${safeNumber(counts.active_sectors)}</strong> aktív szektort azonosított.
+        A legaktívabb térség jelenleg: <strong>${topSector}</strong>.
+        Ez a nézet blogbejegyzéshez használható gyors értelmező támasz, nem önálló bizonyíték.
       `;
-      document.getElementById("briefText").innerHTML = text;
     }
 
-    function renderCharts(osintCount, f3, f10, f30, fai) {
-      new Chart(document.getElementById("activityChart"), {
+    function renderDrivers(components) {
+      const box = document.getElementById("drivers");
+
+      if (!components) {
+        box.innerHTML = "Nincs komponensadat.";
+        return;
+      }
+
+      const rows = [
+        ["OSINT density", components.osint_density || 0, 25],
+        ["FIRMS activity", components.firms_activity || 0, 20],
+        ["Territorial change", components.territorial_change || 0, 35],
+        ["Active sectors", components.active_sectors || 0, 10],
+        ["Critical events", components.critical_events || 0, 10]
+      ];
+
+      box.innerHTML = rows.map(([name, value, max]) => {
+        const pct = Math.min(100, Math.round((value / max) * 100));
+        return `
+          <div class="driver-row">
+            <div>${name}</div>
+            <div class="bar-bg">
+              <div class="bar-fill" style="width:${pct}%"></div>
+            </div>
+            <div>${value}</div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderSectorChart(sectors) {
+      const top = (sectors || []).slice(0, 6);
+
+      new Chart(document.getElementById("sectorChart"), {
         type: "bar",
         data: {
-          labels: ["FAI", "OSINT", "FIRMS 3 nap"],
+          labels: top.map(s => s.sector),
           datasets: [{
-            label: "Aktivitás",
-            data: [fai, osintCount, f3]
+            label: "Aktivitási pont",
+            data: top.map(s => safeNumber(s.score))
           }]
         },
         options: {
+          indexAxis: "y",
           plugins: {
             legend: { display: false }
           },
           scales: {
-            y: { beginAtZero: true }
-          }
-        }
-      });
-
-      new Chart(document.getElementById("firmsChart"), {
-        type: "line",
-        data: {
-          labels: ["3 nap", "10 nap", "30 nap"],
-          datasets: [{
-            label: "FIRMS hőanomáliák",
-            data: [f3, f10, f30],
-            tension: 0.35,
-            fill: false
-          }]
-        },
-        options: {
-          plugins: {
-            legend: { display: true }
-          },
-          scales: {
-            y: { beginAtZero: true }
+            x: { beginAtZero: true, max: 100 }
           }
         }
       });
     }
 
     async function init() {
-      const [osint, firms3, firms10, firms30] = await Promise.all([
-        loadJson(DATA_PATHS.osint),
-        loadJson(DATA_PATHS.firms3),
-        loadJson(DATA_PATHS.firms10),
-        loadJson(DATA_PATHS.firms30)
-      ]);
+      const data = await loadJson(FRONT_ACTIVITY_PATH);
 
-      const osintCount = osint.length;
-      const f3 = firms3.length;
-      const f10 = firms10.length;
-      const f30 = firms30.length;
-      const fai = calcFAI(osintCount, f3, f10, f30);
-      const status = faiStatus(fai);
+      if (!data) {
+        document.getElementById("briefText").textContent = "Nem sikerült betölteni a Front Activity Index adatfájlt.";
+        return;
+      }
+
+      const counts = data.counts || {};
+      const fai = safeNumber(data.front_activity_index);
+      const status = data.status || "UNKNOWN";
 
       document.getElementById("faiValue").textContent = fai;
-      document.getElementById("bigIndex").textContent = fai;
       document.getElementById("faiStatus").textContent = status;
+      document.getElementById("bigIndex").textContent = fai;
       document.getElementById("bigStatus").textContent = status + " ACTIVITY";
 
-      document.getElementById("osintCount").textContent = osintCount;
-      document.getElementById("firms3Count").textContent = f3;
-      document.getElementById("firms30Count").textContent = f30;
+      document.getElementById("osintCount").textContent = safeNumber(counts.osint);
+      document.getElementById("firms3Count").textContent = safeNumber(counts.firms_3d);
+      document.getElementById("sectorCount").textContent = safeNumber(counts.active_sectors);
 
-      renderEvents(osint);
-      renderBrief(osintCount, f3, f10, f30, fai, status);
-      renderCharts(osintCount, f3, f10, f30, fai);
+      renderBrief(data);
+      renderEvents(data.top_events || []);
+      renderDrivers(data.components || {});
+      renderSectorChart(data.top_sectors || []);
+
+      document.getElementById("updatedAt").textContent =
+        "Utolsó frissítés: " + (data.updated_utc || data.date || "ismeretlen") +
+        ". A Front Activity Index nem hivatalos katonai mutató, hanem blogos elemzési és vizuális támogatási eszköz.";
     }
 
     init();
