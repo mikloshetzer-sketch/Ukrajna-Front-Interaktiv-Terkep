@@ -1,0 +1,38 @@
+name: Build Front Activity Index
+
+on:
+  workflow_dispatch:
+
+  schedule:
+    - cron: "20 5 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  build-front-activity:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Repository letöltése
+        uses: actions/checkout@v4
+
+      - name: Python telepítése
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Front Activity Index generálása
+        run: python scripts/build_front_activity.py
+
+      - name: Változások commitolása
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git add data/history/front_activity.json
+          git add docs/data/history/front_activity.json
+          git add docs/data/front_activity_latest.json
+
+          git commit -m "Front Activity Index frissítése" || echo "Nincs változás"
+          git push
