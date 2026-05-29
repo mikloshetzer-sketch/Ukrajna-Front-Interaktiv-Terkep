@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Ukrajna Front – Daily Brief</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      background: #f1f5f9;
+      color: #111827;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: #f8fafc;
+      border-radius: 22px;
+      padding: 26px;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: 34px;
+    }
+
+    .hero p {
+      margin: 0;
+      color: #cbd5e1;
+      line-height: 1.5;
+    }
+
+    .grid4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+      border: 1px solid #e5e7eb;
+    }
+
+    .label {
+      font-size: 13px;
+      color: #64748b;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .value {
+      font-size: 34px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .sub {
+      font-size: 13px;
+      color: #64748b;
+      margin-top: 6px;
+    }
+
+    .main {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .section-title {
+      margin: 0 0 14px;
+      font-size: 22px;
+      color: #0f172a;
+    }
+
+    .brief-text {
+      font-size: 17px;
+      line-height: 1.65;
+      color: #334155;
+    }
+
+    .index-box {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      margin-top: 16px;
+      padding: 18px;
+      background: #f8fafc;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .index-number {
+      font-size: 58px;
+      font-weight: 900;
+      color: #dc2626;
+      line-height: 1;
+    }
+
+    .index-status {
+      font-size: 18px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .index-note {
+      color: #64748b;
+      font-size: 13px;
+      margin-top: 5px;
+    }
+
+    .events {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .event {
+      border-left: 5px solid #f97316;
+      padding-left: 12px;
+      background: #f8fafc;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      border-radius: 0 12px 12px 0;
+    }
+
+    .event-title {
+      font-weight: 700;
+      color: #111827;
+      line-height: 1.35;
+    }
+
+    .event-meta {
+      font-size: 13px;
+      color: #64748b;
+      margin-top: 4px;
+    }
+
+    .bottom {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    canvas {
+      width: 100% !important;
+      height: 260px !important;
+    }
+
+    .note {
+      margin-top: 14px;
+      font-size: 13px;
+      color: #64748b;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 900px) {
+      .grid4, .main, .bottom {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <section class="hero">
+      <h1>Ukrajna front – napi gyorsjelentés</h1>
+      <p>
+        Blogbejegyzésekhez készült elemző nézet. Az oldal az OSINT-feed és a FIRMS hőanomália-adatok alapján ad gyors vizuális támaszt.
+      </p>
+    </section>
+
+    <section class="grid4">
+      <div class="card">
+        <div class="label">Front Activity Index</div>
+        <div class="value" id="faiValue">–</div>
+        <div class="sub" id="faiStatus">számítás alatt</div>
+      </div>
+
+      <div class="card">
+        <div class="label">OSINT esemény</div>
+        <div class="value" id="osintCount">–</div>
+        <div class="sub">aktuális feed</div>
+      </div>
+
+      <div class="card">
+        <div class="label">FIRMS 3 nap</div>
+        <div class="value" id="firms3Count">–</div>
+        <div class="sub">rövid távú aktivitás</div>
+      </div>
+
+      <div class="card">
+        <div class="label">FIRMS 30 nap</div>
+        <div class="value" id="firms30Count">–</div>
+        <div class="sub">hosszabb trend</div>
+      </div>
+    </section>
+
+    <section class="main">
+      <div class="card">
+        <h2 class="section-title">Operatív kép</h2>
+        <div class="brief-text" id="briefText">
+          Adatok betöltése...
+        </div>
+
+        <div class="index-box">
+          <div class="index-number" id="bigIndex">–</div>
+          <div>
+            <div class="index-status" id="bigStatus">Front Activity Index</div>
+            <div class="index-note">
+              A mutató az OSINT-események és a FIRMS hőanomália-adatok egyszerű súlyozott kombinációja. Nem hivatalos katonai mérőszám.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">Top 5 esemény</h2>
+        <div class="events" id="events">Adatok betöltése...</div>
+      </div>
+    </section>
+
+    <section class="bottom">
+      <div class="card">
+        <h2 class="section-title">Aktivitási összkép</h2>
+        <canvas id="activityChart"></canvas>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">FIRMS-időablakok</h2>
+        <canvas id="firmsChart"></canvas>
+      </div>
+    </section>
+
+    <div class="note">
+      Megjegyzés: a FIRMS hőanomália nem minden esetben jelent katonai eseményt. Erdőtűz, ipari hőforrás vagy technikai zaj is megjelenhet. A dashboard célja a blogos értelmezés vizuális támogatása.
+    </div>
+
+  </div>
+
+  <script>
+    const DATA_PATHS = {
+      osint: "../data/osint_feed.json",
+      firms3: "../data/firms_3.json",
+      firms10: "../data/firms_10.json",
+      firms30: "../data/firms_30.json"
+    };
+
+    function asArray(data) {
+      if (Array.isArray(data)) return data;
+      if (Array.isArray(data.features)) return data.features;
+      if (Array.isArray(data.items)) return data.items;
+      if (Array.isArray(data.events)) return data.events;
+      return [];
+    }
+
+    async function loadJson(path) {
+      try {
+        const res = await fetch(path, { cache: "no-store" });
+        if (!res.ok) return [];
+        const data = await res.json();
+        return asArray(data);
+      } catch (err) {
+        console.warn("Nem sikerült betölteni:", path, err);
+        return [];
+      }
+    }
+
+    function getTitle(item) {
+      return item.title || item.name || item.headline || item.summary || "OSINT-esemény";
+    }
+
+    function getSource(item) {
+      return item.source || item.feed || item.tag || item.provider || "forrás nélkül";
+    }
+
+    function calcFAI(osintCount, f3, f10, f30) {
+      const osintScore = Math.min(osintCount * 4, 40);
+      const firmsShort = Math.min(f3 / 8, 30);
+      const firmsMedium = Math.min(f10 / 25, 20);
+      const firmsLong = Math.min(f30 / 90, 10);
+      return Math.round(Math.min(osintScore + firmsShort + firmsMedium + firmsLong, 100));
+    }
+
+    function faiStatus(value) {
+      if (value >= 80) return "CRITICAL";
+      if (value >= 60) return "HIGH";
+      if (value >= 40) return "ELEVATED";
+      if (value >= 20) return "MODERATE";
+      return "LOW";
+    }
+
+    function renderEvents(events) {
+      const box = document.getElementById("events");
+      const top = events.slice(0, 5);
+
+      if (!top.length) {
+        box.innerHTML = "<div class='event'><div class='event-title'>Nincs elérhető OSINT-esemény.</div></div>";
+        return;
+      }
+
+      box.innerHTML = top.map((e, i) => `
+        <div class="event">
+          <div class="event-title">${i + 1}. ${getTitle(e)}</div>
+          <div class="event-meta">${getSource(e)}</div>
+        </div>
+      `).join("");
+    }
+
+    function renderBrief(osintCount, f3, f10, f30, fai, status) {
+      const text = `
+        Az aktuális adatok alapján a front menti aktivitási kép <strong>${status}</strong> szintet jelez.
+        Az OSINT-feedben <strong>${osintCount}</strong> esemény szerepel, miközben a FIRMS rövid távú ablakában
+        <strong>${f3}</strong> hőanomália látható. A 10 és 30 napos adatok azt mutatják, hogy az aktivitás
+        nemcsak pillanatnyi jelként, hanem hosszabb mintázatként is vizsgálható. Blogbejegyzésben ezt érdemes
+        kiegészítő indikátorként használni, nem önálló bizonyítékként.
+      `;
+      document.getElementById("briefText").innerHTML = text;
+    }
+
+    function renderCharts(osintCount, f3, f10, f30, fai) {
+      new Chart(document.getElementById("activityChart"), {
+        type: "bar",
+        data: {
+          labels: ["FAI", "OSINT", "FIRMS 3 nap"],
+          datasets: [{
+            label: "Aktivitás",
+            data: [fai, osintCount, f3]
+          }]
+        },
+        options: {
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
+
+      new Chart(document.getElementById("firmsChart"), {
+        type: "line",
+        data: {
+          labels: ["3 nap", "10 nap", "30 nap"],
+          datasets: [{
+            label: "FIRMS hőanomáliák",
+            data: [f3, f10, f30],
+            tension: 0.35,
+            fill: false
+          }]
+        },
+        options: {
+          plugins: {
+            legend: { display: true }
+          },
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    }
+
+    async function init() {
+      const [osint, firms3, firms10, firms30] = await Promise.all([
+        loadJson(DATA_PATHS.osint),
+        loadJson(DATA_PATHS.firms3),
+        loadJson(DATA_PATHS.firms10),
+        loadJson(DATA_PATHS.firms30)
+      ]);
+
+      const osintCount = osint.length;
+      const f3 = firms3.length;
+      const f10 = firms10.length;
+      const f30 = firms30.length;
+      const fai = calcFAI(osintCount, f3, f10, f30);
+      const status = faiStatus(fai);
+
+      document.getElementById("faiValue").textContent = fai;
+      document.getElementById("bigIndex").textContent = fai;
+      document.getElementById("faiStatus").textContent = status;
+      document.getElementById("bigStatus").textContent = status + " ACTIVITY";
+
+      document.getElementById("osintCount").textContent = osintCount;
+      document.getElementById("firms3Count").textContent = f3;
+      document.getElementById("firms30Count").textContent = f30;
+
+      renderEvents(osint);
+      renderBrief(osintCount, f3, f10, f30, fai, status);
+      renderCharts(osintCount, f3, f10, f30, fai);
+    }
+
+    init();
+  </script>
+</body>
+</html>
