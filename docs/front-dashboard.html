@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Ukraine Frontline Situation Dashboard</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      background: #020617;
+      color: #e5e7eb;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .dashboard {
+      width: 1200px;
+      min-height: 720px;
+      margin: 0 auto;
+      padding: 8px;
+      box-sizing: border-box;
+      background: #020617;
+    }
+
+    .title {
+      border: 1px solid #334155;
+      border-radius: 5px;
+      padding: 7px 10px;
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      color: #f8fafc;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .metric {
+      background: #0b1624;
+      border: 1px solid #334155;
+      border-radius: 5px;
+      padding: 9px 8px;
+      min-height: 52px;
+    }
+
+    .metric-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      color: #cbd5e1;
+      margin-bottom: 7px;
+    }
+
+    .metric-value {
+      font-size: 20px;
+      font-weight: 900;
+      color: #ff6b6b;
+      letter-spacing: 1px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .panel {
+      background: #0b1624;
+      border: 1px solid #334155;
+      border-radius: 5px;
+      padding: 10px;
+      min-height: 245px;
+      box-sizing: border-box;
+    }
+
+    .panel-title {
+      font-size: 14px;
+      font-weight: 900;
+      color: #67e8f9;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 8px;
+    }
+
+    .sector-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .sector-row {
+      display: grid;
+      grid-template-columns: 130px 1fr 45px;
+      gap: 8px;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .bar-bg {
+      height: 10px;
+      background: #1e293b;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 10px;
+      background: #f97316;
+      border-radius: 999px;
+    }
+
+    .events {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .event {
+      border-left: 4px solid #38bdf8;
+      padding-left: 10px;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .event-title {
+      color: #f8fafc;
+      font-weight: 700;
+    }
+
+    .event-meta {
+      color: #94a3b8;
+      margin-top: 3px;
+      font-size: 11px;
+    }
+
+    .bottom {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    canvas {
+      width: 100% !important;
+      height: 215px !important;
+      background: #f8fafc;
+      border-radius: 4px;
+      padding: 6px;
+      box-sizing: border-box;
+    }
+
+    .assessment {
+      font-size: 13px;
+      line-height: 1.55;
+      color: #e2e8f0;
+    }
+
+    .drivers {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .driver {
+      background: #111827;
+      border: 1px solid #334155;
+      border-radius: 5px;
+      padding: 8px;
+    }
+
+    .driver-label {
+      font-size: 10px;
+      color: #94a3b8;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .driver-value {
+      font-size: 18px;
+      font-weight: 900;
+      color: #f8fafc;
+    }
+
+    .warning {
+      color: #fbbf24;
+      font-size: 12px;
+      line-height: 1.45;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 900px) {
+      .dashboard {
+        width: 100%;
+      }
+
+      .metrics,
+      .grid,
+      .bottom {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="dashboard">
+
+    <div class="title" id="title">
+      Ukraine Frontline Situation Dashboard
+    </div>
+
+    <section class="metrics">
+      <div class="metric">
+        <div class="metric-label">Front Activity Index</div>
+        <div class="metric-value" id="fai">–</div>
+      </div>
+
+      <div class="metric">
+        <div class="metric-label">Status</div>
+        <div class="metric-value" id="status">–</div>
+      </div>
+
+      <div class="metric">
+        <div class="metric-label">OSINT Events</div>
+        <div class="metric-value" id="osint">–</div>
+      </div>
+
+      <div class="metric">
+        <div class="metric-label">FIRMS Hotspots</div>
+        <div class="metric-value" id="firms">–</div>
+      </div>
+
+      <div class="metric">
+        <div class="metric-label">Main Sector</div>
+        <div class="metric-value" id="mainSector">–</div>
+      </div>
+
+      <div class="metric">
+        <div class="metric-label">Active Sectors</div>
+        <div class="metric-value" id="activeSectors">–</div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="panel">
+        <div class="panel-title">Most Active Sectors</div>
+        <div class="sector-list" id="sectors">Adatok betöltése...</div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Top OSINT Events</div>
+        <div class="events" id="events">Adatok betöltése...</div>
+      </div>
+    </section>
+
+    <section class="bottom">
+      <div class="panel">
+        <div class="panel-title">Front Activity Trend</div>
+        <canvas id="trendChart"></canvas>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Operational Assessment</div>
+        <div class="assessment" id="assessment">Adatok betöltése...</div>
+
+        <div class="drivers">
+          <div class="driver">
+            <div class="driver-label">OSINT Density</div>
+            <div class="driver-value" id="dOsint">–</div>
+          </div>
+          <div class="driver">
+            <div class="driver-label">FIRMS Activity</div>
+            <div class="driver-value" id="dFirms">–</div>
+          </div>
+          <div class="driver">
+            <div class="driver-label">Active Sectors</div>
+            <div class="driver-value" id="dSectors">–</div>
+          </div>
+          <div class="driver">
+            <div class="driver-label">Critical Events</div>
+            <div class="driver-value" id="dCritical">–</div>
+          </div>
+        </div>
+
+        <div class="warning">
+          A Front Activity Index nem hivatalos katonai mutató. Blogos elemzési és vizuális támogatási célra készült.
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    const LATEST_PATH = "./data/front_activity_latest.json";
+    const HISTORY_PATH = "./data/history/front_activity.json";
+
+    async function loadJson(path, fallback) {
+      try {
+        const res = await fetch(path, { cache: "no-store" });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return await res.json();
+      } catch (err) {
+        console.warn("Nem sikerült betölteni:", path, err);
+        return fallback;
+      }
+    }
+
+    function n(value) {
+      if (value === undefined || value === null || isNaN(value)) return 0;
+      return Number(value);
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return "Unknown date";
+      const d = new Date(dateString + "T00:00:00");
+      return d.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      });
+    }
+
+    function getTopSector(sectors) {
+      const filtered = (sectors || [])
+        .filter(s => s && s.sector && s.sector !== "Other / Unclassified" && n(s.score) > 0);
+
+      if (!filtered.length) return "UNCLASSIFIED";
+      return filtered[0].sector.toUpperCase();
+    }
+
+    function renderSectors(sectors) {
+      const box = document.getElementById("sectors");
+
+      const top = (sectors || [])
+        .filter(s => s && s.sector && s.sector !== "Other / Unclassified")
+        .slice(0, 6);
+
+      if (!top.length) {
+        box.innerHTML = `
+          <div class="warning">
+            Nincs megbízhatóan besorolt aktív frontszektor. Az OSINT-események jelentős része jelenleg besorolatlan.
+          </div>
+        `;
+        return;
+      }
+
+      box.innerHTML = top.map(s => `
+        <div class="sector-row">
+          <div>${s.sector}</div>
+          <div class="bar-bg">
+            <div class="bar-fill" style="width:${Math.min(100, n(s.score))}%"></div>
+          </div>
+          <strong>${n(s.score)}</strong>
+        </div>
+      `).join("");
+    }
+
+    function renderEvents(events) {
+      const box = document.getElementById("events");
+      const top = (events || []).slice(0, 6);
+
+      if (!top.length) {
+        box.innerHTML = `<div class="warning">Nincs kiemelt OSINT-esemény.</div>`;
+        return;
+      }
+
+      box.innerHTML = top.map((e, i) => `
+        <div class="event">
+          <div class="event-title">${i + 1}. ${e.title || "OSINT event"}</div>
+          <div class="event-meta">${e.source || "no source"} · ${e.sector || "unclassified"}</div>
+        </div>
+      `).join("");
+    }
+
+    function renderAssessment(data) {
+      const counts = data.counts || {};
+      const components = data.components || {};
+      const topSector = getTopSector(data.top_sectors || []);
+
+      const fai = n(data.front_activity_index);
+      const status = data.status || "UNKNOWN";
+
+      document.getElementById("assessment").innerHTML = `
+        The current frontline activity picture is assessed as <strong>${status}</strong>, with a Front Activity Index of
+        <strong>${fai}</strong>. The system identified <strong>${n(counts.osint)}</strong> OSINT events,
+        <strong>${n(counts.firms_3d)}</strong> short-term FIRMS hotspots and
+        <strong>${n(counts.active_sectors)}</strong> active sector(s). The main classified sector is
+        <strong>${topSector}</strong>. The dashboard should be used as a visual support layer for daily blog analysis,
+        not as standalone battlefield verification.
+      `;
+
+      document.getElementById("dOsint").textContent = n(components.osint_density);
+      document.getElementById("dFirms").textContent = n(components.firms_activity);
+      document.getElementById("dSectors").textContent = n(components.active_sectors);
+      document.getElementById("dCritical").textContent = n(components.critical_events);
+    }
+
+    function renderTrend(history) {
+      const rows = Array.isArray(history)
+        ? history.filter(r => r && r.date).sort((a, b) => String(a.date).localeCompare(String(b.date))).slice(-30)
+        : [];
+
+      const labels = rows.length ? rows.map(r => r.date) : ["No history"];
+      const values = rows.length ? rows.map(r => n(r.front_activity_index)) : [0];
+
+      new Chart(document.getElementById("trendChart"), {
+        type: "line",
+        data: {
+          labels,
+          datasets: [{
+            label: "Front Activity Index",
+            data: values,
+            tension: 0.35,
+            fill: false,
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: true,
+              labels: { color: "#111827" }
+            }
+          },
+          scales: {
+            x: {
+              ticks: { color: "#111827", maxRotation: 45, minRotation: 30 },
+              grid: { color: "rgba(15,23,42,0.12)" }
+            },
+            y: {
+              beginAtZero: true,
+              max: 100,
+              ticks: { color: "#111827" },
+              grid: { color: "rgba(15,23,42,0.12)" }
+            }
+          }
+        }
+      });
+    }
+
+    async function init() {
+      const latest = await loadJson(LATEST_PATH, null);
+      const history = await loadJson(HISTORY_PATH, []);
+
+      if (!latest) {
+        document.getElementById("title").textContent = "Ukraine Frontline Situation Dashboard - Data Error";
+        document.getElementById("assessment").textContent =
+          "Nem sikerült betölteni a ./data/front_activity_latest.json fájlt.";
+        renderTrend([]);
+        return;
+      }
+
+      const counts = latest.counts || {};
+      const date = latest.date || "";
+      const topSector = getTopSector(latest.top_sectors || []);
+
+      document.getElementById("title").textContent =
+        "UKRAINE FRONTLINE SITUATION DASHBOARD - " + formatDate(date).toUpperCase();
+
+      document.getElementById("fai").textContent = n(latest.front_activity_index);
+      document.getElementById("status").textContent = latest.status || "UNKNOWN";
+      document.getElementById("osint").textContent = n(counts.osint);
+      document.getElementById("firms").textContent = n(counts.firms_3d);
+      document.getElementById("mainSector").textContent = topSector;
+      document.getElementById("activeSectors").textContent = n(counts.active_sectors);
+
+      renderSectors(latest.top_sectors || []);
+      renderEvents(latest.top_events || []);
+      renderAssessment(latest);
+      renderTrend(history);
+    }
+
+    init();
+  </script>
+</body>
+</html>
