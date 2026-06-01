@@ -18,7 +18,7 @@
 
     .dashboard {
       width: 1200px;
-      min-height: 720px;
+      min-height: 760px;
       margin: 0 auto;
       padding: 8px;
       box-sizing: border-box;
@@ -29,7 +29,7 @@
       border: 1px solid #334155;
       border-radius: 5px;
       padding: 7px 10px;
-      font-size: 24px;
+      font-size: 23px;
       font-weight: 900;
       letter-spacing: 1px;
       color: #f8fafc;
@@ -39,7 +39,7 @@
 
     .metrics {
       display: grid;
-      grid-template-columns: repeat(6, 1fr);
+      grid-template-columns: repeat(8, 1fr);
       gap: 6px;
       margin-bottom: 8px;
     }
@@ -48,22 +48,43 @@
       background: #0b1624;
       border: 1px solid #334155;
       border-radius: 5px;
-      padding: 9px 8px;
-      min-height: 52px;
+      padding: 8px 7px;
+      min-height: 54px;
+      box-sizing: border-box;
     }
 
     .metric-label {
-      font-size: 10px;
+      font-size: 9px;
       text-transform: uppercase;
       color: #cbd5e1;
       margin-bottom: 7px;
+      line-height: 1.15;
     }
 
     .metric-value {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 900;
       color: #ff6b6b;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .metric-value.small {
+      font-size: 14px;
+    }
+
+    .metric-value.positive {
+      color: #fb7185;
+    }
+
+    .metric-value.negative {
+      color: #22c55e;
+    }
+
+    .metric-value.neutral {
+      color: #e5e7eb;
     }
 
     .grid {
@@ -197,6 +218,13 @@
       margin-top: 8px;
     }
 
+    .source-note {
+      color: #94a3b8;
+      font-size: 10px;
+      line-height: 1.35;
+      margin-top: 6px;
+    }
+
     @media (max-width: 900px) {
       .dashboard {
         width: 100%;
@@ -206,6 +234,10 @@
       .grid,
       .bottom {
         grid-template-columns: 1fr;
+      }
+
+      .metric-value {
+        font-size: 22px;
       }
     }
   </style>
@@ -230,6 +262,21 @@
       </div>
 
       <div class="metric">
+        <div class="metric-label">Territorial Change</div>
+        <div class="metric-value" id="territorialChange">–</div>
+      </div>
+
+      <div class="metric">
+        <div class="metric-label">RU Gain</div>
+        <div class="metric-value" id="ruGain">–</div>
+      </div>
+
+      <div class="metric">
+        <div class="metric-label">UA Recapture</div>
+        <div class="metric-value" id="uaRecapture">–</div>
+      </div>
+
+      <div class="metric">
         <div class="metric-label">OSINT Events</div>
         <div class="metric-value" id="osint">–</div>
       </div>
@@ -241,12 +288,7 @@
 
       <div class="metric">
         <div class="metric-label">Main Sector</div>
-        <div class="metric-value" id="mainSector">–</div>
-      </div>
-
-      <div class="metric">
-        <div class="metric-label">Active Sectors</div>
-        <div class="metric-value" id="activeSectors">–</div>
+        <div class="metric-value small" id="mainSector">–</div>
       </div>
     </section>
 
@@ -282,8 +324,8 @@
             <div class="driver-value" id="dFirms">–</div>
           </div>
           <div class="driver">
-            <div class="driver-label">Active Sectors</div>
-            <div class="driver-value" id="dSectors">–</div>
+            <div class="driver-label">Territorial Component</div>
+            <div class="driver-value" id="dTerritory">–</div>
           </div>
           <div class="driver">
             <div class="driver-label">Critical Events</div>
@@ -293,6 +335,10 @@
 
         <div class="warning">
           A Front Activity Index nem hivatalos katonai mutató. Blogos elemzési és vizuális támogatási célra készült.
+        </div>
+
+        <div class="source-note" id="sourceNote">
+          Forrásadatok betöltése...
         </div>
       </div>
     </section>
@@ -319,9 +365,35 @@
       return Number(value);
     }
 
+    function signedKm2(value) {
+      const num = n(value);
+      if (num > 0) return "+" + num.toFixed(2) + " km²";
+      if (num < 0) return num.toFixed(2) + " km²";
+      return "0.00 km²";
+    }
+
+    function plainKm2(value) {
+      return n(value).toFixed(2) + " km²";
+    }
+
+    function setChangeClass(element, value) {
+      element.classList.remove("positive", "negative", "neutral");
+      const num = n(value);
+
+      if (num > 0) {
+        element.classList.add("positive");
+      } else if (num < 0) {
+        element.classList.add("negative");
+      } else {
+        element.classList.add("neutral");
+      }
+    }
+
     function formatDate(dateString) {
       if (!dateString) return "Unknown date";
+
       const d = new Date(dateString + "T00:00:00");
+
       return d.toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
@@ -384,24 +456,52 @@
     function renderAssessment(data) {
       const counts = data.counts || {};
       const components = data.components || {};
-      const topSector = getTopSector(data.top_sectors || []);
+      const territorial = data.territorial || {};
 
+      const topSector = getTopSector(data.top_sectors || []);
       const fai = n(data.front_activity_index);
       const status = data.status || "UNKNOWN";
+      const net = n(territorial.net_change_km2);
+      const ruGain = n(territorial.russian_gain_km2);
+      const uaRecapture = n(territorial.ukrainian_recapture_km2);
+
+      let territorialSentence = "No reliable territorial delta is available for the latest DeepState files.";
+
+      if (territorial.available) {
+        if (net > 0) {
+          territorialSentence =
+            `The latest DeepState comparison indicates a net Russian territorial gain of <strong>${plainKm2(net)}</strong>.`;
+        } else if (net < 0) {
+          territorialSentence =
+            `The latest DeepState comparison indicates a net Ukrainian recapture of <strong>${plainKm2(Math.abs(net))}</strong>.`;
+        } else {
+          territorialSentence =
+            `The latest DeepState comparison indicates no measurable net territorial change.`;
+        }
+      }
 
       document.getElementById("assessment").innerHTML = `
         The current frontline activity picture is assessed as <strong>${status}</strong>, with a Front Activity Index of
-        <strong>${fai}</strong>. The system identified <strong>${n(counts.osint)}</strong> OSINT events,
+        <strong>${fai}</strong>. ${territorialSentence}
+        The system identified <strong>${n(counts.osint)}</strong> OSINT events,
         <strong>${n(counts.firms_3d)}</strong> short-term FIRMS hotspots and
-        <strong>${n(counts.active_sectors)}</strong> active sector(s). The main classified sector is
-        <strong>${topSector}</strong>. The dashboard should be used as a visual support layer for daily blog analysis,
-        not as standalone battlefield verification.
+        <strong>${n(counts.active_sectors)}</strong> active sector(s).
+        The main classified sector is <strong>${topSector}</strong>.
+        RU gain: <strong>${plainKm2(ruGain)}</strong>; UA recapture:
+        <strong>${plainKm2(uaRecapture)}</strong>.
       `;
 
       document.getElementById("dOsint").textContent = n(components.osint_density);
       document.getElementById("dFirms").textContent = n(components.firms_activity);
-      document.getElementById("dSectors").textContent = n(components.active_sectors);
+      document.getElementById("dTerritory").textContent = n(components.territorial_change);
       document.getElementById("dCritical").textContent = n(components.critical_events);
+
+      const previousFile = territorial.previous_file || "n/a";
+      const currentFile = territorial.current_file || "n/a";
+      const method = territorial.method || "n/a";
+
+      document.getElementById("sourceNote").textContent =
+        "DeepState delta: " + previousFile + " → " + currentFile + " | " + method;
     }
 
     function renderTrend(history) {
@@ -462,6 +562,7 @@
       }
 
       const counts = latest.counts || {};
+      const territorial = latest.territorial || {};
       const date = latest.date || "";
       const topSector = getTopSector(latest.top_sectors || []);
 
@@ -473,7 +574,14 @@
       document.getElementById("osint").textContent = n(counts.osint);
       document.getElementById("firms").textContent = n(counts.firms_3d);
       document.getElementById("mainSector").textContent = topSector;
-      document.getElementById("activeSectors").textContent = n(counts.active_sectors);
+
+      const changeEl = document.getElementById("territorialChange");
+      const netChange = n(territorial.net_change_km2);
+      changeEl.textContent = signedKm2(netChange);
+      setChangeClass(changeEl, netChange);
+
+      document.getElementById("ruGain").textContent = plainKm2(territorial.russian_gain_km2);
+      document.getElementById("uaRecapture").textContent = plainKm2(territorial.ukrainian_recapture_km2);
 
       renderSectors(latest.top_sectors || []);
       renderEvents(latest.top_events || []);
