@@ -1,7 +1,6 @@
 import json
 import math
 import urllib.request
-import urllib.error
 from pathlib import Path
 from datetime import datetime, timezone
 
@@ -22,8 +21,6 @@ OSINT_PATHS = [
 FIRMS_3_PATHS = [
     DATA_DIR / "firms_3.json",
     DATA_DIR / "firms_3d.json",
-    DATA_DIR / "firms3.json",
-    DATA_DIR / "firms_3_days.json",
     DOCS_DATA_DIR / "firms_3.json",
     DOCS_DATA_DIR / "firms_3d.json",
 ]
@@ -31,8 +28,6 @@ FIRMS_3_PATHS = [
 FIRMS_10_PATHS = [
     DATA_DIR / "firms_10.json",
     DATA_DIR / "firms_10d.json",
-    DATA_DIR / "firms10.json",
-    DATA_DIR / "firms_10_days.json",
     DOCS_DATA_DIR / "firms_10.json",
     DOCS_DATA_DIR / "firms_10d.json",
 ]
@@ -40,8 +35,6 @@ FIRMS_10_PATHS = [
 FIRMS_30_PATHS = [
     DATA_DIR / "firms_30.json",
     DATA_DIR / "firms_30d.json",
-    DATA_DIR / "firms30.json",
-    DATA_DIR / "firms_30_days.json",
     DOCS_DATA_DIR / "firms_30.json",
     DOCS_DATA_DIR / "firms_30d.json",
 ]
@@ -50,108 +43,72 @@ HISTORY_PATH = HISTORY_DIR / "front_activity.json"
 DOCS_HISTORY_PATH = DOCS_HISTORY_DIR / "front_activity.json"
 LATEST_PATH = DOCS_DATA_DIR / "front_activity_latest.json"
 
-
 DEEPSTATE_API_URL = "https://api.github.com/repos/cyterat/deepstate-map-data/contents/data"
 
 
 SECTORS = {
     "Kupiansk": {
-        "keywords": [
-            "kupiansk", "kupyansk", "kupjansk", "kupyansk direction",
-            "oskil", "synyakivka", "petropavlivka", "dvorichna"
-        ],
+        "keywords": ["kupiansk", "kupyansk", "kupjansk", "oskil", "dvorichna"],
         "lat": 49.71,
         "lon": 37.61,
         "radius_km": 70,
     },
     "Lyman": {
-        "keywords": [
-            "lyman", "krasnyi lyman", "krasny lyman", "siversk",
-            "terny", "yampolivka", "zarichne", "kreminna"
-        ],
+        "keywords": ["lyman", "siversk", "kreminna", "terny", "zarichne"],
         "lat": 48.99,
         "lon": 37.80,
         "radius_km": 75,
     },
     "Bakhmut-Toretsk": {
-        "keywords": [
-            "bakhmut", "toretsk", "chasiw yar", "chasiv yar",
-            "chassiv yar", "klishchiivka", "andriivka", "new york",
-            "druzhba", "pivnichne"
-        ],
+        "keywords": ["bakhmut", "toretsk", "chasiv yar", "chasiw yar", "klishchiivka"],
         "lat": 48.58,
         "lon": 37.95,
         "radius_km": 80,
     },
     "Pokrovsk": {
-        "keywords": [
-            "pokrovsk", "myrnohrad", "avdiivka", "ocheretyne",
-            "ocheretyn", "selidove", "selydove", "novopokrovske",
-            "novoselivka persha", "prohres", "toretsk-pokrovsk"
-        ],
+        "keywords": ["pokrovsk", "myrnohrad", "avdiivka", "ocheretyne", "selidove"],
         "lat": 48.28,
         "lon": 37.18,
         "radius_km": 85,
     },
     "Kurakhove": {
-        "keywords": [
-            "kurakhove", "kurakhovo", "krasnohorivka", "heorhiivka",
-            "maksymilianivka", "dalne", "illinka"
-        ],
+        "keywords": ["kurakhove", "kurakhovo", "krasnohorivka", "heorhiivka"],
         "lat": 47.99,
         "lon": 37.28,
         "radius_km": 70,
     },
     "Velyka Novosilka": {
-        "keywords": [
-            "velyka novosilka", "novosilka", "staromaiorske",
-            "urozhaine", "rivnopil", "makarivka"
-        ],
+        "keywords": ["velyka novosilka", "staromaiorske", "urozhaine", "rivnopil"],
         "lat": 47.84,
         "lon": 36.84,
         "radius_km": 75,
     },
     "Zaporizhzhia": {
-        "keywords": [
-            "zaporizhzhia", "zaporizhia", "orikhiv", "orekhiv",
-            "robotyne", "verbove", "mala tokmachka", "huliaipole"
-        ],
+        "keywords": ["zaporizhzhia", "zaporizhia", "orikhiv", "robotyne", "verbove"],
         "lat": 47.84,
         "lon": 35.14,
         "radius_km": 95,
     },
     "Kherson-Dnipro": {
-        "keywords": [
-            "kherson", "dnipro river", "dnipro", "krynky",
-            "antonivka", "antonovsky", "olesky", "nova kakhovka"
-        ],
+        "keywords": ["kherson", "dnipro river", "krynky", "antonivka", "nova kakhovka"],
         "lat": 46.64,
         "lon": 32.61,
         "radius_km": 95,
     },
     "Crimea": {
-        "keywords": [
-            "crimea", "sevastopol", "kerch", "saki", "dzhankoi",
-            "feodosia", "simferopol", "black sea fleet"
-        ],
+        "keywords": ["crimea", "sevastopol", "kerch", "saki", "dzhankoi", "feodosia"],
         "lat": 45.20,
         "lon": 34.10,
         "radius_km": 150,
     },
     "Kharkiv": {
-        "keywords": [
-            "kharkiv", "harkiv", "vovchansk", "lyptsi",
-            "starytsia", "hlyboke"
-        ],
+        "keywords": ["kharkiv", "harkiv", "vovchansk", "lyptsi"],
         "lat": 49.99,
         "lon": 36.23,
         "radius_km": 90,
     },
     "Sumy-Chernihiv Border": {
-        "keywords": [
-            "sumy", "chernihiv", "border area", "kursk border",
-            "bilopillia", "shostka"
-        ],
+        "keywords": ["sumy", "chernihiv", "kursk border", "bilopillia", "shostka"],
         "lat": 51.00,
         "lon": 34.80,
         "radius_km": 140,
@@ -190,7 +147,6 @@ BACKGROUND_KEYWORDS = [
     "kijev",
     "kyiv",
     "kiev",
-    "russia interior",
     "belgorod",
     "rostov",
     "bryansk",
@@ -206,7 +162,6 @@ def http_get_json(url):
             "Accept": "application/vnd.github+json",
         },
     )
-
     with urllib.request.urlopen(req, timeout=30) as response:
         return json.loads(response.read().decode("utf-8"))
 
@@ -219,7 +174,6 @@ def http_get_text(url):
             "Accept": "application/json,text/plain,*/*",
         },
     )
-
     with urllib.request.urlopen(req, timeout=60) as response:
         return response.read().decode("utf-8")
 
@@ -227,7 +181,6 @@ def http_get_text(url):
 def load_json(path, fallback):
     if not path.exists():
         return fallback
-
     try:
         with path.open("r", encoding="utf-8") as f:
             return json.load(f)
@@ -238,14 +191,12 @@ def load_json(path, fallback):
 def load_first_existing(paths, fallback):
     for path in paths:
         if path.exists():
-            data = load_json(path, fallback)
-            return data, str(path.relative_to(ROOT))
+            return load_json(path, fallback), str(path.relative_to(ROOT))
     return fallback, None
 
 
 def save_json(path, data):
     path.parent.mkdir(parents=True, exist_ok=True)
-
     with path.open("w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
@@ -255,7 +206,15 @@ def as_list(data):
         return data
 
     if isinstance(data, dict):
-        for key in ["features", "items", "events", "data", "results", "hotspots"]:
+        for key in [
+            "features",
+            "items",
+            "events",
+            "data",
+            "results",
+            "hotspots",
+            "points"
+        ]:
             if isinstance(data.get(key), list):
                 return data[key]
 
@@ -290,13 +249,7 @@ def get_lat_lon(item):
     if not isinstance(item, dict):
         return None, None
 
-    lat = (
-        item.get("lat")
-        or item.get("latitude")
-        or item.get("Lat")
-        or item.get("LAT")
-    )
-
+    lat = item.get("lat") or item.get("latitude") or item.get("Lat") or item.get("LAT")
     lon = (
         item.get("lon")
         or item.get("lng")
@@ -316,9 +269,8 @@ def get_lat_lon(item):
         if isinstance(geom, dict):
             coords = geom.get("coordinates")
             if isinstance(coords, list) and len(coords) >= 2:
-                if isinstance(coords[0], (int, float)) and isinstance(coords[1], (int, float)):
-                    lon = coords[0]
-                    lat = coords[1]
+                lon = coords[0]
+                lat = coords[1]
 
     try:
         if lat is None or lon is None:
@@ -361,8 +313,7 @@ def detect_sector(item):
         if lat is not None and lon is not None:
             dist = haversine_km(lat, lon, sector["lat"], sector["lon"])
             if dist <= sector["radius_km"]:
-                distance_score = max(1, int(6 - dist / max(sector["radius_km"], 1) * 6))
-                score += distance_score
+                score += max(1, int(6 - dist / max(sector["radius_km"], 1) * 6))
 
         if score > best_score:
             best_score = score
@@ -410,28 +361,18 @@ def sector_scores(osint_items, firms_items):
 
     for item in osint_items:
         sector = detect_sector(item)
-        sector_data.setdefault(
-            sector,
-            {"sector": sector, "osint": 0, "firms": 0, "score": 0}
-        )
+        sector_data.setdefault(sector, {"sector": sector, "osint": 0, "firms": 0, "score": 0})
         sector_data[sector]["osint"] += 1
 
     for item in firms_items:
         sector = detect_sector(item)
-        sector_data.setdefault(
-            sector,
-            {"sector": sector, "osint": 0, "firms": 0, "score": 0}
-        )
+        sector_data.setdefault(sector, {"sector": sector, "osint": 0, "firms": 0, "score": 0})
         sector_data[sector]["firms"] += 1
 
-    for sector, data in sector_data.items():
-        data["score"] = min(
-            100,
-            round(data["osint"] * 12 + data["firms"] * 0.9)
-        )
+    for _, data in sector_data.items():
+        data["score"] = min(100, round(data["osint"] * 12 + data["firms"] * 0.9))
 
-    ranked = sorted(sector_data.values(), key=lambda x: x["score"], reverse=True)
-    return ranked
+    return sorted(sector_data.values(), key=lambda x: x["score"], reverse=True)
 
 
 def polygon_ring_area_km2(ring):
@@ -447,7 +388,6 @@ def polygon_ring_area_km2(ring):
 
         if not isinstance(p1, list) or not isinstance(p2, list):
             continue
-
         if len(p1) < 2 or len(p2) < 2:
             continue
 
@@ -472,22 +412,17 @@ def geometry_area_km2(geometry):
         return 0.0
 
     if geom_type == "Polygon":
-        if not isinstance(coords, list) or not coords:
-            return 0.0
-
         outer = polygon_ring_area_km2(coords[0])
         holes = sum(polygon_ring_area_km2(ring) for ring in coords[1:])
         return max(0.0, outer - holes)
 
     if geom_type == "MultiPolygon":
         total = 0.0
-
         for polygon in coords:
             if isinstance(polygon, list) and polygon:
                 outer = polygon_ring_area_km2(polygon[0])
                 holes = sum(polygon_ring_area_km2(ring) for ring in polygon[1:])
                 total += max(0.0, outer - holes)
-
         return total
 
     return 0.0
@@ -496,14 +431,11 @@ def geometry_area_km2(geometry):
 def feature_area_km2(feature):
     if not isinstance(feature, dict):
         return 0.0
-
-    geometry = feature.get("geometry")
-    return geometry_area_km2(geometry)
+    return geometry_area_km2(feature.get("geometry"))
 
 
 def geojson_total_area_km2(geojson):
-    features = as_list(geojson)
-    return sum(feature_area_km2(feature) for feature in features)
+    return sum(feature_area_km2(feature) for feature in as_list(geojson))
 
 
 def get_deepstate_file_list():
@@ -524,50 +456,26 @@ def get_deepstate_file_list():
         name = item.get("name", "")
         download_url = item.get("download_url")
 
-        if not name.endswith(".geojson"):
-            continue
+        if name.endswith(".geojson") and "deepstatemap_data_" in name and download_url:
+            files.append({
+                "name": name,
+                "download_url": download_url,
+            })
 
-        if "deepstatemap_data_" not in name:
-            continue
-
-        if not download_url:
-            continue
-
-        files.append({
-            "name": name,
-            "download_url": download_url,
-        })
-
-    files = sorted(files, key=lambda x: x["name"])
-    return files, None
+    return sorted(files, key=lambda x: x["name"]), None
 
 
 def load_deepstate_geojson(download_url):
-    text = http_get_text(download_url)
-    return json.loads(text)
+    return json.loads(http_get_text(download_url))
 
 
 def compute_deepstate_territorial_delta():
     files, error = get_deepstate_file_list()
 
-    if error:
+    if error or len(files) < 2:
         return {
             "available": False,
-            "error": error,
-            "previous_file": None,
-            "current_file": None,
-            "previous_total_km2": None,
-            "current_total_km2": None,
-            "russian_gain_km2": 0.0,
-            "ukrainian_recapture_km2": 0.0,
-            "net_change_km2": 0.0,
-            "method": "DeepState GeoJSON total area fallback",
-        }
-
-    if len(files) < 2:
-        return {
-            "available": False,
-            "error": "Not enough DeepState GeoJSON files",
+            "error": error or "Not enough DeepState GeoJSON files",
             "previous_file": None,
             "current_file": None,
             "previous_total_km2": None,
@@ -590,9 +498,6 @@ def compute_deepstate_territorial_delta():
 
         net = current_area - previous_area
 
-        russian_gain = max(0.0, net)
-        ukrainian_recapture = abs(min(0.0, net))
-
         return {
             "available": True,
             "error": None,
@@ -600,8 +505,8 @@ def compute_deepstate_territorial_delta():
             "current_file": current["name"],
             "previous_total_km2": round(previous_area, 2),
             "current_total_km2": round(current_area, 2),
-            "russian_gain_km2": round(russian_gain, 2),
-            "ukrainian_recapture_km2": round(ukrainian_recapture, 2),
+            "russian_gain_km2": round(max(0.0, net), 2),
+            "ukrainian_recapture_km2": round(abs(min(0.0, net)), 2),
             "net_change_km2": round(net, 2),
             "method": "Approximate total area difference between the latest two DeepState GeoJSON files",
         }
@@ -640,9 +545,7 @@ def calc_fai(
     )
 
     territorial_component = min(35, abs(territorial_net_km2) * 3.0)
-
     sector_component = min(10, active_sector_count * 2)
-
     critical_component = min(10, critical_count * 2)
 
     total = (
@@ -684,10 +587,7 @@ def make_top_events(osint_items):
     ]
 
     if not front_events:
-        front_events = [
-            item for item in osint_items
-            if isinstance(item, dict)
-        ]
+        front_events = [item for item in osint_items if isinstance(item, dict)]
 
     result = []
 
@@ -736,7 +636,6 @@ def main():
     ])
 
     critical_count = count_critical_events(osint)
-
     territorial_net = territorial.get("net_change_km2") or 0.0
 
     fai_result = calc_fai(
@@ -775,8 +674,7 @@ def main():
         },
         "note": (
             "A Front Activity Index nem hivatalos katonai mutató. "
-            "Blogos elemzési és vizuális támogatási célra készült. "
-            "A DeepState területi delta jelenleg közelítő teljes területkülönbségként számolódik."
+            "Blogos elemzési és vizuális támogatási célra készült."
         ),
     }
 
@@ -798,11 +696,7 @@ def main():
     print(f"FIRMS 3d: {len(firms3)} | source: {firms3_source}")
     print(f"FIRMS 10d: {len(firms10)} | source: {firms10_source}")
     print(f"FIRMS 30d: {len(firms30)} | source: {firms30_source}")
-    print(
-        "DeepState territorial delta: "
-        f"{territorial.get('net_change_km2')} km2 | "
-        f"{territorial.get('previous_file')} -> {territorial.get('current_file')}"
-    )
+    print(f"DeepState territorial delta: {territorial.get('net_change_km2')} km2")
     print(f"Mentve: {HISTORY_PATH}")
     print(f"Mentve: {DOCS_HISTORY_PATH}")
     print(f"Mentve: {LATEST_PATH}")
