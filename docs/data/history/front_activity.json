@@ -262,36 +262,54 @@
   },
   {
     "date": "2026-06-01",
-    "updated_utc": "2026-06-01T10:33:20.393063+00:00",
-    "front_activity_index": 26,
-    "status": "MODERATE",
+    "updated_utc": "2026-06-01T19:05:47.377383+00:00",
+    "front_activity_index": 66,
+    "status": "HIGH",
     "components": {
-      "osint_density": 20.0,
+      "osint_density": 25,
       "firms_activity": 0.0,
-      "territorial_change": 0,
-      "active_sectors": 2,
-      "critical_events": 4
+      "territorial_change": 35,
+      "active_sectors": 4,
+      "critical_events": 2
     },
     "counts": {
-      "osint": 8,
+      "osint": 13,
       "firms_3d": 0,
       "firms_10d": 0,
       "firms_30d": 0,
-      "critical_events": 2,
-      "active_sectors": 1
+      "critical_events": 1,
+      "active_sectors": 2
+    },
+    "territorial": {
+      "available": true,
+      "error": null,
+      "previous_file": "deepstatemap_data_20260531.geojson",
+      "current_file": "deepstatemap_data_20260601.geojson",
+      "previous_total_km2": 116574.04,
+      "current_total_km2": 116586.05,
+      "russian_gain_km2": 12.02,
+      "ukrainian_recapture_km2": 0.0,
+      "net_change_km2": 12.02,
+      "method": "Approximate total area difference between the latest two DeepState GeoJSON files"
     },
     "top_sectors": [
       {
         "sector": "Pokrovsk",
-        "osint": 4,
+        "osint": 8,
         "firms": 0,
-        "score": 40
+        "score": 96
       },
       {
         "sector": "Other / Unclassified",
         "osint": 4,
         "firms": 0,
-        "score": 40
+        "score": 48
+      },
+      {
+        "sector": "Crimea",
+        "osint": 1,
+        "firms": 0,
+        "score": 12
       },
       {
         "sector": "Kupiansk",
@@ -312,6 +330,12 @@
         "score": 0
       },
       {
+        "sector": "Kurakhove",
+        "osint": 0,
+        "firms": 0,
+        "score": 0
+      },
+      {
         "sector": "Velyka Novosilka",
         "osint": 0,
         "firms": 0,
@@ -320,31 +344,38 @@
     ],
     "top_events": [
       {
-        "title": "Reported drone strike near Kijev",
+        "title": "NATO General: Ukrainian Armed Forces Demonstrate Extraordinary Innovation and Share Their Experience with Us",
         "source": "forrás nélkül",
-        "sector": "Other / Unclassified"
+        "sector": "Pokrovsk"
       },
       {
-        "title": "Reported military-related update near Kijev",
+        "title": "Sweden Prepares Largest Ever Military Aid Package for Ukraine",
         "source": "forrás nélkül",
-        "sector": "Other / Unclassified"
+        "sector": "Pokrovsk"
       },
       {
-        "title": "Reported missile strike near Moszkva",
+        "title": "Finland Announces New €128 Million Military Aid Package for Ukraine",
         "source": "forrás nélkül",
-        "sector": "Other / Unclassified"
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "“Azov” Cuts Russia’s Land Corridor to Crimea, Destroying Putin’s Only Strategic Achievement",
+        "source": "forrás nélkül",
+        "sector": "Crimea"
       },
       {
         "title": "Gripen Fighters Jets for Ukraine: Swedish Pilot Outlines the Aircraft’s Unique Capabilities",
         "source": "forrás nélkül",
         "sector": "Pokrovsk"
-      },
-      {
-        "title": "Reported military-related update near Kyiv",
-        "source": "forrás nélkül",
-        "sector": "Other / Unclassified"
       }
     ],
-    "note": "A Front Activity Index nem hivatalos katonai mutató. Blogos elemzési és vizuális támogatási célra készült."
+    "data_sources": {
+      "osint": "data/osint_feed.json",
+      "firms_3d": "data/firms_3.json",
+      "firms_10d": "data/firms_10.json",
+      "firms_30d": "data/firms_30.json",
+      "deepstate": "cyterat/deepstate-map-data via GitHub API"
+    },
+    "note": "A Front Activity Index nem hivatalos katonai mutató. Blogos elemzési és vizuális támogatási célra készült. A DeepState területi delta jelenleg közelítő teljes területkülönbségként számolódik."
   }
 ]
