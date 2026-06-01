@@ -1,22 +1,22 @@
 {
   "date": "2026-06-01",
-  "updated_utc": "2026-06-01T19:05:47.377383+00:00",
-  "front_activity_index": 66,
-  "status": "HIGH",
+  "updated_utc": "2026-06-01T19:24:37.368985+00:00",
+  "front_activity_index": 92,
+  "status": "CRITICAL",
   "components": {
     "osint_density": 25,
-    "firms_activity": 0.0,
+    "firms_activity": 20,
     "territorial_change": 35,
-    "active_sectors": 4,
+    "active_sectors": 10,
     "critical_events": 2
   },
   "counts": {
     "osint": 13,
-    "firms_3d": 0,
-    "firms_10d": 0,
-    "firms_30d": 0,
+    "firms_3d": 209,
+    "firms_10d": 1584,
+    "firms_30d": 14858,
     "critical_events": 1,
-    "active_sectors": 2
+    "active_sectors": 8
   },
   "territorial": {
     "available": true,
@@ -32,52 +32,52 @@
   },
   "top_sectors": [
     {
-      "sector": "Pokrovsk",
-      "osint": 8,
-      "firms": 0,
-      "score": 96
-    },
-    {
       "sector": "Other / Unclassified",
       "osint": 4,
-      "firms": 0,
-      "score": 48
+      "firms": 138,
+      "score": 100
+    },
+    {
+      "sector": "Pokrovsk",
+      "osint": 8,
+      "firms": 1,
+      "score": 97
     },
     {
       "sector": "Crimea",
       "osint": 1,
-      "firms": 0,
-      "score": 12
+      "firms": 16,
+      "score": 26
     },
     {
-      "sector": "Kupiansk",
+      "sector": "Sumy-Chernihiv Border",
       "osint": 0,
-      "firms": 0,
-      "score": 0
+      "firms": 25,
+      "score": 22
+    },
+    {
+      "sector": "Zaporizhzhia",
+      "osint": 0,
+      "firms": 15,
+      "score": 14
+    },
+    {
+      "sector": "Kherson-Dnipro",
+      "osint": 0,
+      "firms": 9,
+      "score": 8
     },
     {
       "sector": "Lyman",
       "osint": 0,
-      "firms": 0,
-      "score": 0
+      "firms": 3,
+      "score": 3
     },
     {
-      "sector": "Bakhmut-Toretsk",
+      "sector": "Kupiansk",
       "osint": 0,
-      "firms": 0,
-      "score": 0
-    },
-    {
-      "sector": "Kurakhove",
-      "osint": 0,
-      "firms": 0,
-      "score": 0
-    },
-    {
-      "sector": "Velyka Novosilka",
-      "osint": 0,
-      "firms": 0,
-      "score": 0
+      "firms": 1,
+      "score": 1
     }
   ],
   "top_events": [
@@ -114,5 +114,5 @@
     "firms_30d": "data/firms_30.json",
     "deepstate": "cyterat/deepstate-map-data via GitHub API"
   },
-  "note": "A Front Activity Index nem hivatalos katonai mutató. Blogos elemzési és vizuális támogatási célra készült. A DeepState területi delta jelenleg közelítő teljes területkülönbségként számolódik."
+  "note": "A Front Activity Index nem hivatalos katonai mutató. Blogos elemzési és vizuális támogatási célra készült."
 }
