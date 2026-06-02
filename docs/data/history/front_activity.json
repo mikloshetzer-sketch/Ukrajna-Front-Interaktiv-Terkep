@@ -380,23 +380,23 @@
   },
   {
     "date": "2026-06-02",
-    "updated_utc": "2026-06-02T09:19:36.649710+00:00",
-    "front_activity_index": 65,
+    "updated_utc": "2026-06-02T11:50:20.784140+00:00",
+    "front_activity_index": 63,
     "status": "HIGH",
     "components": {
       "osint_density": 25,
       "firms_activity": 20,
       "territorial_change": 0.0,
       "active_sectors": 10,
-      "critical_events": 10
+      "critical_events": 8
     },
     "counts": {
       "osint": 21,
-      "firms_3d": 189,
-      "firms_10d": 1352,
-      "firms_30d": 13701,
-      "critical_events": 5,
-      "active_sectors": 7
+      "firms_3d": 191,
+      "firms_10d": 1354,
+      "firms_30d": 13703,
+      "critical_events": 4,
+      "active_sectors": 6
     },
     "territorial": {
       "available": true,
@@ -405,16 +405,25 @@
       "current_file": "deepstatemap_data_20260602.geojson",
       "previous_total_km2": 116586.05,
       "current_total_km2": 116586.05,
-      "russian_gain_km2": 0.0,
-      "ukrainian_recapture_km2": 0.0,
+      "russian_gain_km2": 0,
+      "ukrainian_recapture_km2": 0,
       "net_change_km2": 0.0,
-      "method": "Approximate total area difference between the latest two DeepState GeoJSON files"
+      "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    },
+    "territorial_hotspot": {
+      "sector": "Pokrovsk",
+      "lat": 48.28,
+      "lon": 37.18,
+      "zoom": 9,
+      "score": 85,
+      "change_km2": 0.0,
+      "method": "Top classified sector based on OSINT + FIRMS density"
     },
     "top_sectors": [
       {
         "sector": "Other / Unclassified",
         "osint": 9,
-        "firms": 121,
+        "firms": 145,
         "score": 100
       },
       {
@@ -432,14 +441,8 @@
       {
         "sector": "Kharkiv",
         "osint": 1,
-        "firms": 10,
-        "score": 21
-      },
-      {
-        "sector": "Sumy-Chernihiv Border",
-        "osint": 0,
-        "firms": 23,
-        "score": 21
+        "firms": 11,
+        "score": 22
       },
       {
         "sector": "Zaporizhzhia",
@@ -458,6 +461,12 @@
         "osint": 0,
         "firms": 2,
         "score": 2
+      },
+      {
+        "sector": "Kupiansk",
+        "osint": 0,
+        "firms": 0,
+        "score": 0
       }
     ],
     "top_events": [
@@ -485,6 +494,11 @@
         "title": "Reported rear-area strike near Volgográd",
         "source": "forrás nélkül",
         "sector": "Other / Unclassified"
+      },
+      {
+        "title": "Reported rear-area strike near Krasznodar",
+        "source": "forrás nélkül",
+        "sector": "Other / Unclassified"
       }
     ],
     "data_sources": {
@@ -494,6 +508,6 @@
       "firms_30d": "data/firms_30.json",
       "deepstate": "cyterat/deepstate-map-data via GitHub API"
     },
-    "note": "A Front Activity Index nem hivatalos katonai mutató. Blogos elemzési és vizuális támogatási célra készült."
+    "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
   }
 ]
