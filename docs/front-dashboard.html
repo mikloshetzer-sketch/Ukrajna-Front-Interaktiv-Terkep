@@ -6,6 +6,8 @@
 
   <title>Ukraine Frontline Situation Dashboard</title>
 
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
@@ -18,7 +20,7 @@
 
     .dashboard {
       width: 1200px;
-      min-height: 760px;
+      min-height: 800px;
       margin: 0 auto;
       padding: 8px;
       box-sizing: border-box;
@@ -87,6 +89,13 @@
       color: #e5e7eb;
     }
 
+    .map-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
     .grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -103,6 +112,10 @@
       box-sizing: border-box;
     }
 
+    .map-panel {
+      min-height: 340px;
+    }
+
     .panel-title {
       font-size: 14px;
       font-weight: 900;
@@ -110,6 +123,48 @@
       text-transform: uppercase;
       letter-spacing: 0.6px;
       margin-bottom: 8px;
+    }
+
+    #miniMap {
+      width: 100%;
+      height: 285px;
+      border-radius: 4px;
+      border: 1px solid #334155;
+      background: #020617;
+      overflow: hidden;
+    }
+
+    .leaflet-control-attribution {
+      font-size: 9px;
+    }
+
+    .hotspot-meta {
+      margin-top: 7px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      font-size: 11px;
+      color: #cbd5e1;
+    }
+
+    .hotspot-box {
+      background: #111827;
+      border: 1px solid #334155;
+      border-radius: 4px;
+      padding: 6px;
+    }
+
+    .hotspot-label {
+      color: #94a3b8;
+      text-transform: uppercase;
+      font-size: 9px;
+      margin-bottom: 4px;
+    }
+
+    .hotspot-value {
+      color: #f8fafc;
+      font-weight: 800;
+      font-size: 12px;
     }
 
     .sector-list {
@@ -231,6 +286,7 @@
       }
 
       .metrics,
+      .map-grid,
       .grid,
       .bottom {
         grid-template-columns: 1fr;
@@ -238,6 +294,10 @@
 
       .metric-value {
         font-size: 22px;
+      }
+
+      #miniMap {
+        height: 320px;
       }
     }
   </style>
@@ -287,15 +347,30 @@
       </div>
 
       <div class="metric">
-        <div class="metric-label">Main Sector</div>
+        <div class="metric-label">Main Hotspot</div>
         <div class="metric-value small" id="mainSector">–</div>
       </div>
     </section>
 
-    <section class="grid">
-      <div class="panel">
-        <div class="panel-title">Most Active Sectors</div>
-        <div class="sector-list" id="sectors">Adatok betöltése...</div>
+    <section class="map-grid">
+      <div class="panel map-panel">
+        <div class="panel-title">Mini Front Snapshot – Auto Zoom Hotspot</div>
+        <div id="miniMap"></div>
+
+        <div class="hotspot-meta">
+          <div class="hotspot-box">
+            <div class="hotspot-label">Hotspot</div>
+            <div class="hotspot-value" id="hotspotName">–</div>
+          </div>
+          <div class="hotspot-box">
+            <div class="hotspot-label">Zoom</div>
+            <div class="hotspot-value" id="hotspotZoom">–</div>
+          </div>
+          <div class="hotspot-box">
+            <div class="hotspot-label">FIRMS 3d shown</div>
+            <div class="hotspot-value" id="firmsShown">–</div>
+          </div>
+        </div>
       </div>
 
       <div class="panel">
@@ -304,10 +379,10 @@
       </div>
     </section>
 
-    <section class="bottom">
+    <section class="grid">
       <div class="panel">
-        <div class="panel-title">Front Activity Trend</div>
-        <canvas id="trendChart"></canvas>
+        <div class="panel-title">Most Active Sectors</div>
+        <div class="sector-list" id="sectors">Adatok betöltése...</div>
       </div>
 
       <div class="panel">
@@ -336,8 +411,18 @@
         <div class="warning">
           A Front Activity Index nem hivatalos katonai mutató. Blogos elemzési és vizuális támogatási célra készült.
         </div>
+      </div>
+    </section>
 
-        <div class="source-note" id="sourceNote">
+    <section class="bottom">
+      <div class="panel">
+        <div class="panel-title">Front Activity Trend</div>
+        <canvas id="trendChart"></canvas>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Data Source Note</div>
+        <div class="assessment" id="sourceNote">
           Forrásadatok betöltése...
         </div>
       </div>
@@ -348,6 +433,7 @@
   <script>
     const LATEST_PATH = "./data/front_activity_latest.json";
     const HISTORY_PATH = "./data/history/front_activity.json";
+    const FIRMS_3_PATH = "../data/firms_3.json";
 
     async function loadJson(path, fallback) {
       try {
@@ -358,6 +444,18 @@
         console.warn("Nem sikerült betölteni:", path, err);
         return fallback;
       }
+    }
+
+    function asList(data) {
+      if (Array.isArray(data)) return data;
+
+      if (data && typeof data === "object") {
+        for (const key of ["points", "features", "items", "events", "data", "results", "hotspots"]) {
+          if (Array.isArray(data[key])) return data[key];
+        }
+      }
+
+      return [];
     }
 
     function n(value) {
@@ -399,6 +497,31 @@
         month: "long",
         day: "numeric"
       });
+    }
+
+    function getLatLon(item) {
+      if (!item || typeof item !== "object") return [null, null];
+
+      const lat = item.lat ?? item.latitude ?? item.Lat ?? item.LAT;
+      const lon = item.lon ?? item.lng ?? item.longitude ?? item.Lon ?? item.LON;
+
+      if (lat === undefined || lon === undefined) return [null, null];
+
+      return [Number(lat), Number(lon)];
+    }
+
+    function distanceKm(lat1, lon1, lat2, lon2) {
+      const r = 6371.0088;
+      const p1 = lat1 * Math.PI / 180;
+      const p2 = lat2 * Math.PI / 180;
+      const dp = (lat2 - lat1) * Math.PI / 180;
+      const dl = (lon2 - lon1) * Math.PI / 180;
+
+      const a =
+        Math.sin(dp / 2) ** 2 +
+        Math.cos(p1) * Math.cos(p2) * Math.sin(dl / 2) ** 2;
+
+      return r * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     }
 
     function getTopSector(sectors) {
@@ -457,13 +580,12 @@
       const counts = data.counts || {};
       const components = data.components || {};
       const territorial = data.territorial || {};
+      const hotspot = data.territorial_hotspot || {};
 
       const topSector = getTopSector(data.top_sectors || []);
       const fai = n(data.front_activity_index);
       const status = data.status || "UNKNOWN";
       const net = n(territorial.net_change_km2);
-      const ruGain = n(territorial.russian_gain_km2);
-      const uaRecapture = n(territorial.ukrainian_recapture_km2);
 
       let territorialSentence = "No reliable territorial delta is available for the latest DeepState files.";
 
@@ -486,22 +608,14 @@
         The system identified <strong>${n(counts.osint)}</strong> OSINT events,
         <strong>${n(counts.firms_3d)}</strong> short-term FIRMS hotspots and
         <strong>${n(counts.active_sectors)}</strong> active sector(s).
-        The main classified sector is <strong>${topSector}</strong>.
-        RU gain: <strong>${plainKm2(ruGain)}</strong>; UA recapture:
-        <strong>${plainKm2(uaRecapture)}</strong>.
+        Main classified sector: <strong>${topSector}</strong>.
+        Auto-zoom hotspot: <strong>${hotspot.sector || "n/a"}</strong>.
       `;
 
       document.getElementById("dOsint").textContent = n(components.osint_density);
       document.getElementById("dFirms").textContent = n(components.firms_activity);
       document.getElementById("dTerritory").textContent = n(components.territorial_change);
       document.getElementById("dCritical").textContent = n(components.critical_events);
-
-      const previousFile = territorial.previous_file || "n/a";
-      const currentFile = territorial.current_file || "n/a";
-      const method = territorial.method || "n/a";
-
-      document.getElementById("sourceNote").textContent =
-        "DeepState delta: " + previousFile + " → " + currentFile + " | " + method;
     }
 
     function renderTrend(history) {
@@ -549,9 +663,92 @@
       });
     }
 
+    function renderSourceNote(data) {
+      const territorial = data.territorial || {};
+      const sources = data.data_sources || {};
+
+      document.getElementById("sourceNote").innerHTML = `
+        <strong>DeepState delta:</strong><br>
+        ${territorial.previous_file || "n/a"} → ${territorial.current_file || "n/a"}<br><br>
+
+        <strong>Method:</strong><br>
+        ${territorial.method || "n/a"}<br><br>
+
+        <strong>Data files:</strong><br>
+        OSINT: ${sources.osint || "n/a"}<br>
+        FIRMS 3d: ${sources.firms_3d || "n/a"}<br>
+        FIRMS 10d: ${sources.firms_10d || "n/a"}<br>
+        FIRMS 30d: ${sources.firms_30d || "n/a"}
+      `;
+    }
+
+    function initMiniMap(latest, firmsPoints) {
+      const hotspot = latest.territorial_hotspot || {};
+      const centerLat = n(hotspot.lat) || 48.6;
+      const centerLon = n(hotspot.lon) || 37.2;
+      const zoom = n(hotspot.zoom) || 7;
+
+      const map = L.map("miniMap", {
+        zoomControl: false,
+        attributionControl: true,
+        dragging: false,
+        scrollWheelZoom: false,
+        doubleClickZoom: false,
+        boxZoom: false,
+        keyboard: false,
+        tap: false
+      }).setView([centerLat, centerLon], zoom);
+
+      L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+        attribution: "&copy; OpenStreetMap &copy; CARTO",
+        maxZoom: 12
+      }).addTo(map);
+
+      L.circle([centerLat, centerLon], {
+        radius: 22000,
+        color: "#38bdf8",
+        weight: 2,
+        fillColor: "#38bdf8",
+        fillOpacity: 0.08
+      }).addTo(map);
+
+      L.marker([centerLat, centerLon]).addTo(map)
+        .bindPopup(hotspot.sector || "Hotspot");
+
+      let shown = 0;
+
+      for (const item of firmsPoints) {
+        const [lat, lon] = getLatLon(item);
+        if (lat === null || lon === null) continue;
+
+        const dist = distanceKm(centerLat, centerLon, lat, lon);
+
+        if (dist <= 140) {
+          L.circleMarker([lat, lon], {
+            radius: 3,
+            color: "#f97316",
+            fillColor: "#f97316",
+            fillOpacity: 0.75,
+            weight: 0
+          }).addTo(map);
+          shown++;
+        }
+      }
+
+      document.getElementById("hotspotName").textContent = hotspot.sector || "n/a";
+      document.getElementById("hotspotZoom").textContent = zoom;
+      document.getElementById("firmsShown").textContent = shown;
+
+      setTimeout(() => {
+        map.invalidateSize();
+      }, 300);
+    }
+
     async function init() {
       const latest = await loadJson(LATEST_PATH, null);
       const history = await loadJson(HISTORY_PATH, []);
+      const firmsRaw = await loadJson(FIRMS_3_PATH, { points: [] });
+      const firmsPoints = asList(firmsRaw);
 
       if (!latest) {
         document.getElementById("title").textContent = "Ukraine Frontline Situation Dashboard - Data Error";
@@ -563,6 +760,7 @@
 
       const counts = latest.counts || {};
       const territorial = latest.territorial || {};
+      const hotspot = latest.territorial_hotspot || {};
       const date = latest.date || "";
       const topSector = getTopSector(latest.top_sectors || []);
 
@@ -573,7 +771,7 @@
       document.getElementById("status").textContent = latest.status || "UNKNOWN";
       document.getElementById("osint").textContent = n(counts.osint);
       document.getElementById("firms").textContent = n(counts.firms_3d);
-      document.getElementById("mainSector").textContent = topSector;
+      document.getElementById("mainSector").textContent = hotspot.sector || topSector;
 
       const changeEl = document.getElementById("territorialChange");
       const netChange = n(territorial.net_change_km2);
@@ -583,10 +781,12 @@
       document.getElementById("ruGain").textContent = plainKm2(territorial.russian_gain_km2);
       document.getElementById("uaRecapture").textContent = plainKm2(territorial.ukrainian_recapture_km2);
 
-      renderSectors(latest.top_sectors || []);
       renderEvents(latest.top_events || []);
+      renderSectors(latest.top_sectors || []);
       renderAssessment(latest);
       renderTrend(history);
+      renderSourceNote(latest);
+      initMiniMap(latest, firmsPoints);
     }
 
     init();
