@@ -13,31 +13,11 @@ DOCS_DATA_DIR = ROOT / "docs" / "data"
 HISTORY_DIR = DATA_DIR / "history"
 DOCS_HISTORY_DIR = DOCS_DATA_DIR / "history"
 
-OSINT_PATHS = [
-    DATA_DIR / "osint_feed.json",
-    DOCS_DATA_DIR / "osint_feed.json",
-]
+OSINT_PATHS = [DATA_DIR / "osint_feed.json", DOCS_DATA_DIR / "osint_feed.json"]
 
-FIRMS_3_PATHS = [
-    DATA_DIR / "firms_3.json",
-    DATA_DIR / "firms_3d.json",
-    DOCS_DATA_DIR / "firms_3.json",
-    DOCS_DATA_DIR / "firms_3d.json",
-]
-
-FIRMS_10_PATHS = [
-    DATA_DIR / "firms_10.json",
-    DATA_DIR / "firms_10d.json",
-    DOCS_DATA_DIR / "firms_10.json",
-    DOCS_DATA_DIR / "firms_10d.json",
-]
-
-FIRMS_30_PATHS = [
-    DATA_DIR / "firms_30.json",
-    DATA_DIR / "firms_30d.json",
-    DOCS_DATA_DIR / "firms_30.json",
-    DOCS_DATA_DIR / "firms_30d.json",
-]
+FIRMS_3_PATHS = [DATA_DIR / "firms_3.json", DOCS_DATA_DIR / "firms_3.json"]
+FIRMS_10_PATHS = [DATA_DIR / "firms_10.json", DOCS_DATA_DIR / "firms_10.json"]
+FIRMS_30_PATHS = [DATA_DIR / "firms_30.json", DOCS_DATA_DIR / "firms_30.json"]
 
 HISTORY_PATH = HISTORY_DIR / "front_activity.json"
 DOCS_HISTORY_PATH = DOCS_HISTORY_DIR / "front_activity.json"
@@ -47,148 +27,32 @@ DEEPSTATE_API_URL = "https://api.github.com/repos/cyterat/deepstate-map-data/con
 
 
 SECTORS = {
-    "Kupiansk": {
-        "keywords": ["kupiansk", "kupyansk", "kupjansk", "oskil", "dvorichna"],
-        "lat": 49.71,
-        "lon": 37.61,
-        "radius_km": 70,
-    },
-    "Lyman": {
-        "keywords": ["lyman", "siversk", "kreminna", "terny", "zarichne"],
-        "lat": 48.99,
-        "lon": 37.80,
-        "radius_km": 75,
-    },
-    "Bakhmut-Toretsk": {
-        "keywords": ["bakhmut", "toretsk", "chasiv yar", "chasiw yar", "klishchiivka"],
-        "lat": 48.58,
-        "lon": 37.95,
-        "radius_km": 80,
-    },
-    "Pokrovsk": {
-        "keywords": ["pokrovsk", "myrnohrad", "avdiivka", "ocheretyne", "selidove"],
-        "lat": 48.28,
-        "lon": 37.18,
-        "radius_km": 85,
-    },
-    "Kurakhove": {
-        "keywords": ["kurakhove", "kurakhovo", "krasnohorivka", "heorhiivka"],
-        "lat": 47.99,
-        "lon": 37.28,
-        "radius_km": 70,
-    },
-    "Velyka Novosilka": {
-        "keywords": ["velyka novosilka", "staromaiorske", "urozhaine", "rivnopil"],
-        "lat": 47.84,
-        "lon": 36.84,
-        "radius_km": 75,
-    },
-    "Zaporizhzhia": {
-        "keywords": ["zaporizhzhia", "zaporizhia", "orikhiv", "robotyne", "verbove"],
-        "lat": 47.84,
-        "lon": 35.14,
-        "radius_km": 95,
-    },
-    "Kherson-Dnipro": {
-        "keywords": ["kherson", "dnipro river", "krynky", "antonivka", "nova kakhovka"],
-        "lat": 46.64,
-        "lon": 32.61,
-        "radius_km": 95,
-    },
-    "Crimea": {
-        "keywords": ["crimea", "sevastopol", "kerch", "saki", "dzhankoi", "feodosia"],
-        "lat": 45.20,
-        "lon": 34.10,
-        "radius_km": 150,
-    },
-    "Kharkiv": {
-        "keywords": ["kharkiv", "harkiv", "vovchansk", "lyptsi"],
-        "lat": 49.99,
-        "lon": 36.23,
-        "radius_km": 90,
-    },
-    "Sumy-Chernihiv Border": {
-        "keywords": ["sumy", "chernihiv", "kursk border", "bilopillia", "shostka"],
-        "lat": 51.00,
-        "lon": 34.80,
-        "radius_km": 140,
-    },
+    "Kupiansk": {"lat": 49.71, "lon": 37.61, "zoom": 9, "keywords": ["kupiansk", "kupyansk", "oskil", "dvorichna"]},
+    "Lyman": {"lat": 48.99, "lon": 37.80, "zoom": 9, "keywords": ["lyman", "siversk", "kreminna", "terny"]},
+    "Bakhmut-Toretsk": {"lat": 48.58, "lon": 37.95, "zoom": 9, "keywords": ["bakhmut", "toretsk", "chasiv yar"]},
+    "Pokrovsk": {"lat": 48.28, "lon": 37.18, "zoom": 9, "keywords": ["pokrovsk", "myrnohrad", "avdiivka", "ocheretyne", "selidove"]},
+    "Kurakhove": {"lat": 47.99, "lon": 37.28, "zoom": 9, "keywords": ["kurakhove", "kurakhovo", "krasnohorivka"]},
+    "Velyka Novosilka": {"lat": 47.84, "lon": 36.84, "zoom": 9, "keywords": ["velyka novosilka", "staromaiorske", "urozhaine"]},
+    "Zaporizhzhia": {"lat": 47.84, "lon": 35.14, "zoom": 8, "keywords": ["zaporizhzhia", "zaporizhia", "orikhiv", "robotyne"]},
+    "Kherson-Dnipro": {"lat": 46.64, "lon": 32.61, "zoom": 8, "keywords": ["kherson", "dnipro", "krynky", "antonivka"]},
+    "Crimea": {"lat": 45.20, "lon": 34.10, "zoom": 7, "keywords": ["crimea", "sevastopol", "kerch", "saki"]},
+    "Kharkiv": {"lat": 49.99, "lon": 36.23, "zoom": 8, "keywords": ["kharkiv", "vovchansk", "lyptsi"]},
 }
 
-
-CRITICAL_KEYWORDS = [
-    "breakthrough",
-    "large-scale",
-    "massive",
-    "encirclement",
-    "collapse",
-    "missile",
-    "drone strike",
-    "uav",
-    "shahed",
-    "airbase",
-    "bridge",
-    "rail",
-    "logistics",
-    "oil depot",
-    "ammunition",
-    "power plant",
-    "nuclear",
-    "frontline",
-    "advance",
-    "counterattack",
-    "assault",
-]
-
-
-BACKGROUND_KEYWORDS = [
-    "moscow",
-    "moszkva",
-    "kijev",
-    "kyiv",
-    "kiev",
-    "belgorod",
-    "rostov",
-    "bryansk",
-    "kursk city",
-]
-
-
-def http_get_json(url):
-    req = urllib.request.Request(
-        url,
-        headers={
-            "User-Agent": "front-activity-builder/1.0",
-            "Accept": "application/vnd.github+json",
-        },
-    )
-    with urllib.request.urlopen(req, timeout=30) as response:
-        return json.loads(response.read().decode("utf-8"))
-
-
-def http_get_text(url):
-    req = urllib.request.Request(
-        url,
-        headers={
-            "User-Agent": "front-activity-builder/1.0",
-            "Accept": "application/json,text/plain,*/*",
-        },
-    )
-    with urllib.request.urlopen(req, timeout=60) as response:
-        return response.read().decode("utf-8")
+CRITICAL_KEYWORDS = ["missile", "drone", "uav", "advance", "assault", "bridge", "rail", "logistics", "airbase", "oil depot"]
+BACKGROUND_KEYWORDS = ["moscow", "moszkva", "kyiv", "kijev", "belgorod", "rostov", "bryansk"]
 
 
 def load_json(path, fallback):
     if not path.exists():
         return fallback
     try:
-        with path.open("r", encoding="utf-8") as f:
-            return json.load(f)
+        return json.loads(path.read_text(encoding="utf-8"))
     except Exception:
         return fallback
 
 
-def load_first_existing(paths, fallback):
+def load_first(paths, fallback):
     for path in paths:
         if path.exists():
             return load_json(path, fallback), str(path.relative_to(ROOT))
@@ -197,51 +61,26 @@ def load_first_existing(paths, fallback):
 
 def save_json(path, data):
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+    path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 def as_list(data):
     if isinstance(data, list):
         return data
-
     if isinstance(data, dict):
-        for key in [
-            "features",
-            "items",
-            "events",
-            "data",
-            "results",
-            "hotspots",
-            "points"
-        ]:
+        for key in ["points", "features", "items", "events", "data", "results", "hotspots"]:
             if isinstance(data.get(key), list):
                 return data[key]
-
     return []
 
 
 def text_of(item):
     if not isinstance(item, dict):
         return ""
-
     parts = []
-
-    for key in [
-        "title", "summary", "description", "name", "headline",
-        "source", "tag", "location", "place", "sector"
-    ]:
-        value = item.get(key)
-        if value:
-            parts.append(str(value))
-
-    props = item.get("properties")
-    if isinstance(props, dict):
-        for key in ["title", "summary", "description", "name", "headline", "location", "place"]:
-            value = props.get(key)
-            if value:
-                parts.append(str(value))
-
+    for key in ["title", "summary", "description", "headline", "source", "tag", "location", "place"]:
+        if item.get(key):
+            parts.append(str(item[key]))
     return " ".join(parts).lower()
 
 
@@ -249,28 +88,8 @@ def get_lat_lon(item):
     if not isinstance(item, dict):
         return None, None
 
-    lat = item.get("lat") or item.get("latitude") or item.get("Lat") or item.get("LAT")
-    lon = (
-        item.get("lon")
-        or item.get("lng")
-        or item.get("longitude")
-        or item.get("Lon")
-        or item.get("LON")
-    )
-
-    if lat is None or lon is None:
-        props = item.get("properties")
-        if isinstance(props, dict):
-            lat = lat or props.get("lat") or props.get("latitude")
-            lon = lon or props.get("lon") or props.get("lng") or props.get("longitude")
-
-    if lat is None or lon is None:
-        geom = item.get("geometry")
-        if isinstance(geom, dict):
-            coords = geom.get("coordinates")
-            if isinstance(coords, list) and len(coords) >= 2:
-                lon = coords[0]
-                lat = coords[1]
+    lat = item.get("lat") or item.get("latitude")
+    lon = item.get("lon") or item.get("lng") or item.get("longitude")
 
     try:
         if lat is None or lon is None:
@@ -280,202 +99,175 @@ def get_lat_lon(item):
         return None, None
 
 
-def haversine_km(lat1, lon1, lat2, lon2):
-    radius = 6371.0088
-
-    p1 = math.radians(lat1)
-    p2 = math.radians(lat2)
+def haversine(lat1, lon1, lat2, lon2):
+    r = 6371.0088
+    p1, p2 = math.radians(lat1), math.radians(lat2)
     dp = math.radians(lat2 - lat1)
     dl = math.radians(lon2 - lon1)
-
-    a = (
-        math.sin(dp / 2) ** 2
-        + math.cos(p1) * math.cos(p2) * math.sin(dl / 2) ** 2
-    )
-
-    return radius * 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+    a = math.sin(dp / 2) ** 2 + math.cos(p1) * math.cos(p2) * math.sin(dl / 2) ** 2
+    return r * 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
 
 
 def detect_sector(item):
     txt = text_of(item)
     lat, lon = get_lat_lon(item)
 
-    best_sector = None
-    best_score = -1
+    best = "Other / Unclassified"
+    best_score = 0
 
-    for name, sector in SECTORS.items():
+    for name, sec in SECTORS.items():
         score = 0
 
-        for kw in sector["keywords"]:
+        for kw in sec["keywords"]:
             if kw in txt:
-                score += 6
+                score += 8
 
         if lat is not None and lon is not None:
-            dist = haversine_km(lat, lon, sector["lat"], sector["lon"])
-            if dist <= sector["radius_km"]:
-                score += max(1, int(6 - dist / max(sector["radius_km"], 1) * 6))
+            dist = haversine(lat, lon, sec["lat"], sec["lon"])
+            radius = 95 if name != "Crimea" else 160
+            if dist <= radius:
+                score += max(1, int(8 - dist / radius * 8))
 
         if score > best_score:
             best_score = score
-            best_sector = name
+            best = name
 
-    if best_score <= 0:
-        return "Other / Unclassified"
-
-    return best_sector
+    return best
 
 
-def is_background_event(item):
-    txt = text_of(item)
-    return any(keyword in txt for keyword in BACKGROUND_KEYWORDS)
+def sector_scores(osint, firms3):
+    result = {name: {"sector": name, "osint": 0, "firms": 0, "score": 0} for name in SECTORS}
+    result["Other / Unclassified"] = {"sector": "Other / Unclassified", "osint": 0, "firms": 0, "score": 0}
+
+    for item in osint:
+        sec = detect_sector(item)
+        result.setdefault(sec, {"sector": sec, "osint": 0, "firms": 0, "score": 0})
+        result[sec]["osint"] += 1
+
+    for item in firms3:
+        sec = detect_sector(item)
+        result.setdefault(sec, {"sector": sec, "osint": 0, "firms": 0, "score": 0})
+        result[sec]["firms"] += 1
+
+    for row in result.values():
+        row["score"] = min(100, round(row["osint"] * 12 + row["firms"] * 0.9))
+
+    return sorted(result.values(), key=lambda x: x["score"], reverse=True)
 
 
-def count_critical_events(osint_items):
-    count = 0
-
-    for item in osint_items:
+def count_critical(osint):
+    total = 0
+    for item in osint:
         txt = text_of(item)
-        if any(kw in txt for kw in CRITICAL_KEYWORDS):
-            count += 1
-
-    return count
-
-
-def sector_scores(osint_items, firms_items):
-    sector_data = {
-        name: {
-            "sector": name,
-            "osint": 0,
-            "firms": 0,
-            "score": 0,
-        }
-        for name in SECTORS.keys()
-    }
-
-    sector_data["Other / Unclassified"] = {
-        "sector": "Other / Unclassified",
-        "osint": 0,
-        "firms": 0,
-        "score": 0,
-    }
-
-    for item in osint_items:
-        sector = detect_sector(item)
-        sector_data.setdefault(sector, {"sector": sector, "osint": 0, "firms": 0, "score": 0})
-        sector_data[sector]["osint"] += 1
-
-    for item in firms_items:
-        sector = detect_sector(item)
-        sector_data.setdefault(sector, {"sector": sector, "osint": 0, "firms": 0, "score": 0})
-        sector_data[sector]["firms"] += 1
-
-    for _, data in sector_data.items():
-        data["score"] = min(100, round(data["osint"] * 12 + data["firms"] * 0.9))
-
-    return sorted(sector_data.values(), key=lambda x: x["score"], reverse=True)
+        if any(k in txt for k in CRITICAL_KEYWORDS):
+            total += 1
+    return total
 
 
-def polygon_ring_area_km2(ring):
+def is_background(item):
+    txt = text_of(item)
+    return any(k in txt for k in BACKGROUND_KEYWORDS)
+
+
+def github_json(url):
+    req = urllib.request.Request(url, headers={"User-Agent": "front-dashboard"})
+    with urllib.request.urlopen(req, timeout=45) as r:
+        return json.loads(r.read().decode("utf-8"))
+
+
+def github_text(url):
+    req = urllib.request.Request(url, headers={"User-Agent": "front-dashboard"})
+    with urllib.request.urlopen(req, timeout=60) as r:
+        return r.read().decode("utf-8")
+
+
+def ring_area_km2(ring):
     if not isinstance(ring, list) or len(ring) < 4:
         return 0.0
 
-    radius = 6371.0088
+    r = 6371.0088
     total = 0.0
 
     for i in range(len(ring)):
         p1 = ring[i]
         p2 = ring[(i + 1) % len(ring)]
-
-        if not isinstance(p1, list) or not isinstance(p2, list):
-            continue
         if len(p1) < 2 or len(p2) < 2:
             continue
-
-        lon1 = math.radians(float(p1[0]))
-        lat1 = math.radians(float(p1[1]))
-        lon2 = math.radians(float(p2[0]))
-        lat2 = math.radians(float(p2[1]))
-
+        lon1, lat1 = math.radians(float(p1[0])), math.radians(float(p1[1]))
+        lon2, lat2 = math.radians(float(p2[0])), math.radians(float(p2[1]))
         total += (lon2 - lon1) * (2 + math.sin(lat1) + math.sin(lat2))
 
-    return abs(total * radius * radius / 2.0)
+    return abs(total * r * r / 2.0)
 
 
-def geometry_area_km2(geometry):
-    if not isinstance(geometry, dict):
+def geom_area_km2(geom):
+    if not isinstance(geom, dict):
         return 0.0
 
-    geom_type = geometry.get("type")
-    coords = geometry.get("coordinates")
+    typ = geom.get("type")
+    coords = geom.get("coordinates")
 
-    if not coords:
-        return 0.0
+    if typ == "Polygon" and coords:
+        outer = ring_area_km2(coords[0])
+        holes = sum(ring_area_km2(r) for r in coords[1:])
+        return max(0, outer - holes)
 
-    if geom_type == "Polygon":
-        outer = polygon_ring_area_km2(coords[0])
-        holes = sum(polygon_ring_area_km2(ring) for ring in coords[1:])
-        return max(0.0, outer - holes)
-
-    if geom_type == "MultiPolygon":
+    if typ == "MultiPolygon" and coords:
         total = 0.0
-        for polygon in coords:
-            if isinstance(polygon, list) and polygon:
-                outer = polygon_ring_area_km2(polygon[0])
-                holes = sum(polygon_ring_area_km2(ring) for ring in polygon[1:])
-                total += max(0.0, outer - holes)
+        for poly in coords:
+            if poly:
+                outer = ring_area_km2(poly[0])
+                holes = sum(ring_area_km2(r) for r in poly[1:])
+                total += max(0, outer - holes)
         return total
 
     return 0.0
 
 
-def feature_area_km2(feature):
-    if not isinstance(feature, dict):
-        return 0.0
-    return geometry_area_km2(feature.get("geometry"))
+def geojson_area_km2(geojson):
+    return sum(geom_area_km2(f.get("geometry")) for f in as_list(geojson) if isinstance(f, dict))
 
 
-def geojson_total_area_km2(geojson):
-    return sum(feature_area_km2(feature) for feature in as_list(geojson))
-
-
-def get_deepstate_file_list():
+def deepstate_delta():
     try:
-        items = http_get_json(DEEPSTATE_API_URL)
+        items = github_json(DEEPSTATE_API_URL)
+        files = []
+        for item in items:
+            name = item.get("name", "")
+            if name.endswith(".geojson") and "deepstatemap_data_" in name:
+                files.append({"name": name, "url": item.get("download_url")})
+        files = sorted(files, key=lambda x: x["name"])
+
+        if len(files) < 2:
+            raise RuntimeError("Not enough DeepState files")
+
+        prev = files[-2]
+        curr = files[-1]
+
+        prev_geo = json.loads(github_text(prev["url"]))
+        curr_geo = json.loads(github_text(curr["url"]))
+
+        prev_area = geojson_area_km2(prev_geo)
+        curr_area = geojson_area_km2(curr_geo)
+        net = curr_area - prev_area
+
+        return {
+            "available": True,
+            "error": None,
+            "previous_file": prev["name"],
+            "current_file": curr["name"],
+            "previous_total_km2": round(prev_area, 2),
+            "current_total_km2": round(curr_area, 2),
+            "russian_gain_km2": round(max(0, net), 2),
+            "ukrainian_recapture_km2": round(abs(min(0, net)), 2),
+            "net_change_km2": round(net, 2),
+            "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+        }
+
     except Exception as exc:
-        return [], f"DeepState API list error: {exc}"
-
-    if not isinstance(items, list):
-        return [], "DeepState API did not return a list"
-
-    files = []
-
-    for item in items:
-        if not isinstance(item, dict):
-            continue
-
-        name = item.get("name", "")
-        download_url = item.get("download_url")
-
-        if name.endswith(".geojson") and "deepstatemap_data_" in name and download_url:
-            files.append({
-                "name": name,
-                "download_url": download_url,
-            })
-
-    return sorted(files, key=lambda x: x["name"]), None
-
-
-def load_deepstate_geojson(download_url):
-    return json.loads(http_get_text(download_url))
-
-
-def compute_deepstate_territorial_delta():
-    files, error = get_deepstate_file_list()
-
-    if error or len(files) < 2:
         return {
             "available": False,
-            "error": error or "Not enough DeepState GeoJSON files",
+            "error": str(exc),
             "previous_file": None,
             "current_file": None,
             "previous_total_km2": None,
@@ -483,78 +275,48 @@ def compute_deepstate_territorial_delta():
             "russian_gain_km2": 0.0,
             "ukrainian_recapture_km2": 0.0,
             "net_change_km2": 0.0,
-            "method": "DeepState GeoJSON total area fallback",
+            "method": "fallback"
         }
 
-    previous = files[-2]
-    current = files[-1]
 
-    try:
-        previous_geojson = load_deepstate_geojson(previous["download_url"])
-        current_geojson = load_deepstate_geojson(current["download_url"])
+def territorial_hotspot(top_sectors, territorial):
+    classified = [
+        s for s in top_sectors
+        if s["sector"] in SECTORS and s["score"] > 0
+    ]
 
-        previous_area = geojson_total_area_km2(previous_geojson)
-        current_area = geojson_total_area_km2(current_geojson)
-
-        net = current_area - previous_area
-
+    if classified:
+        best = classified[0]
+        sec = SECTORS[best["sector"]]
         return {
-            "available": True,
-            "error": None,
-            "previous_file": previous["name"],
-            "current_file": current["name"],
-            "previous_total_km2": round(previous_area, 2),
-            "current_total_km2": round(current_area, 2),
-            "russian_gain_km2": round(max(0.0, net), 2),
-            "ukrainian_recapture_km2": round(abs(min(0.0, net)), 2),
-            "net_change_km2": round(net, 2),
-            "method": "Approximate total area difference between the latest two DeepState GeoJSON files",
+            "sector": best["sector"],
+            "lat": sec["lat"],
+            "lon": sec["lon"],
+            "zoom": sec["zoom"],
+            "score": best["score"],
+            "change_km2": territorial.get("net_change_km2", 0),
+            "method": "Top classified sector based on OSINT + FIRMS density"
         }
 
-    except Exception as exc:
-        return {
-            "available": False,
-            "error": f"DeepState delta calculation error: {exc}",
-            "previous_file": previous.get("name"),
-            "current_file": current.get("name"),
-            "previous_total_km2": None,
-            "current_total_km2": None,
-            "russian_gain_km2": 0.0,
-            "ukrainian_recapture_km2": 0.0,
-            "net_change_km2": 0.0,
-            "method": "DeepState GeoJSON total area fallback",
-        }
+    return {
+        "sector": "Ukraine Front Overview",
+        "lat": 48.6,
+        "lon": 37.2,
+        "zoom": 6,
+        "score": 0,
+        "change_km2": territorial.get("net_change_km2", 0),
+        "method": "Fallback overview"
+    }
 
 
-def calc_fai(
-    osint_count,
-    firms3_count,
-    firms10_count,
-    firms30_count,
-    active_sector_count,
-    critical_count,
-    territorial_net_km2,
-):
+def calc_fai(osint_count, firms3, firms10, firms30, active_sectors, critical, territorial_net):
     osint_component = min(25, osint_count * 2.5)
+    firms_component = min(20, firms3 * 0.12 + firms10 * 0.04 + firms30 * 0.01)
+    territorial_component = min(35, abs(territorial_net) * 3)
+    sector_component = min(10, active_sectors * 2)
+    critical_component = min(10, critical * 2)
 
-    firms_component = min(
-        20,
-        firms3_count * 0.12
-        + firms10_count * 0.04
-        + firms30_count * 0.01
-    )
-
-    territorial_component = min(35, abs(territorial_net_km2) * 3.0)
-    sector_component = min(10, active_sector_count * 2)
-    critical_component = min(10, critical_count * 2)
-
-    total = (
-        osint_component
-        + firms_component
-        + territorial_component
-        + sector_component
-        + critical_component
-    )
+    total = osint_component + firms_component + territorial_component + sector_component + critical_component
 
     return {
         "fai": round(min(100, total)),
@@ -564,51 +326,34 @@ def calc_fai(
             "territorial_change": round(territorial_component, 1),
             "active_sectors": round(sector_component, 1),
             "critical_events": round(critical_component, 1),
-        },
+        }
     }
 
 
-def fai_status(value):
-    if value >= 80:
+def status(fai):
+    if fai >= 80:
         return "CRITICAL"
-    if value >= 60:
+    if fai >= 60:
         return "HIGH"
-    if value >= 40:
+    if fai >= 40:
         return "ELEVATED"
-    if value >= 20:
+    if fai >= 20:
         return "MODERATE"
     return "LOW"
 
 
-def make_top_events(osint_items):
-    front_events = [
-        item for item in osint_items
-        if isinstance(item, dict) and not is_background_event(item)
-    ]
-
-    if not front_events:
-        front_events = [item for item in osint_items if isinstance(item, dict)]
+def top_events(osint):
+    filtered = [x for x in osint if isinstance(x, dict) and not is_background(x)]
+    if not filtered:
+        filtered = [x for x in osint if isinstance(x, dict)]
 
     result = []
-
-    for item in front_events[:5]:
+    for item in filtered[:6]:
         result.append({
-            "title": (
-                item.get("title")
-                or item.get("headline")
-                or item.get("summary")
-                or item.get("description")
-                or "OSINT-esemény"
-            ),
-            "source": (
-                item.get("source")
-                or item.get("feed")
-                or item.get("tag")
-                or "forrás nélkül"
-            ),
+            "title": item.get("title") or item.get("headline") or item.get("summary") or "OSINT event",
+            "source": item.get("source") or item.get("feed") or item.get("tag") or "forrás nélkül",
             "sector": detect_sector(item),
         })
-
     return result
 
 
@@ -616,74 +361,65 @@ def main():
     now = datetime.now(timezone.utc)
     today = now.date().isoformat()
 
-    osint_raw, osint_source = load_first_existing(OSINT_PATHS, [])
-    firms3_raw, firms3_source = load_first_existing(FIRMS_3_PATHS, [])
-    firms10_raw, firms10_source = load_first_existing(FIRMS_10_PATHS, [])
-    firms30_raw, firms30_source = load_first_existing(FIRMS_30_PATHS, [])
+    osint_raw, osint_source = load_first(OSINT_PATHS, [])
+    firms3_raw, firms3_source = load_first(FIRMS_3_PATHS, [])
+    firms10_raw, firms10_source = load_first(FIRMS_10_PATHS, [])
+    firms30_raw, firms30_source = load_first(FIRMS_30_PATHS, [])
 
     osint = as_list(osint_raw)
     firms3 = as_list(firms3_raw)
     firms10 = as_list(firms10_raw)
     firms30 = as_list(firms30_raw)
 
-    territorial = compute_deepstate_territorial_delta()
-
+    territorial = deepstate_delta()
     sectors = sector_scores(osint, firms3)
 
-    active_sector_count = len([
-        s for s in sectors
-        if s["score"] > 0 and s["sector"] != "Other / Unclassified"
-    ])
+    active_sectors = len([s for s in sectors if s["sector"] != "Other / Unclassified" and s["score"] > 0])
+    critical = count_critical(osint)
 
-    critical_count = count_critical_events(osint)
-    territorial_net = territorial.get("net_change_km2") or 0.0
-
-    fai_result = calc_fai(
-        osint_count=len(osint),
-        firms3_count=len(firms3),
-        firms10_count=len(firms10),
-        firms30_count=len(firms30),
-        active_sector_count=active_sector_count,
-        critical_count=critical_count,
-        territorial_net_km2=territorial_net,
+    fai_data = calc_fai(
+        len(osint),
+        len(firms3),
+        len(firms10),
+        len(firms30),
+        active_sectors,
+        critical,
+        territorial.get("net_change_km2", 0)
     )
 
     latest = {
         "date": today,
         "updated_utc": now.isoformat(),
-        "front_activity_index": fai_result["fai"],
-        "status": fai_status(fai_result["fai"]),
-        "components": fai_result["components"],
+        "front_activity_index": fai_data["fai"],
+        "status": status(fai_data["fai"]),
+        "components": fai_data["components"],
         "counts": {
             "osint": len(osint),
             "firms_3d": len(firms3),
             "firms_10d": len(firms10),
             "firms_30d": len(firms30),
-            "critical_events": critical_count,
-            "active_sectors": active_sector_count,
+            "critical_events": critical,
+            "active_sectors": active_sectors,
         },
         "territorial": territorial,
+        "territorial_hotspot": territorial_hotspot(sectors, territorial),
         "top_sectors": sectors[:8],
-        "top_events": make_top_events(osint),
+        "top_events": top_events(osint),
         "data_sources": {
             "osint": osint_source,
             "firms_3d": firms3_source,
             "firms_10d": firms10_source,
             "firms_30d": firms30_source,
-            "deepstate": "cyterat/deepstate-map-data via GitHub API",
+            "deepstate": "cyterat/deepstate-map-data via GitHub API"
         },
-        "note": (
-            "A Front Activity Index nem hivatalos katonai mutató. "
-            "Blogos elemzési és vizuális támogatási célra készült."
-        ),
+        "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
     }
 
     history = load_json(HISTORY_PATH, [])
-
     if not isinstance(history, list):
         history = []
 
-    history = [row for row in history if row.get("date") != today]
+    history = [x for x in history if x.get("date") != today]
     history.append(latest)
     history = sorted(history, key=lambda x: x.get("date", ""))[-180:]
 
@@ -691,15 +427,9 @@ def main():
     save_json(DOCS_HISTORY_PATH, history)
     save_json(LATEST_PATH, latest)
 
-    print(f"Front Activity Index kész: {latest['front_activity_index']} / {latest['status']}")
-    print(f"OSINT: {len(osint)} | source: {osint_source}")
-    print(f"FIRMS 3d: {len(firms3)} | source: {firms3_source}")
-    print(f"FIRMS 10d: {len(firms10)} | source: {firms10_source}")
-    print(f"FIRMS 30d: {len(firms30)} | source: {firms30_source}")
-    print(f"DeepState territorial delta: {territorial.get('net_change_km2')} km2")
-    print(f"Mentve: {HISTORY_PATH}")
-    print(f"Mentve: {DOCS_HISTORY_PATH}")
-    print(f"Mentve: {LATEST_PATH}")
+    print(f"Front Activity Index: {latest['front_activity_index']} / {latest['status']}")
+    print(f"FIRMS 3d: {len(firms3)} | FIRMS 10d: {len(firms10)} | FIRMS 30d: {len(firms30)}")
+    print(f"Territorial hotspot: {latest['territorial_hotspot']['sector']}")
 
 
 if __name__ == "__main__":
