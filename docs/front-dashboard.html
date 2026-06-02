@@ -20,7 +20,7 @@
 
     .dashboard {
       width: 1200px;
-      min-height: 860px;
+      min-height: 900px;
       margin: 0 auto;
       padding: 8px;
       box-sizing: border-box;
@@ -73,32 +73,21 @@
       text-overflow: ellipsis;
     }
 
-    .metric-value.small {
-      font-size: 14px;
-    }
-
-    .metric-value.positive {
-      color: #fb7185;
-    }
-
-    .metric-value.negative {
-      color: #22c55e;
-    }
-
-    .metric-value.neutral {
-      color: #e5e7eb;
-    }
+    .metric-value.small { font-size: 14px; }
+    .metric-value.positive { color: #fb7185; }
+    .metric-value.negative { color: #22c55e; }
+    .metric-value.neutral { color: #e5e7eb; }
 
     .map-grid {
       display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
+      grid-template-columns: 1.18fr 0.82fr;
       gap: 12px;
       margin-bottom: 12px;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 0.9fr 1.1fr;
       gap: 12px;
       margin-bottom: 12px;
     }
@@ -115,13 +104,10 @@
       border: 1px solid #334155;
       border-radius: 5px;
       padding: 10px;
-      min-height: 245px;
       box-sizing: border-box;
     }
 
-    .map-panel {
-      min-height: 390px;
-    }
+    .map-panel { min-height: 420px; }
 
     .panel-title {
       font-size: 14px;
@@ -134,23 +120,21 @@
 
     #miniMap {
       width: 100%;
-      height: 330px;
+      height: 360px;
       border-radius: 4px;
       border: 1px solid #334155;
       background: #020617;
       overflow: hidden;
     }
 
-    .leaflet-control-attribution {
-      font-size: 9px;
-    }
+    .leaflet-control-attribution { font-size: 9px; }
 
     .map-legend {
       position: absolute;
       z-index: 900;
       left: 18px;
       top: 46px;
-      background: rgba(2, 6, 23, 0.82);
+      background: rgba(2, 6, 23, 0.86);
       border: 1px solid #334155;
       color: #e5e7eb;
       padding: 8px;
@@ -187,12 +171,37 @@
       border-radius: 50%;
     }
 
-    .legend-pulse {
-      width: 12px;
-      height: 12px;
-      background: rgba(56, 189, 248, 0.25);
-      border: 2px solid #38bdf8;
+    .legend-dot-red {
+      width: 10px;
+      height: 10px;
+      background: #ef4444;
       border-radius: 50%;
+    }
+
+    .legend-osint {
+      width: 16px;
+      height: 16px;
+      background: #38bdf8;
+      color: #020617;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 10px;
+    }
+
+    .legend-pressure {
+      width: 16px;
+      height: 16px;
+      background: #ef4444;
+      color: #fff;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 10px;
     }
 
     .hotspot-meta {
@@ -224,15 +233,56 @@
       font-size: 12px;
     }
 
+    .events {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .event {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 8px;
+      align-items: start;
+      font-size: 12px;
+      line-height: 1.3;
+      border-bottom: 1px solid rgba(148,163,184,0.14);
+      padding-bottom: 6px;
+    }
+
+    .event-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #38bdf8;
+      color: #020617;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 12px;
+    }
+
+    .event-title {
+      color: #f8fafc;
+      font-weight: 700;
+    }
+
+    .event-meta {
+      color: #94a3b8;
+      margin-top: 3px;
+      font-size: 11px;
+    }
+
     .sector-list {
       display: flex;
       flex-direction: column;
-      gap: 9px;
+      gap: 8px;
     }
 
     .sector-row {
       display: grid;
-      grid-template-columns: 130px 40px 50px 1fr 42px;
+      grid-template-columns: 128px 36px 46px 1fr 38px;
       gap: 7px;
       align-items: center;
       font-size: 12px;
@@ -259,37 +309,33 @@
       border-radius: 999px;
     }
 
-    .events {
+    .pressure-list {
       display: flex;
       flex-direction: column;
-      gap: 9px;
+      gap: 7px;
+      margin-top: 8px;
     }
 
-    .event {
-      border-left: 4px solid #38bdf8;
-      padding-left: 10px;
+    .pressure-item {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 8px;
       font-size: 12px;
-      line-height: 1.35;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(148,163,184,0.12);
     }
 
-    .event-title {
-      color: #f8fafc;
-      font-weight: 700;
-    }
-
-    .event-meta {
-      color: #94a3b8;
-      margin-top: 3px;
-      font-size: 11px;
-    }
-
-    canvas {
-      width: 100% !important;
-      height: 215px !important;
-      background: #f8fafc;
-      border-radius: 4px;
-      padding: 6px;
-      box-sizing: border-box;
+    .pressure-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #ef4444;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 12px;
     }
 
     .assessment {
@@ -325,11 +371,13 @@
       color: #f8fafc;
     }
 
-    .warning {
-      color: #fbbf24;
-      font-size: 12px;
-      line-height: 1.45;
-      margin-top: 8px;
+    canvas {
+      width: 100% !important;
+      height: 220px !important;
+      background: #f8fafc;
+      border-radius: 4px;
+      padding: 6px;
+      box-sizing: border-box;
     }
 
     .source-note {
@@ -338,30 +386,49 @@
       line-height: 1.45;
     }
 
+    .warning {
+      color: #fbbf24;
+      font-size: 12px;
+      line-height: 1.45;
+      margin-top: 8px;
+    }
+
+    .osint-marker {
+      background: #38bdf8;
+      color: #020617;
+      border: 2px solid #e0f2fe;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 12px;
+      box-shadow: 0 0 10px rgba(56,189,248,0.75);
+    }
+
+    .pressure-marker {
+      background: #ef4444;
+      color: white;
+      border: 2px solid #fecaca;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 12px;
+      box-shadow: 0 0 10px rgba(239,68,68,0.75);
+    }
+
     @media (max-width: 900px) {
-      .dashboard {
-        width: 100%;
-      }
-
-      .metrics,
-      .map-grid,
-      .grid,
-      .bottom {
-        grid-template-columns: 1fr;
-      }
-
-      .drivers,
-      .hotspot-meta {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .metric-value {
-        font-size: 22px;
-      }
-
-      #miniMap {
-        height: 360px;
-      }
+      .dashboard { width: 100%; }
+      .metrics, .map-grid, .grid, .bottom { grid-template-columns: 1fr; }
+      .drivers, .hotspot-meta { grid-template-columns: 1fr 1fr; }
+      .metric-value { font-size: 22px; }
+      #miniMap { height: 380px; }
     }
   </style>
 </head>
@@ -369,82 +436,39 @@
 <body>
   <div class="dashboard">
 
-    <div class="title" id="title">
-      Ukraine Frontline Situation Dashboard
-    </div>
+    <div class="title" id="title">Ukraine Frontline Situation Dashboard</div>
 
     <section class="metrics">
-      <div class="metric">
-        <div class="metric-label">Front Activity Index</div>
-        <div class="metric-value" id="fai">–</div>
-      </div>
-
-      <div class="metric">
-        <div class="metric-label">Status</div>
-        <div class="metric-value" id="status">–</div>
-      </div>
-
-      <div class="metric">
-        <div class="metric-label">Territorial Change</div>
-        <div class="metric-value" id="territorialChange">–</div>
-      </div>
-
-      <div class="metric">
-        <div class="metric-label">RU Gain</div>
-        <div class="metric-value" id="ruGain">–</div>
-      </div>
-
-      <div class="metric">
-        <div class="metric-label">UA Recapture</div>
-        <div class="metric-value" id="uaRecapture">–</div>
-      </div>
-
-      <div class="metric">
-        <div class="metric-label">OSINT Events</div>
-        <div class="metric-value" id="osint">–</div>
-      </div>
-
-      <div class="metric">
-        <div class="metric-label">FIRMS Hotspots</div>
-        <div class="metric-value" id="firms">–</div>
-      </div>
-
-      <div class="metric">
-        <div class="metric-label">Main Hotspot</div>
-        <div class="metric-value small" id="mainSector">–</div>
-      </div>
+      <div class="metric"><div class="metric-label">Front Activity Index</div><div class="metric-value" id="fai">–</div></div>
+      <div class="metric"><div class="metric-label">Status</div><div class="metric-value" id="status">–</div></div>
+      <div class="metric"><div class="metric-label">Territorial Change</div><div class="metric-value" id="territorialChange">–</div></div>
+      <div class="metric"><div class="metric-label">RU Gain</div><div class="metric-value" id="ruGain">–</div></div>
+      <div class="metric"><div class="metric-label">UA Recapture</div><div class="metric-value" id="uaRecapture">–</div></div>
+      <div class="metric"><div class="metric-label">OSINT Events</div><div class="metric-value" id="osint">–</div></div>
+      <div class="metric"><div class="metric-label">FIRMS Hotspots</div><div class="metric-value" id="firms">–</div></div>
+      <div class="metric"><div class="metric-label">Main Hotspot</div><div class="metric-value small" id="mainSector">–</div></div>
     </section>
 
     <section class="map-grid">
       <div class="panel map-panel" style="position: relative;">
-        <div class="panel-title">Mini Front Snapshot – Auto Zoom Hotspot</div>
+        <div class="panel-title">Tactical Front Snapshot – Auto Zoom Hotspot</div>
 
         <div class="map-legend">
           <div class="legend-row"><span class="legend-line"></span> Current front / control edge</div>
           <div class="legend-row"><span class="legend-box-red"></span> Russian controlled area</div>
-          <div class="legend-row"><span class="legend-dot-orange"></span> FIRMS hotspots</div>
-          <div class="legend-row"><span class="legend-pulse"></span> Auto-zoom hotspot</div>
+          <div class="legend-row"><span class="legend-dot-orange"></span> FIRMS 3 days</div>
+          <div class="legend-row"><span class="legend-dot-red"></span> FIRMS 10 days</div>
+          <div class="legend-row"><span class="legend-osint">1</span> OSINT event</div>
+          <div class="legend-row"><span class="legend-pressure">A</span> pressure marker</div>
         </div>
 
         <div id="miniMap"></div>
 
         <div class="hotspot-meta">
-          <div class="hotspot-box">
-            <div class="hotspot-label">Hotspot</div>
-            <div class="hotspot-value" id="hotspotName">–</div>
-          </div>
-          <div class="hotspot-box">
-            <div class="hotspot-label">Zoom</div>
-            <div class="hotspot-value" id="hotspotZoom">–</div>
-          </div>
-          <div class="hotspot-box">
-            <div class="hotspot-label">FIRMS shown</div>
-            <div class="hotspot-value" id="firmsShown">–</div>
-          </div>
-          <div class="hotspot-box">
-            <div class="hotspot-label">Territorial delta</div>
-            <div class="hotspot-value" id="hotspotDelta">–</div>
-          </div>
+          <div class="hotspot-box"><div class="hotspot-label">Hotspot</div><div class="hotspot-value" id="hotspotName">–</div></div>
+          <div class="hotspot-box"><div class="hotspot-label">Zoom</div><div class="hotspot-value" id="hotspotZoom">–</div></div>
+          <div class="hotspot-box"><div class="hotspot-label">FIRMS shown</div><div class="hotspot-value" id="firmsShown">–</div></div>
+          <div class="hotspot-box"><div class="hotspot-label">OSINT shown</div><div class="hotspot-value" id="osintShown">–</div></div>
         </div>
       </div>
 
@@ -461,49 +485,41 @@
       </div>
 
       <div class="panel">
-        <div class="panel-title">Operational Assessment</div>
-        <div class="assessment" id="assessment">Adatok betöltése...</div>
-
-        <div class="drivers">
-          <div class="driver">
-            <div class="driver-label">OSINT</div>
-            <div class="driver-value" id="dOsint">–</div>
-          </div>
-          <div class="driver">
-            <div class="driver-label">FIRMS</div>
-            <div class="driver-value" id="dFirms">–</div>
-          </div>
-          <div class="driver">
-            <div class="driver-label">Territory</div>
-            <div class="driver-value" id="dTerritory">–</div>
-          </div>
-          <div class="driver">
-            <div class="driver-label">Critical</div>
-            <div class="driver-value" id="dCritical">–</div>
-          </div>
-          <div class="driver">
-            <div class="driver-label">Sectors</div>
-            <div class="driver-value" id="dSectors">–</div>
-          </div>
-        </div>
-
-        <div class="warning">
-          A Front Activity Index nem hivatalos katonai mutató. Blogos elemzési és vizuális támogatási célra készült.
-        </div>
+        <div class="panel-title">Front Pressure / Unit Markers</div>
+        <div class="pressure-list" id="pressureList">Adatok betöltése...</div>
       </div>
     </section>
 
     <section class="bottom">
       <div class="panel">
-        <div class="panel-title">Front Activity Trend</div>
-        <canvas id="trendChart"></canvas>
+        <div class="panel-title">Operational Assessment</div>
+        <div class="assessment" id="assessment">Adatok betöltése...</div>
+
+        <div class="drivers">
+          <div class="driver"><div class="driver-label">OSINT</div><div class="driver-value" id="dOsint">–</div></div>
+          <div class="driver"><div class="driver-label">FIRMS</div><div class="driver-value" id="dFirms">–</div></div>
+          <div class="driver"><div class="driver-label">Territory</div><div class="driver-value" id="dTerritory">–</div></div>
+          <div class="driver"><div class="driver-label">Critical</div><div class="driver-value" id="dCritical">–</div></div>
+          <div class="driver"><div class="driver-label">Sectors</div><div class="driver-value" id="dSectors">–</div></div>
+        </div>
+
+        <div class="warning">A Front Activity Index nem hivatalos katonai mutató. Blogos elemzési és vizuális támogatási célra készült.</div>
       </div>
 
       <div class="panel">
+        <div class="panel-title">Front Activity Trend</div>
+        <canvas id="trendChart"></canvas>
+      </div>
+    </section>
+
+    <section class="bottom">
+      <div class="panel">
         <div class="panel-title">Data Source Note</div>
-        <div class="source-note" id="sourceNote">
-          Forrásadatok betöltése...
-        </div>
+        <div class="source-note" id="sourceNote">Forrásadatok betöltése...</div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Map Layer Summary</div>
+        <div class="source-note" id="layerSummary">Rétegek betöltése...</div>
       </div>
     </section>
 
@@ -512,7 +528,11 @@
   <script>
     const LATEST_PATH = "./data/front_activity_latest.json";
     const HISTORY_PATH = "./data/history/front_activity.json";
+
     const FIRMS_3_PATH = "../data/firms_3.json";
+    const FIRMS_10_PATH = "../data/firms_10.json";
+    const OSINT_PATH = "../data/osint_feed.json";
+    const UNIT_PATH = "../data/unit_feed.json";
 
     const DEEPSTATE_RAW_BASE =
       "https://raw.githubusercontent.com/cyterat/deepstate-map-data/main/data/";
@@ -530,13 +550,11 @@
 
     function asList(data) {
       if (Array.isArray(data)) return data;
-
       if (data && typeof data === "object") {
-        for (const key of ["points", "features", "items", "events", "data", "results", "hotspots"]) {
+        for (const key of ["points", "features", "items", "events", "data", "results", "hotspots", "units"]) {
           if (Array.isArray(data[key])) return data[key];
         }
       }
-
       return [];
     }
 
@@ -559,37 +577,42 @@
     function setChangeClass(element, value) {
       element.classList.remove("positive", "negative", "neutral");
       const num = n(value);
-
-      if (num > 0) {
-        element.classList.add("positive");
-      } else if (num < 0) {
-        element.classList.add("negative");
-      } else {
-        element.classList.add("neutral");
-      }
+      if (num > 0) element.classList.add("positive");
+      else if (num < 0) element.classList.add("negative");
+      else element.classList.add("neutral");
     }
 
     function formatDate(dateString) {
       if (!dateString) return "Unknown date";
-
       const d = new Date(dateString + "T00:00:00");
-
-      return d.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric"
-      });
+      return d.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
     }
 
     function getLatLon(item) {
       if (!item || typeof item !== "object") return [null, null];
 
-      const lat = item.lat ?? item.latitude ?? item.Lat ?? item.LAT;
-      const lon = item.lon ?? item.lng ?? item.longitude ?? item.Lon ?? item.LON;
+      let lat = item.lat ?? item.latitude ?? item.Lat ?? item.LAT;
+      let lon = item.lon ?? item.lng ?? item.longitude ?? item.Lon ?? item.LON;
+
+      if ((lat === undefined || lon === undefined) && item.geometry && Array.isArray(item.geometry.coordinates)) {
+        lon = item.geometry.coordinates[0];
+        lat = item.geometry.coordinates[1];
+      }
 
       if (lat === undefined || lon === undefined) return [null, null];
-
       return [Number(lat), Number(lon)];
+    }
+
+    function titleOf(item) {
+      return item?.title || item?.headline || item?.summary || item?.description || item?.name || "event";
+    }
+
+    function sourceOf(item) {
+      return item?.source || item?.feed || item?.tag || "forrás nélkül";
+    }
+
+    function sectorOf(item) {
+      return item?.sector || item?.area || item?.location || "unclassified";
     }
 
     function distanceKm(lat1, lon1, lat2, lon2) {
@@ -598,73 +621,139 @@
       const p2 = lat2 * Math.PI / 180;
       const dp = (lat2 - lat1) * Math.PI / 180;
       const dl = (lon2 - lon1) * Math.PI / 180;
-
-      const a =
-        Math.sin(dp / 2) ** 2 +
-        Math.cos(p1) * Math.cos(p2) * Math.sin(dl / 2) ** 2;
-
+      const a = Math.sin(dp / 2) ** 2 + Math.cos(p1) * Math.cos(p2) * Math.sin(dl / 2) ** 2;
       return r * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     }
 
     function getTopSector(sectors) {
-      const filtered = (sectors || [])
-        .filter(s => s && s.sector && s.sector !== "Other / Unclassified" && n(s.score) > 0);
-
+      const filtered = (sectors || []).filter(s => s && s.sector && s.sector !== "Other / Unclassified" && n(s.score) > 0);
       if (!filtered.length) return "UNCLASSIFIED";
       return filtered[0].sector.toUpperCase();
     }
 
-    function renderSectors(sectors) {
-      const box = document.getElementById("sectors");
-
-      const top = (sectors || [])
-        .filter(s => s && s.sector && s.sector !== "Other / Unclassified")
-        .slice(0, 8);
-
-      if (!top.length) {
-        box.innerHTML = `
-          <div class="warning">
-            Nincs megbízhatóan besorolt aktív frontszektor.
-          </div>
-        `;
-        return;
-      }
-
-      box.innerHTML = `
-        <div class="sector-row sector-head">
-          <div>Sector</div>
-          <div>OSINT</div>
-          <div>FIRMS</div>
-          <div>Score</div>
-          <div></div>
-        </div>
-        ${top.map(s => `
-          <div class="sector-row">
-            <div>${s.sector}</div>
-            <div>${n(s.osint)}</div>
-            <div>${n(s.firms)}</div>
-            <div class="bar-bg">
-              <div class="bar-fill" style="width:${Math.min(100, n(s.score))}%"></div>
-            </div>
-            <strong>${n(s.score)}</strong>
-          </div>
-        `).join("")}
-      `;
+    function currentDeepStateUrl(latest) {
+      const currentFile = latest?.territorial?.current_file;
+      if (!currentFile) return null;
+      return DEEPSTATE_RAW_BASE + currentFile;
     }
 
-    function renderEvents(events) {
+    function styleOccupiedArea() {
+      return {
+        color: "#ef4444",
+        weight: 1.2,
+        opacity: 0.85,
+        fillColor: "#ef4444",
+        fillOpacity: 0.22
+      };
+    }
+
+    function styleFrontLine() {
+      return {
+        color: "#ff0000",
+        weight: 2.5,
+        opacity: 0.95,
+        fillOpacity: 0
+      };
+    }
+
+    function addDeepStateLayer(map, geojson) {
+      if (!geojson) return;
+
+      L.geoJSON(geojson, { style: () => styleOccupiedArea() }).addTo(map);
+      L.geoJSON(geojson, { style: () => styleFrontLine() }).addTo(map);
+    }
+
+    function addApproxTerritorialChange(map, hotspot, territorial) {
+      const lat = n(hotspot.lat);
+      const lon = n(hotspot.lon);
+      const net = n(territorial.net_change_km2);
+      if (!lat || !lon) return;
+
+      const color = net > 0 ? "#ff0033" : net < 0 ? "#22c55e" : "#38bdf8";
+
+      L.circle([lat, lon], {
+        radius: net === 0 ? 18000 : 22000 + Math.min(50000, Math.abs(net) * 2500),
+        color,
+        weight: 2,
+        fillColor: color,
+        fillOpacity: net === 0 ? 0.08 : 0.25,
+        dashArray: net === 0 ? null : "5,4"
+      }).addTo(map);
+    }
+
+    function numberedIcon(number, type) {
+      const cls = type === "pressure" ? "pressure-marker" : "osint-marker";
+      return L.divIcon({
+        html: `<div class="${cls}">${number}</div>`,
+        className: "",
+        iconSize: [24, 24],
+        iconAnchor: [12, 12]
+      });
+    }
+
+    function renderEvents(events, visibleEventIndexes) {
       const box = document.getElementById("events");
-      const top = (events || []).slice(0, 6);
+      const top = (events || []).slice(0, 10);
 
       if (!top.length) {
         box.innerHTML = `<div class="warning">Nincs kiemelt OSINT-esemény.</div>`;
         return;
       }
 
-      box.innerHTML = top.map((e, i) => `
-        <div class="event">
-          <div class="event-title">${i + 1}. ${e.title || "OSINT event"}</div>
-          <div class="event-meta">${e.source || "no source"} · ${e.sector || "unclassified"}</div>
+      box.innerHTML = top.map((e, i) => {
+        const isVisible = visibleEventIndexes.has(i + 1);
+        return `
+          <div class="event">
+            <div class="event-num" style="${isVisible ? "" : "opacity:0.35"}">${i + 1}</div>
+            <div>
+              <div class="event-title">${e.title || "OSINT event"}</div>
+              <div class="event-meta">${e.source || "no source"} · ${e.sector || "unclassified"}${isVisible ? " · shown on map" : ""}</div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderSectors(sectors) {
+      const box = document.getElementById("sectors");
+      const top = (sectors || []).filter(s => s && s.sector && s.sector !== "Other / Unclassified").slice(0, 8);
+
+      if (!top.length) {
+        box.innerHTML = `<div class="warning">Nincs megbízhatóan besorolt aktív frontszektor.</div>`;
+        return;
+      }
+
+      box.innerHTML = `
+        <div class="sector-row sector-head">
+          <div>Sector</div><div>OSINT</div><div>FIRMS</div><div>Score</div><div></div>
+        </div>
+        ${top.map(s => `
+          <div class="sector-row">
+            <div>${s.sector}</div>
+            <div>${n(s.osint)}</div>
+            <div>${n(s.firms)}</div>
+            <div class="bar-bg"><div class="bar-fill" style="width:${Math.min(100, n(s.score))}%"></div></div>
+            <strong>${n(s.score)}</strong>
+          </div>
+        `).join("")}
+      `;
+    }
+
+    function renderPressureList(pressureItems) {
+      const box = document.getElementById("pressureList");
+
+      if (!pressureItems.length) {
+        box.innerHTML = `<div class="warning">Nincs a kivágatban megjeleníthető frontnyomás / unit marker.</div>`;
+        return;
+      }
+
+      box.innerHTML = pressureItems.slice(0, 8).map((p, i) => `
+        <div class="pressure-item">
+          <div class="pressure-num">${String.fromCharCode(65 + i)}</div>
+          <div>
+            <strong>${titleOf(p)}</strong><br>
+            <span style="color:#94a3b8">${sectorOf(p)}</span>
+          </div>
         </div>
       `).join("");
     }
@@ -674,32 +763,24 @@
       const components = data.components || {};
       const territorial = data.territorial || {};
       const hotspot = data.territorial_hotspot || {};
-
       const topSector = getTopSector(data.top_sectors || []);
       const fai = n(data.front_activity_index);
       const status = data.status || "UNKNOWN";
       const net = n(territorial.net_change_km2);
 
       let territorialSentence = "No reliable territorial delta is available for the latest DeepState files.";
-
       if (territorial.available) {
-        if (net > 0) {
-          territorialSentence =
-            `The latest DeepState comparison indicates a net Russian territorial gain of <strong>${plainKm2(net)}</strong>.`;
-        } else if (net < 0) {
-          territorialSentence =
-            `The latest DeepState comparison indicates a net Ukrainian recapture of <strong>${plainKm2(Math.abs(net))}</strong>.`;
-        } else {
-          territorialSentence =
-            `The latest DeepState comparison indicates no measurable net territorial change.`;
-        }
+        if (net > 0) territorialSentence = `The latest DeepState comparison indicates a net Russian territorial gain of <strong>${plainKm2(net)}</strong>.`;
+        else if (net < 0) territorialSentence = `The latest DeepState comparison indicates a net Ukrainian recapture of <strong>${plainKm2(Math.abs(net))}</strong>.`;
+        else territorialSentence = `The latest DeepState comparison indicates no measurable net territorial change.`;
       }
 
       document.getElementById("assessment").innerHTML = `
         The current frontline activity picture is assessed as <strong>${status}</strong>, with a Front Activity Index of
         <strong>${fai}</strong>. ${territorialSentence}
         The system identified <strong>${n(counts.osint)}</strong> OSINT events,
-        <strong>${n(counts.firms_3d)}</strong> short-term FIRMS hotspots and
+        <strong>${n(counts.firms_3d)}</strong> short-term FIRMS hotspots,
+        <strong>${n(counts.firms_10d)}</strong> 10-day FIRMS hotspots and
         <strong>${n(counts.active_sectors)}</strong> active sector(s).
         Main classified sector: <strong>${topSector}</strong>.
         Auto-zoom hotspot: <strong>${hotspot.sector || "n/a"}</strong>.
@@ -735,23 +816,10 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              display: true,
-              labels: { color: "#111827" }
-            }
-          },
+          plugins: { legend: { display: true, labels: { color: "#111827" } } },
           scales: {
-            x: {
-              ticks: { color: "#111827", maxRotation: 45, minRotation: 30 },
-              grid: { color: "rgba(15,23,42,0.12)" }
-            },
-            y: {
-              beginAtZero: true,
-              max: 100,
-              ticks: { color: "#111827" },
-              grid: { color: "rgba(15,23,42,0.12)" }
-            }
+            x: { ticks: { color: "#111827", maxRotation: 45, minRotation: 30 }, grid: { color: "rgba(15,23,42,0.12)" } },
+            y: { beginAtZero: true, max: 100, ticks: { color: "#111827" }, grid: { color: "rgba(15,23,42,0.12)" } }
           }
         }
       });
@@ -764,121 +832,24 @@
       document.getElementById("sourceNote").innerHTML = `
         <strong>DeepState delta:</strong><br>
         ${territorial.previous_file || "n/a"} → ${territorial.current_file || "n/a"}<br><br>
-
         <strong>Method:</strong><br>
         ${territorial.method || "n/a"}<br><br>
-
         <strong>Data files:</strong><br>
         OSINT: ${sources.osint || "n/a"}<br>
         FIRMS 3d: ${sources.firms_3d || "n/a"}<br>
         FIRMS 10d: ${sources.firms_10d || "n/a"}<br>
-        FIRMS 30d: ${sources.firms_30d || "n/a"}
+        FIRMS 30d: ${sources.firms_30d || "n/a"}<br>
+        Unit feed: ${UNIT_PATH}
       `;
     }
 
-    function currentDeepStateUrl(latest) {
-      const currentFile = latest?.territorial?.current_file;
-      if (!currentFile) return null;
-      return DEEPSTATE_RAW_BASE + currentFile;
-    }
-
-    function previousDeepStateUrl(latest) {
-      const previousFile = latest?.territorial?.previous_file;
-      if (!previousFile) return null;
-      return DEEPSTATE_RAW_BASE + previousFile;
-    }
-
-    function styleOccupiedArea() {
-      return {
-        color: "#ef4444",
-        weight: 1.2,
-        opacity: 0.85,
-        fillColor: "#ef4444",
-        fillOpacity: 0.22
-      };
-    }
-
-    function styleFrontLine() {
-      return {
-        color: "#ff0000",
-        weight: 2.5,
-        opacity: 0.95,
-        fillOpacity: 0
-      };
-    }
-
-    function styleTerritorialChange(type) {
-      if (type === "gain") {
-        return {
-          color: "#ff0033",
-          weight: 2,
-          opacity: 0.95,
-          fillColor: "#ff0033",
-          fillOpacity: 0.32,
-          dashArray: "5,4"
-        };
-      }
-
-      return {
-        color: "#22c55e",
-        weight: 2,
-        opacity: 0.95,
-        fillColor: "#22c55e",
-        fillOpacity: 0.32,
-        dashArray: "5,4"
-      };
-    }
-
-    function addDeepStateLayer(map, geojson) {
-      if (!geojson) return;
-
-      L.geoJSON(geojson, {
-        style: function () {
-          return styleOccupiedArea();
-        }
-      }).addTo(map);
-
-      L.geoJSON(geojson, {
-        style: function () {
-          return styleFrontLine();
-        }
-      }).addTo(map);
-    }
-
-    function addApproxTerritorialChange(map, hotspot, territorial) {
-      const lat = n(hotspot.lat);
-      const lon = n(hotspot.lon);
-      const net = n(territorial.net_change_km2);
-
-      if (!lat || !lon) return;
-
-      if (net === 0) {
-        L.circle([lat, lon], {
-          radius: 18000,
-          color: "#38bdf8",
-          weight: 2,
-          fillColor: "#38bdf8",
-          fillOpacity: 0.08
-        }).addTo(map);
-        return;
-      }
-
-      const type = net > 0 ? "gain" : "recapture";
-      const style = styleTerritorialChange(type);
-
-      L.circle([lat, lon], {
-        radius: 22000 + Math.min(50000, Math.abs(net) * 2500),
-        ...style
-      }).addTo(map);
-    }
-
-    async function initMiniMap(latest, firmsPoints) {
+    async function initMiniMap(latest, firms3, firms10, osintFeed, unitFeed) {
       const hotspot = latest.territorial_hotspot || {};
       const territorial = latest.territorial || {};
-
       const centerLat = n(hotspot.lat) || 48.6;
       const centerLon = n(hotspot.lon) || 37.2;
       const zoom = n(hotspot.zoom) || 7;
+      const mapRadiusKm = 260;
 
       const map = L.map("miniMap", {
         zoomControl: true,
@@ -898,65 +869,124 @@
 
       const deepStateUrl = currentDeepStateUrl(latest);
       const currentDeepState = deepStateUrl ? await loadJson(deepStateUrl, null) : null;
-
-      if (currentDeepState) {
-        addDeepStateLayer(map, currentDeepState);
-      }
+      if (currentDeepState) addDeepStateLayer(map, currentDeepState);
 
       addApproxTerritorialChange(map, hotspot, territorial);
 
-      L.circleMarker([centerLat, centerLon], {
-        radius: 7,
-        color: "#ffffff",
-        weight: 2,
-        fillColor: "#38bdf8",
-        fillOpacity: 0.9
-      }).addTo(map).bindPopup(hotspot.sector || "Hotspot");
-
-      let shown = 0;
-      const maxShown = 120;
-      const radiusKm = 260;
-
-      for (const item of firmsPoints) {
-        if (shown >= maxShown) break;
-
+      let firms10Shown = 0;
+      for (const item of firms10) {
         const [lat, lon] = getLatLon(item);
         if (lat === null || lon === null) continue;
-
         const dist = distanceKm(centerLat, centerLon, lat, lon);
 
-        if (dist <= radiusKm) {
+        if (dist <= mapRadiusKm && firms10Shown < 120) {
           L.circleMarker([lat, lon], {
-            radius: 3.5,
-            color: "#f97316",
-            fillColor: "#f97316",
-            fillOpacity: 0.72,
+            radius: 2.8,
+            color: "#ef4444",
+            fillColor: "#ef4444",
+            fillOpacity: 0.55,
             weight: 0
           }).addTo(map);
-          shown++;
+          firms10Shown++;
         }
       }
 
+      let firms3Shown = 0;
+      for (const item of firms3) {
+        const [lat, lon] = getLatLon(item);
+        if (lat === null || lon === null) continue;
+        const dist = distanceKm(centerLat, centerLon, lat, lon);
+
+        if (dist <= mapRadiusKm && firms3Shown < 120) {
+          L.circleMarker([lat, lon], {
+            radius: 3.8,
+            color: "#f97316",
+            fillColor: "#f97316",
+            fillOpacity: 0.82,
+            weight: 0
+          }).addTo(map);
+          firms3Shown++;
+        }
+      }
+
+      const visibleEventIndexes = new Set();
+      let osintShown = 0;
+      const topOsint = asList(osintFeed).slice(0, 10);
+
+      topOsint.forEach((item, idx) => {
+        const [lat, lon] = getLatLon(item);
+        if (lat === null || lon === null) return;
+        const dist = distanceKm(centerLat, centerLon, lat, lon);
+
+        if (dist <= mapRadiusKm) {
+          const number = idx + 1;
+          visibleEventIndexes.add(number);
+          L.marker([lat, lon], { icon: numberedIcon(number, "osint") })
+            .addTo(map)
+            .bindPopup(`<strong>${number}. ${titleOf(item)}</strong><br>${sourceOf(item)}`);
+          osintShown++;
+        }
+      });
+
+      const pressureItemsVisible = [];
+      const units = asList(unitFeed);
+
+      units.forEach((item) => {
+        const [lat, lon] = getLatLon(item);
+        if (lat === null || lon === null) return;
+        const dist = distanceKm(centerLat, centerLon, lat, lon);
+
+        if (dist <= mapRadiusKm && pressureItemsVisible.length < 8) {
+          pressureItemsVisible.push(item);
+          const letter = String.fromCharCode(64 + pressureItemsVisible.length);
+          L.marker([lat, lon], { icon: numberedIcon(letter, "pressure") })
+            .addTo(map)
+            .bindPopup(`<strong>${letter}. ${titleOf(item)}</strong><br>${sectorOf(item)}`);
+        }
+      });
+
+      L.circleMarker([centerLat, centerLon], {
+        radius: 8,
+        color: "#ffffff",
+        weight: 2,
+        fillColor: "#38bdf8",
+        fillOpacity: 0.95
+      }).addTo(map).bindPopup(hotspot.sector || "Hotspot");
+
       document.getElementById("hotspotName").textContent = hotspot.sector || "n/a";
       document.getElementById("hotspotZoom").textContent = zoom;
-      document.getElementById("firmsShown").textContent = shown + " / " + firmsPoints.length;
-      document.getElementById("hotspotDelta").textContent = signedKm2(territorial.net_change_km2);
+      document.getElementById("firmsShown").textContent = `${firms3Shown} / ${firms10Shown}`;
+      document.getElementById("osintShown").textContent = osintShown;
 
-      setTimeout(() => {
-        map.invalidateSize();
-      }, 300);
+      document.getElementById("layerSummary").innerHTML = `
+        <strong>Mini map radius:</strong> ${mapRadiusKm} km around ${hotspot.sector || "hotspot"}<br>
+        <strong>FIRMS 3d shown:</strong> ${firms3Shown}<br>
+        <strong>FIRMS 10d shown:</strong> ${firms10Shown}<br>
+        <strong>OSINT markers shown:</strong> ${osintShown}<br>
+        <strong>Pressure / unit markers shown:</strong> ${pressureItemsVisible.length}<br>
+        <strong>DeepState layer:</strong> ${currentDeepState ? "loaded" : "not loaded"}
+      `;
+
+      renderEvents(latest.top_events || [], visibleEventIndexes);
+      renderPressureList(pressureItemsVisible);
+
+      setTimeout(() => map.invalidateSize(), 300);
     }
 
     async function init() {
       const latest = await loadJson(LATEST_PATH, null);
       const history = await loadJson(HISTORY_PATH, []);
-      const firmsRaw = await loadJson(FIRMS_3_PATH, { points: [] });
-      const firmsPoints = asList(firmsRaw);
+      const firms3Raw = await loadJson(FIRMS_3_PATH, { points: [] });
+      const firms10Raw = await loadJson(FIRMS_10_PATH, { points: [] });
+      const osintRaw = await loadJson(OSINT_PATH, []);
+      const unitRaw = await loadJson(UNIT_PATH, []);
+
+      const firms3 = asList(firms3Raw);
+      const firms10 = asList(firms10Raw);
 
       if (!latest) {
         document.getElementById("title").textContent = "Ukraine Frontline Situation Dashboard - Data Error";
-        document.getElementById("assessment").textContent =
-          "Nem sikerült betölteni a ./data/front_activity_latest.json fájlt.";
+        document.getElementById("assessment").textContent = "Nem sikerült betölteni a ./data/front_activity_latest.json fájlt.";
         renderTrend([]);
         return;
       }
@@ -984,12 +1014,11 @@
       document.getElementById("ruGain").textContent = plainKm2(territorial.russian_gain_km2);
       document.getElementById("uaRecapture").textContent = plainKm2(territorial.ukrainian_recapture_km2);
 
-      renderEvents(latest.top_events || []);
       renderSectors(latest.top_sectors || []);
       renderAssessment(latest);
       renderTrend(history);
       renderSourceNote(latest);
-      await initMiniMap(latest, firmsPoints);
+      await initMiniMap(latest, firms3, firms10, osintRaw, unitRaw);
     }
 
     init();
