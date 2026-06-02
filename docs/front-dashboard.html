@@ -83,9 +83,9 @@
       margin-bottom: 12px;
     }
 
-    .two-panels {
+    .three-panels {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1.1fr 0.9fr 1fr;
       gap: 12px;
       margin-bottom: 12px;
     }
@@ -93,13 +93,6 @@
     .bottom {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-
-    .compact-bottom {
-      display: grid;
-      grid-template-columns: 1fr;
       gap: 12px;
       margin-bottom: 12px;
     }
@@ -244,23 +237,23 @@
     .events {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 6px;
+      gap: 5px;
     }
 
     .event {
       display: grid;
-      grid-template-columns: 24px 1fr;
-      gap: 8px;
+      grid-template-columns: 24px 22px 1fr;
+      gap: 7px;
       align-items: start;
-      font-size: 12px;
-      line-height: 1.3;
+      font-size: 11.5px;
+      line-height: 1.24;
       border-bottom: 1px solid rgba(148,163,184,0.14);
       padding-bottom: 5px;
     }
 
     .event-num {
-      width: 22px;
-      height: 22px;
+      width: 21px;
+      height: 21px;
       border-radius: 50%;
       background: #38bdf8;
       color: #020617;
@@ -268,6 +261,17 @@
       align-items: center;
       justify-content: center;
       font-weight: 900;
+      font-size: 11px;
+    }
+
+    .event-icon {
+      width: 21px;
+      height: 21px;
+      border-radius: 50%;
+      background: rgba(56, 189, 248, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 12px;
     }
 
@@ -278,27 +282,27 @@
 
     .event-meta {
       color: #94a3b8;
-      margin-top: 3px;
-      font-size: 11px;
+      margin-top: 2px;
+      font-size: 10.5px;
     }
 
     .sector-list {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 7px;
     }
 
     .sector-row {
       display: grid;
-      grid-template-columns: 128px 36px 46px 1fr 38px;
-      gap: 7px;
+      grid-template-columns: 118px 34px 42px 1fr 36px;
+      gap: 6px;
       align-items: center;
-      font-size: 12px;
+      font-size: 11.5px;
     }
 
     .sector-head {
       color: #94a3b8;
-      font-size: 10px;
+      font-size: 9.5px;
       text-transform: uppercase;
       border-bottom: 1px solid #1e293b;
       padding-bottom: 4px;
@@ -317,9 +321,49 @@
       border-radius: 999px;
     }
 
+    .pressure-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+
+    .pressure-item {
+      display: grid;
+      grid-template-columns: 24px 22px 1fr;
+      gap: 7px;
+      font-size: 11.5px;
+      line-height: 1.25;
+      padding-bottom: 5px;
+      border-bottom: 1px solid rgba(148,163,184,0.12);
+    }
+
+    .pressure-num {
+      width: 21px;
+      height: 21px;
+      border-radius: 50%;
+      background: #ef4444;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 11px;
+    }
+
+    .pressure-icon {
+      width: 21px;
+      height: 21px;
+      border-radius: 50%;
+      background: rgba(239, 68, 68, 0.16);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+
     .assessment {
-      font-size: 13px;
-      line-height: 1.55;
+      font-size: 12.5px;
+      line-height: 1.48;
       color: #e2e8f0;
     }
 
@@ -352,26 +396,31 @@
 
     canvas {
       width: 100% !important;
-      height: 220px !important;
+      height: 210px !important;
       background: #f8fafc;
       border-radius: 4px;
       padding: 6px;
       box-sizing: border-box;
     }
 
-    .source-note {
+    .chart-source {
+      margin-top: 7px;
+      padding: 7px;
+      border-radius: 4px;
+      background: #111827;
+      border: 1px solid #334155;
       color: #94a3b8;
-      font-size: 10px;
-      line-height: 1.38;
+      font-size: 9.5px;
+      line-height: 1.35;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
+      gap: 10px;
     }
 
     .warning {
       color: #fbbf24;
-      font-size: 12px;
-      line-height: 1.45;
+      font-size: 11.5px;
+      line-height: 1.4;
       margin-top: 8px;
     }
 
@@ -380,14 +429,15 @@
       color: #020617;
       border: 2px solid #e0f2fe;
       border-radius: 50%;
-      width: 24px;
-      height: 24px;
+      width: 25px;
+      height: 25px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 900;
-      font-size: 12px;
+      font-size: 11px;
       box-shadow: 0 0 10px rgba(56,189,248,0.75);
+      position: relative;
     }
 
     .pressure-marker {
@@ -395,20 +445,20 @@
       color: white;
       border: 2px solid #fecaca;
       border-radius: 50%;
-      width: 24px;
-      height: 24px;
+      width: 25px;
+      height: 25px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 900;
-      font-size: 12px;
+      font-size: 11px;
       box-shadow: 0 0 10px rgba(239,68,68,0.75);
     }
 
     @media (max-width: 900px) {
       .dashboard { width: 100%; }
-      .metrics, .two-maps, .two-panels, .bottom { grid-template-columns: 1fr; }
-      .drivers, .hotspot-meta, .source-note { grid-template-columns: 1fr 1fr; }
+      .metrics, .two-maps, .three-panels, .bottom { grid-template-columns: 1fr; }
+      .drivers, .hotspot-meta, .chart-source { grid-template-columns: 1fr 1fr; }
       .metric-value { font-size: 22px; }
       .mini-map { height: 380px; }
     }
@@ -463,7 +513,7 @@
       </div>
     </section>
 
-    <section class="two-panels">
+    <section class="three-panels">
       <div class="panel">
         <div class="panel-title">Top OSINT Events</div>
         <div class="events" id="events">Adatok betöltése...</div>
@@ -472,6 +522,11 @@
       <div class="panel">
         <div class="panel-title">Most Active Sectors</div>
         <div class="sector-list" id="sectors">Adatok betöltése...</div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Front Pressure / Unit Markers</div>
+        <div class="pressure-list" id="pressureList">Adatok betöltése...</div>
       </div>
     </section>
 
@@ -494,13 +549,7 @@
       <div class="panel">
         <div class="panel-title">Front Activity Trend</div>
         <canvas id="trendChart"></canvas>
-      </div>
-    </section>
-
-    <section class="compact-bottom">
-      <div class="panel">
-        <div class="panel-title">Data Source & Map Layer Summary</div>
-        <div class="source-note" id="sourceSummary">Forrásadatok betöltése...</div>
+        <div class="chart-source" id="sourceSummary">Forrásadatok betöltése...</div>
       </div>
     </section>
 
@@ -609,6 +658,31 @@
       return item?.sector || item?.area || item?.location || "unclassified";
     }
 
+    function textOf(item) {
+      return `${titleOf(item)} ${item?.summary || ""} ${item?.description || ""} ${sectorOf(item)}`.toLowerCase();
+    }
+
+    function eventIcon(item) {
+      const txt = textOf(item);
+
+      if (txt.includes("drone") || txt.includes("uav") || txt.includes("shahed")) return "🛩";
+      if (txt.includes("missile") || txt.includes("rocket") || txt.includes("rakéta")) return "☄";
+      if (txt.includes("strike") || txt.includes("csapás")) return "✹";
+      if (txt.includes("rail") || txt.includes("bridge") || txt.includes("logistics")) return "⛓";
+      if (txt.includes("assault") || txt.includes("advance") || txt.includes("pressure")) return "⚔";
+      return "●";
+    }
+
+    function pressureIcon(item) {
+      const txt = textOf(item);
+
+      if (txt.includes("tank") || txt.includes("armor")) return "▰";
+      if (txt.includes("artillery")) return "✺";
+      if (txt.includes("assault") || txt.includes("pressure") || txt.includes("advance")) return "⚔";
+      if (txt.includes("infantry")) return "♟";
+      return "⚑";
+    }
+
     function distanceKm(lat1, lon1, lat2, lon2) {
       const r = 6371.0088;
       const p1 = lat1 * Math.PI / 180;
@@ -687,12 +761,12 @@
       L.geoJSON(geojson, { style: () => styleFrontLine() }).addTo(map);
     }
 
-    function numberedIcon(number, type) {
+    function markerIcon(content, type) {
       const cls = type === "pressure" ? "pressure-marker" : "osint-marker";
       return L.divIcon({
-        html: `<div class="${cls}">${number}</div>`,
+        html: `<div class="${cls}">${content}</div>`,
         className: "",
-        iconSize: [24, 24],
+        iconSize: [25, 25],
         iconAnchor: [12, 12]
       });
     }
@@ -711,13 +785,34 @@
         return `
           <div class="event">
             <div class="event-num" style="${isVisible ? "" : "opacity:0.35"}">${i + 1}</div>
+            <div class="event-icon">${eventIcon(e)}</div>
             <div>
-              <div class="event-title">${e.title || "OSINT event"}</div>
-              <div class="event-meta">${e.source || "no source"} · ${e.sector || "unclassified"}${isVisible ? " · shown on map" : ""}</div>
+              <div class="event-title">${titleOf(e)}</div>
+              <div class="event-meta">${sourceOf(e)} · ${sectorOf(e)}${isVisible ? " · shown on map" : ""}</div>
             </div>
           </div>
         `;
       }).join("");
+    }
+
+    function renderPressureList(pressureItems) {
+      const box = document.getElementById("pressureList");
+
+      if (!pressureItems.length) {
+        box.innerHTML = `<div class="warning">Nincs a kivágatban megjeleníthető frontnyomás / unit marker.</div>`;
+        return;
+      }
+
+      box.innerHTML = pressureItems.slice(0, 10).map((p, i) => `
+        <div class="pressure-item">
+          <div class="pressure-num">${String.fromCharCode(65 + i)}</div>
+          <div class="pressure-icon">${pressureIcon(p)}</div>
+          <div>
+            <strong>${titleOf(p)}</strong><br>
+            <span style="color:#94a3b8">${sectorOf(p)}</span>
+          </div>
+        </div>
+      `).join("");
     }
 
     function renderSectors(sectors) {
@@ -818,27 +913,22 @@
 
       document.getElementById("sourceSummary").innerHTML = `
         <div>
-          <strong>DeepState delta:</strong><br>
-          ${territorial.previous_file || "n/a"} → ${territorial.current_file || "n/a"}<br>
-          Method: ${territorial.method || "n/a"}<br><br>
-          OSINT: ${sources.osint || "n/a"}<br>
-          FIRMS 3d: ${sources.firms_3d || "n/a"}<br>
-          FIRMS 10d: ${sources.firms_10d || "n/a"}<br>
-          FIRMS 30d: ${sources.firms_30d || "n/a"}
+          <strong>DeepState:</strong> ${territorial.previous_file || "n/a"} → ${territorial.current_file || "n/a"}<br>
+          <strong>OSINT:</strong> ${sources.osint || "n/a"} ·
+          <strong>FIRMS 3d:</strong> ${sources.firms_3d || "n/a"}<br>
+          <strong>FIRMS 10d:</strong> ${sources.firms_10d || "n/a"} ·
+          <strong>FIRMS 30d:</strong> ${sources.firms_30d || "n/a"}
         </div>
         <div>
-          <strong>Map layer summary:</strong><br>
-          Primary zone: ${layerStats.primaryName}<br>
-          Secondary zone: ${layerStats.secondaryName}<br>
-          FIRMS 3d shown: ${layerStats.firms3}<br>
-          FIRMS 10d shown: ${layerStats.firms10}<br>
-          OSINT markers shown: ${layerStats.osint}<br>
-          DeepState layer: ${layerStats.deepstate}
+          <strong>Map:</strong> ${layerStats.primaryName} + ${layerStats.secondaryName}<br>
+          <strong>Shown:</strong> FIRMS 3d ${layerStats.firms3}, FIRMS 10d ${layerStats.firms10},
+          OSINT ${layerStats.osint}, pressure ${layerStats.pressure}<br>
+          <strong>DeepState layer:</strong> ${layerStats.deepstate}
         </div>
       `;
     }
 
-    async function buildMap(mapId, zone, latest, firms3, firms10, osintFeed, deepStateGeoJson, visibleEventIndexes, markerPrefix) {
+    async function buildMap(mapId, zone, firms3, firms10, osintFeed, unitFeed, deepStateGeoJson, visibleEventIndexes, visiblePressureItems, pressureKeySet) {
       const centerLat = n(zone.lat) || 48.6;
       const centerLon = n(zone.lon) || 37.2;
       const zoom = n(zone.zoom) || 7;
@@ -896,13 +986,41 @@
       topOsint.forEach((item, idx) => {
         const [lat, lon] = getLatLon(item);
         if (lat === null || lon === null) return;
+
         if (distanceKm(centerLat, centerLon, lat, lon) <= mapRadiusKm) {
           const number = idx + 1;
           visibleEventIndexes.add(number);
-          L.marker([lat, lon], { icon: numberedIcon(number, "osint") })
+
+          L.marker([lat, lon], { icon: markerIcon(number, "osint") })
             .addTo(map)
-            .bindPopup(`<strong>${number}. ${titleOf(item)}</strong><br>${sourceOf(item)}`);
+            .bindPopup(`<strong>${number}. ${eventIcon(item)} ${titleOf(item)}</strong><br>${sourceOf(item)}`);
+
           osintShown++;
+        }
+      });
+
+      let pressureShown = 0;
+      const units = asList(unitFeed);
+
+      units.forEach((item) => {
+        const [lat, lon] = getLatLon(item);
+        if (lat === null || lon === null) return;
+
+        if (distanceKm(centerLat, centerLon, lat, lon) <= mapRadiusKm && pressureShown < 8) {
+          const key = `${titleOf(item)}-${lat.toFixed(3)}-${lon.toFixed(3)}`;
+
+          if (!pressureKeySet.has(key)) {
+            pressureKeySet.add(key);
+            visiblePressureItems.push(item);
+          }
+
+          const letter = String.fromCharCode(65 + Array.from(pressureKeySet).indexOf(key));
+
+          L.marker([lat, lon], { icon: markerIcon(letter, "pressure") })
+            .addTo(map)
+            .bindPopup(`<strong>${letter}. ${pressureIcon(item)} ${titleOf(item)}</strong><br>${sectorOf(item)}`);
+
+          pressureShown++;
         }
       });
 
@@ -921,7 +1039,8 @@
         zoom,
         firms3Shown,
         firms10Shown,
-        osintShown
+        osintShown,
+        pressureShown
       };
     }
 
@@ -931,6 +1050,7 @@
       const firms3Raw = await loadJson(FIRMS_3_PATH, { points: [] });
       const firms10Raw = await loadJson(FIRMS_10_PATH, { points: [] });
       const osintRaw = await loadJson(OSINT_PATH, []);
+      const unitRaw = await loadJson(UNIT_PATH, []);
 
       const firms3 = asList(firms3Raw);
       const firms10 = asList(firms10Raw);
@@ -975,9 +1095,11 @@
       const deepStateGeoJson = deepStateUrl ? await loadJson(deepStateUrl, null) : null;
 
       const visibleEventIndexes = new Set();
+      const visiblePressureItems = [];
+      const pressureKeySet = new Set();
 
-      const primaryStats = await buildMap("primaryMap", hotspot, latest, firms3, firms10, osintRaw, deepStateGeoJson, visibleEventIndexes, "P");
-      const secondaryStats = await buildMap("secondaryMap", secondary, latest, firms3, firms10, osintRaw, deepStateGeoJson, visibleEventIndexes, "S");
+      const primaryStats = await buildMap("primaryMap", hotspot, firms3, firms10, osintRaw, unitRaw, deepStateGeoJson, visibleEventIndexes, visiblePressureItems, pressureKeySet);
+      const secondaryStats = await buildMap("secondaryMap", secondary, firms3, firms10, osintRaw, unitRaw, deepStateGeoJson, visibleEventIndexes, visiblePressureItems, pressureKeySet);
 
       document.getElementById("primaryName").textContent = primaryStats.name;
       document.getElementById("primaryZoom").textContent = primaryStats.zoom;
@@ -989,7 +1111,8 @@
       document.getElementById("secondaryFirms").textContent = `${secondaryStats.firms3Shown} / ${secondaryStats.firms10Shown}`;
       document.getElementById("secondaryOsint").textContent = secondaryStats.osintShown;
 
-      renderEvents(latest.top_events || [], visibleEventIndexes);
+      renderEvents(asList(osintRaw), visibleEventIndexes);
+      renderPressureList(visiblePressureItems);
       renderSectors(latest.top_sectors || []);
       renderAssessment(latest);
       renderTrend(history);
@@ -1000,6 +1123,7 @@
         firms3: primaryStats.firms3Shown + secondaryStats.firms3Shown,
         firms10: primaryStats.firms10Shown + secondaryStats.firms10Shown,
         osint: primaryStats.osintShown + secondaryStats.osintShown,
+        pressure: visiblePressureItems.length,
         deepstate: deepStateGeoJson ? "loaded" : "not loaded"
       });
     }
