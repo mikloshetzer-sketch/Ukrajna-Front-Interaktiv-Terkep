@@ -60,14 +60,12 @@
       text-transform: uppercase;
       color: #cbd5e1;
       margin-bottom: 7px;
-      line-height: 1.15;
     }
 
     .metric-value {
       font-size: 18px;
       font-weight: 900;
       color: #ff6b6b;
-      letter-spacing: 0.5px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -78,16 +76,16 @@
     .metric-value.negative { color: #22c55e; }
     .metric-value.neutral { color: #e5e7eb; }
 
-    .map-grid {
+    .two-maps {
       display: grid;
-      grid-template-columns: 1.18fr 0.82fr;
+      grid-template-columns: 1fr 1fr;
       gap: 12px;
       margin-bottom: 12px;
     }
 
-    .grid {
+    .two-panels {
       display: grid;
-      grid-template-columns: 0.9fr 1.1fr;
+      grid-template-columns: 1fr 1fr;
       gap: 12px;
       margin-bottom: 12px;
     }
@@ -95,6 +93,13 @@
     .bottom {
       display: grid;
       grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .compact-bottom {
+      display: grid;
+      grid-template-columns: 1fr;
       gap: 12px;
       margin-bottom: 12px;
     }
@@ -107,8 +112,6 @@
       box-sizing: border-box;
     }
 
-    .map-panel { min-height: 420px; }
-
     .panel-title {
       font-size: 14px;
       font-weight: 900;
@@ -118,9 +121,14 @@
       margin-bottom: 8px;
     }
 
-    #miniMap {
+    .map-box {
+      position: relative;
+      min-height: 390px;
+    }
+
+    .mini-map {
       width: 100%;
-      height: 360px;
+      height: 320px;
       border-radius: 4px;
       border: 1px solid #334155;
       background: #020617;
@@ -137,9 +145,9 @@
       background: rgba(2, 6, 23, 0.86);
       border: 1px solid #334155;
       color: #e5e7eb;
-      padding: 8px;
+      padding: 7px;
       border-radius: 4px;
-      font-size: 11px;
+      font-size: 10px;
       line-height: 1.35;
       pointer-events: none;
     }
@@ -147,40 +155,40 @@
     .legend-row {
       display: flex;
       align-items: center;
-      gap: 7px;
-      margin-bottom: 4px;
+      gap: 6px;
+      margin-bottom: 3px;
     }
 
     .legend-line {
-      width: 24px;
+      width: 22px;
       height: 0;
       border-top: 3px solid #ef4444;
     }
 
     .legend-box-red {
-      width: 18px;
-      height: 10px;
+      width: 16px;
+      height: 9px;
       background: rgba(239, 68, 68, 0.28);
       border: 1px solid #ef4444;
     }
 
     .legend-dot-orange {
-      width: 10px;
-      height: 10px;
+      width: 9px;
+      height: 9px;
       background: #f97316;
       border-radius: 50%;
     }
 
     .legend-dot-red {
-      width: 10px;
-      height: 10px;
+      width: 9px;
+      height: 9px;
       background: #ef4444;
       border-radius: 50%;
     }
 
     .legend-osint {
-      width: 16px;
-      height: 16px;
+      width: 15px;
+      height: 15px;
       background: #38bdf8;
       color: #020617;
       border-radius: 50%;
@@ -188,12 +196,12 @@
       align-items: center;
       justify-content: center;
       font-weight: 900;
-      font-size: 10px;
+      font-size: 9px;
     }
 
     .legend-pressure {
-      width: 16px;
-      height: 16px;
+      width: 15px;
+      height: 15px;
       background: #ef4444;
       color: #fff;
       border-radius: 50%;
@@ -201,7 +209,7 @@
       align-items: center;
       justify-content: center;
       font-weight: 900;
-      font-size: 10px;
+      font-size: 9px;
     }
 
     .hotspot-meta {
@@ -234,9 +242,9 @@
     }
 
     .events {
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 6px;
     }
 
     .event {
@@ -247,7 +255,7 @@
       font-size: 12px;
       line-height: 1.3;
       border-bottom: 1px solid rgba(148,163,184,0.14);
-      padding-bottom: 6px;
+      padding-bottom: 5px;
     }
 
     .event-num {
@@ -309,35 +317,6 @@
       border-radius: 999px;
     }
 
-    .pressure-list {
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-      margin-top: 8px;
-    }
-
-    .pressure-item {
-      display: grid;
-      grid-template-columns: 28px 1fr;
-      gap: 8px;
-      font-size: 12px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid rgba(148,163,184,0.12);
-    }
-
-    .pressure-num {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: #ef4444;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 900;
-      font-size: 12px;
-    }
-
     .assessment {
       font-size: 13px;
       line-height: 1.55;
@@ -382,8 +361,11 @@
 
     .source-note {
       color: #94a3b8;
-      font-size: 11px;
-      line-height: 1.45;
+      font-size: 10px;
+      line-height: 1.38;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
     }
 
     .warning {
@@ -425,10 +407,10 @@
 
     @media (max-width: 900px) {
       .dashboard { width: 100%; }
-      .metrics, .map-grid, .grid, .bottom { grid-template-columns: 1fr; }
-      .drivers, .hotspot-meta { grid-template-columns: 1fr 1fr; }
+      .metrics, .two-maps, .two-panels, .bottom { grid-template-columns: 1fr; }
+      .drivers, .hotspot-meta, .source-note { grid-template-columns: 1fr 1fr; }
       .metric-value { font-size: 22px; }
-      #miniMap { height: 380px; }
+      .mini-map { height: 380px; }
     }
   </style>
 </head>
@@ -449,10 +431,9 @@
       <div class="metric"><div class="metric-label">Main Hotspot</div><div class="metric-value small" id="mainSector">–</div></div>
     </section>
 
-    <section class="map-grid">
-      <div class="panel map-panel" style="position: relative;">
-        <div class="panel-title">Tactical Front Snapshot – Auto Zoom Hotspot</div>
-
+    <section class="two-maps">
+      <div class="panel map-box">
+        <div class="panel-title" id="primaryMapTitle">Primary Tactical Snapshot</div>
         <div class="map-legend">
           <div class="legend-row"><span class="legend-line"></span> Current front / control edge</div>
           <div class="legend-row"><span class="legend-box-red"></span> Russian controlled area</div>
@@ -461,32 +442,36 @@
           <div class="legend-row"><span class="legend-osint">1</span> OSINT event</div>
           <div class="legend-row"><span class="legend-pressure">A</span> pressure marker</div>
         </div>
-
-        <div id="miniMap"></div>
-
+        <div id="primaryMap" class="mini-map"></div>
         <div class="hotspot-meta">
-          <div class="hotspot-box"><div class="hotspot-label">Hotspot</div><div class="hotspot-value" id="hotspotName">–</div></div>
-          <div class="hotspot-box"><div class="hotspot-label">Zoom</div><div class="hotspot-value" id="hotspotZoom">–</div></div>
-          <div class="hotspot-box"><div class="hotspot-label">FIRMS shown</div><div class="hotspot-value" id="firmsShown">–</div></div>
-          <div class="hotspot-box"><div class="hotspot-label">OSINT shown</div><div class="hotspot-value" id="osintShown">–</div></div>
+          <div class="hotspot-box"><div class="hotspot-label">Hotspot</div><div class="hotspot-value" id="primaryName">–</div></div>
+          <div class="hotspot-box"><div class="hotspot-label">Zoom</div><div class="hotspot-value" id="primaryZoom">–</div></div>
+          <div class="hotspot-box"><div class="hotspot-label">FIRMS shown</div><div class="hotspot-value" id="primaryFirms">–</div></div>
+          <div class="hotspot-box"><div class="hotspot-label">OSINT shown</div><div class="hotspot-value" id="primaryOsint">–</div></div>
         </div>
       </div>
 
+      <div class="panel map-box">
+        <div class="panel-title" id="secondaryMapTitle">Secondary Tactical Snapshot</div>
+        <div id="secondaryMap" class="mini-map"></div>
+        <div class="hotspot-meta">
+          <div class="hotspot-box"><div class="hotspot-label">Zone</div><div class="hotspot-value" id="secondaryName">–</div></div>
+          <div class="hotspot-box"><div class="hotspot-label">Zoom</div><div class="hotspot-value" id="secondaryZoom">–</div></div>
+          <div class="hotspot-box"><div class="hotspot-label">FIRMS shown</div><div class="hotspot-value" id="secondaryFirms">–</div></div>
+          <div class="hotspot-box"><div class="hotspot-label">OSINT shown</div><div class="hotspot-value" id="secondaryOsint">–</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="two-panels">
       <div class="panel">
         <div class="panel-title">Top OSINT Events</div>
         <div class="events" id="events">Adatok betöltése...</div>
       </div>
-    </section>
 
-    <section class="grid">
       <div class="panel">
         <div class="panel-title">Most Active Sectors</div>
         <div class="sector-list" id="sectors">Adatok betöltése...</div>
-      </div>
-
-      <div class="panel">
-        <div class="panel-title">Front Pressure / Unit Markers</div>
-        <div class="pressure-list" id="pressureList">Adatok betöltése...</div>
       </div>
     </section>
 
@@ -512,14 +497,10 @@
       </div>
     </section>
 
-    <section class="bottom">
+    <section class="compact-bottom">
       <div class="panel">
-        <div class="panel-title">Data Source Note</div>
-        <div class="source-note" id="sourceNote">Forrásadatok betöltése...</div>
-      </div>
-      <div class="panel">
-        <div class="panel-title">Map Layer Summary</div>
-        <div class="source-note" id="layerSummary">Rétegek betöltése...</div>
+        <div class="panel-title">Data Source & Map Layer Summary</div>
+        <div class="source-note" id="sourceSummary">Forrásadatok betöltése...</div>
       </div>
     </section>
 
@@ -536,6 +517,19 @@
 
     const DEEPSTATE_RAW_BASE =
       "https://raw.githubusercontent.com/cyterat/deepstate-map-data/main/data/";
+
+    const SECTOR_CENTERS = {
+      "Pokrovsk": { lat: 48.28, lon: 37.18, zoom: 9 },
+      "Crimea": { lat: 45.20, lon: 34.10, zoom: 7 },
+      "Kharkiv": { lat: 49.99, lon: 36.23, zoom: 8 },
+      "Zaporizhzhia": { lat: 47.84, lon: 35.14, zoom: 8 },
+      "Kherson-Dnipro": { lat: 46.64, lon: 32.61, zoom: 8 },
+      "Lyman": { lat: 48.99, lon: 37.80, zoom: 9 },
+      "Kupiansk": { lat: 49.71, lon: 37.61, zoom: 9 },
+      "Bakhmut-Toretsk": { lat: 48.58, lon: 37.95, zoom: 9 },
+      "Kurakhove": { lat: 47.99, lon: 37.28, zoom: 9 },
+      "Velyka Novosilka": { lat: 47.84, lon: 36.84, zoom: 9 }
+    };
 
     async function loadJson(path, fallback) {
       try {
@@ -631,6 +625,37 @@
       return filtered[0].sector.toUpperCase();
     }
 
+    function getSecondaryHotspot(latest) {
+      const primary = latest.territorial_hotspot?.sector;
+      const sectors = latest.top_sectors || [];
+
+      const second = sectors.find(s =>
+        s.sector &&
+        s.sector !== "Other / Unclassified" &&
+        s.sector !== primary &&
+        SECTOR_CENTERS[s.sector] &&
+        n(s.score) > 0
+      );
+
+      if (second) {
+        return {
+          sector: second.sector,
+          lat: SECTOR_CENTERS[second.sector].lat,
+          lon: SECTOR_CENTERS[second.sector].lon,
+          zoom: SECTOR_CENTERS[second.sector].zoom,
+          score: second.score
+        };
+      }
+
+      return {
+        sector: "Crimea",
+        lat: SECTOR_CENTERS.Crimea.lat,
+        lon: SECTOR_CENTERS.Crimea.lon,
+        zoom: SECTOR_CENTERS.Crimea.zoom,
+        score: 0
+      };
+    }
+
     function currentDeepStateUrl(latest) {
       const currentFile = latest?.territorial?.current_file;
       if (!currentFile) return null;
@@ -658,27 +683,8 @@
 
     function addDeepStateLayer(map, geojson) {
       if (!geojson) return;
-
       L.geoJSON(geojson, { style: () => styleOccupiedArea() }).addTo(map);
       L.geoJSON(geojson, { style: () => styleFrontLine() }).addTo(map);
-    }
-
-    function addApproxTerritorialChange(map, hotspot, territorial) {
-      const lat = n(hotspot.lat);
-      const lon = n(hotspot.lon);
-      const net = n(territorial.net_change_km2);
-      if (!lat || !lon) return;
-
-      const color = net > 0 ? "#ff0033" : net < 0 ? "#22c55e" : "#38bdf8";
-
-      L.circle([lat, lon], {
-        radius: net === 0 ? 18000 : 22000 + Math.min(50000, Math.abs(net) * 2500),
-        color,
-        weight: 2,
-        fillColor: color,
-        fillOpacity: net === 0 ? 0.08 : 0.25,
-        dashArray: net === 0 ? null : "5,4"
-      }).addTo(map);
     }
 
     function numberedIcon(number, type) {
@@ -737,25 +743,6 @@
           </div>
         `).join("")}
       `;
-    }
-
-    function renderPressureList(pressureItems) {
-      const box = document.getElementById("pressureList");
-
-      if (!pressureItems.length) {
-        box.innerHTML = `<div class="warning">Nincs a kivágatban megjeleníthető frontnyomás / unit marker.</div>`;
-        return;
-      }
-
-      box.innerHTML = pressureItems.slice(0, 8).map((p, i) => `
-        <div class="pressure-item">
-          <div class="pressure-num">${String.fromCharCode(65 + i)}</div>
-          <div>
-            <strong>${titleOf(p)}</strong><br>
-            <span style="color:#94a3b8">${sectorOf(p)}</span>
-          </div>
-        </div>
-      `).join("");
     }
 
     function renderAssessment(data) {
@@ -825,33 +812,39 @@
       });
     }
 
-    function renderSourceNote(data) {
+    function renderSourceSummary(data, layerStats) {
       const territorial = data.territorial || {};
       const sources = data.data_sources || {};
 
-      document.getElementById("sourceNote").innerHTML = `
-        <strong>DeepState delta:</strong><br>
-        ${territorial.previous_file || "n/a"} → ${territorial.current_file || "n/a"}<br><br>
-        <strong>Method:</strong><br>
-        ${territorial.method || "n/a"}<br><br>
-        <strong>Data files:</strong><br>
-        OSINT: ${sources.osint || "n/a"}<br>
-        FIRMS 3d: ${sources.firms_3d || "n/a"}<br>
-        FIRMS 10d: ${sources.firms_10d || "n/a"}<br>
-        FIRMS 30d: ${sources.firms_30d || "n/a"}<br>
-        Unit feed: ${UNIT_PATH}
+      document.getElementById("sourceSummary").innerHTML = `
+        <div>
+          <strong>DeepState delta:</strong><br>
+          ${territorial.previous_file || "n/a"} → ${territorial.current_file || "n/a"}<br>
+          Method: ${territorial.method || "n/a"}<br><br>
+          OSINT: ${sources.osint || "n/a"}<br>
+          FIRMS 3d: ${sources.firms_3d || "n/a"}<br>
+          FIRMS 10d: ${sources.firms_10d || "n/a"}<br>
+          FIRMS 30d: ${sources.firms_30d || "n/a"}
+        </div>
+        <div>
+          <strong>Map layer summary:</strong><br>
+          Primary zone: ${layerStats.primaryName}<br>
+          Secondary zone: ${layerStats.secondaryName}<br>
+          FIRMS 3d shown: ${layerStats.firms3}<br>
+          FIRMS 10d shown: ${layerStats.firms10}<br>
+          OSINT markers shown: ${layerStats.osint}<br>
+          DeepState layer: ${layerStats.deepstate}
+        </div>
       `;
     }
 
-    async function initMiniMap(latest, firms3, firms10, osintFeed, unitFeed) {
-      const hotspot = latest.territorial_hotspot || {};
-      const territorial = latest.territorial || {};
-      const centerLat = n(hotspot.lat) || 48.6;
-      const centerLon = n(hotspot.lon) || 37.2;
-      const zoom = n(hotspot.zoom) || 7;
+    async function buildMap(mapId, zone, latest, firms3, firms10, osintFeed, deepStateGeoJson, visibleEventIndexes, markerPrefix) {
+      const centerLat = n(zone.lat) || 48.6;
+      const centerLon = n(zone.lon) || 37.2;
+      const zoom = n(zone.zoom) || 7;
       const mapRadiusKm = 260;
 
-      const map = L.map("miniMap", {
+      const map = L.map(mapId, {
         zoomControl: true,
         attributionControl: true,
         dragging: false,
@@ -867,26 +860,22 @@
         maxZoom: 12
       }).addTo(map);
 
-      const deepStateUrl = currentDeepStateUrl(latest);
-      const currentDeepState = deepStateUrl ? await loadJson(deepStateUrl, null) : null;
-      if (currentDeepState) addDeepStateLayer(map, currentDeepState);
+      if (deepStateGeoJson) addDeepStateLayer(map, deepStateGeoJson);
 
-      addApproxTerritorialChange(map, hotspot, territorial);
+      L.circle([centerLat, centerLon], {
+        radius: 18000,
+        color: "#38bdf8",
+        weight: 2,
+        fillColor: "#38bdf8",
+        fillOpacity: 0.08
+      }).addTo(map);
 
       let firms10Shown = 0;
       for (const item of firms10) {
         const [lat, lon] = getLatLon(item);
         if (lat === null || lon === null) continue;
-        const dist = distanceKm(centerLat, centerLon, lat, lon);
-
-        if (dist <= mapRadiusKm && firms10Shown < 120) {
-          L.circleMarker([lat, lon], {
-            radius: 2.8,
-            color: "#ef4444",
-            fillColor: "#ef4444",
-            fillOpacity: 0.55,
-            weight: 0
-          }).addTo(map);
+        if (distanceKm(centerLat, centerLon, lat, lon) <= mapRadiusKm && firms10Shown < 120) {
+          L.circleMarker([lat, lon], { radius: 2.8, color: "#ef4444", fillColor: "#ef4444", fillOpacity: 0.55, weight: 0 }).addTo(map);
           firms10Shown++;
         }
       }
@@ -895,30 +884,19 @@
       for (const item of firms3) {
         const [lat, lon] = getLatLon(item);
         if (lat === null || lon === null) continue;
-        const dist = distanceKm(centerLat, centerLon, lat, lon);
-
-        if (dist <= mapRadiusKm && firms3Shown < 120) {
-          L.circleMarker([lat, lon], {
-            radius: 3.8,
-            color: "#f97316",
-            fillColor: "#f97316",
-            fillOpacity: 0.82,
-            weight: 0
-          }).addTo(map);
+        if (distanceKm(centerLat, centerLon, lat, lon) <= mapRadiusKm && firms3Shown < 120) {
+          L.circleMarker([lat, lon], { radius: 3.8, color: "#f97316", fillColor: "#f97316", fillOpacity: 0.82, weight: 0 }).addTo(map);
           firms3Shown++;
         }
       }
 
-      const visibleEventIndexes = new Set();
       let osintShown = 0;
       const topOsint = asList(osintFeed).slice(0, 10);
 
       topOsint.forEach((item, idx) => {
         const [lat, lon] = getLatLon(item);
         if (lat === null || lon === null) return;
-        const dist = distanceKm(centerLat, centerLon, lat, lon);
-
-        if (dist <= mapRadiusKm) {
+        if (distanceKm(centerLat, centerLon, lat, lon) <= mapRadiusKm) {
           const number = idx + 1;
           visibleEventIndexes.add(number);
           L.marker([lat, lon], { icon: numberedIcon(number, "osint") })
@@ -928,49 +906,23 @@
         }
       });
 
-      const pressureItemsVisible = [];
-      const units = asList(unitFeed);
-
-      units.forEach((item) => {
-        const [lat, lon] = getLatLon(item);
-        if (lat === null || lon === null) return;
-        const dist = distanceKm(centerLat, centerLon, lat, lon);
-
-        if (dist <= mapRadiusKm && pressureItemsVisible.length < 8) {
-          pressureItemsVisible.push(item);
-          const letter = String.fromCharCode(64 + pressureItemsVisible.length);
-          L.marker([lat, lon], { icon: numberedIcon(letter, "pressure") })
-            .addTo(map)
-            .bindPopup(`<strong>${letter}. ${titleOf(item)}</strong><br>${sectorOf(item)}`);
-        }
-      });
-
       L.circleMarker([centerLat, centerLon], {
         radius: 8,
         color: "#ffffff",
         weight: 2,
         fillColor: "#38bdf8",
         fillOpacity: 0.95
-      }).addTo(map).bindPopup(hotspot.sector || "Hotspot");
-
-      document.getElementById("hotspotName").textContent = hotspot.sector || "n/a";
-      document.getElementById("hotspotZoom").textContent = zoom;
-      document.getElementById("firmsShown").textContent = `${firms3Shown} / ${firms10Shown}`;
-      document.getElementById("osintShown").textContent = osintShown;
-
-      document.getElementById("layerSummary").innerHTML = `
-        <strong>Mini map radius:</strong> ${mapRadiusKm} km around ${hotspot.sector || "hotspot"}<br>
-        <strong>FIRMS 3d shown:</strong> ${firms3Shown}<br>
-        <strong>FIRMS 10d shown:</strong> ${firms10Shown}<br>
-        <strong>OSINT markers shown:</strong> ${osintShown}<br>
-        <strong>Pressure / unit markers shown:</strong> ${pressureItemsVisible.length}<br>
-        <strong>DeepState layer:</strong> ${currentDeepState ? "loaded" : "not loaded"}
-      `;
-
-      renderEvents(latest.top_events || [], visibleEventIndexes);
-      renderPressureList(pressureItemsVisible);
+      }).addTo(map).bindPopup(zone.sector || "Hotspot");
 
       setTimeout(() => map.invalidateSize(), 300);
+
+      return {
+        name: zone.sector || "n/a",
+        zoom,
+        firms3Shown,
+        firms10Shown,
+        osintShown
+      };
     }
 
     async function init() {
@@ -979,14 +931,12 @@
       const firms3Raw = await loadJson(FIRMS_3_PATH, { points: [] });
       const firms10Raw = await loadJson(FIRMS_10_PATH, { points: [] });
       const osintRaw = await loadJson(OSINT_PATH, []);
-      const unitRaw = await loadJson(UNIT_PATH, []);
 
       const firms3 = asList(firms3Raw);
       const firms10 = asList(firms10Raw);
 
       if (!latest) {
         document.getElementById("title").textContent = "Ukraine Frontline Situation Dashboard - Data Error";
-        document.getElementById("assessment").textContent = "Nem sikerült betölteni a ./data/front_activity_latest.json fájlt.";
         renderTrend([]);
         return;
       }
@@ -994,6 +944,7 @@
       const counts = latest.counts || {};
       const territorial = latest.territorial || {};
       const hotspot = latest.territorial_hotspot || {};
+      const secondary = getSecondaryHotspot(latest);
       const date = latest.date || "";
       const topSector = getTopSector(latest.top_sectors || []);
 
@@ -1014,11 +965,43 @@
       document.getElementById("ruGain").textContent = plainKm2(territorial.russian_gain_km2);
       document.getElementById("uaRecapture").textContent = plainKm2(territorial.ukrainian_recapture_km2);
 
+      document.getElementById("primaryMapTitle").textContent =
+        "Primary Tactical Snapshot – " + (hotspot.sector || "Hotspot");
+
+      document.getElementById("secondaryMapTitle").textContent =
+        "Secondary Tactical Snapshot – " + (secondary.sector || "Zone");
+
+      const deepStateUrl = currentDeepStateUrl(latest);
+      const deepStateGeoJson = deepStateUrl ? await loadJson(deepStateUrl, null) : null;
+
+      const visibleEventIndexes = new Set();
+
+      const primaryStats = await buildMap("primaryMap", hotspot, latest, firms3, firms10, osintRaw, deepStateGeoJson, visibleEventIndexes, "P");
+      const secondaryStats = await buildMap("secondaryMap", secondary, latest, firms3, firms10, osintRaw, deepStateGeoJson, visibleEventIndexes, "S");
+
+      document.getElementById("primaryName").textContent = primaryStats.name;
+      document.getElementById("primaryZoom").textContent = primaryStats.zoom;
+      document.getElementById("primaryFirms").textContent = `${primaryStats.firms3Shown} / ${primaryStats.firms10Shown}`;
+      document.getElementById("primaryOsint").textContent = primaryStats.osintShown;
+
+      document.getElementById("secondaryName").textContent = secondaryStats.name;
+      document.getElementById("secondaryZoom").textContent = secondaryStats.zoom;
+      document.getElementById("secondaryFirms").textContent = `${secondaryStats.firms3Shown} / ${secondaryStats.firms10Shown}`;
+      document.getElementById("secondaryOsint").textContent = secondaryStats.osintShown;
+
+      renderEvents(latest.top_events || [], visibleEventIndexes);
       renderSectors(latest.top_sectors || []);
       renderAssessment(latest);
       renderTrend(history);
-      renderSourceNote(latest);
-      await initMiniMap(latest, firms3, firms10, osintRaw, unitRaw);
+
+      renderSourceSummary(latest, {
+        primaryName: primaryStats.name,
+        secondaryName: secondaryStats.name,
+        firms3: primaryStats.firms3Shown + secondaryStats.firms3Shown,
+        firms10: primaryStats.firms10Shown + secondaryStats.firms10Shown,
+        osint: primaryStats.osintShown + secondaryStats.osintShown,
+        deepstate: deepStateGeoJson ? "loaded" : "not loaded"
+      });
     }
 
     init();
