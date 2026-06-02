@@ -6,7 +6,26 @@
   <title>Ukrajna–Oroszország frontkövető</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   <link rel="stylesheet" href="./styles/main.css" />
+
+  <style>
+    .button-like {
+      display: inline-block;
+      text-align: center;
+      padding: 8px 10px;
+      border-radius: 6px;
+      background: #2563eb;
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 700;
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+
+    .button-like:hover {
+      background: #1d4ed8;
+    }
+  </style>
 </head>
+
 <body>
   <div id="app">
     <aside id="sidebar">
@@ -70,6 +89,7 @@
         <label class="toggle"><input id="toggleOsint" type="checkbox" /> OSINT feed</label>
         <label class="toggle"><input id="toggleHeatmap" type="checkbox" /> Front activity heatmap</label>
         <label class="toggle"><input id="toggleUnits" type="checkbox" /> Harcoló alakulatok</label>
+        <label class="toggle"><input id="toggleFrontDashboard" type="checkbox" /> Napi front dashboard</label>
       </section>
 
       <section class="panel">
@@ -129,10 +149,32 @@
         </div>
       </section>
 
-      <section class="panel">
-        <h2>Daily dashboard</h2>
+      <section id="frontDashboardPanel" class="panel" style="display:none;">
+        <h2>Napi front dashboard</h2>
         <div id="dailyDashboard" class="small">
-          Dashboard not loaded yet.
+          A napi vizuális dashboard külön oldalon nyílik meg.
+        </div>
+
+        <div class="grid-2 top-gap">
+          <a
+            href="./docs/front-dashboard.html"
+            target="_blank"
+            rel="noopener"
+            class="button-like"
+            id="openFrontDashboard"
+          >
+            Dashboard megnyitása
+          </a>
+
+          <button id="closeFrontDashboard" class="secondary" type="button">
+            Elrejtés
+          </button>
+        </div>
+
+        <div class="small top-gap">
+          A dashboard a <code>docs/data/front_activity_latest.json</code>,
+          a <code>data/firms_3.json</code>, <code>data/firms_10.json</code>,
+          <code>data/osint_feed.json</code> és a DeepState-adatok alapján készül.
         </div>
       </section>
 
@@ -174,5 +216,37 @@
   <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
   <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
   <script type="module" src="./src/app.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const toggle = document.getElementById("toggleFrontDashboard");
+      const panel = document.getElementById("frontDashboardPanel");
+      const closeButton = document.getElementById("closeFrontDashboard");
+      const dailyDashboard = document.getElementById("dailyDashboard");
+
+      if (!toggle || !panel) return;
+
+      function setDashboardPanel(isVisible) {
+        panel.style.display = isVisible ? "block" : "none";
+        toggle.checked = isVisible;
+
+        if (dailyDashboard) {
+          dailyDashboard.textContent = isVisible
+            ? "A napi front dashboard bekapcsolva. Megnyitható külön lapon."
+            : "A napi vizuális dashboard külön oldalon nyílik meg.";
+        }
+      }
+
+      toggle.addEventListener("change", function () {
+        setDashboardPanel(toggle.checked);
+      });
+
+      if (closeButton) {
+        closeButton.addEventListener("click", function () {
+          setDashboardPanel(false);
+        });
+      }
+    });
+  </script>
 </body>
 </html>
