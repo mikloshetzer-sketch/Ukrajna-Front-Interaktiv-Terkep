@@ -33,28 +33,46 @@ SECTORS = {
     "Velyka Novosilka": {"lat": 47.84, "lon": 36.84, "radius_km": 100},
 }
 
+
 SPECIAL_AREAS = {
     "Kyiv Area": {
         "lat": 50.45,
         "lon": 30.523,
         "radius_km": 90,
         "keywords": ["kyiv", "kiev", "kijev"],
+        "keyword_only": False,
     },
     "Moscow / Russia Interior": {
         "lat": 55.755,
         "lon": 37.617,
-        "radius_km": 900,
+        "radius_km": 120,
         "keywords": [
-            "moscow", "moszkva", "russia interior", "volgograd",
-            "volgográd", "krasnodar", "rostov", "bryansk",
-            "belgorod", "kursk", "tatarstan"
+            "moscow",
+            "moszkva",
+            "russia interior",
+            "volgograd",
+            "volgográd",
+            "krasnodar",
+            "rostov",
+            "bryansk",
+            "belgorod",
+            "kursk",
+            "tatarstan",
+            "voronezh",
+            "saratov",
+            "ryazan",
+            "lipetsk",
+            "orel",
+            "tula",
         ],
+        "keyword_only": True,
     },
     "Crimea": {
         "lat": 45.20,
         "lon": 34.10,
         "radius_km": 180,
         "keywords": ["crimea", "krím", "sevastopol", "kerch", "black sea", "fleet"],
+        "keyword_only": False,
     },
 }
 
@@ -188,24 +206,59 @@ def classify_event(item):
     txt = text_of(item)
 
     if any(x in txt for x in ["drone", "uav", "shahed", "drón"]):
-        return {"type": "drone", "label": "Drone / UAV activity", "icon": "🛩", "priority": 90}
+        return {
+            "type": "drone",
+            "label": "Drone / UAV activity",
+            "icon": "🛩",
+            "priority": 90,
+        }
 
     if any(x in txt for x in ["missile", "rocket", "rakéta"]):
-        return {"type": "missile", "label": "Missile / rocket strike", "icon": "☄", "priority": 88}
+        return {
+            "type": "missile",
+            "label": "Missile / rocket strike",
+            "icon": "☄",
+            "priority": 88,
+        }
 
     if any(x in txt for x in ["rail", "bridge", "logistics", "oil depot", "infrastructure"]):
-        return {"type": "logistics", "label": "Logistics / infrastructure strike", "icon": "⛓", "priority": 84}
+        return {
+            "type": "logistics",
+            "label": "Logistics / infrastructure strike",
+            "icon": "⛓",
+            "priority": 84,
+        }
 
     if any(x in txt for x in ["assault", "advance", "pressure", "frontline", "offensive"]):
-        return {"type": "frontline", "label": "Frontline pressure", "icon": "⚔", "priority": 82}
+        return {
+            "type": "frontline",
+            "label": "Frontline pressure",
+            "icon": "⚔",
+            "priority": 82,
+        }
 
     if any(x in txt for x in ["strike", "attack", "csapás", "támadás"]):
-        return {"type": "strike", "label": "Strike / attack", "icon": "✹", "priority": 78}
+        return {
+            "type": "strike",
+            "label": "Strike / attack",
+            "icon": "✹",
+            "priority": 78,
+        }
 
     if any(x in txt for x in ["crimea", "krím", "sevastopol", "black sea", "fleet"]):
-        return {"type": "naval_rear", "label": "Rear-area / Crimea activity", "icon": "⚓", "priority": 72}
+        return {
+            "type": "naval_rear",
+            "label": "Rear-area / Crimea activity",
+            "icon": "⚓",
+            "priority": 72,
+        }
 
-    return {"type": "military_update", "label": "Military update", "icon": "●", "priority": 50}
+    return {
+        "type": "military_update",
+        "label": "Military update",
+        "icon": "●",
+        "priority": 50,
+    }
 
 
 def detect_special_area(item, lat, lon):
@@ -217,6 +270,9 @@ def detect_special_area(item, lat, lon):
 
     if lat is not None and lon is not None:
         for name, area in SPECIAL_AREAS.items():
+            if area.get("keyword_only"):
+                continue
+
             dist = haversine_km(lat, lon, area["lat"], area["lon"])
             if dist <= area["radius_km"]:
                 return name, round(dist, 1)
@@ -296,7 +352,7 @@ def build_delta_sector(delta_geojson):
             "distance_km": None,
             "change_type": "none",
             "area_km2": 0,
-            "label": "No mapped daily territorial change"
+            "label": "No mapped daily territorial change",
         }
 
     largest = max(features, key=lambda f: n(f.get("properties", {}).get("area_km2")))
@@ -315,7 +371,7 @@ def build_delta_sector(delta_geojson):
         "distance_km": dist,
         "change_type": change_type,
         "area_km2": area,
-        "label": "Russian territorial gain" if change_type == "russian_gain" else "Ukrainian recapture"
+        "label": "Russian territorial gain" if change_type == "russian_gain" else "Ukrainian recapture",
     }
 
 
@@ -335,7 +391,7 @@ def prioritize_osint(osint_items):
         if area not in ["Unknown", "Rear Area / Strategic Depth"]:
             score += 5
 
-        if area in ["Kyiv Area", "Moscow / Russia Interior"]:
+        if area in ["Kyiv Area", "Moscow / Russia Interior", "Crimea"]:
             score += 3
 
         enriched.append({
@@ -449,9 +505,15 @@ def build_ai_summary(latest, delta_sector, priority_events, pressure_points):
     net = n(territorial.get("net_change_km2"))
 
     if net > 0:
-        territorial_text = f"Russian forces gained approximately {net:.2f} km², closest to the {delta_sector.get('sector')} sector."
+        territorial_text = (
+            f"Russian forces gained approximately {net:.2f} km², "
+            f"closest to the {delta_sector.get('sector')} sector."
+        )
     elif net < 0:
-        territorial_text = f"Ukrainian forces recaptured approximately {abs(net):.2f} km², closest to the {delta_sector.get('sector')} sector."
+        territorial_text = (
+            f"Ukrainian forces recaptured approximately {abs(net):.2f} km², "
+            f"closest to the {delta_sector.get('sector')} sector."
+        )
     else:
         territorial_text = "No measurable net territorial change was detected."
 
@@ -504,8 +566,9 @@ def main():
         "note": (
             "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, "
             "DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior "
-            "and rear-area events are separated from frontline sectors."
-        )
+            "and rear-area events are separated from frontline sectors. Moscow/Russia Interior "
+            "is keyword-based and no longer captures Kharkiv by distance."
+        ),
     }
 
     save_json(OUTPUT_PATH, output)
