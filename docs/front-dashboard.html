@@ -230,7 +230,7 @@
 
     const SECTOR_CENTERS = {
       "Pokrovsk": { lat: 48.28, lon: 37.18, zoom: 9, radius_km: 120 },
-      "Crimea": { lat: 45.20, lon: 34.10, zoom: 7, radius_km: 180 },
+      "Crimea": { lat: 45.20, lon: 34.10, zoom: 8, radius_km: 180 },
       "Kharkiv": { lat: 49.99, lon: 36.23, zoom: 8, radius_km: 120 },
       "Zaporizhzhia": { lat: 47.84, lon: 35.14, zoom: 8, radius_km: 130 },
       "Kherson-Dnipro": { lat: 46.64, lon: 32.61, zoom: 8, radius_km: 140 },
@@ -443,36 +443,57 @@
       return SECTOR_CENTERS[sectorName] || null;
     }
 
-    function addSectorAreaLayer(map, zone) {
-      const sectorName = zone?.sector;
-      const sector = getSectorCenter(sectorName);
+    function addSectorAreaLayers(map, zone) {
+      const group = L.layerGroup().addTo(map);
+      const primarySectorName = zone?.sector || "";
+      const initialZoom = n(zone?.zoom) || map.getZoom();
 
-      if (!sector) return null;
+      function shouldShowSector(sectorName, sector) {
+        const center = L.latLng(sector.lat, sector.lon);
+        const zoomedOut = map.getZoom() < initialZoom - 0.25;
 
-      const radius = (sector.radius_km || 120) * 1000;
+        // Alapnézetben csak az aktuális taktikai zóna sárga körét mutatjuk.
+        if (!zoomedOut) return sectorName === primarySectorName;
 
-      const circle = L.circle([sector.lat, sector.lon], {
-        radius,
-        color: "#FFC107",
-        weight: 2,
-        opacity: 0.95,
-        dashArray: "8,6",
-        fillColor: "#FFC107",
-        fillOpacity: 0.06,
-        interactive: false
-      }).addTo(map);
+        // Ha a felhasználó kizoomol vagy elhúzza a térképet, akkor minden látható
+        // szektor körzete megjelenhet. Így a plusz információ csak nagyobb nézetben jön elő.
+        return map.getBounds().pad(0.15).contains(center);
+      }
 
-      L.marker([sector.lat, sector.lon], {
-        icon: L.divIcon({
-          html: `<div style="background:rgba(255,193,7,.88);color:#020617;border:1px solid #fff;border-radius:4px;padding:2px 5px;font-size:10px;font-weight:900;white-space:nowrap;box-shadow:0 0 8px rgba(255,193,7,.7);">${sectorName}</div>`,
-          className: "",
-          iconSize: [110, 20],
-          iconAnchor: [55, 10]
-        }),
-        interactive: false
-      }).addTo(map);
+      function draw() {
+        group.clearLayers();
 
-      return circle;
+        Object.entries(SECTOR_CENTERS).forEach(([sectorName, sector]) => {
+          if (!shouldShowSector(sectorName, sector)) return;
+
+          const radius = (sector.radius_km || 120) * 1000;
+
+          L.circle([sector.lat, sector.lon], {
+            radius,
+            color: "#FFC107",
+            weight: sectorName === primarySectorName ? 2.4 : 1.6,
+            opacity: 0.96,
+            dashArray: "8,6",
+            fillColor: "#FFC107",
+            fillOpacity: sectorName === primarySectorName ? 0.07 : 0.035,
+            interactive: false
+          }).addTo(group);
+
+          L.marker([sector.lat, sector.lon], {
+            icon: L.divIcon({
+              html: `<div style="background:rgba(255,193,7,.88);color:#020617;border:1px solid #fff;border-radius:4px;padding:2px 5px;font-size:10px;font-weight:900;white-space:nowrap;box-shadow:0 0 8px rgba(255,193,7,.7);">${sectorName}</div>`,
+              className: "",
+              iconSize: [120, 20],
+              iconAnchor: [60, 10]
+            }),
+            interactive: false
+          }).addTo(group);
+        });
+      }
+
+      draw();
+      map.on("zoomend moveend", draw);
+      return group;
     }
 
     function pressureMapPosition(item) {
@@ -541,15 +562,37 @@
     }
 
 
-    function pressureBelongsToMapZone(item, zone) {
+    function pressureVisibleOnMap(item, zone, map) {
       const itemSector = sectorOf(item);
       const zoneSector = zone?.sector || "";
+      const [lat, lon] = pressureMapPosition(item);
 
-      if (!itemSector || !zoneSector) return false;
+      if (!itemSector || !zoneSector || lat === null || lon === null) return false;
 
-      // A pressure marker nem konkrét becsapódási pont, hanem szektor-szintű mutató.
-      // Ezért csak a saját szektorának mini térképén jelenik meg.
-      return itemSector === zoneSector;
+      const point = L.latLng(lat, lon);
+      const initialZoom = n(zone?.zoom) || map.getZoom();
+      const zoomedOut = map.getZoom() < initialZoom - 0.25;
+
+      // Alapnézetben csak a saját szektor pressure markere látszik.
+      if (!zoomedOut) return itemSector === zoneSector;
+
+      // Kizoomolás után azok a pressure markerek jelennek meg, amelyek ténylegesen
+      // a látható térképkivágaton belül vannak. Így nem kerül Zaporizhzhia vagy Kherson
+      // marker a Krím közepére, de nagyobb nézetben megjelenhet, ha földrajzilag belefér.
+      return map.getBounds().pad(0.08).contains(point);
+    }
+
+    function pointVisibleOnMap(lat, lon, map, zone, centerLat, centerLon, mapRadiusKm) {
+      if (lat === null || lon === null) return false;
+
+      const initialZoom = n(zone?.zoom) || map.getZoom();
+      const zoomedOut = map.getZoom() < initialZoom - 0.25;
+
+      if (!zoomedOut) {
+        return distanceKm(centerLat, centerLon, lat, lon) <= mapRadiusKm;
+      }
+
+      return map.getBounds().pad(0.08).contains(L.latLng(lat, lon));
     }
 
     function renderEvents(events, visibleEventIndexes) {
@@ -772,12 +815,12 @@
       const map = L.map(mapId, {
         zoomControl: true,
         attributionControl: true,
-        dragging: false,
-        scrollWheelZoom: false,
-        doubleClickZoom: false,
-        boxZoom: false,
-        keyboard: false,
-        tap: false
+        dragging: true,
+        scrollWheelZoom: true,
+        doubleClickZoom: true,
+        boxZoom: true,
+        keyboard: true,
+        tap: true
       }).setView([centerLat, centerLon], zoom);
 
       L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
@@ -787,7 +830,8 @@
 
       if (deepStateGeoJson) addDeepStateLayer(map, deepStateGeoJson);
 
-      addSectorAreaLayer(map, zone);
+      // Sárga szektorkörök: alapnézetben az adott zóna, kizoomolás után minden látható zóna.
+      addSectorAreaLayers(map, zone);
 
       const deltaShown = addTerritorialDeltaLayer(map, territorialDeltaGeoJson);
 
@@ -799,69 +843,84 @@
         fillOpacity: 0.08
       }).addTo(map);
 
+      const firms10Layer = L.layerGroup().addTo(map);
+      const firms3Layer = L.layerGroup().addTo(map);
+      const osintLayer = L.layerGroup().addTo(map);
+      const pressureLayer = L.layerGroup().addTo(map);
+
       let firms10Shown = 0;
-      for (const item of firms10) {
-        const [lat, lon] = getLatLon(item);
-        if (lat === null || lon === null) continue;
-        if (distanceKm(centerLat, centerLon, lat, lon) <= mapRadiusKm && firms10Shown < 120) {
-          L.circleMarker([lat, lon], { radius: 2.8, color: "#ef4444", fillColor: "#ef4444", fillOpacity: 0.55, weight: 0 }).addTo(map);
+      let firms3Shown = 0;
+      let osintShown = 0;
+      let pressureShown = 0;
+
+      function drawDynamicLayers() {
+        firms10Layer.clearLayers();
+        firms3Layer.clearLayers();
+        osintLayer.clearLayers();
+        pressureLayer.clearLayers();
+
+        firms10Shown = 0;
+        for (const item of firms10) {
+          const [lat, lon] = getLatLon(item);
+          if (!pointVisibleOnMap(lat, lon, map, zone, centerLat, centerLon, mapRadiusKm)) continue;
+          if (firms10Shown >= 160) continue;
+          L.circleMarker([lat, lon], { radius: 2.8, color: "#ef4444", fillColor: "#ef4444", fillOpacity: 0.55, weight: 0 }).addTo(firms10Layer);
           firms10Shown++;
         }
-      }
 
-      let firms3Shown = 0;
-      for (const item of firms3) {
-        const [lat, lon] = getLatLon(item);
-        if (lat === null || lon === null) continue;
-        if (distanceKm(centerLat, centerLon, lat, lon) <= mapRadiusKm && firms3Shown < 120) {
-          L.circleMarker([lat, lon], { radius: 3.8, color: "#f97316", fillColor: "#f97316", fillOpacity: 0.82, weight: 0 }).addTo(map);
+        firms3Shown = 0;
+        for (const item of firms3) {
+          const [lat, lon] = getLatLon(item);
+          if (!pointVisibleOnMap(lat, lon, map, zone, centerLat, centerLon, mapRadiusKm)) continue;
+          if (firms3Shown >= 160) continue;
+          L.circleMarker([lat, lon], { radius: 3.8, color: "#f97316", fillColor: "#f97316", fillOpacity: 0.82, weight: 0 }).addTo(firms3Layer);
           firms3Shown++;
         }
-      }
 
-      let osintShown = 0;
-      const topOsint = asList(osintFeed).slice(0, 10);
+        osintShown = 0;
+        const topOsint = asList(osintFeed).slice(0, 12);
+        topOsint.forEach((item, idx) => {
+          const [lat, lon] = getLatLon(item);
+          if (!pointVisibleOnMap(lat, lon, map, zone, centerLat, centerLon, mapRadiusKm)) return;
 
-      topOsint.forEach((item, idx) => {
-        const [lat, lon] = getLatLon(item);
-        if (lat === null || lon === null) return;
-
-        if (distanceKm(centerLat, centerLon, lat, lon) <= mapRadiusKm) {
           const number = idx + 1;
           visibleEventIndexes.add(number);
 
           L.marker([lat, lon], { icon: markerIcon(number, "osint") })
-            .addTo(map)
-            .bindPopup(`<strong>${number}. ${eventIcon(item)} ${titleOf(item)}</strong><br>${sourceOf(item)}`);
+            .addTo(osintLayer)
+            .bindPopup(`<strong>${number}. ${eventIcon(item)} ${titleOf(item)}</strong><br>${sourceOf(item)}<br>${sectorOf(item)}`);
 
           osintShown++;
-        }
-      });
+        });
 
-      let pressureShown = 0;
-      const units = asList(pressureFeed);
+        pressureShown = 0;
+        const units = asList(pressureFeed);
 
-      units.forEach((item) => {
-        if (!pressureBelongsToMapZone(item, zone) || pressureShown >= 8) return;
+        units.forEach((item) => {
+          if (!pressureVisibleOnMap(item, zone, map) || pressureShown >= 10) return;
 
-        const [lat, lon] = pressureMapPosition(item);
-        if (lat === null || lon === null) return;
+          const [lat, lon] = pressureMapPosition(item);
+          if (lat === null || lon === null) return;
 
-        const key = `${sectorOf(item)}-${titleOf(item)}`;
+          const key = `${sectorOf(item)}-${titleOf(item)}`;
 
-        if (!pressureKeySet.has(key)) {
-          pressureKeySet.add(key);
-          visiblePressureItems.push(item);
-        }
+          if (!pressureKeySet.has(key)) {
+            pressureKeySet.add(key);
+            visiblePressureItems.push(item);
+          }
 
-        const letter = String.fromCharCode(65 + Array.from(pressureKeySet).indexOf(key));
+          const letter = String.fromCharCode(65 + Array.from(pressureKeySet).indexOf(key));
 
-        L.marker([lat, lon], { icon: markerIcon(letter, "pressure") })
-          .addTo(map)
-          .bindPopup(`<strong>${letter}. ${pressureIcon(item)} ${titleOf(item)}</strong><br>${sectorOf(item)} sector<br><em>Sector-level marker placed inside its own yellow sector boundary.</em>`);
+          L.marker([lat, lon], { icon: markerIcon(letter, "pressure") })
+            .addTo(pressureLayer)
+            .bindPopup(`<strong>${letter}. ${pressureIcon(item)} ${titleOf(item)}</strong><br>${sectorOf(item)} sector<br><em>Sector-level marker inside its yellow sector boundary. Extra sector markers appear when zoomed out.</em>`);
 
-        pressureShown++;
-      });
+          pressureShown++;
+        });
+      }
+
+      drawDynamicLayers();
+      map.on("zoomend moveend", drawDynamicLayers);
 
       L.circleMarker([centerLat, centerLon], {
         radius: 8,
