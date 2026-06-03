@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
   schedule:
-    - cron: "20 5 * * *"
+    - cron: "30 18 * * *"
 
 permissions:
   contents: write
@@ -22,8 +22,15 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Front Activity Index generálása
+      - name: Python csomagok telepítése
+        run: |
+          pip install shapely
+
+      - name: Front Activity Index építése
         run: python scripts/build_front_activity.py
+
+      - name: Területi delta GeoJSON építése
+        run: python scripts/build_territorial_delta.py
 
       - name: Változások commitolása
         run: |
@@ -33,6 +40,8 @@ jobs:
           git add data/history/front_activity.json
           git add docs/data/history/front_activity.json
           git add docs/data/front_activity_latest.json
+          git add data/territorial_delta.geojson
+          git add docs/data/territorial_delta.geojson
 
-          git commit -m "Front Activity Index frissítése" || echo "Nincs változás"
+          git commit -m "Front Activity Index és territorial delta frissítése" || echo "Nincs változás"
           git push
