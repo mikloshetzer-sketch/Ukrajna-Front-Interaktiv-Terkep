@@ -21,16 +21,41 @@ OUTPUT_PATH = DOCS_DATA_DIR / "dashboard_v2.json"
 
 
 SECTORS = {
-    "Pokrovsk": {"lat": 48.28, "lon": 37.18},
-    "Crimea": {"lat": 45.20, "lon": 34.10},
-    "Kharkiv": {"lat": 49.99, "lon": 36.23},
-    "Zaporizhzhia": {"lat": 47.84, "lon": 35.14},
-    "Kherson-Dnipro": {"lat": 46.64, "lon": 32.61},
-    "Lyman": {"lat": 48.99, "lon": 37.80},
-    "Kupiansk": {"lat": 49.71, "lon": 37.61},
-    "Bakhmut-Toretsk": {"lat": 48.58, "lon": 37.95},
-    "Kurakhove": {"lat": 47.99, "lon": 37.28},
-    "Velyka Novosilka": {"lat": 47.84, "lon": 36.84},
+    "Pokrovsk": {"lat": 48.28, "lon": 37.18, "radius_km": 120},
+    "Crimea": {"lat": 45.20, "lon": 34.10, "radius_km": 180},
+    "Kharkiv": {"lat": 49.99, "lon": 36.23, "radius_km": 120},
+    "Zaporizhzhia": {"lat": 47.84, "lon": 35.14, "radius_km": 130},
+    "Kherson-Dnipro": {"lat": 46.64, "lon": 32.61, "radius_km": 140},
+    "Lyman": {"lat": 48.99, "lon": 37.80, "radius_km": 100},
+    "Kupiansk": {"lat": 49.71, "lon": 37.61, "radius_km": 100},
+    "Bakhmut-Toretsk": {"lat": 48.58, "lon": 37.95, "radius_km": 115},
+    "Kurakhove": {"lat": 47.99, "lon": 37.28, "radius_km": 100},
+    "Velyka Novosilka": {"lat": 47.84, "lon": 36.84, "radius_km": 100},
+}
+
+SPECIAL_AREAS = {
+    "Kyiv Area": {
+        "lat": 50.45,
+        "lon": 30.523,
+        "radius_km": 90,
+        "keywords": ["kyiv", "kiev", "kijev"],
+    },
+    "Moscow / Russia Interior": {
+        "lat": 55.755,
+        "lon": 37.617,
+        "radius_km": 900,
+        "keywords": [
+            "moscow", "moszkva", "russia interior", "volgograd",
+            "volgográd", "krasnodar", "rostov", "bryansk",
+            "belgorod", "kursk", "tatarstan"
+        ],
+    },
+    "Crimea": {
+        "lat": 45.20,
+        "lon": 34.10,
+        "radius_km": 180,
+        "keywords": ["crimea", "krím", "sevastopol", "kerch", "black sea", "fleet"],
+    },
 }
 
 
@@ -177,26 +202,60 @@ def classify_event(item):
     if any(x in txt for x in ["strike", "attack", "csapás", "támadás"]):
         return {"type": "strike", "label": "Strike / attack", "icon": "✹", "priority": 78}
 
-    if any(x in txt for x in ["crimea", "sevastopol", "black sea", "fleet"]):
+    if any(x in txt for x in ["crimea", "krím", "sevastopol", "black sea", "fleet"]):
         return {"type": "naval_rear", "label": "Rear-area / Crimea activity", "icon": "⚓", "priority": 72}
 
     return {"type": "military_update", "label": "Military update", "icon": "●", "priority": 50}
 
 
-def nearest_sector(lat, lon):
+def detect_special_area(item, lat, lon):
+    txt = text_of(item)
+
+    for name, area in SPECIAL_AREAS.items():
+        if any(keyword in txt for keyword in area["keywords"]):
+            return name, 0
+
+    if lat is not None and lon is not None:
+        for name, area in SPECIAL_AREAS.items():
+            dist = haversine_km(lat, lon, area["lat"], area["lon"])
+            if dist <= area["radius_km"]:
+                return name, round(dist, 1)
+
+    return None, None
+
+
+def nearest_front_sector(lat, lon):
     if lat is None or lon is None:
         return "Unknown", None
 
     best_name = "Unknown"
     best_dist = None
+    best_radius = None
 
     for name, center in SECTORS.items():
         dist = haversine_km(lat, lon, center["lat"], center["lon"])
         if best_dist is None or dist < best_dist:
             best_dist = dist
             best_name = name
+            best_radius = center["radius_km"]
+
+    if best_dist is None:
+        return "Unknown", None
+
+    if best_dist > best_radius:
+        return "Rear Area / Strategic Depth", round(best_dist, 1)
 
     return best_name, round(best_dist, 1)
+
+
+def classify_area(item):
+    lat, lon = get_lat_lon(item)
+
+    special_name, special_dist = detect_special_area(item, lat, lon)
+    if special_name:
+        return special_name, special_dist
+
+    return nearest_front_sector(lat, lon)
 
 
 def polygon_centroid_from_feature(feature):
@@ -244,7 +303,7 @@ def build_delta_sector(delta_geojson):
     props = largest.get("properties", {})
 
     lat, lon = polygon_centroid_from_feature(largest)
-    sector, dist = nearest_sector(lat, lon)
+    sector, dist = nearest_front_sector(lat, lon)
 
     change_type = props.get("change_type", "unknown")
     area = round(n(props.get("area_km2")), 2)
@@ -266,20 +325,23 @@ def prioritize_osint(osint_items):
     for item in osint_items:
         lat, lon = get_lat_lon(item)
         event_class = classify_event(item)
-        sector, dist = nearest_sector(lat, lon)
+        area, dist = classify_area(item)
 
         score = event_class["priority"]
 
         if lat is not None and lon is not None:
             score += 8
 
-        if sector != "Unknown":
+        if area not in ["Unknown", "Rear Area / Strategic Depth"]:
             score += 5
+
+        if area in ["Kyiv Area", "Moscow / Russia Interior"]:
+            score += 3
 
         enriched.append({
             "title": title_of(item),
             "source": source_of(item),
-            "sector": sector if sector != "Unknown" else sector_of(item),
+            "sector": area,
             "lat": lat,
             "lon": lon,
             "distance_to_sector_km": dist,
@@ -293,7 +355,27 @@ def prioritize_osint(osint_items):
     return enriched[:12]
 
 
-def build_pressure_points(latest, osint_items, firms3_items, delta_sector):
+def pressure_icon(pressure_type):
+    if pressure_type == "territorial_gain_axis":
+        return "▲"
+    if pressure_type == "osint_activity_cluster":
+        return "⚔"
+    if pressure_type == "thermal_activity_cluster":
+        return "🔥"
+    return "⚑"
+
+
+def make_pressure_title(sector, pressure_type):
+    if pressure_type == "territorial_gain_axis":
+        return f"{sector} territorial gain axis"
+    if pressure_type == "osint_activity_cluster":
+        return f"{sector} OSINT activity cluster"
+    if pressure_type == "thermal_activity_cluster":
+        return f"{sector} FIRMS thermal cluster"
+    return f"{sector} pressure axis"
+
+
+def build_pressure_points(latest, delta_sector):
     sectors = latest.get("top_sectors", [])
 
     pressure = []
@@ -316,7 +398,7 @@ def build_pressure_points(latest, osint_items, firms3_items, delta_sector):
 
         if name == delta_sector.get("sector") and delta_sector.get("area_km2", 0) > 0:
             pressure_type = "territorial_gain_axis"
-            score += 20
+            score += 30
 
         elif osint >= 3:
             pressure_type = "osint_activity_cluster"
@@ -338,26 +420,6 @@ def build_pressure_points(latest, osint_items, firms3_items, delta_sector):
 
     pressure = sorted(pressure, key=lambda x: x["score"], reverse=True)
     return pressure[:8]
-
-
-def pressure_icon(pressure_type):
-    if pressure_type == "territorial_gain_axis":
-        return "▲"
-    if pressure_type == "osint_activity_cluster":
-        return "⚔"
-    if pressure_type == "thermal_activity_cluster":
-        return "🔥"
-    return "⚑"
-
-
-def make_pressure_title(sector, pressure_type):
-    if pressure_type == "territorial_gain_axis":
-        return f"{sector} territorial gain axis"
-    if pressure_type == "osint_activity_cluster":
-        return f"{sector} OSINT activity cluster"
-    if pressure_type == "thermal_activity_cluster":
-        return f"{sector} FIRMS thermal cluster"
-    return f"{sector} pressure axis"
 
 
 def summarize_categories(priority_events):
@@ -420,7 +482,7 @@ def main():
 
     delta_sector = build_delta_sector(delta_geojson)
     priority_events = prioritize_osint(osint_items)
-    pressure_points = build_pressure_points(latest, osint_items, firms3_items, delta_sector)
+    pressure_points = build_pressure_points(latest, delta_sector)
     event_categories = summarize_categories(priority_events)
     ai_summary = build_ai_summary(latest, delta_sector, priority_events, pressure_points)
 
@@ -439,7 +501,11 @@ def main():
             "firms_10d": len(firms10_items),
             "unit_items": len(unit_items),
         },
-        "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data."
+        "note": (
+            "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, "
+            "DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior "
+            "and rear-area events are separated from frontline sectors."
+        )
     }
 
     save_json(OUTPUT_PATH, output)
