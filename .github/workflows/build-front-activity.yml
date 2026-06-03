@@ -32,6 +32,9 @@ jobs:
       - name: Területi delta GeoJSON építése
         run: python scripts/build_territorial_delta.py
 
+      - name: Dashboard v2 adatmodell építése
+        run: python scripts/build_dashboard_v2.py
+
       - name: Változások commitolása
         run: |
           git config user.name "github-actions"
@@ -42,6 +45,7 @@ jobs:
           git add docs/data/front_activity_latest.json
           git add data/territorial_delta.geojson
           git add docs/data/territorial_delta.geojson
+          git add docs/data/dashboard_v2.json
 
-          git commit -m "Front Activity Index és territorial delta frissítése" || echo "Nincs változás"
+          git commit -m "Front dashboard adatok frissítése" || echo "Nincs változás"
           git push
