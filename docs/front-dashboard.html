@@ -38,6 +38,7 @@
     .legend-row { display:flex; align-items:center; gap:6px; margin-bottom:3px; }
     .legend-line { width:22px; height:0; border-top:3px solid #ef4444; }
     .legend-box-red { width:16px; height:9px; background:rgba(239,68,68,.28); border:1px solid #ef4444; }
+    .legend-delta { width:16px; height:9px; background:rgba(255,0,51,.35); border:1px dashed #ff0033; }
     .legend-dot-orange { width:9px; height:9px; background:#f97316; border-radius:50%; }
     .legend-dot-red { width:9px; height:9px; background:#ef4444; border-radius:50%; }
     .legend-osint { width:15px; height:15px; background:#38bdf8; color:#020617; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-weight:900; font-size:9px; }
@@ -78,6 +79,7 @@
 
     .osint-marker { background:#38bdf8; color:#020617; border:2px solid #e0f2fe; border-radius:50%; width:25px; height:25px; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:11px; box-shadow:0 0 10px rgba(56,189,248,.75); }
     .pressure-marker { background:#ef4444; color:white; border:2px solid #fecaca; border-radius:50%; width:25px; height:25px; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:11px; box-shadow:0 0 10px rgba(239,68,68,.75); }
+    .delta-label { background:rgba(255,0,51,.9); color:white; border:1px solid #fecaca; border-radius:4px; padding:3px 6px; font-size:11px; font-weight:900; box-shadow:0 0 10px rgba(255,0,51,.8); }
 
     @media (max-width:900px) {
       .dashboard { width:100%; }
@@ -110,6 +112,7 @@
         <div class="map-legend">
           <div class="legend-row"><span class="legend-line"></span> Current front / control edge</div>
           <div class="legend-row"><span class="legend-box-red"></span> Russian controlled area</div>
+          <div class="legend-row"><span class="legend-delta"></span> Daily territorial delta</div>
           <div class="legend-row"><span class="legend-dot-orange"></span> FIRMS 3 days</div>
           <div class="legend-row"><span class="legend-dot-red"></span> FIRMS 10 days</div>
           <div class="legend-row"><span class="legend-osint">1</span> OSINT event</div>
@@ -152,7 +155,8 @@
         <div class="pressure-list" id="pressureList">Adatok betöltése...</div>
       </div>
     </section>
-        <section class="bottom">
+
+    <section class="bottom">
       <div class="panel">
         <div class="panel-title">Operational Assessment</div>
         <div class="assessment" id="assessment">Adatok betöltése...</div>
@@ -180,6 +184,7 @@
   <script>
     const LATEST_PATH = "./data/front_activity_latest.json";
     const HISTORY_PATH = "./data/history/front_activity.json";
+    const TERRITORIAL_DELTA_PATH = "./data/territorial_delta.geojson";
 
     const FIRMS_3_PATH = "../data/firms_3.json";
     const FIRMS_10_PATH = "../data/firms_10.json";
@@ -286,7 +291,6 @@
 
     function eventIcon(item) {
       const txt = textOf(item);
-
       if (txt.includes("drone") || txt.includes("uav") || txt.includes("shahed")) return "🛩";
       if (txt.includes("missile") || txt.includes("rocket") || txt.includes("rakéta")) return "☄";
       if (txt.includes("strike") || txt.includes("csapás")) return "✹";
@@ -297,7 +301,6 @@
 
     function pressureIcon(item) {
       const txt = textOf(item);
-
       if (txt.includes("tank") || txt.includes("armor")) return "▰";
       if (txt.includes("artillery")) return "✺";
       if (txt.includes("assault") || txt.includes("pressure") || txt.includes("advance")) return "⚔";
@@ -377,10 +380,72 @@
       };
     }
 
+    function styleTerritorialDelta(feature) {
+      const type = feature?.properties?.change_type;
+
+      if (type === "ukrainian_recapture") {
+        return {
+          color: "#22c55e",
+          weight: 2.5,
+          opacity: 1,
+          fillColor: "#22c55e",
+          fillOpacity: 0.34,
+          dashArray: "6,4"
+        };
+      }
+
+      return {
+        color: "#ff0033",
+        weight: 2.5,
+        opacity: 1,
+        fillColor: "#ff0033",
+        fillOpacity: 0.36,
+        dashArray: "6,4"
+      };
+    }
+
     function addDeepStateLayer(map, geojson) {
       if (!geojson) return;
       L.geoJSON(geojson, { style: () => styleOccupiedArea() }).addTo(map);
       L.geoJSON(geojson, { style: () => styleFrontLine() }).addTo(map);
+    }
+
+    function addTerritorialDeltaLayer(map, deltaGeoJson) {
+      if (!deltaGeoJson || !Array.isArray(deltaGeoJson.features) || !deltaGeoJson.features.length) return 0;
+
+      let shown = 0;
+
+      L.geoJSON(deltaGeoJson, {
+        style: styleTerritorialDelta,
+        onEachFeature: function (feature, layer) {
+          const props = feature.properties || {};
+          const type = props.change_type === "ukrainian_recapture"
+            ? "Ukrainian recapture"
+            : "Russian territorial gain";
+
+          const area = n(props.area_km2).toFixed(2);
+
+          layer.bindPopup(`<strong>${type}</strong><br>${area} km²`);
+
+          try {
+            const center = layer.getBounds().getCenter();
+            L.marker(center, {
+              icon: L.divIcon({
+                html: `<div class="delta-label">${props.change_type === "ukrainian_recapture" ? "-" : "+"}${area} km²</div>`,
+                className: "",
+                iconSize: [90, 24],
+                iconAnchor: [45, 12]
+              })
+            }).addTo(map);
+          } catch (err) {
+            console.warn("Delta label error", err);
+          }
+
+          shown++;
+        }
+      }).addTo(map);
+
+      return shown;
     }
 
     function markerIcon(content, type) {
@@ -520,21 +585,8 @@
         data: {
           labels,
           datasets: [
-            {
-              label: "Front Activity Index",
-              data: values,
-              tension: 0.35,
-              fill: false,
-              borderWidth: 2
-            },
-            {
-              label: "7-day moving average",
-              data: ma7,
-              tension: 0.35,
-              borderDash: [6, 4],
-              fill: false,
-              borderWidth: 2
-            }
+            { label: "Front Activity Index", data: values, tension: 0.35, fill: false, borderWidth: 2 },
+            { label: "7-day moving average", data: ma7, tension: 0.35, borderDash: [6, 4], fill: false, borderWidth: 2 }
           ]
         },
         options: {
@@ -564,13 +616,13 @@
         <div>
           <strong>Map:</strong> ${layerStats.primaryName} + ${layerStats.secondaryName}<br>
           <strong>Shown:</strong> FIRMS 3d ${layerStats.firms3}, FIRMS 10d ${layerStats.firms10},
-          OSINT ${layerStats.osint}, pressure ${layerStats.pressure}<br>
+          OSINT ${layerStats.osint}, pressure ${layerStats.pressure}, delta ${layerStats.delta}<br>
           <strong>DeepState layer:</strong> ${layerStats.deepstate}
         </div>
       `;
     }
 
-    async function buildMap(mapId, zone, firms3, firms10, osintFeed, unitFeed, deepStateGeoJson, visibleEventIndexes, visiblePressureItems, pressureKeySet) {
+    async function buildMap(mapId, zone, firms3, firms10, osintFeed, unitFeed, deepStateGeoJson, territorialDeltaGeoJson, visibleEventIndexes, visiblePressureItems, pressureKeySet) {
       const centerLat = n(zone.lat) || 48.6;
       const centerLon = n(zone.lon) || 37.2;
       const zoom = n(zone.zoom) || 7;
@@ -593,6 +645,8 @@
       }).addTo(map);
 
       if (deepStateGeoJson) addDeepStateLayer(map, deepStateGeoJson);
+
+      const deltaShown = addTerritorialDeltaLayer(map, territorialDeltaGeoJson);
 
       L.circle([centerLat, centerLon], {
         radius: 18000,
@@ -682,13 +736,15 @@
         firms3Shown,
         firms10Shown,
         osintShown,
-        pressureShown
+        pressureShown,
+        deltaShown
       };
     }
 
     async function init() {
       const latest = await loadJson(LATEST_PATH, null);
       const history = await loadJson(HISTORY_PATH, []);
+      const territorialDelta = await loadJson(TERRITORIAL_DELTA_PATH, { type: "FeatureCollection", features: [] });
       const firms3Raw = await loadJson(FIRMS_3_PATH, { points: [] });
       const firms10Raw = await loadJson(FIRMS_10_PATH, { points: [] });
       const osintRaw = await loadJson(OSINT_PATH, []);
@@ -740,8 +796,8 @@
       const visiblePressureItems = [];
       const pressureKeySet = new Set();
 
-      const primaryStats = await buildMap("primaryMap", hotspot, firms3, firms10, osintRaw, unitRaw, deepStateGeoJson, visibleEventIndexes, visiblePressureItems, pressureKeySet);
-      const secondaryStats = await buildMap("secondaryMap", secondary, firms3, firms10, osintRaw, unitRaw, deepStateGeoJson, visibleEventIndexes, visiblePressureItems, pressureKeySet);
+      const primaryStats = await buildMap("primaryMap", hotspot, firms3, firms10, osintRaw, unitRaw, deepStateGeoJson, territorialDelta, visibleEventIndexes, visiblePressureItems, pressureKeySet);
+      const secondaryStats = await buildMap("secondaryMap", secondary, firms3, firms10, osintRaw, unitRaw, deepStateGeoJson, territorialDelta, visibleEventIndexes, visiblePressureItems, pressureKeySet);
 
       document.getElementById("primaryName").textContent = primaryStats.name;
       document.getElementById("primaryZoom").textContent = primaryStats.zoom;
@@ -766,6 +822,7 @@
         firms10: primaryStats.firms10Shown + secondaryStats.firms10Shown,
         osint: primaryStats.osintShown + secondaryStats.osintShown,
         pressure: visiblePressureItems.length,
+        delta: primaryStats.deltaShown + secondaryStats.deltaShown,
         deepstate: deepStateGeoJson ? "loaded" : "not loaded"
       });
     }
