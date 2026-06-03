@@ -40,6 +40,7 @@
     .legend-line { width:22px; height:0; border-top:3px solid #ef4444; }
     .legend-box-red { width:16px; height:9px; background:rgba(239,68,68,.28); border:1px solid #ef4444; }
     .legend-delta { width:16px; height:9px; background:rgba(255,0,51,.35); border:1px dashed #ff0033; }
+    .legend-sector { width:16px; height:9px; background:rgba(255,193,7,.10); border:2px dashed #FFC107; }
     .legend-dot-orange { width:9px; height:9px; background:#f97316; border-radius:50%; }
     .legend-dot-red { width:9px; height:9px; background:#ef4444; border-radius:50%; }
     .legend-osint { width:15px; height:15px; background:#38bdf8; color:#020617; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-weight:900; font-size:9px; }
@@ -126,6 +127,7 @@
           <div class="legend-row"><span class="legend-line"></span> Current front / control edge</div>
           <div class="legend-row"><span class="legend-box-red"></span> Russian controlled area</div>
           <div class="legend-row"><span class="legend-delta"></span> Daily territorial delta</div>
+          <div class="legend-row"><span class="legend-sector"></span> Sector area boundary</div>
           <div class="legend-row"><span class="legend-dot-orange"></span> FIRMS 3 days</div>
           <div class="legend-row"><span class="legend-dot-red"></span> FIRMS 10 days</div>
           <div class="legend-row"><span class="legend-osint">1</span> OSINT event</div>
@@ -227,16 +229,16 @@
       "https://raw.githubusercontent.com/cyterat/deepstate-map-data/main/data/";
 
     const SECTOR_CENTERS = {
-      "Pokrovsk": { lat: 48.28, lon: 37.18, zoom: 9 },
-      "Crimea": { lat: 45.20, lon: 34.10, zoom: 7 },
-      "Kharkiv": { lat: 49.99, lon: 36.23, zoom: 8 },
-      "Zaporizhzhia": { lat: 47.84, lon: 35.14, zoom: 8 },
-      "Kherson-Dnipro": { lat: 46.64, lon: 32.61, zoom: 8 },
-      "Lyman": { lat: 48.99, lon: 37.80, zoom: 9 },
-      "Kupiansk": { lat: 49.71, lon: 37.61, zoom: 9 },
-      "Bakhmut-Toretsk": { lat: 48.58, lon: 37.95, zoom: 9 },
-      "Kurakhove": { lat: 47.99, lon: 37.28, zoom: 9 },
-      "Velyka Novosilka": { lat: 47.84, lon: 36.84, zoom: 9 }
+      "Pokrovsk": { lat: 48.28, lon: 37.18, zoom: 9, radius_km: 120 },
+      "Crimea": { lat: 45.20, lon: 34.10, zoom: 7, radius_km: 180 },
+      "Kharkiv": { lat: 49.99, lon: 36.23, zoom: 8, radius_km: 120 },
+      "Zaporizhzhia": { lat: 47.84, lon: 35.14, zoom: 8, radius_km: 130 },
+      "Kherson-Dnipro": { lat: 46.64, lon: 32.61, zoom: 8, radius_km: 140 },
+      "Lyman": { lat: 48.99, lon: 37.80, zoom: 9, radius_km: 100 },
+      "Kupiansk": { lat: 49.71, lon: 37.61, zoom: 9, radius_km: 100 },
+      "Bakhmut-Toretsk": { lat: 48.58, lon: 37.95, zoom: 9, radius_km: 115 },
+      "Kurakhove": { lat: 47.99, lon: 37.28, zoom: 9, radius_km: 100 },
+      "Velyka Novosilka": { lat: 47.84, lon: 36.84, zoom: 9, radius_km: 100 }
     };
 
     async function loadJson(path, fallback) {
@@ -436,6 +438,54 @@
       };
     }
 
+    function getSectorCenter(sectorName) {
+      if (!sectorName) return null;
+      return SECTOR_CENTERS[sectorName] || null;
+    }
+
+    function addSectorAreaLayer(map, zone) {
+      const sectorName = zone?.sector;
+      const sector = getSectorCenter(sectorName);
+
+      if (!sector) return null;
+
+      const radius = (sector.radius_km || 120) * 1000;
+
+      const circle = L.circle([sector.lat, sector.lon], {
+        radius,
+        color: "#FFC107",
+        weight: 2,
+        opacity: 0.95,
+        dashArray: "8,6",
+        fillColor: "#FFC107",
+        fillOpacity: 0.06,
+        interactive: false
+      }).addTo(map);
+
+      L.marker([sector.lat, sector.lon], {
+        icon: L.divIcon({
+          html: `<div style="background:rgba(255,193,7,.88);color:#020617;border:1px solid #fff;border-radius:4px;padding:2px 5px;font-size:10px;font-weight:900;white-space:nowrap;box-shadow:0 0 8px rgba(255,193,7,.7);">${sectorName}</div>`,
+          className: "",
+          iconSize: [110, 20],
+          iconAnchor: [55, 10]
+        }),
+        interactive: false
+      }).addTo(map);
+
+      return circle;
+    }
+
+    function pressureMapPosition(item) {
+      const sectorName = sectorOf(item);
+      const center = getSectorCenter(sectorName);
+
+      if (center) {
+        return [center.lat, center.lon];
+      }
+
+      return getLatLon(item);
+    }
+
     function addDeepStateLayer(map, geojson) {
       if (!geojson) return;
       L.geoJSON(geojson, { style: () => styleOccupiedArea() }).addTo(map);
@@ -491,25 +541,15 @@
     }
 
 
-    function pressureBelongsToMapZone(item, zone, centerLat, centerLon, mapRadiusKm) {
+    function pressureBelongsToMapZone(item, zone) {
       const itemSector = sectorOf(item);
       const zoneSector = zone?.sector || "";
-      const [lat, lon] = getLatLon(item);
 
-      if (!itemSector || !zoneSector || lat === null || lon === null) return false;
+      if (!itemSector || !zoneSector) return false;
 
-      // A pressure marker szektor-szintű, nem konkrét eseménypont.
-      // Ezért a másodlagos taktikai térképen csak a saját zónához tartozó pressure marker jelenjen meg.
-      if (zoneSector === "Crimea") {
-        return itemSector === "Crimea";
-      }
-
-      // Az elsődleges térképen a fő hotspot és a közvetlen frontkörnyezet látható.
-      // Itt megengedjük a közeli szektorjelölőket, de kizárjuk a távoli / másik színházi zónákat.
-      if (itemSector === zoneSector) return true;
-
-      const d = distanceKm(centerLat, centerLon, lat, lon);
-      return d <= Math.min(mapRadiusKm, 180);
+      // A pressure marker nem konkrét becsapódási pont, hanem szektor-szintű mutató.
+      // Ezért csak a saját szektorának mini térképén jelenik meg.
+      return itemSector === zoneSector;
     }
 
     function renderEvents(events, visibleEventIndexes) {
@@ -747,6 +787,8 @@
 
       if (deepStateGeoJson) addDeepStateLayer(map, deepStateGeoJson);
 
+      addSectorAreaLayer(map, zone);
+
       const deltaShown = addTerritorialDeltaLayer(map, territorialDeltaGeoJson);
 
       L.circle([centerLat, centerLon], {
@@ -800,25 +842,25 @@
       const units = asList(pressureFeed);
 
       units.forEach((item) => {
-        const [lat, lon] = getLatLon(item);
+        if (!pressureBelongsToMapZone(item, zone) || pressureShown >= 8) return;
+
+        const [lat, lon] = pressureMapPosition(item);
         if (lat === null || lon === null) return;
 
-        if (pressureBelongsToMapZone(item, zone, centerLat, centerLon, mapRadiusKm) && pressureShown < 8) {
-          const key = `${titleOf(item)}-${lat.toFixed(3)}-${lon.toFixed(3)}`;
+        const key = `${sectorOf(item)}-${titleOf(item)}`;
 
-          if (!pressureKeySet.has(key)) {
-            pressureKeySet.add(key);
-            visiblePressureItems.push(item);
-          }
-
-          const letter = String.fromCharCode(65 + Array.from(pressureKeySet).indexOf(key));
-
-          L.marker([lat, lon], { icon: markerIcon(letter, "pressure") })
-            .addTo(map)
-            .bindPopup(`<strong>${letter}. ${pressureIcon(item)} ${titleOf(item)}</strong><br>${sectorOf(item)}<br><em>Sector-level marker, approximate position.</em>`);
-
-          pressureShown++;
+        if (!pressureKeySet.has(key)) {
+          pressureKeySet.add(key);
+          visiblePressureItems.push(item);
         }
+
+        const letter = String.fromCharCode(65 + Array.from(pressureKeySet).indexOf(key));
+
+        L.marker([lat, lon], { icon: markerIcon(letter, "pressure") })
+          .addTo(map)
+          .bindPopup(`<strong>${letter}. ${pressureIcon(item)} ${titleOf(item)}</strong><br>${sectorOf(item)} sector<br><em>Sector-level marker placed inside its own yellow sector boundary.</em>`);
+
+        pressureShown++;
       });
 
       L.circleMarker([centerLat, centerLon], {
