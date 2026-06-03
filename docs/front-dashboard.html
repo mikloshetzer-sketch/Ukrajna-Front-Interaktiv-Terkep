@@ -490,6 +490,28 @@
       });
     }
 
+
+    function pressureBelongsToMapZone(item, zone, centerLat, centerLon, mapRadiusKm) {
+      const itemSector = sectorOf(item);
+      const zoneSector = zone?.sector || "";
+      const [lat, lon] = getLatLon(item);
+
+      if (!itemSector || !zoneSector || lat === null || lon === null) return false;
+
+      // A pressure marker szektor-szintű, nem konkrét eseménypont.
+      // Ezért a másodlagos taktikai térképen csak a saját zónához tartozó pressure marker jelenjen meg.
+      if (zoneSector === "Crimea") {
+        return itemSector === "Crimea";
+      }
+
+      // Az elsődleges térképen a fő hotspot és a közvetlen frontkörnyezet látható.
+      // Itt megengedjük a közeli szektorjelölőket, de kizárjuk a távoli / másik színházi zónákat.
+      if (itemSector === zoneSector) return true;
+
+      const d = distanceKm(centerLat, centerLon, lat, lon);
+      return d <= Math.min(mapRadiusKm, 180);
+    }
+
     function renderEvents(events, visibleEventIndexes) {
       const box = document.getElementById("events");
       const top = (events || []).slice(0, 10);
@@ -528,7 +550,7 @@
           <div class="pressure-icon">${p.icon || pressureIcon(p)}</div>
           <div>
             <strong>${titleOf(p)}</strong><br>
-            <span style="color:#94a3b8">${sectorOf(p)}${p.score !== undefined ? " · score " + p.score : ""}</span>
+            <span style="color:#94a3b8">${sectorOf(p)}${p.score !== undefined ? " · score " + p.score : ""} · sector marker</span>
           </div>
         </div>
       `).join("");
@@ -781,7 +803,7 @@
         const [lat, lon] = getLatLon(item);
         if (lat === null || lon === null) return;
 
-        if (distanceKm(centerLat, centerLon, lat, lon) <= mapRadiusKm && pressureShown < 8) {
+        if (pressureBelongsToMapZone(item, zone, centerLat, centerLon, mapRadiusKm) && pressureShown < 8) {
           const key = `${titleOf(item)}-${lat.toFixed(3)}-${lon.toFixed(3)}`;
 
           if (!pressureKeySet.has(key)) {
@@ -793,7 +815,7 @@
 
           L.marker([lat, lon], { icon: markerIcon(letter, "pressure") })
             .addTo(map)
-            .bindPopup(`<strong>${letter}. ${pressureIcon(item)} ${titleOf(item)}</strong><br>${sectorOf(item)}`);
+            .bindPopup(`<strong>${letter}. ${pressureIcon(item)} ${titleOf(item)}</strong><br>${sectorOf(item)}<br><em>Sector-level marker, approximate position.</em>`);
 
           pressureShown++;
         }
