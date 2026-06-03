@@ -11,463 +11,86 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
-    body {
-      margin: 0;
-      background: #020617;
-      color: #e5e7eb;
-      font-family: Arial, Helvetica, sans-serif;
-    }
+    body { margin:0; background:#020617; color:#e5e7eb; font-family:Arial,Helvetica,sans-serif; }
+    .dashboard { width:1200px; min-height:900px; margin:0 auto; padding:8px; box-sizing:border-box; background:#020617; }
+    .title { border:1px solid #334155; border-radius:5px; padding:7px 10px; font-size:23px; font-weight:900; letter-spacing:1px; color:#f8fafc; margin-bottom:8px; text-transform:uppercase; }
+    .metrics { display:grid; grid-template-columns:repeat(8,1fr); gap:6px; margin-bottom:8px; }
+    .metric { background:#0b1624; border:1px solid #334155; border-radius:5px; padding:8px 7px; min-height:54px; box-sizing:border-box; }
+    .metric-label { font-size:9px; text-transform:uppercase; color:#cbd5e1; margin-bottom:7px; }
+    .metric-value { font-size:18px; font-weight:900; color:#ff6b6b; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .metric-value.small { font-size:14px; }
+    .metric-value.positive { color:#fb7185; }
+    .metric-value.negative { color:#22c55e; }
+    .metric-value.neutral { color:#e5e7eb; }
 
-    .dashboard {
-      width: 1200px;
-      min-height: 900px;
-      margin: 0 auto;
-      padding: 8px;
-      box-sizing: border-box;
-      background: #020617;
-    }
+    .two-maps { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
+    .three-panels { display:grid; grid-template-columns:1.1fr 0.9fr 1fr; gap:12px; margin-bottom:12px; }
+    .bottom { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
 
-    .title {
-      border: 1px solid #334155;
-      border-radius: 5px;
-      padding: 7px 10px;
-      font-size: 23px;
-      font-weight: 900;
-      letter-spacing: 1px;
-      color: #f8fafc;
-      margin-bottom: 8px;
-      text-transform: uppercase;
-    }
+    .panel { background:#0b1624; border:1px solid #334155; border-radius:5px; padding:10px; box-sizing:border-box; }
+    .panel-title { font-size:14px; font-weight:900; color:#67e8f9; text-transform:uppercase; letter-spacing:.6px; margin-bottom:8px; }
 
-    .metrics {
-      display: grid;
-      grid-template-columns: repeat(8, 1fr);
-      gap: 6px;
-      margin-bottom: 8px;
-    }
+    .map-box { position:relative; min-height:390px; }
+    .mini-map { width:100%; height:320px; border-radius:4px; border:1px solid #334155; background:#020617; overflow:hidden; }
+    .leaflet-control-attribution { font-size:9px; }
 
-    .metric {
-      background: #0b1624;
-      border: 1px solid #334155;
-      border-radius: 5px;
-      padding: 8px 7px;
-      min-height: 54px;
-      box-sizing: border-box;
-    }
+    .map-legend { position:absolute; z-index:900; left:18px; top:46px; background:rgba(2,6,23,.86); border:1px solid #334155; color:#e5e7eb; padding:7px; border-radius:4px; font-size:10px; line-height:1.35; pointer-events:none; }
+    .legend-row { display:flex; align-items:center; gap:6px; margin-bottom:3px; }
+    .legend-line { width:22px; height:0; border-top:3px solid #ef4444; }
+    .legend-box-red { width:16px; height:9px; background:rgba(239,68,68,.28); border:1px solid #ef4444; }
+    .legend-dot-orange { width:9px; height:9px; background:#f97316; border-radius:50%; }
+    .legend-dot-red { width:9px; height:9px; background:#ef4444; border-radius:50%; }
+    .legend-osint { width:15px; height:15px; background:#38bdf8; color:#020617; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-weight:900; font-size:9px; }
+    .legend-pressure { width:15px; height:15px; background:#ef4444; color:#fff; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-weight:900; font-size:9px; }
 
-    .metric-label {
-      font-size: 9px;
-      text-transform: uppercase;
-      color: #cbd5e1;
-      margin-bottom: 7px;
-    }
+    .hotspot-meta { margin-top:7px; display:grid; grid-template-columns:repeat(4,1fr); gap:6px; font-size:11px; color:#cbd5e1; }
+    .hotspot-box { background:#111827; border:1px solid #334155; border-radius:4px; padding:6px; }
+    .hotspot-label { color:#94a3b8; text-transform:uppercase; font-size:9px; margin-bottom:4px; }
+    .hotspot-value { color:#f8fafc; font-weight:800; font-size:12px; }
 
-    .metric-value {
-      font-size: 18px;
-      font-weight: 900;
-      color: #ff6b6b;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+    .events { display:grid; grid-template-columns:1fr; gap:5px; }
+    .event { display:grid; grid-template-columns:24px 22px 1fr; gap:7px; align-items:start; font-size:11.5px; line-height:1.24; border-bottom:1px solid rgba(148,163,184,.14); padding-bottom:5px; }
+    .event-num { width:21px; height:21px; border-radius:50%; background:#38bdf8; color:#020617; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:11px; }
+    .event-icon { width:21px; height:21px; border-radius:50%; background:rgba(56,189,248,.12); display:flex; align-items:center; justify-content:center; font-size:12px; }
+    .event-title { color:#f8fafc; font-weight:700; }
+    .event-meta { color:#94a3b8; margin-top:2px; font-size:10.5px; }
 
-    .metric-value.small { font-size: 14px; }
-    .metric-value.positive { color: #fb7185; }
-    .metric-value.negative { color: #22c55e; }
-    .metric-value.neutral { color: #e5e7eb; }
+    .sector-list { display:flex; flex-direction:column; gap:7px; }
+    .sector-row { display:grid; grid-template-columns:118px 34px 42px 1fr 36px; gap:6px; align-items:center; font-size:11.5px; }
+    .sector-head { color:#94a3b8; font-size:9.5px; text-transform:uppercase; border-bottom:1px solid #1e293b; padding-bottom:4px; }
+    .bar-bg { height:10px; background:#1e293b; border-radius:999px; overflow:hidden; }
+    .bar-fill { height:10px; background:#f97316; border-radius:999px; }
 
-    .two-maps {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
+    .pressure-list { display:grid; grid-template-columns:1fr; gap:6px; }
+    .pressure-item { display:grid; grid-template-columns:24px 22px 1fr; gap:7px; font-size:11.5px; line-height:1.25; padding-bottom:5px; border-bottom:1px solid rgba(148,163,184,.12); }
+    .pressure-num { width:21px; height:21px; border-radius:50%; background:#ef4444; color:white; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:11px; }
+    .pressure-icon { width:21px; height:21px; border-radius:50%; background:rgba(239,68,68,.16); display:flex; align-items:center; justify-content:center; font-size:12px; }
 
-    .three-panels {
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr 1fr;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
+    .assessment { font-size:12.5px; line-height:1.48; color:#e2e8f0; }
+    .drivers { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-top:10px; }
+    .driver { background:#111827; border:1px solid #334155; border-radius:5px; padding:8px; }
+    .driver-label { font-size:9px; color:#94a3b8; text-transform:uppercase; margin-bottom:5px; }
+    .driver-value { font-size:18px; font-weight:900; color:#f8fafc; }
 
-    .bottom {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
+    canvas { width:100% !important; height:210px !important; background:#f8fafc; border-radius:4px; padding:6px; box-sizing:border-box; }
+    .chart-source { margin-top:7px; padding:7px; border-radius:4px; background:#111827; border:1px solid #334155; color:#94a3b8; font-size:9.5px; line-height:1.35; display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .warning { color:#fbbf24; font-size:11.5px; line-height:1.4; margin-top:8px; }
 
-    .panel {
-      background: #0b1624;
-      border: 1px solid #334155;
-      border-radius: 5px;
-      padding: 10px;
-      box-sizing: border-box;
-    }
+    .osint-marker { background:#38bdf8; color:#020617; border:2px solid #e0f2fe; border-radius:50%; width:25px; height:25px; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:11px; box-shadow:0 0 10px rgba(56,189,248,.75); }
+    .pressure-marker { background:#ef4444; color:white; border:2px solid #fecaca; border-radius:50%; width:25px; height:25px; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:11px; box-shadow:0 0 10px rgba(239,68,68,.75); }
 
-    .panel-title {
-      font-size: 14px;
-      font-weight: 900;
-      color: #67e8f9;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      margin-bottom: 8px;
-    }
-
-    .map-box {
-      position: relative;
-      min-height: 390px;
-    }
-
-    .mini-map {
-      width: 100%;
-      height: 320px;
-      border-radius: 4px;
-      border: 1px solid #334155;
-      background: #020617;
-      overflow: hidden;
-    }
-
-    .leaflet-control-attribution { font-size: 9px; }
-
-    .map-legend {
-      position: absolute;
-      z-index: 900;
-      left: 18px;
-      top: 46px;
-      background: rgba(2, 6, 23, 0.86);
-      border: 1px solid #334155;
-      color: #e5e7eb;
-      padding: 7px;
-      border-radius: 4px;
-      font-size: 10px;
-      line-height: 1.35;
-      pointer-events: none;
-    }
-
-    .legend-row {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 3px;
-    }
-
-    .legend-line {
-      width: 22px;
-      height: 0;
-      border-top: 3px solid #ef4444;
-    }
-
-    .legend-box-red {
-      width: 16px;
-      height: 9px;
-      background: rgba(239, 68, 68, 0.28);
-      border: 1px solid #ef4444;
-    }
-
-    .legend-dot-orange {
-      width: 9px;
-      height: 9px;
-      background: #f97316;
-      border-radius: 50%;
-    }
-
-    .legend-dot-red {
-      width: 9px;
-      height: 9px;
-      background: #ef4444;
-      border-radius: 50%;
-    }
-
-    .legend-osint {
-      width: 15px;
-      height: 15px;
-      background: #38bdf8;
-      color: #020617;
-      border-radius: 50%;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 900;
-      font-size: 9px;
-    }
-
-    .legend-pressure {
-      width: 15px;
-      height: 15px;
-      background: #ef4444;
-      color: #fff;
-      border-radius: 50%;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 900;
-      font-size: 9px;
-    }
-
-    .hotspot-meta {
-      margin-top: 7px;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 6px;
-      font-size: 11px;
-      color: #cbd5e1;
-    }
-
-    .hotspot-box {
-      background: #111827;
-      border: 1px solid #334155;
-      border-radius: 4px;
-      padding: 6px;
-    }
-
-    .hotspot-label {
-      color: #94a3b8;
-      text-transform: uppercase;
-      font-size: 9px;
-      margin-bottom: 4px;
-    }
-
-    .hotspot-value {
-      color: #f8fafc;
-      font-weight: 800;
-      font-size: 12px;
-    }
-
-    .events {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 5px;
-    }
-
-    .event {
-      display: grid;
-      grid-template-columns: 24px 22px 1fr;
-      gap: 7px;
-      align-items: start;
-      font-size: 11.5px;
-      line-height: 1.24;
-      border-bottom: 1px solid rgba(148,163,184,0.14);
-      padding-bottom: 5px;
-    }
-
-    .event-num {
-      width: 21px;
-      height: 21px;
-      border-radius: 50%;
-      background: #38bdf8;
-      color: #020617;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 900;
-      font-size: 11px;
-    }
-
-    .event-icon {
-      width: 21px;
-      height: 21px;
-      border-radius: 50%;
-      background: rgba(56, 189, 248, 0.12);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-    }
-
-    .event-title {
-      color: #f8fafc;
-      font-weight: 700;
-    }
-
-    .event-meta {
-      color: #94a3b8;
-      margin-top: 2px;
-      font-size: 10.5px;
-    }
-
-    .sector-list {
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-    }
-
-    .sector-row {
-      display: grid;
-      grid-template-columns: 118px 34px 42px 1fr 36px;
-      gap: 6px;
-      align-items: center;
-      font-size: 11.5px;
-    }
-
-    .sector-head {
-      color: #94a3b8;
-      font-size: 9.5px;
-      text-transform: uppercase;
-      border-bottom: 1px solid #1e293b;
-      padding-bottom: 4px;
-    }
-
-    .bar-bg {
-      height: 10px;
-      background: #1e293b;
-      border-radius: 999px;
-      overflow: hidden;
-    }
-
-    .bar-fill {
-      height: 10px;
-      background: #f97316;
-      border-radius: 999px;
-    }
-
-    .pressure-list {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 6px;
-    }
-
-    .pressure-item {
-      display: grid;
-      grid-template-columns: 24px 22px 1fr;
-      gap: 7px;
-      font-size: 11.5px;
-      line-height: 1.25;
-      padding-bottom: 5px;
-      border-bottom: 1px solid rgba(148,163,184,0.12);
-    }
-
-    .pressure-num {
-      width: 21px;
-      height: 21px;
-      border-radius: 50%;
-      background: #ef4444;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 900;
-      font-size: 11px;
-    }
-
-    .pressure-icon {
-      width: 21px;
-      height: 21px;
-      border-radius: 50%;
-      background: rgba(239, 68, 68, 0.16);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-    }
-
-    .assessment {
-      font-size: 12.5px;
-      line-height: 1.48;
-      color: #e2e8f0;
-    }
-
-    .drivers {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    .driver {
-      background: #111827;
-      border: 1px solid #334155;
-      border-radius: 5px;
-      padding: 8px;
-    }
-
-    .driver-label {
-      font-size: 9px;
-      color: #94a3b8;
-      text-transform: uppercase;
-      margin-bottom: 5px;
-    }
-
-    .driver-value {
-      font-size: 18px;
-      font-weight: 900;
-      color: #f8fafc;
-    }
-
-    canvas {
-      width: 100% !important;
-      height: 210px !important;
-      background: #f8fafc;
-      border-radius: 4px;
-      padding: 6px;
-      box-sizing: border-box;
-    }
-
-    .chart-source {
-      margin-top: 7px;
-      padding: 7px;
-      border-radius: 4px;
-      background: #111827;
-      border: 1px solid #334155;
-      color: #94a3b8;
-      font-size: 9.5px;
-      line-height: 1.35;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .warning {
-      color: #fbbf24;
-      font-size: 11.5px;
-      line-height: 1.4;
-      margin-top: 8px;
-    }
-
-    .osint-marker {
-      background: #38bdf8;
-      color: #020617;
-      border: 2px solid #e0f2fe;
-      border-radius: 50%;
-      width: 25px;
-      height: 25px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 900;
-      font-size: 11px;
-      box-shadow: 0 0 10px rgba(56,189,248,0.75);
-      position: relative;
-    }
-
-    .pressure-marker {
-      background: #ef4444;
-      color: white;
-      border: 2px solid #fecaca;
-      border-radius: 50%;
-      width: 25px;
-      height: 25px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 900;
-      font-size: 11px;
-      box-shadow: 0 0 10px rgba(239,68,68,0.75);
-    }
-
-    @media (max-width: 900px) {
-      .dashboard { width: 100%; }
-      .metrics, .two-maps, .three-panels, .bottom { grid-template-columns: 1fr; }
-      .drivers, .hotspot-meta, .chart-source { grid-template-columns: 1fr 1fr; }
-      .metric-value { font-size: 22px; }
-      .mini-map { height: 380px; }
+    @media (max-width:900px) {
+      .dashboard { width:100%; }
+      .metrics,.two-maps,.three-panels,.bottom { grid-template-columns:1fr; }
+      .drivers,.hotspot-meta,.chart-source { grid-template-columns:1fr 1fr; }
+      .metric-value { font-size:22px; }
+      .mini-map { height:380px; }
     }
   </style>
 </head>
 
 <body>
   <div class="dashboard">
-
     <div class="title" id="title">Ukraine Frontline Situation Dashboard</div>
 
     <section class="metrics">
@@ -529,8 +152,7 @@
         <div class="pressure-list" id="pressureList">Adatok betöltése...</div>
       </div>
     </section>
-
-    <section class="bottom">
+        <section class="bottom">
       <div class="panel">
         <div class="panel-title">Operational Assessment</div>
         <div class="assessment" id="assessment">Adatok betöltése...</div>
@@ -875,6 +497,15 @@
       document.getElementById("dSectors").textContent = n(components.active_sectors);
     }
 
+    function movingAverage(values, windowSize) {
+      return values.map((_, i) => {
+        const start = Math.max(0, i - windowSize + 1);
+        const slice = values.slice(start, i + 1);
+        const sum = slice.reduce((a, b) => a + b, 0);
+        return Math.round(sum / slice.length);
+      });
+    }
+
     function renderTrend(history) {
       const rows = Array.isArray(history)
         ? history.filter(r => r && r.date).sort((a, b) => String(a.date).localeCompare(String(b.date))).slice(-30)
@@ -882,18 +513,29 @@
 
       const labels = rows.length ? rows.map(r => r.date) : ["No history"];
       const values = rows.length ? rows.map(r => n(r.front_activity_index)) : [0];
+      const ma7 = movingAverage(values, 7);
 
       new Chart(document.getElementById("trendChart"), {
         type: "line",
         data: {
           labels,
-          datasets: [{
-            label: "Front Activity Index",
-            data: values,
-            tension: 0.35,
-            fill: false,
-            borderWidth: 2
-          }]
+          datasets: [
+            {
+              label: "Front Activity Index",
+              data: values,
+              tension: 0.35,
+              fill: false,
+              borderWidth: 2
+            },
+            {
+              label: "7-day moving average",
+              data: ma7,
+              tension: 0.35,
+              borderDash: [6, 4],
+              fill: false,
+              borderWidth: 2
+            }
+          ]
         },
         options: {
           responsive: true,
