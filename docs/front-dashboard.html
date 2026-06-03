@@ -14,7 +14,7 @@
     body { margin:0; background:#020617; color:#e5e7eb; font-family:Arial,Helvetica,sans-serif; }
     .dashboard { width:1200px; min-height:900px; margin:0 auto; padding:8px; box-sizing:border-box; background:#020617; }
     .title { border:1px solid #334155; border-radius:5px; padding:7px 10px; font-size:23px; font-weight:900; letter-spacing:1px; color:#f8fafc; margin-bottom:8px; text-transform:uppercase; }
-    .metrics { display:grid; grid-template-columns:repeat(8,1fr); gap:6px; margin-bottom:8px; }
+    .metrics { display:grid; grid-template-columns:repeat(10,1fr); gap:6px; margin-bottom:8px; }
     .metric { background:#0b1624; border:1px solid #334155; border-radius:5px; padding:8px 7px; min-height:54px; box-sizing:border-box; }
     .metric-label { font-size:9px; text-transform:uppercase; color:#cbd5e1; margin-bottom:7px; }
     .metric-value { font-size:18px; font-weight:900; color:#ff6b6b; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
@@ -25,6 +25,7 @@
 
     .two-maps { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
     .three-panels { display:grid; grid-template-columns:1.1fr 0.9fr 1fr; gap:12px; margin-bottom:12px; }
+    .v2-panels { display:grid; grid-template-columns:1.05fr .95fr; gap:12px; margin-bottom:12px; }
     .bottom { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
 
     .panel { background:#0b1624; border:1px solid #334155; border-radius:5px; padding:10px; box-sizing:border-box; }
@@ -79,12 +80,22 @@
 
     .osint-marker { background:#38bdf8; color:#020617; border:2px solid #e0f2fe; border-radius:50%; width:25px; height:25px; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:11px; box-shadow:0 0 10px rgba(56,189,248,.75); }
     .pressure-marker { background:#ef4444; color:white; border:2px solid #fecaca; border-radius:50%; width:25px; height:25px; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:11px; box-shadow:0 0 10px rgba(239,68,68,.75); }
-    .delta-label { background:rgba(255,0,51,.9); color:white; border:1px solid #fecaca; border-radius:4px; padding:3px 6px; font-size:11px; font-weight:900; box-shadow:0 0 10px rgba(255,0,51,.8); }
+    .delta-label { background:rgba(255,0,51,.94); color:white; border:2px solid #ffffff; border-radius:7px; padding:5px 8px; font-size:11px; font-weight:900; box-shadow:0 0 16px rgba(255,0,51,.95); text-align:center; line-height:1.12; }
+    .delta-label::before { content:"▲ "; color:#ffffff; }
+    .ai-summary { font-size:13px; line-height:1.5; color:#e2e8f0; }
+    .ai-highlight { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:10px; }
+    .ai-box { background:#111827; border:1px solid #334155; border-radius:5px; padding:8px; }
+    .ai-box-label { color:#94a3b8; text-transform:uppercase; font-size:9px; margin-bottom:5px; }
+    .ai-box-value { color:#f8fafc; font-size:15px; font-weight:900; }
+    .category-list { display:flex; flex-direction:column; gap:8px; }
+    .category-row { display:grid; grid-template-columns:135px 1fr 28px; gap:8px; align-items:center; font-size:12px; }
+    .category-bar-bg { height:12px; background:#1e293b; border-radius:999px; overflow:hidden; }
+    .category-bar-fill { height:12px; background:#38bdf8; border-radius:999px; }
 
     @media (max-width:900px) {
       .dashboard { width:100%; }
-      .metrics,.two-maps,.three-panels,.bottom { grid-template-columns:1fr; }
-      .drivers,.hotspot-meta,.chart-source { grid-template-columns:1fr 1fr; }
+      .metrics,.two-maps,.three-panels,.v2-panels,.bottom { grid-template-columns:1fr; }
+      .drivers,.hotspot-meta,.chart-source,.ai-highlight { grid-template-columns:1fr 1fr; }
       .metric-value { font-size:22px; }
       .mini-map { height:380px; }
     }
@@ -104,6 +115,8 @@
       <div class="metric"><div class="metric-label">OSINT Events</div><div class="metric-value" id="osint">–</div></div>
       <div class="metric"><div class="metric-label">FIRMS Hotspots</div><div class="metric-value" id="firms">–</div></div>
       <div class="metric"><div class="metric-label">Main Hotspot</div><div class="metric-value small" id="mainSector">–</div></div>
+      <div class="metric"><div class="metric-label">Delta Sector</div><div class="metric-value small" id="deltaSector">–</div></div>
+      <div class="metric"><div class="metric-label">Delta Area</div><div class="metric-value" id="deltaArea">–</div></div>
     </section>
 
     <section class="two-maps">
@@ -156,6 +169,24 @@
       </div>
     </section>
 
+    <section class="v2-panels">
+      <div class="panel">
+        <div class="panel-title">AI Front Summary</div>
+        <div class="ai-summary" id="aiSummary">Dashboard v2 summary loading...</div>
+        <div class="ai-highlight">
+          <div class="ai-box"><div class="ai-box-label">Delta sector</div><div class="ai-box-value" id="aiDeltaSector">–</div></div>
+          <div class="ai-box"><div class="ai-box-label">Delta area</div><div class="ai-box-value" id="aiDeltaArea">–</div></div>
+          <div class="ai-box"><div class="ai-box-label">Main pressure</div><div class="ai-box-value" id="aiMainPressure">–</div></div>
+          <div class="ai-box"><div class="ai-box-label">Dominant activity</div><div class="ai-box-value" id="aiDominantActivity">–</div></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Event Category Breakdown</div>
+        <div class="category-list" id="eventCategories">Adatok betöltése...</div>
+      </div>
+    </section>
+
     <section class="bottom">
       <div class="panel">
         <div class="panel-title">Operational Assessment</div>
@@ -185,6 +216,7 @@
     const LATEST_PATH = "./data/front_activity_latest.json";
     const HISTORY_PATH = "./data/history/front_activity.json";
     const TERRITORIAL_DELTA_PATH = "./data/territorial_delta.geojson";
+    const DASHBOARD_V2_PATH = "./data/dashboard_v2.json";
 
     const FIRMS_3_PATH = "../data/firms_3.json";
     const FIRMS_10_PATH = "../data/firms_10.json";
@@ -385,21 +417,21 @@
 
       if (type === "ukrainian_recapture") {
         return {
-          color: "#22c55e",
-          weight: 2.5,
+          color: "#ffffff",
+          weight: 4,
           opacity: 1,
           fillColor: "#22c55e",
-          fillOpacity: 0.34,
+          fillOpacity: 0.24,
           dashArray: "6,4"
         };
       }
 
       return {
-        color: "#ff0033",
-        weight: 2.5,
+        color: "#ffffff",
+        weight: 4,
         opacity: 1,
         fillColor: "#ff0033",
-        fillOpacity: 0.36,
+        fillOpacity: 0.24,
         dashArray: "6,4"
       };
     }
@@ -419,22 +451,22 @@
         style: styleTerritorialDelta,
         onEachFeature: function (feature, layer) {
           const props = feature.properties || {};
-          const type = props.change_type === "ukrainian_recapture"
-            ? "Ukrainian recapture"
-            : "Russian territorial gain";
-
+          const isRecapture = props.change_type === "ukrainian_recapture";
+          const type = isRecapture ? "Ukrainian recapture" : "Russian territorial gain";
+          const sign = isRecapture ? "-" : "+";
           const area = n(props.area_km2).toFixed(2);
+          const label = isRecapture ? "RECAPTURE" : "GAIN";
 
-          layer.bindPopup(`<strong>${type}</strong><br>${area} km²`);
+          layer.bindPopup(`<strong>${type}</strong><br>${sign}${area} km²`);
 
           try {
             const center = layer.getBounds().getCenter();
             L.marker(center, {
               icon: L.divIcon({
-                html: `<div class="delta-label">${props.change_type === "ukrainian_recapture" ? "-" : "+"}${area} km²</div>`,
+                html: `<div class="delta-label">${sign}${area} km²<br><span style="font-size:9px">${label}</span></div>`,
                 className: "",
-                iconSize: [90, 24],
-                iconAnchor: [45, 12]
+                iconSize: [108, 40],
+                iconAnchor: [54, 20]
               })
             }).addTo(map);
           } catch (err) {
@@ -493,10 +525,10 @@
       box.innerHTML = pressureItems.slice(0, 10).map((p, i) => `
         <div class="pressure-item">
           <div class="pressure-num">${String.fromCharCode(65 + i)}</div>
-          <div class="pressure-icon">${pressureIcon(p)}</div>
+          <div class="pressure-icon">${p.icon || pressureIcon(p)}</div>
           <div>
             <strong>${titleOf(p)}</strong><br>
-            <span style="color:#94a3b8">${sectorOf(p)}</span>
+            <span style="color:#94a3b8">${sectorOf(p)}${p.score !== undefined ? " · score " + p.score : ""}</span>
           </div>
         </div>
       `).join("");
@@ -601,6 +633,53 @@
       });
     }
 
+    function renderAISummary(v2) {
+      const summaryBox = document.getElementById("aiSummary");
+      const deltaSectorBox = document.getElementById("aiDeltaSector");
+      const deltaAreaBox = document.getElementById("aiDeltaArea");
+      const mainPressureBox = document.getElementById("aiMainPressure");
+      const dominantBox = document.getElementById("aiDominantActivity");
+
+      const territorial = v2?.territorial_sector || {};
+      const pressure = v2?.front_pressure_points || [];
+      const categories = v2?.event_categories || [];
+
+      if (summaryBox) summaryBox.textContent = v2?.ai_summary || "Nincs AI summary adat.";
+      if (deltaSectorBox) deltaSectorBox.textContent = territorial.sector || "–";
+      if (deltaAreaBox) deltaAreaBox.textContent = territorial.area_km2 ? signedKm2(territorial.change_type === "ukrainian_recapture" ? -territorial.area_km2 : territorial.area_km2) : "0.00 km²";
+      if (mainPressureBox) mainPressureBox.textContent = pressure[0]?.sector || "–";
+      if (dominantBox) dominantBox.textContent = categories[0]?.category || "–";
+
+      const deltaSectorMetric = document.getElementById("deltaSector");
+      const deltaAreaMetric = document.getElementById("deltaArea");
+      if (deltaSectorMetric) deltaSectorMetric.textContent = territorial.sector || "–";
+      if (deltaAreaMetric) {
+        const signed = territorial.change_type === "ukrainian_recapture" ? -n(territorial.area_km2) : n(territorial.area_km2);
+        deltaAreaMetric.textContent = signedKm2(signed);
+        setChangeClass(deltaAreaMetric, signed);
+      }
+    }
+
+    function renderEventCategories(v2) {
+      const box = document.getElementById("eventCategories");
+      if (!box) return;
+
+      const rows = v2?.event_categories || [];
+      if (!rows.length) {
+        box.innerHTML = `<div class="warning">Nincs kategorizált esemény.</div>`;
+        return;
+      }
+
+      const max = Math.max(...rows.map(r => n(r.count)), 1);
+      box.innerHTML = rows.slice(0, 6).map(r => `
+        <div class="category-row">
+          <div>${r.category}</div>
+          <div class="category-bar-bg"><div class="category-bar-fill" style="width:${Math.max(8, Math.round(n(r.count) / max * 100))}%"></div></div>
+          <strong>${n(r.count)}</strong>
+        </div>
+      `).join("");
+    }
+
     function renderSourceSummary(data, layerStats) {
       const territorial = data.territorial || {};
       const sources = data.data_sources || {};
@@ -622,7 +701,7 @@
       `;
     }
 
-    async function buildMap(mapId, zone, firms3, firms10, osintFeed, unitFeed, deepStateGeoJson, territorialDeltaGeoJson, visibleEventIndexes, visiblePressureItems, pressureKeySet) {
+    async function buildMap(mapId, zone, firms3, firms10, osintFeed, pressureFeed, deepStateGeoJson, territorialDeltaGeoJson, visibleEventIndexes, visiblePressureItems, pressureKeySet) {
       const centerLat = n(zone.lat) || 48.6;
       const centerLon = n(zone.lon) || 37.2;
       const zoom = n(zone.zoom) || 7;
@@ -696,7 +775,7 @@
       });
 
       let pressureShown = 0;
-      const units = asList(unitFeed);
+      const units = asList(pressureFeed);
 
       units.forEach((item) => {
         const [lat, lon] = getLatLon(item);
@@ -745,6 +824,7 @@
       const latest = await loadJson(LATEST_PATH, null);
       const history = await loadJson(HISTORY_PATH, []);
       const territorialDelta = await loadJson(TERRITORIAL_DELTA_PATH, { type: "FeatureCollection", features: [] });
+      const dashboardV2 = await loadJson(DASHBOARD_V2_PATH, { priority_osint_events: [], front_pressure_points: [], event_categories: [] });
       const firms3Raw = await loadJson(FIRMS_3_PATH, { points: [] });
       const firms10Raw = await loadJson(FIRMS_10_PATH, { points: [] });
       const osintRaw = await loadJson(OSINT_PATH, []);
@@ -752,6 +832,8 @@
 
       const firms3 = asList(firms3Raw);
       const firms10 = asList(firms10Raw);
+      const priorityOsint = asList(dashboardV2.priority_osint_events).length ? asList(dashboardV2.priority_osint_events) : asList(osintRaw);
+      const pressurePoints = asList(dashboardV2.front_pressure_points).length ? asList(dashboardV2.front_pressure_points) : asList(unitRaw);
 
       if (!latest) {
         document.getElementById("title").textContent = "Ukraine Frontline Situation Dashboard - Data Error";
@@ -796,8 +878,8 @@
       const visiblePressureItems = [];
       const pressureKeySet = new Set();
 
-      const primaryStats = await buildMap("primaryMap", hotspot, firms3, firms10, osintRaw, unitRaw, deepStateGeoJson, territorialDelta, visibleEventIndexes, visiblePressureItems, pressureKeySet);
-      const secondaryStats = await buildMap("secondaryMap", secondary, firms3, firms10, osintRaw, unitRaw, deepStateGeoJson, territorialDelta, visibleEventIndexes, visiblePressureItems, pressureKeySet);
+      const primaryStats = await buildMap("primaryMap", hotspot, firms3, firms10, priorityOsint, pressurePoints, deepStateGeoJson, territorialDelta, visibleEventIndexes, visiblePressureItems, pressureKeySet);
+      const secondaryStats = await buildMap("secondaryMap", secondary, firms3, firms10, priorityOsint, pressurePoints, deepStateGeoJson, territorialDelta, visibleEventIndexes, visiblePressureItems, pressureKeySet);
 
       document.getElementById("primaryName").textContent = primaryStats.name;
       document.getElementById("primaryZoom").textContent = primaryStats.zoom;
@@ -809,8 +891,10 @@
       document.getElementById("secondaryFirms").textContent = `${secondaryStats.firms3Shown} / ${secondaryStats.firms10Shown}`;
       document.getElementById("secondaryOsint").textContent = secondaryStats.osintShown;
 
-      renderEvents(asList(osintRaw), visibleEventIndexes);
-      renderPressureList(visiblePressureItems);
+      renderEvents(priorityOsint, visibleEventIndexes);
+      renderPressureList(pressurePoints.length ? pressurePoints : visiblePressureItems);
+      renderAISummary(dashboardV2);
+      renderEventCategories(dashboardV2);
       renderSectors(latest.top_sectors || []);
       renderAssessment(latest);
       renderTrend(history);
