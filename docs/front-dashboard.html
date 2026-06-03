@@ -229,16 +229,16 @@
       "https://raw.githubusercontent.com/cyterat/deepstate-map-data/main/data/";
 
     const SECTOR_CENTERS = {
-      "Pokrovsk": { lat: 48.28, lon: 37.18, zoom: 9, radius_km: 120 },
-      "Crimea": { lat: 45.20, lon: 34.10, zoom: 8, radius_km: 180 },
-      "Kharkiv": { lat: 49.99, lon: 36.23, zoom: 8, radius_km: 120 },
-      "Zaporizhzhia": { lat: 47.84, lon: 35.14, zoom: 8, radius_km: 130 },
-      "Kherson-Dnipro": { lat: 46.64, lon: 32.61, zoom: 8, radius_km: 140 },
-      "Lyman": { lat: 48.99, lon: 37.80, zoom: 9, radius_km: 100 },
-      "Kupiansk": { lat: 49.71, lon: 37.61, zoom: 9, radius_km: 100 },
-      "Bakhmut-Toretsk": { lat: 48.58, lon: 37.95, zoom: 9, radius_km: 115 },
-      "Kurakhove": { lat: 47.99, lon: 37.28, zoom: 9, radius_km: 100 },
-      "Velyka Novosilka": { lat: 47.84, lon: 36.84, zoom: 9, radius_km: 100 }
+      "Pokrovsk": { lat: 48.28, lon: 37.18, zoom: 9, radius_km: 72 },
+      "Crimea": { lat: 45.20, lon: 34.10, zoom: 8, radius_km: 105 },
+      "Kharkiv": { lat: 49.99, lon: 36.23, zoom: 8, radius_km: 75 },
+      "Zaporizhzhia": { lat: 47.84, lon: 35.14, zoom: 8, radius_km: 80 },
+      "Kherson-Dnipro": { lat: 46.64, lon: 32.61, zoom: 8, radius_km: 85 },
+      "Lyman": { lat: 48.99, lon: 37.80, zoom: 9, radius_km: 60 },
+      "Kupiansk": { lat: 49.71, lon: 37.61, zoom: 9, radius_km: 60 },
+      "Bakhmut-Toretsk": { lat: 48.58, lon: 37.95, zoom: 9, radius_km: 70 },
+      "Kurakhove": { lat: 47.99, lon: 37.28, zoom: 9, radius_km: 60 },
+      "Velyka Novosilka": { lat: 47.84, lon: 36.84, zoom: 9, radius_km: 60 }
     };
 
     async function loadJson(path, fallback) {
@@ -443,6 +443,46 @@
       return SECTOR_CENTERS[sectorName] || null;
     }
 
+    function addDraggableLabel(map, targetGroup, anchorLatLng, html, options = {}) {
+      const iconSize = options.iconSize || [120, 22];
+      const iconAnchor = options.iconAnchor || [60, 11];
+      const lineColor = options.lineColor || "#FFC107";
+      const lineOpacity = options.lineOpacity || 0.55;
+
+      const connector = L.polyline([anchorLatLng, anchorLatLng], {
+        color: lineColor,
+        weight: 1.4,
+        opacity: 0,
+        dashArray: "4,6",
+        interactive: false
+      }).addTo(targetGroup);
+
+      const labelMarker = L.marker(anchorLatLng, {
+        draggable: true,
+        autoPan: true,
+        zIndexOffset: 900,
+        icon: L.divIcon({
+          html,
+          className: "",
+          iconSize,
+          iconAnchor
+        })
+      }).addTo(targetGroup);
+
+      function updateConnector() {
+        const current = labelMarker.getLatLng();
+        connector.setLatLngs([anchorLatLng, current]);
+        const distance = anchorLatLng.distanceTo(current);
+        connector.setStyle({ opacity: distance > 1200 ? lineOpacity : 0 });
+      }
+
+      labelMarker.on("drag", updateConnector);
+      labelMarker.on("dragend", updateConnector);
+      updateConnector();
+
+      return { marker: labelMarker, connector };
+    }
+
     function addSectorAreaLayers(map, zone) {
       const group = L.layerGroup().addTo(map);
       const primarySectorName = zone?.sector || "";
@@ -479,15 +519,13 @@
             interactive: false
           }).addTo(group);
 
-          L.marker([sector.lat, sector.lon], {
-            icon: L.divIcon({
-              html: `<div style="background:rgba(255,193,7,.88);color:#020617;border:1px solid #fff;border-radius:4px;padding:2px 5px;font-size:10px;font-weight:900;white-space:nowrap;box-shadow:0 0 8px rgba(255,193,7,.7);">${sectorName}</div>`,
-              className: "",
-              iconSize: [120, 20],
-              iconAnchor: [60, 10]
-            }),
-            interactive: false
-          }).addTo(group);
+          addDraggableLabel(
+            map,
+            group,
+            L.latLng(sector.lat, sector.lon),
+            `<div class="sector-label">${sectorName}</div>`,
+            { iconSize: [126, 22], iconAnchor: [63, 11], lineColor: "#FFC107", lineOpacity: 0.50 }
+          );
         });
       }
 
@@ -532,14 +570,13 @@
 
           try {
             const center = layer.getBounds().getCenter();
-            L.marker(center, {
-              icon: L.divIcon({
-                html: `<div class="delta-label">${sign}${area} km²<br><span style="font-size:9px">${label}</span></div>`,
-                className: "",
-                iconSize: [108, 40],
-                iconAnchor: [54, 20]
-              })
-            }).addTo(map);
+            addDraggableLabel(
+              map,
+              map,
+              center,
+              `<div class="delta-label">▲ ${sign}${area} km²<br><span style="font-size:9px">${label}</span></div>`,
+              { iconSize: [122, 42], iconAnchor: [61, 21], lineColor: isRecapture ? "#22c55e" : "#ff0033", lineOpacity: 0.48 }
+            );
           } catch (err) {
             console.warn("Delta label error", err);
           }
