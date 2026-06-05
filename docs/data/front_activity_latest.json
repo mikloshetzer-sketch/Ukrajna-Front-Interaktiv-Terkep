@@ -1,33 +1,33 @@
 {
-  "date": "2026-06-04",
-  "updated_utc": "2026-06-04T20:32:20.741520+00:00",
-  "front_activity_index": 70,
+  "date": "2026-06-05",
+  "updated_utc": "2026-06-05T13:33:08.123936+00:00",
+  "front_activity_index": 66,
   "status": "HIGH",
   "components": {
     "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 5.5,
+    "territorial_change": 3.4,
     "active_sectors": 10,
-    "critical_events": 10
+    "critical_events": 8
   },
   "counts": {
-    "osint": 29,
-    "firms_3d": 281,
-    "firms_10d": 1151,
-    "firms_30d": 10801,
-    "critical_events": 9,
-    "active_sectors": 10
+    "osint": 10,
+    "firms_3d": 211,
+    "firms_10d": 1017,
+    "firms_30d": 8897,
+    "critical_events": 4,
+    "active_sectors": 9
   },
   "territorial": {
     "available": true,
     "error": null,
-    "previous_file": "deepstatemap_data_20260603.geojson",
-    "current_file": "deepstatemap_data_20260604.geojson",
-    "previous_total_km2": 116588.52,
-    "current_total_km2": 116590.35,
-    "russian_gain_km2": 1.83,
+    "previous_file": "deepstatemap_data_20260604.geojson",
+    "current_file": "deepstatemap_data_20260605.geojson",
+    "previous_total_km2": 116590.35,
+    "current_total_km2": 116591.49,
+    "russian_gain_km2": 1.14,
     "ukrainian_recapture_km2": 0,
-    "net_change_km2": 1.83,
+    "net_change_km2": 1.14,
     "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
@@ -35,46 +35,28 @@
     "lat": 48.28,
     "lon": 37.18,
     "zoom": 9,
-    "score": 100,
-    "change_km2": 1.83,
+    "score": 38,
+    "change_km2": 1.14,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
     {
-      "sector": "Pokrovsk",
-      "osint": 12,
-      "firms": 5,
-      "score": 100
-    },
-    {
       "sector": "Other / Unclassified",
-      "osint": 9,
-      "firms": 202,
+      "osint": 5,
+      "firms": 159,
       "score": 100
     },
     {
-      "sector": "Crimea",
-      "osint": 4,
-      "firms": 3,
-      "score": 51
-    },
-    {
-      "sector": "Zaporizhzhia",
-      "osint": 2,
-      "firms": 15,
+      "sector": "Pokrovsk",
+      "osint": 3,
+      "firms": 2,
       "score": 38
     },
     {
-      "sector": "Kherson-Dnipro",
+      "sector": "Zaporizhzhia",
       "osint": 1,
-      "firms": 16,
-      "score": 26
-    },
-    {
-      "sector": "Bakhmut-Toretsk",
-      "osint": 0,
-      "firms": 13,
-      "score": 12
+      "firms": 9,
+      "score": 20
     },
     {
       "sector": "Kurakhove",
@@ -83,42 +65,55 @@
       "score": 12
     },
     {
-      "sector": "Kharkiv",
+      "sector": "Kherson-Dnipro",
       "osint": 0,
       "firms": 11,
       "score": 10
+    },
+    {
+      "sector": "Lyman",
+      "osint": 0,
+      "firms": 9,
+      "score": 8
+    },
+    {
+      "sector": "Bakhmut-Toretsk",
+      "osint": 0,
+      "firms": 9,
+      "score": 8
+    },
+    {
+      "sector": "Kharkiv",
+      "osint": 0,
+      "firms": 6,
+      "score": 5
     }
   ],
   "top_events": [
+    {
+      "title": "Reported drone strike near Zaporizzsja",
+      "source": "forrás nélkül",
+      "sector": "Zaporizhzhia"
+    },
     {
       "title": "Reported military-related update near Donyeck",
       "source": "forrás nélkül",
       "sector": "Kurakhove"
     },
     {
-      "title": "Swedish court approves arrest of Russian shadow fleet vessel",
+      "title": "Russian Offensive Campaign Assessment, June 4, 2026",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     },
     {
-      "title": "“Russian casualties have exceeded the number of wounded”: U.S. Secretary of State Marco Rubio",
+      "title": "Russian Offensive Campaign Assessment, June 3, 2026",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     },
     {
-      "title": "Reported military-related update near Zaporizzsja",
+      "title": "Russian Offensive Campaign Assessment, June 2, 2026",
       "source": "forrás nélkül",
-      "sector": "Zaporizhzhia"
-    },
-    {
-      "title": "Reported drone strike near Crimea",
-      "source": "forrás nélkül",
-      "sector": "Crimea"
-    },
-    {
-      "title": "Reported rear-area strike near Zaporizzsja",
-      "source": "forrás nélkül",
-      "sector": "Zaporizhzhia"
+      "sector": "Pokrovsk"
     }
   ],
   "data_sources": {
