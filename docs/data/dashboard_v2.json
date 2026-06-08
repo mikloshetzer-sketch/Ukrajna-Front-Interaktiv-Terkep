@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-06-08T19:32:32.420616+00:00",
+  "updated_utc": "2026-06-08T20:39:56.461366+00:00",
   "date": "2026-06-08",
   "territorial_sector": {
     "sector": "Bakhmut-Toretsk",
@@ -96,6 +96,30 @@
       "priority": 94
     },
     {
+      "title": "Ukraine’s Unmanned Forces Strike Five Russian Shadow Fleet Vessels in Single Night Operation",
+      "source": "forrás nélkül",
+      "sector": "Crimea",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 0,
+      "event_type": "strike",
+      "event_label": "Strike / attack",
+      "icon": "✹",
+      "priority": 94
+    },
+    {
+      "title": "Information Provocations Surrounding Zaporizhzhia NPP: Why Russia Keeps Faking “Ukrainian Strikes”",
+      "source": "forrás nélkül",
+      "sector": "Zaporizhzhia",
+      "lat": 47.838,
+      "lon": 35.139,
+      "distance_to_sector_km": 0.2,
+      "event_type": "strike",
+      "event_label": "Strike / attack",
+      "icon": "✹",
+      "priority": 91
+    },
+    {
       "title": "Reported rear-area strike near Odessza",
       "source": "forrás nélkül",
       "sector": "Rear Area / Strategic Depth",
@@ -120,18 +144,6 @@
       "priority": 66
     },
     {
-      "title": "Reported military-related update near Moszkva",
-      "source": "forrás nélkül",
-      "sector": "Moscow / Russia Interior",
-      "lat": 55.755,
-      "lon": 37.617,
-      "distance_to_sector_km": 0,
-      "event_type": "military_update",
-      "event_label": "Military update",
-      "icon": "●",
-      "priority": 66
-    },
-    {
       "title": "Reported military-related update near Kyiv",
       "source": "forrás nélkül",
       "sector": "Kyiv Area",
@@ -142,18 +154,6 @@
       "event_label": "Military update",
       "icon": "●",
       "priority": 66
-    },
-    {
-      "title": "Reported military-related update near Donyeck",
-      "source": "forrás nélkül",
-      "sector": "Kurakhove",
-      "lat": 48.015,
-      "lon": 37.802,
-      "distance_to_sector_km": 38.9,
-      "event_type": "military_update",
-      "event_label": "Military update",
-      "icon": "●",
-      "priority": 63
     }
   ],
   "front_pressure_points": [
@@ -169,6 +169,17 @@
       "icon": "🔥"
     },
     {
+      "sector": "Pokrovsk",
+      "title": "Pokrovsk OSINT activity cluster",
+      "lat": 48.28,
+      "lon": 37.18,
+      "score": 100,
+      "osint": 7,
+      "firms": 21,
+      "pressure_type": "osint_activity_cluster",
+      "icon": "⚔"
+    },
+    {
       "sector": "Kherson-Dnipro",
       "title": "Kherson-Dnipro FIRMS thermal cluster",
       "lat": 46.64,
@@ -178,17 +189,6 @@
       "firms": 82,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
-    },
-    {
-      "sector": "Pokrovsk",
-      "title": "Pokrovsk OSINT activity cluster",
-      "lat": 48.28,
-      "lon": 37.18,
-      "score": 55,
-      "osint": 3,
-      "firms": 21,
-      "pressure_type": "osint_activity_cluster",
-      "icon": "⚔"
     },
     {
       "sector": "Bakhmut-Toretsk",
@@ -213,6 +213,17 @@
       "icon": "🔥"
     },
     {
+      "sector": "Zaporizhzhia",
+      "title": "Zaporizhzhia pressure axis",
+      "lat": 47.84,
+      "lon": 35.14,
+      "score": 31,
+      "osint": 2,
+      "firms": 8,
+      "pressure_type": "pressure_axis",
+      "icon": "⚑"
+    },
+    {
       "sector": "Kharkiv",
       "title": "Kharkiv FIRMS thermal cluster",
       "lat": 49.99,
@@ -222,38 +233,27 @@
       "firms": 25,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
-    },
-    {
-      "sector": "Zaporizhzhia",
-      "title": "Zaporizhzhia pressure axis",
-      "lat": 47.84,
-      "lon": 35.14,
-      "score": 19,
-      "osint": 1,
-      "firms": 8,
-      "pressure_type": "pressure_axis",
-      "icon": "⚑"
     }
   ],
   "event_categories": [
     {
-      "category": "Military update",
-      "count": 4
+      "category": "Strike / attack",
+      "count": 5
     },
     {
       "category": "Frontline pressure",
       "count": 3
     },
     {
-      "category": "Strike / attack",
-      "count": 3
+      "category": "Drone / UAV activity",
+      "count": 2
     },
     {
-      "category": "Drone / UAV activity",
+      "category": "Military update",
       "count": 2
     }
   ],
-  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 65. Russian forces gained approximately 1.99 km², closest to the Bakhmut-Toretsk sector. The main pressure focus is Lyman. The strongest event category is Drone / UAV activity. The system processed 12 OSINT events, 992 short-term FIRMS hotspots and 10 active sectors.",
+  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 65. Russian forces gained approximately 1.99 km², closest to the Bakhmut-Toretsk sector. The main pressure focus is Lyman. The strongest event category is Drone / UAV activity. The system processed 17 OSINT events, 992 short-term FIRMS hotspots and 10 active sectors.",
   "counts": {
     "priority_osint": 12,
     "pressure_points": 7,
