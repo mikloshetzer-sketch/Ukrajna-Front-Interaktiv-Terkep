@@ -1,33 +1,33 @@
 {
-  "date": "2026-06-08",
-  "updated_utc": "2026-06-08T20:39:54.937360+00:00",
-  "front_activity_index": 65,
-  "status": "HIGH",
+  "date": "2026-06-09",
+  "updated_utc": "2026-06-09T19:38:55.398041+00:00",
+  "front_activity_index": 82,
+  "status": "CRITICAL",
   "components": {
     "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 6.0,
+    "territorial_change": 16.5,
     "active_sectors": 10,
-    "critical_events": 4
+    "critical_events": 10
   },
   "counts": {
-    "osint": 17,
-    "firms_3d": 992,
-    "firms_10d": 1820,
-    "firms_30d": 6010,
-    "critical_events": 2,
-    "active_sectors": 10
+    "osint": 15,
+    "firms_3d": 975,
+    "firms_10d": 2003,
+    "firms_30d": 5964,
+    "critical_events": 5,
+    "active_sectors": 9
   },
   "territorial": {
     "available": true,
     "error": null,
-    "previous_file": "deepstatemap_data_20260607.geojson",
-    "current_file": "deepstatemap_data_20260608.geojson",
-    "previous_total_km2": 116593.1,
-    "current_total_km2": 116595.09,
-    "russian_gain_km2": 1.99,
+    "previous_file": "deepstatemap_data_20260608.geojson",
+    "current_file": "deepstatemap_data_20260609.geojson",
+    "previous_total_km2": 116595.09,
+    "current_total_km2": 116600.6,
+    "russian_gain_km2": 5.51,
     "ukrainian_recapture_km2": 0,
-    "net_change_km2": 1.99,
+    "net_change_km2": 5.51,
     "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
@@ -36,64 +36,79 @@
     "lon": 37.8,
     "zoom": 9,
     "score": 100,
-    "change_km2": 1.99,
+    "change_km2": 5.51,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
     {
       "sector": "Lyman",
       "osint": 0,
-      "firms": 321,
-      "score": 100
-    },
-    {
-      "sector": "Pokrovsk",
-      "osint": 7,
-      "firms": 21,
+      "firms": 348,
       "score": 100
     },
     {
       "sector": "Other / Unclassified",
-      "osint": 6,
-      "firms": 458,
+      "osint": 5,
+      "firms": 429,
       "score": 100
     },
     {
-      "sector": "Kherson-Dnipro",
-      "osint": 0,
-      "firms": 82,
-      "score": 74
+      "sector": "Pokrovsk",
+      "osint": 6,
+      "firms": 19,
+      "score": 89
     },
     {
       "sector": "Kupiansk",
       "osint": 0,
-      "firms": 52,
-      "score": 47
+      "firms": 60,
+      "score": 54
     },
     {
-      "sector": "Zaporizhzhia",
-      "osint": 2,
-      "firms": 8,
-      "score": 31
+      "sector": "Kherson-Dnipro",
+      "osint": 0,
+      "firms": 50,
+      "score": 45
     },
     {
       "sector": "Kharkiv",
-      "osint": 0,
-      "firms": 25,
-      "score": 22
+      "osint": 1,
+      "firms": 27,
+      "score": 36
     },
     {
-      "sector": "Bakhmut-Toretsk",
-      "osint": 0,
-      "firms": 21,
-      "score": 19
+      "sector": "Zaporizhzhia",
+      "osint": 1,
+      "firms": 16,
+      "score": 26
+    },
+    {
+      "sector": "Crimea",
+      "osint": 2,
+      "firms": 0,
+      "score": 24
     }
   ],
   "top_events": [
     {
-      "title": "Reported rear-area strike near Krím",
+      "title": "Ukraine Strikes Chonhar Bridge, Cutting Key Russian Supply Route from Crimea",
       "source": "forrás nélkül",
       "sector": "Crimea"
+    },
+    {
+      "title": "Reported drone strike near Krím",
+      "source": "forrás nélkül",
+      "sector": "Crimea"
+    },
+    {
+      "title": "Reported drone strike near Harkiv",
+      "source": "forrás nélkül",
+      "sector": "Kharkiv"
+    },
+    {
+      "title": "Russian Offensive Campaign Assessment, June 8, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk"
     },
     {
       "title": "UK-led Operation Interflex enters new phase of specialist training for Ukraine",
@@ -104,21 +119,6 @@
       "title": "Information Provocations Surrounding Zaporizhzhia NPP: Why Russia Keeps Faking “Ukrainian Strikes”",
       "source": "forrás nélkül",
       "sector": "Zaporizhzhia"
-    },
-    {
-      "title": "Mathematics on the battlefield: President of Finland Names 7 of Ukraine’s Advantages in the War Against Russia",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "UK, French and German Leaders Discuss Peace Efforts with Ukraine’s President, Outline Conditions for Putin",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Reported military-related update near Donyeck",
-      "source": "forrás nélkül",
-      "sector": "Kurakhove"
     }
   ],
   "data_sources": {
