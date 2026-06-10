@@ -1,33 +1,33 @@
 {
-  "date": "2026-06-09",
-  "updated_utc": "2026-06-09T20:27:35.189705+00:00",
-  "front_activity_index": 82,
+  "date": "2026-06-10",
+  "updated_utc": "2026-06-10T21:07:35.675079+00:00",
+  "front_activity_index": 81,
   "status": "CRITICAL",
   "components": {
     "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 16.5,
+    "territorial_change": 16.1,
     "active_sectors": 10,
     "critical_events": 10
   },
   "counts": {
-    "osint": 15,
-    "firms_3d": 975,
-    "firms_10d": 2003,
-    "firms_30d": 5964,
-    "critical_events": 5,
-    "active_sectors": 9
+    "osint": 20,
+    "firms_3d": 978,
+    "firms_10d": 2182,
+    "firms_30d": 6092,
+    "critical_events": 8,
+    "active_sectors": 8
   },
   "territorial": {
     "available": true,
     "error": null,
-    "previous_file": "deepstatemap_data_20260608.geojson",
-    "current_file": "deepstatemap_data_20260609.geojson",
-    "previous_total_km2": 116595.09,
-    "current_total_km2": 116600.6,
-    "russian_gain_km2": 5.51,
+    "previous_file": "deepstatemap_data_20260609.geojson",
+    "current_file": "deepstatemap_data_20260610.geojson",
+    "previous_total_km2": 116600.6,
+    "current_total_km2": 116605.97,
+    "russian_gain_km2": 5.37,
     "ukrainian_recapture_km2": 0,
-    "net_change_km2": 5.51,
+    "net_change_km2": 5.37,
     "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
@@ -36,64 +36,64 @@
     "lon": 37.8,
     "zoom": 9,
     "score": 100,
-    "change_km2": 5.51,
+    "change_km2": 5.37,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
     {
       "sector": "Lyman",
       "osint": 0,
-      "firms": 348,
+      "firms": 312,
+      "score": 100
+    },
+    {
+      "sector": "Pokrovsk",
+      "osint": 9,
+      "firms": 7,
       "score": 100
     },
     {
       "sector": "Other / Unclassified",
       "osint": 5,
-      "firms": 429,
+      "firms": 437,
       "score": 100
-    },
-    {
-      "sector": "Pokrovsk",
-      "osint": 6,
-      "firms": 19,
-      "score": 89
     },
     {
       "sector": "Kupiansk",
       "osint": 0,
-      "firms": 60,
-      "score": 54
+      "firms": 75,
+      "score": 68
     },
     {
       "sector": "Kherson-Dnipro",
       "osint": 0,
-      "firms": 50,
-      "score": 45
+      "firms": 64,
+      "score": 58
+    },
+    {
+      "sector": "Zaporizhzhia",
+      "osint": 2,
+      "firms": 31,
+      "score": 52
     },
     {
       "sector": "Kharkiv",
       "osint": 1,
-      "firms": 27,
-      "score": 36
-    },
-    {
-      "sector": "Zaporizhzhia",
-      "osint": 1,
-      "firms": 16,
-      "score": 26
+      "firms": 30,
+      "score": 39
     },
     {
       "sector": "Crimea",
-      "osint": 2,
+      "osint": 3,
       "firms": 0,
-      "score": 24
+      "score": 36
     }
   ],
   "top_events": [
     {
-      "title": "Ukraine Strikes Chonhar Bridge, Cutting Key Russian Supply Route from Crimea",
+      "title": "Reported military-related update near Krasznodar",
       "source": "forrás nélkül",
-      "sector": "Crimea"
+      "sector": "Other / Unclassified"
     },
     {
       "title": "Reported drone strike near Krím",
@@ -101,24 +101,24 @@
       "sector": "Crimea"
     },
     {
-      "title": "Reported drone strike near Harkiv",
-      "source": "forrás nélkül",
-      "sector": "Kharkiv"
-    },
-    {
-      "title": "Russian Offensive Campaign Assessment, June 8, 2026",
+      "title": "President of Ukraine and New Prime Minister of Latvia Signed a Drone Deal",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     },
     {
-      "title": "UK-led Operation Interflex enters new phase of specialist training for Ukraine",
+      "title": "Ukrainian-made interceptor drones are already autonomously take down Shahed-type UAVs",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     },
     {
-      "title": "Information Provocations Surrounding Zaporizhzhia NPP: Why Russia Keeps Faking “Ukrainian Strikes”",
+      "title": "Ukraine and Estonia Signed the Joint Declaration on Enhanced Security and Defense Cooperation",
       "source": "forrás nélkül",
-      "sector": "Zaporizhzhia"
+      "sector": "Pokrovsk"
+    },
+    {
+      "title": "Reported ground assault or offensive activity near Krím",
+      "source": "forrás nélkül",
+      "sector": "Crimea"
     }
   ],
   "data_sources": {

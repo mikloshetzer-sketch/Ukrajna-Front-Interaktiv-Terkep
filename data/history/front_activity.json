@@ -1433,5 +1433,137 @@
       "deepstate": "cyterat/deepstate-map-data via GitHub API"
     },
     "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
+  },
+  {
+    "date": "2026-06-10",
+    "updated_utc": "2026-06-10T21:07:35.675079+00:00",
+    "front_activity_index": 81,
+    "status": "CRITICAL",
+    "components": {
+      "osint_density": 25,
+      "firms_activity": 20,
+      "territorial_change": 16.1,
+      "active_sectors": 10,
+      "critical_events": 10
+    },
+    "counts": {
+      "osint": 20,
+      "firms_3d": 978,
+      "firms_10d": 2182,
+      "firms_30d": 6092,
+      "critical_events": 8,
+      "active_sectors": 8
+    },
+    "territorial": {
+      "available": true,
+      "error": null,
+      "previous_file": "deepstatemap_data_20260609.geojson",
+      "current_file": "deepstatemap_data_20260610.geojson",
+      "previous_total_km2": 116600.6,
+      "current_total_km2": 116605.97,
+      "russian_gain_km2": 5.37,
+      "ukrainian_recapture_km2": 0,
+      "net_change_km2": 5.37,
+      "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    },
+    "territorial_hotspot": {
+      "sector": "Lyman",
+      "lat": 48.99,
+      "lon": 37.8,
+      "zoom": 9,
+      "score": 100,
+      "change_km2": 5.37,
+      "method": "Top classified sector based on OSINT + FIRMS density"
+    },
+    "top_sectors": [
+      {
+        "sector": "Lyman",
+        "osint": 0,
+        "firms": 312,
+        "score": 100
+      },
+      {
+        "sector": "Pokrovsk",
+        "osint": 9,
+        "firms": 7,
+        "score": 100
+      },
+      {
+        "sector": "Other / Unclassified",
+        "osint": 5,
+        "firms": 437,
+        "score": 100
+      },
+      {
+        "sector": "Kupiansk",
+        "osint": 0,
+        "firms": 75,
+        "score": 68
+      },
+      {
+        "sector": "Kherson-Dnipro",
+        "osint": 0,
+        "firms": 64,
+        "score": 58
+      },
+      {
+        "sector": "Zaporizhzhia",
+        "osint": 2,
+        "firms": 31,
+        "score": 52
+      },
+      {
+        "sector": "Kharkiv",
+        "osint": 1,
+        "firms": 30,
+        "score": 39
+      },
+      {
+        "sector": "Crimea",
+        "osint": 3,
+        "firms": 0,
+        "score": 36
+      }
+    ],
+    "top_events": [
+      {
+        "title": "Reported military-related update near Krasznodar",
+        "source": "forrás nélkül",
+        "sector": "Other / Unclassified"
+      },
+      {
+        "title": "Reported drone strike near Krím",
+        "source": "forrás nélkül",
+        "sector": "Crimea"
+      },
+      {
+        "title": "President of Ukraine and New Prime Minister of Latvia Signed a Drone Deal",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Ukrainian-made interceptor drones are already autonomously take down Shahed-type UAVs",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Ukraine and Estonia Signed the Joint Declaration on Enhanced Security and Defense Cooperation",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Reported ground assault or offensive activity near Krím",
+        "source": "forrás nélkül",
+        "sector": "Crimea"
+      }
+    ],
+    "data_sources": {
+      "osint": "data/osint_feed.json",
+      "firms_3d": "data/firms_3.json",
+      "firms_10d": "data/firms_10.json",
+      "firms_30d": "data/firms_30.json",
+      "deepstate": "cyterat/deepstate-map-data via GitHub API"
+    },
+    "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
   }
 ]
