@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-06-12T18:01:56.150430+00:00",
+  "updated_utc": "2026-06-12T20:34:55.759931+00:00",
   "date": "2026-06-12",
   "territorial_sector": {
     "sector": "Bakhmut-Toretsk",
@@ -12,18 +12,6 @@
   },
   "priority_osint_events": [
     {
-      "title": "Reported drone strike near Moszkva",
-      "source": "forrás nélkül",
-      "sector": "Moscow / Russia Interior",
-      "lat": 55.755,
-      "lon": 37.617,
-      "distance_to_sector_km": 0,
-      "event_type": "drone",
-      "event_label": "Drone / UAV activity",
-      "icon": "🛩",
-      "priority": 106
-    },
-    {
       "title": "Reported drone strike near Krím",
       "source": "forrás nélkül",
       "sector": "Crimea",
@@ -34,18 +22,6 @@
       "event_label": "Drone / UAV activity",
       "icon": "🛩",
       "priority": 106
-    },
-    {
-      "title": "Reported missile strike near Kyiv",
-      "source": "forrás nélkül",
-      "sector": "Kyiv Area",
-      "lat": 50.45,
-      "lon": 30.523,
-      "distance_to_sector_km": 0,
-      "event_type": "missile",
-      "event_label": "Missile / rocket strike",
-      "icon": "☄",
-      "priority": 104
     },
     {
       "title": "“Within a week, we laid 3,000 mines and drove the enemy into a ‘kill zone’”: how the engineers of the 91st Support Brigade turned drones into a tool of remote warfare",
@@ -120,18 +96,6 @@
       "priority": 100
     },
     {
-      "title": "Reported ground assault or offensive activity near Krím",
-      "source": "forrás nélkül",
-      "sector": "Crimea",
-      "lat": 45.3,
-      "lon": 34.4,
-      "distance_to_sector_km": 0,
-      "event_type": "frontline",
-      "event_label": "Frontline pressure",
-      "icon": "⚔",
-      "priority": 98
-    },
-    {
       "title": "Reported ground assault or offensive activity near Moszkva",
       "source": "forrás nélkül",
       "sector": "Moscow / Russia Interior",
@@ -154,6 +118,42 @@
       "event_label": "Frontline pressure",
       "icon": "⚔",
       "priority": 95
+    },
+    {
+      "title": "Russian Offensive Campaign Assessment, June 10, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "frontline",
+      "event_label": "Frontline pressure",
+      "icon": "⚔",
+      "priority": 95
+    },
+    {
+      "title": "Russian Offensive Campaign Assessment, June 9, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "frontline",
+      "event_label": "Frontline pressure",
+      "icon": "⚔",
+      "priority": 95
+    },
+    {
+      "title": "Ukraine strikes two Tatarstan refineries, synthetic rubber plant, and dozens of military targets overnight",
+      "source": "forrás nélkül",
+      "sector": "Moscow / Russia Interior",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 0,
+      "event_type": "strike",
+      "event_label": "Strike / attack",
+      "icon": "✹",
+      "priority": 94
     }
   ],
   "front_pressure_points": [
@@ -191,17 +191,6 @@
       "icon": "🔥"
     },
     {
-      "sector": "Crimea",
-      "title": "Crimea OSINT activity cluster",
-      "lat": 45.2,
-      "lon": 34.1,
-      "score": 60,
-      "osint": 5,
-      "firms": 0,
-      "pressure_type": "osint_activity_cluster",
-      "icon": "⚔"
-    },
-    {
       "sector": "Kupiansk",
       "title": "Kupiansk FIRMS thermal cluster",
       "lat": 49.71,
@@ -224,6 +213,17 @@
       "icon": "🔥"
     },
     {
+      "sector": "Crimea",
+      "title": "Crimea OSINT activity cluster",
+      "lat": 45.2,
+      "lon": 34.1,
+      "score": 36,
+      "osint": 3,
+      "firms": 0,
+      "pressure_type": "osint_activity_cluster",
+      "icon": "⚔"
+    },
+    {
       "sector": "Zaporizhzhia",
       "title": "Zaporizhzhia FIRMS thermal cluster",
       "lat": 47.84,
@@ -238,22 +238,26 @@
   "event_categories": [
     {
       "category": "Drone / UAV activity",
-      "count": 6
+      "count": 5
     },
     {
       "category": "Frontline pressure",
-      "count": 3
+      "count": 4
     },
     {
       "category": "Missile / rocket strike",
-      "count": 2
+      "count": 1
     },
     {
       "category": "Logistics / infrastructure strike",
       "count": 1
+    },
+    {
+      "category": "Strike / attack",
+      "count": 1
     }
   ],
-  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 68. Russian forces gained approximately 0.90 km², closest to the Bakhmut-Toretsk sector. The main pressure focus is Lyman. The strongest event category is Drone / UAV activity. The system processed 27 OSINT events, 948 short-term FIRMS hotspots and 9 active sectors.",
+  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 68. Russian forces gained approximately 0.90 km², closest to the Bakhmut-Toretsk sector. The main pressure focus is Lyman. The strongest event category is Drone / UAV activity. The system processed 21 OSINT events, 948 short-term FIRMS hotspots and 9 active sectors.",
   "counts": {
     "priority_osint": 12,
     "pressure_points": 7,
