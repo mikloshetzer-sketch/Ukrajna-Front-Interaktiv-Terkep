@@ -1,74 +1,68 @@
 {
-  "date": "2026-06-13",
-  "updated_utc": "2026-06-13T20:20:14.822262+00:00",
-  "front_activity_index": 73,
-  "status": "HIGH",
+  "date": "2026-06-14",
+  "updated_utc": "2026-06-14T18:05:20.650564+00:00",
+  "front_activity_index": 86,
+  "status": "CRITICAL",
   "components": {
     "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 8.5,
+    "territorial_change": 20.6,
     "active_sectors": 10,
     "critical_events": 10
   },
   "counts": {
-    "osint": 20,
-    "firms_3d": 917,
-    "firms_10d": 2834,
-    "firms_30d": 6597,
-    "critical_events": 8,
+    "osint": 17,
+    "firms_3d": 871,
+    "firms_10d": 3111,
+    "firms_30d": 6718,
+    "critical_events": 5,
     "active_sectors": 9
   },
   "territorial": {
     "available": true,
     "error": null,
-    "previous_file": "deepstatemap_data_20260612.geojson",
-    "current_file": "deepstatemap_data_20260613.geojson",
-    "previous_total_km2": 116606.87,
-    "current_total_km2": 116609.7,
-    "russian_gain_km2": 2.83,
+    "previous_file": "deepstatemap_data_20260613.geojson",
+    "current_file": "deepstatemap_data_20260614.geojson",
+    "previous_total_km2": 116609.7,
+    "current_total_km2": 116616.57,
+    "russian_gain_km2": 6.86,
     "ukrainian_recapture_km2": 0,
-    "net_change_km2": 2.83,
+    "net_change_km2": 6.86,
     "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
-    "sector": "Lyman",
-    "lat": 48.99,
-    "lon": 37.8,
+    "sector": "Pokrovsk",
+    "lat": 48.28,
+    "lon": 37.18,
     "zoom": 9,
     "score": 100,
-    "change_km2": 2.83,
+    "change_km2": 6.86,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
     {
-      "sector": "Lyman",
-      "osint": 0,
-      "firms": 173,
-      "score": 100
-    },
-    {
       "sector": "Pokrovsk",
-      "osint": 15,
-      "firms": 3,
+      "osint": 12,
+      "firms": 2,
       "score": 100
     },
     {
       "sector": "Kherson-Dnipro",
       "osint": 0,
-      "firms": 142,
+      "firms": 321,
       "score": 100
     },
     {
       "sector": "Other / Unclassified",
       "osint": 3,
-      "firms": 456,
+      "firms": 384,
       "score": 100
     },
     {
       "sector": "Kupiansk",
       "osint": 0,
-      "firms": 57,
-      "score": 51
+      "firms": 40,
+      "score": 36
     },
     {
       "sector": "Crimea",
@@ -77,16 +71,22 @@
       "score": 36
     },
     {
-      "sector": "Kharkiv",
-      "osint": 0,
-      "firms": 37,
-      "score": 33
-    },
-    {
       "sector": "Zaporizhzhia",
       "osint": 0,
-      "firms": 24,
-      "score": 22
+      "firms": 39,
+      "score": 35
+    },
+    {
+      "sector": "Lyman",
+      "osint": 0,
+      "firms": 35,
+      "score": 32
+    },
+    {
+      "sector": "Kharkiv",
+      "osint": 0,
+      "firms": 31,
+      "score": 28
     }
   ],
   "top_events": [
@@ -94,6 +94,11 @@
       "title": "Reported drone strike near Krím",
       "source": "forrás nélkül",
       "sector": "Crimea"
+    },
+    {
+      "title": "Russian Offensive Campaign Assessment, June 13, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk"
     },
     {
       "title": "Russian Offensive Campaign Assessment, June 12, 2026",
@@ -112,11 +117,6 @@
     },
     {
       "title": "Ukraine and France intensify air defence cooperation with focus on radars and Aster-30 missiles",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Russian Offensive Campaign Assessment, June 11, 2026",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     }
