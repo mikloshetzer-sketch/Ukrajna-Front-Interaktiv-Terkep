@@ -55,7 +55,13 @@ def save_json(path, data):
 
 
 def extract_date_from_filename(filename):
+    match = re.search(r"(\d{4})(\d{2})(\d{2})", filename)
+
+    if match:
+        return f"{match.group(1)}-{match.group(2)}-{match.group(3)}"
+
     match = re.search(r"(\d{4}-\d{2}-\d{2})", filename)
+
     if match:
         return match.group(1)
 
@@ -88,9 +94,16 @@ def geojson_to_union(geojson):
 
     for feature in features:
         try:
-            geom = shape(feature.get("geometry"))
+            geometry = feature.get("geometry")
+
+            if not geometry:
+                continue
+
+            geom = shape(geometry)
+
             if not geom.is_empty:
                 geometries.append(geom)
+
         except Exception:
             continue
 
@@ -158,15 +171,24 @@ def geom_to_features(
     return features
 
 
-def build_daily_delta(previous, current, previous_union, current_union, day_number, day_index_from_latest):
+def build_daily_delta(
+    previous,
+    current,
+    previous_union,
+    current_union,
+    day_number,
+    day_index_from_latest,
+):
     russian_gain = current_union.difference(previous_union)
     ukrainian_recapture = previous_union.difference(current_union)
 
-    gain_features = []
-    recapture_features = []
+    daily_features = []
 
     for window_days in WINDOWS:
-        gain_features.extend(
+        if day_index_from_latest >= window_days:
+            continue
+
+        daily_features.extend(
             geom_to_features(
                 russian_gain,
                 "russian_gain",
@@ -181,7 +203,7 @@ def build_daily_delta(previous, current, previous_union, current_union, day_numb
             )
         )
 
-        recapture_features.extend(
+        daily_features.extend(
             geom_to_features(
                 ukrainian_recapture,
                 "ukrainian_recapture",
@@ -196,7 +218,7 @@ def build_daily_delta(previous, current, previous_union, current_union, day_numb
             )
         )
 
-    return gain_features + recapture_features
+    return daily_features
 
 
 def build_rolling_delta():
@@ -224,7 +246,6 @@ def build_rolling_delta():
             raise RuntimeError(f"Nem sikerült geometriát összevonni: {item['name']}")
 
     all_features = []
-
     daily_summaries = []
 
     pairs = []
@@ -253,21 +274,26 @@ def build_rolling_delta():
 
         all_features.extend(daily_features)
 
+        latest_window_features = [
+            f for f in daily_features
+            if f["properties"]["window_days"] == 30
+        ]
+
         gain_total = round(
             sum(
                 f["properties"]["area_km2"]
-                for f in daily_features
+                for f in latest_window_features
                 if f["properties"]["change_type"] == "russian_gain"
-            ) / len(WINDOWS),
+            ),
             2,
         )
 
         recapture_total = round(
             sum(
                 f["properties"]["area_km2"]
-                for f in daily_features
+                for f in latest_window_features
                 if f["properties"]["change_type"] == "ukrainian_recapture"
-            ) / len(WINDOWS),
+            ),
             2,
         )
 
