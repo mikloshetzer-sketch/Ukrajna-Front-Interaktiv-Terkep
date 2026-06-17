@@ -78,6 +78,27 @@ function getOsintCategoryIcon(category) {
   return '📍';
 }
 
+function getHistoricalDeltaColor(dayIndexFromLatest, changeType) {
+  const day = Number(dayIndexFromLatest || 0);
+  const isRecapture = changeType === 'ukrainian_recapture';
+
+  if (isRecapture) {
+    if (day === 0) return '#1e3a8a';
+    if (day <= 2) return '#1d4ed8';
+    if (day <= 5) return '#2563eb';
+    if (day <= 10) return '#0284c7';
+    if (day <= 15) return '#0891b2';
+    return '#67e8f9';
+  }
+
+  if (day === 0) return '#7f1d1d';
+  if (day <= 2) return '#b91c1c';
+  if (day <= 5) return '#dc2626';
+  if (day <= 10) return '#ea580c';
+  if (day <= 15) return '#ca8a04';
+  return '#facc15';
+}
+
 function createSideLabelHtml({ index, isGain, areaKm2, previousDate, currentDate, sectorName, nearestPlace }) {
   const borderColor = isGain ? '#ff0000' : '#004dff';
   const badgeColor = isGain ? '#ff0000' : '#004dff';
@@ -676,6 +697,54 @@ export function replaceFrontlineLayer(layerState, data) {
   layerState.frontlineLayer.addData(data);
 }
 
+export function renderHistoricalDeltaLayer(layerState, features = [], selectedDays = 10) {
+  if (!layerState.historicalDeltaLayer) return;
+
+  layerState.historicalDeltaLayer.clearLayers();
+
+  const safeFeatures = Array.isArray(features) ? features : [];
+
+  safeFeatures.forEach((feature) => {
+    const props = feature?.properties || {};
+    const dayIndex = Number(props.day_index_from_latest || 0);
+    const changeType = props.change_type || 'russian_gain';
+    const color = getHistoricalDeltaColor(dayIndex, changeType);
+
+    const isRecapture = changeType === 'ukrainian_recapture';
+
+    const fillOpacity = Math.max(
+      0.12,
+      Math.min(0.42, 0.42 - dayIndex * (0.22 / Math.max(1, selectedDays)))
+    );
+
+    const outlineOpacity = Math.max(
+      0.35,
+      Math.min(0.95, 0.95 - dayIndex * (0.45 / Math.max(1, selectedDays)))
+    );
+
+    const polygon = L.geoJSON(feature, {
+      style: {
+        color,
+        weight: dayIndex === 0 ? 3 : 2,
+        opacity: outlineOpacity,
+        fillColor: color,
+        fillOpacity,
+        dashArray: isRecapture ? '6,4' : null,
+      },
+    });
+
+    polygon.bindPopup(`
+      <b>${props.label || (isRecapture ? 'Ukrainian recapture' : 'Russian territorial gain')}</b><br>
+      <b>Date:</b> ${props.previous_date || 'n/a'} → ${props.current_date || 'n/a'}<br>
+      <b>Age:</b> ${dayIndex === 0 ? 'latest day' : `${dayIndex} day(s) from latest`}<br>
+      <b>Area:</b> ${Number(props.area_km2 || 0).toFixed(2)} km²<br>
+      <b>Type:</b> ${changeType}
+    `);
+
+    polygon.addTo(layerState.historicalDeltaLayer);
+  });
+}
+
 export function renderAttackAxes(layerState, axes = []) {
   layerState.attackAxesLayer.clearLayers();
   if (!axes.length) return;
@@ -1043,6 +1112,7 @@ export function createLayers(map) {
   }).addTo(map);
 
   const deltaLayer = L.layerGroup().addTo(map);
+  const historicalDeltaLayer = L.layerGroup().addTo(map);
 
   const borderLayer = L.geoJSON(null, {
     style: {
@@ -1077,6 +1147,7 @@ export function createLayers(map) {
     occupiedLayer,
     frontlineLayer,
     deltaLayer,
+    historicalDeltaLayer,
     borderLayer,
     frontSectorLayer,
     attackAxesLayer,
