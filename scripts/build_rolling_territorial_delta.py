@@ -13,19 +13,19 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
 DOCS_DATA_DIR = ROOT / "docs" / "data"
 
-OUTPUT_PATH = DATA_DIR / "territorial_delta_windows.geojson"
-DOCS_OUTPUT_PATH = DOCS_DATA_DIR / "territorial_delta_windows.geojson"
+OUTPUT_PATH = DATA_DIR / "territorial_delta_30days.geojson"
+DOCS_OUTPUT_PATH = DOCS_DATA_DIR / "territorial_delta_30days.geojson"
 
 DEEPSTATE_API_URL = "https://api.github.com/repos/cyterat/deepstate-map-data/contents/data"
 
-WINDOWS = [5, 10, 15, 30]
+ROLLING_DAYS = 30
 
 
 def http_get_json(url):
     req = urllib.request.Request(
         url,
         headers={
-            "User-Agent": "rolling-territorial-delta-builder/1.0",
+            "User-Agent": "rolling-territorial-delta-builder/2.0",
             "Accept": "application/vnd.github+json",
         },
     )
@@ -38,7 +38,7 @@ def http_get_text(url):
     req = urllib.request.Request(
         url,
         headers={
-            "User-Agent": "rolling-territorial-delta-builder/1.0",
+            "User-Agent": "rolling-territorial-delta-builder/2.0",
             "Accept": "application/json,text/plain,*/*",
         },
     )
@@ -131,7 +131,6 @@ def geom_to_features(
     current_date,
     day_number,
     day_index_from_latest,
-    window_days,
 ):
     if geom is None or geom.is_empty:
         return []
@@ -163,7 +162,6 @@ def geom_to_features(
                 "current_date": current_date,
                 "day_number": day_number,
                 "day_index_from_latest": day_index_from_latest,
-                "window_days": window_days,
             },
             "geometry": mapping(part),
         })
@@ -182,43 +180,31 @@ def build_daily_delta(
     russian_gain = current_union.difference(previous_union)
     ukrainian_recapture = previous_union.difference(current_union)
 
-    daily_features = []
+    gain_features = geom_to_features(
+        russian_gain,
+        "russian_gain",
+        "Russian territorial gain",
+        previous["name"],
+        current["name"],
+        previous["date"],
+        current["date"],
+        day_number,
+        day_index_from_latest,
+    )
 
-    for window_days in WINDOWS:
-        if day_index_from_latest >= window_days:
-            continue
+    recapture_features = geom_to_features(
+        ukrainian_recapture,
+        "ukrainian_recapture",
+        "Ukrainian recapture",
+        previous["name"],
+        current["name"],
+        previous["date"],
+        current["date"],
+        day_number,
+        day_index_from_latest,
+    )
 
-        daily_features.extend(
-            geom_to_features(
-                russian_gain,
-                "russian_gain",
-                "Russian territorial gain",
-                previous["name"],
-                current["name"],
-                previous["date"],
-                current["date"],
-                day_number,
-                day_index_from_latest,
-                window_days,
-            )
-        )
-
-        daily_features.extend(
-            geom_to_features(
-                ukrainian_recapture,
-                "ukrainian_recapture",
-                "Ukrainian recapture",
-                previous["name"],
-                current["name"],
-                previous["date"],
-                current["date"],
-                day_number,
-                day_index_from_latest,
-                window_days,
-            )
-        )
-
-    return daily_features
+    return gain_features + recapture_features
 
 
 def build_rolling_delta():
@@ -226,29 +212,27 @@ def build_rolling_delta():
 
     files = get_deepstate_files()
 
-    needed_file_count = max(WINDOWS) + 1
+    needed_file_count = ROLLING_DAYS + 1
 
     if len(files) < needed_file_count:
         raise RuntimeError(
-            f"Nincs elég DeepState GeoJSON fájl. Szükséges: {needed_file_count}, elérhető: {len(files)}"
+            f"Nincs elég DeepState GeoJSON fájl. "
+            f"Szükséges: {needed_file_count}, elérhető: {len(files)}"
         )
 
     selected_files = files[-needed_file_count:]
 
-    geojson_cache = {}
     union_cache = {}
 
     for item in selected_files:
-        geojson_cache[item["name"]] = json.loads(http_get_text(item["url"]))
-        union_cache[item["name"]] = geojson_to_union(geojson_cache[item["name"]])
+        geojson = json.loads(http_get_text(item["url"]))
+        union_cache[item["name"]] = geojson_to_union(geojson)
 
         if union_cache[item["name"]] is None:
             raise RuntimeError(f"Nem sikerült geometriát összevonni: {item['name']}")
 
     all_features = []
     daily_summaries = []
-
-    pairs = []
 
     for i in range(1, len(selected_files)):
         previous = selected_files[i - 1]
@@ -257,9 +241,6 @@ def build_rolling_delta():
         day_index_from_latest = len(selected_files) - 1 - i
         day_number = i
 
-        pairs.append((previous, current, day_number, day_index_from_latest))
-
-    for previous, current, day_number, day_index_from_latest in pairs:
         previous_union = union_cache[previous["name"]]
         current_union = union_cache[current["name"]]
 
@@ -274,15 +255,10 @@ def build_rolling_delta():
 
         all_features.extend(daily_features)
 
-        latest_window_features = [
-            f for f in daily_features
-            if f["properties"]["window_days"] == 30
-        ]
-
         gain_total = round(
             sum(
                 f["properties"]["area_km2"]
-                for f in latest_window_features
+                for f in daily_features
                 if f["properties"]["change_type"] == "russian_gain"
             ),
             2,
@@ -291,7 +267,7 @@ def build_rolling_delta():
         recapture_total = round(
             sum(
                 f["properties"]["area_km2"]
-                for f in latest_window_features
+                for f in daily_features
                 if f["properties"]["change_type"] == "ukrainian_recapture"
             ),
             2,
@@ -308,52 +284,49 @@ def build_rolling_delta():
             "day_index_from_latest": day_index_from_latest,
         })
 
-    window_summaries = {}
+    total_gain = round(
+        sum(
+            f["properties"]["area_km2"]
+            for f in all_features
+            if f["properties"]["change_type"] == "russian_gain"
+        ),
+        2,
+    )
 
-    for window_days in WINDOWS:
-        window_features = [
-            f for f in all_features
-            if f["properties"]["window_days"] == window_days
-        ]
-
-        gain_total = round(
-            sum(
-                f["properties"]["area_km2"]
-                for f in window_features
-                if f["properties"]["change_type"] == "russian_gain"
-            ),
-            2,
-        )
-
-        recapture_total = round(
-            sum(
-                f["properties"]["area_km2"]
-                for f in window_features
-                if f["properties"]["change_type"] == "ukrainian_recapture"
-            ),
-            2,
-        )
-
-        window_summaries[str(window_days)] = {
-            "window_days": window_days,
-            "feature_count": len(window_features),
-            "russian_gain_km2": gain_total,
-            "ukrainian_recapture_km2": recapture_total,
-            "net_change_km2": round(gain_total - recapture_total, 2),
-        }
+    total_recapture = round(
+        sum(
+            f["properties"]["area_km2"]
+            for f in all_features
+            if f["properties"]["change_type"] == "ukrainian_recapture"
+        ),
+        2,
+    )
 
     output = {
         "type": "FeatureCollection",
         "metadata": {
             "updated_utc": now.isoformat(),
-            "windows": WINDOWS,
+            "rolling_days": ROLLING_DAYS,
             "oldest_file": selected_files[0]["name"],
             "latest_file": selected_files[-1]["name"],
             "oldest_date": selected_files[0]["date"],
             "latest_date": selected_files[-1]["date"],
+            "feature_count": len(all_features),
+            "russian_gain_km2": total_gain,
+            "ukrainian_recapture_km2": total_recapture,
+            "net_change_km2": round(total_gain - total_recapture, 2),
             "source": "DeepState public GeoJSON files",
-            "method": "Rolling Shapely geometric difference between consecutive DeepState GeoJSON files. Area is approximate.",
-            "window_summaries": window_summaries,
+            "method": (
+                "Rolling Shapely geometric difference between consecutive "
+                "DeepState GeoJSON files for the latest 30 daily intervals. "
+                "Area is approximate."
+            ),
+            "usage": {
+                "dashboard_filter_5_days": "day_index_from_latest <= 4",
+                "dashboard_filter_10_days": "day_index_from_latest <= 9",
+                "dashboard_filter_15_days": "day_index_from_latest <= 14",
+                "dashboard_filter_30_days": "day_index_from_latest <= 29",
+            },
             "daily_summaries": daily_summaries,
         },
         "features": all_features,
@@ -373,7 +346,7 @@ def main():
             "metadata": {
                 "updated_utc": now.isoformat(),
                 "error": str(exc),
-                "windows": WINDOWS,
+                "rolling_days": ROLLING_DAYS,
                 "method": "rolling territorial delta build failed",
             },
             "features": [],
@@ -382,22 +355,19 @@ def main():
     save_json(OUTPUT_PATH, delta)
     save_json(DOCS_OUTPUT_PATH, delta)
 
-    print("Rolling territorial delta GeoJSON kész.")
+    print("Rolling 30 days territorial delta GeoJSON kész.")
     print(f"Mentve: {OUTPUT_PATH}")
     print(f"Mentve: {DOCS_OUTPUT_PATH}")
     print(f"Features: {len(delta.get('features', []))}")
 
     metadata = delta.get("metadata", {})
-    summaries = metadata.get("window_summaries", {})
 
-    for window in WINDOWS:
-        item = summaries.get(str(window), {})
-        print(
-            f"{window} nap | "
-            f"RU gain: {item.get('russian_gain_km2', 0)} km2 | "
-            f"UA recapture: {item.get('ukrainian_recapture_km2', 0)} km2 | "
-            f"Net: {item.get('net_change_km2', 0)} km2"
-        )
+    print(f"Időablak: {metadata.get('rolling_days', ROLLING_DAYS)} nap")
+    print(f"Legrégebbi dátum: {metadata.get('oldest_date')}")
+    print(f"Legfrissebb dátum: {metadata.get('latest_date')}")
+    print(f"RU gain: {metadata.get('russian_gain_km2', 0)} km2")
+    print(f"UA recapture: {metadata.get('ukrainian_recapture_km2', 0)} km2")
+    print(f"Net: {metadata.get('net_change_km2', 0)} km2")
 
 
 if __name__ == "__main__":
