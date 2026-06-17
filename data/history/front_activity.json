@@ -2332,5 +2332,137 @@
       "deepstate": "cyterat/deepstate-map-data via GitHub API"
     },
     "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
+  },
+  {
+    "date": "2026-06-17",
+    "updated_utc": "2026-06-17T17:48:55.469918+00:00",
+    "front_activity_index": 79,
+    "status": "HIGH",
+    "components": {
+      "osint_density": 25,
+      "firms_activity": 20,
+      "territorial_change": 14.2,
+      "active_sectors": 10,
+      "critical_events": 10
+    },
+    "counts": {
+      "osint": 13,
+      "firms_3d": 1262,
+      "firms_10d": 3617,
+      "firms_30d": 7576,
+      "critical_events": 7,
+      "active_sectors": 9
+    },
+    "territorial": {
+      "available": true,
+      "error": null,
+      "previous_file": "deepstatemap_data_20260616.geojson",
+      "current_file": "deepstatemap_data_20260617.geojson",
+      "previous_total_km2": 116617.73,
+      "current_total_km2": 116622.46,
+      "russian_gain_km2": 4.73,
+      "ukrainian_recapture_km2": 0,
+      "net_change_km2": 4.73,
+      "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    },
+    "territorial_hotspot": {
+      "sector": "Kherson-Dnipro",
+      "lat": 46.64,
+      "lon": 32.61,
+      "zoom": 8,
+      "score": 100,
+      "change_km2": 4.73,
+      "method": "Top classified sector based on OSINT + FIRMS density"
+    },
+    "top_sectors": [
+      {
+        "sector": "Kherson-Dnipro",
+        "osint": 1,
+        "firms": 569,
+        "score": 100
+      },
+      {
+        "sector": "Other / Unclassified",
+        "osint": 6,
+        "firms": 422,
+        "score": 100
+      },
+      {
+        "sector": "Pokrovsk",
+        "osint": 6,
+        "firms": 26,
+        "score": 95
+      },
+      {
+        "sector": "Lyman",
+        "osint": 0,
+        "firms": 96,
+        "score": 86
+      },
+      {
+        "sector": "Zaporizhzhia",
+        "osint": 0,
+        "firms": 91,
+        "score": 82
+      },
+      {
+        "sector": "Velyka Novosilka",
+        "osint": 0,
+        "firms": 19,
+        "score": 17
+      },
+      {
+        "sector": "Bakhmut-Toretsk",
+        "osint": 0,
+        "firms": 16,
+        "score": 14
+      },
+      {
+        "sector": "Kharkiv",
+        "osint": 0,
+        "firms": 10,
+        "score": 9
+      }
+    ],
+    "top_events": [
+      {
+        "title": "Ukraine and Canada advance cooperation on air defence and support for Ukrainian drone production",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Shadow Fleet Tanker, Logistics Infrastructure, and Russian Command Posts Struck",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Reported drone strike near Brjanszk",
+        "source": "forrás nélkül",
+        "sector": "Other / Unclassified"
+      },
+      {
+        "title": "Reported drone strike near Szumi",
+        "source": "forrás nélkül",
+        "sector": "Other / Unclassified"
+      },
+      {
+        "title": "Reported drone strike near Pokrovszk",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Reported drone strike near Herszon",
+        "source": "forrás nélkül",
+        "sector": "Kherson-Dnipro"
+      }
+    ],
+    "data_sources": {
+      "osint": "data/osint_feed.json",
+      "firms_3d": "data/firms_3.json",
+      "firms_10d": "data/firms_10.json",
+      "firms_30d": "data/firms_30.json",
+      "deepstate": "cyterat/deepstate-map-data via GitHub API"
+    },
+    "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
   }
 ]
