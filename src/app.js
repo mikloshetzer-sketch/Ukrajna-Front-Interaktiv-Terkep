@@ -5,6 +5,7 @@ import {
   replaceBorderLayer,
   replaceFrontlineLayer,
   renderDeltaLayer,
+  renderHistoricalDeltaLayer,
   renderFirmsLayer,
   renderOsintLayer,
   renderOsintHighlights,
@@ -27,6 +28,8 @@ import { clamp } from './utils/date.js';
 const OSINT_FEED_LIMIT = 8;
 
 const bordersUrl = 'https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson';
+const historicalDeltaUrl = './data/territorial_delta_30days.geojson';
+
 const borderCountries = new Set([
   'Ukraine',
   'Russia',
@@ -43,6 +46,8 @@ const dom = {
   currentDate: document.getElementById('currentDate'),
   timeline: document.getElementById('timeline'),
   deltaSummary: document.getElementById('deltaSummary'),
+  historicalDeltaSummary: document.getElementById('historicalDeltaSummary'),
+  historicalDeltaLegend: document.getElementById('historicalDeltaLegend'),
   firmsSummary: document.getElementById('firmsSummary'),
   dailyDashboard: document.getElementById('dailyDashboard'),
   autoOpsSummary: document.getElementById('autoOpsSummary'),
@@ -66,11 +71,13 @@ const dom = {
   toggleAxes: document.getElementById('toggleAxes'),
   toggleBattleNodes: document.getElementById('toggleBattleNodes'),
   toggleDelta: document.getElementById('toggleDelta'),
+  toggleHistoricalDelta: document.getElementById('toggleHistoricalDelta'),
   toggleBorders: document.getElementById('toggleBorders'),
   toggleFirms: document.getElementById('toggleFirms'),
   toggleOsint: document.getElementById('toggleOsint'),
   toggleHeatmap: document.getElementById('toggleHeatmap'),
 
+  historicalDeltaWindow: document.getElementById('historicalDeltaWindow'),
   firmsWindow: document.getElementById('firmsWindow'),
 };
 
@@ -79,6 +86,7 @@ const appState = {
   currentIndex: 0,
   cache: new Map(),
   latestDelta: null,
+  historicalDelta: null,
   latestFirmsSummary: null,
   latestFirmsPoints: [],
   latestOsintSummary: null,
@@ -92,6 +100,18 @@ const layerState = createLayers(map);
 
 function setStatus(text) {
   dom.statusText.textContent = text;
+}
+
+function getHistoricalColor(dayIndexFromLatest) {
+  const day = Number(dayIndexFromLatest || 0);
+
+  if (day === 0) return '#7f1d1d';
+  if (day <= 2) return '#b91c1c';
+  if (day <= 5) return '#dc2626';
+  if (day <= 10) return '#ea580c';
+  if (day <= 15) return '#ca8a04';
+
+  return '#facc15';
 }
 
 function getOsintCategoryIcon(category) {
@@ -195,6 +215,117 @@ async function fetchJson(url) {
     throw new Error(`HTTP ${response.status} – ${url}`);
   }
   return response.json();
+}
+
+async function loadHistoricalDelta() {
+  if (appState.historicalDelta) {
+    return appState.historicalDelta;
+  }
+
+  appState.historicalDelta = await fetchJson(historicalDeltaUrl);
+  return appState.historicalDelta;
+}
+
+function renderHistoricalLegend(days, data) {
+  if (!dom.historicalDeltaLegend) return;
+
+  const summaries = data?.metadata?.daily_summaries || [];
+
+  const html = Array.from({ length: days }, (_, dayIndex) => {
+    const matchingSummary = summaries.find(
+      item => Number(item.day_index_from_latest) === dayIndex
+    );
+
+    const label = matchingSummary
+      ? `${matchingSummary.current_date}`
+      : dayIndex === 0
+        ? 'Legfrissebb nap'
+        : `${dayIndex} nappal ezelőtt`;
+
+    return `
+      <div class="historical-legend-item">
+        <span
+          class="historical-legend-swatch"
+          style="background:${getHistoricalColor(dayIndex)};"
+        ></span>
+        <span>${label}</span>
+      </div>
+    `;
+  }).join('');
+
+  dom.historicalDeltaLegend.innerHTML = `
+    <div><b>Napi színskála</b></div>
+    ${html}
+  `;
+}
+
+function updateHistoricalDeltaSummary(features, selectedDays, data) {
+  if (!dom.historicalDeltaSummary) return;
+
+  const gainTotal = features
+    .filter(feature => feature?.properties?.change_type === 'russian_gain')
+    .reduce((sum, feature) => sum + Number(feature?.properties?.area_km2 || 0), 0);
+
+  const recaptureTotal = features
+    .filter(feature => feature?.properties?.change_type === 'ukrainian_recapture')
+    .reduce((sum, feature) => sum + Number(feature?.properties?.area_km2 || 0), 0);
+
+  const latestDate = data?.metadata?.latest_date || 'n/a';
+
+  dom.historicalDeltaSummary.innerHTML = `
+    Nézet: <strong>${selectedDays} nap</strong><br>
+    Legfrissebb dátum: <strong>${latestDate}</strong><br>
+    Megjelenített változások: <strong>${features.length}</strong><br>
+    Orosz területszerzés: <strong>${gainTotal.toFixed(2)} km²</strong><br>
+    Ukrán visszaszerzés: <strong>${recaptureTotal.toFixed(2)} km²</strong><br>
+    Nettó változás: <strong>${(gainTotal - recaptureTotal).toFixed(2)} km²</strong>
+  `;
+}
+
+async function renderHistoricalDelta() {
+  try {
+    if (!layerState.historicalDeltaLayer) return;
+
+    if (!dom.toggleHistoricalDelta?.checked) {
+      layerState.historicalDeltaLayer.clearLayers();
+
+      if (map.hasLayer(layerState.historicalDeltaLayer)) {
+        map.removeLayer(layerState.historicalDeltaLayer);
+      }
+
+      if (dom.historicalDeltaSummary) {
+        dom.historicalDeltaSummary.innerHTML = 'A történeti területi delta réteg ki van kapcsolva.';
+      }
+
+      return;
+    }
+
+    const selectedDays = Number(dom.historicalDeltaWindow?.value || 10);
+    const data = await loadHistoricalDelta();
+
+    const features = (data.features || []).filter(feature =>
+      Number(feature?.properties?.day_index_from_latest) <= selectedDays - 1
+    );
+
+    renderHistoricalDeltaLayer(layerState, features, selectedDays);
+
+    if (!map.hasLayer(layerState.historicalDeltaLayer)) {
+      layerState.historicalDeltaLayer.addTo(map);
+    }
+
+    updateHistoricalDeltaSummary(features, selectedDays, data);
+    renderHistoricalLegend(selectedDays, data);
+  } catch (error) {
+    console.error('Historical delta hiba:', error);
+
+    if (dom.historicalDeltaSummary) {
+      dom.historicalDeltaSummary.innerHTML = `Történeti delta hiba: ${error.message}`;
+    }
+
+    if (layerState.historicalDeltaLayer) {
+      layerState.historicalDeltaLayer.clearLayers();
+    }
+  }
 }
 
 async function loadBorders() {
@@ -846,6 +977,8 @@ async function renderAtIndex(index) {
     appState.latestDelta = null;
   }
 
+  await renderHistoricalDelta();
+
   if (dom.toggleFirms.checked) {
     await refreshFirms();
   }
@@ -1052,6 +1185,9 @@ function bindLayerToggles() {
       map.removeLayer(layerState.deltaLayer);
     }
   });
+
+  dom.toggleHistoricalDelta?.addEventListener('change', renderHistoricalDelta);
+  dom.historicalDeltaWindow?.addEventListener('change', renderHistoricalDelta);
 
   dom.toggleBorders.addEventListener('change', () => {
     if (dom.toggleBorders.checked) {
