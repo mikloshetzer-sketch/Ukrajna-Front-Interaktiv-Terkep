@@ -23,6 +23,22 @@
     .button-like:hover {
       background: #1d4ed8;
     }
+
+    .historical-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+      font-size: 12px;
+    }
+
+    .historical-legend-swatch {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      border: 1px solid rgba(0,0,0,0.25);
+      flex: 0 0 16px;
+    }
   </style>
 </head>
 
@@ -84,12 +100,32 @@
         <label class="toggle"><input id="toggleAxes" type="checkbox" checked /> Main attack axes</label>
         <label class="toggle"><input id="toggleBattleNodes" type="checkbox" checked /> Active battle nodes</label>
         <label class="toggle"><input id="toggleDelta" type="checkbox" checked /> Napi területi delta</label>
+        <label class="toggle"><input id="toggleHistoricalDelta" type="checkbox" checked /> Történeti területi delta</label>
         <label class="toggle"><input id="toggleBorders" type="checkbox" checked /> Országhatárok</label>
         <label class="toggle"><input id="toggleFirms" type="checkbox" /> FIRMS hőanomáliák</label>
         <label class="toggle"><input id="toggleOsint" type="checkbox" /> OSINT feed</label>
         <label class="toggle"><input id="toggleHeatmap" type="checkbox" /> Front activity heatmap</label>
         <label class="toggle"><input id="toggleUnits" type="checkbox" /> Harcoló alakulatok</label>
         <label class="toggle"><input id="toggleFrontDashboard" type="checkbox" /> Napi front dashboard</label>
+      </section>
+
+      <section class="panel">
+        <h2>Történeti területi delta</h2>
+
+        <select id="historicalDeltaWindow">
+          <option value="5">5 nap</option>
+          <option value="10" selected>10 nap</option>
+          <option value="15">15 nap</option>
+          <option value="30">30 nap</option>
+        </select>
+
+        <div id="historicalDeltaSummary" class="small top-gap">
+          Az utolsó 30 nap napi területi változásaiból választható 5, 10, 15 vagy 30 napos nézet.
+        </div>
+
+        <div id="historicalDeltaLegend" class="small top-gap">
+          A jelmagyarázat az adatok betöltése után jelenik meg.
+        </div>
       </section>
 
       <section class="panel">
