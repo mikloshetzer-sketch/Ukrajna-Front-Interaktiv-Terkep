@@ -3,37 +3,52 @@ name: Build rolling territorial delta
 on:
   schedule:
     - cron: "30 5 * * *"
+
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
+
   build:
+
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
+
         with:
           python-version: "3.11"
 
       - name: Install dependencies
+
         run: |
           python -m pip install --upgrade pip
           pip install shapely
 
       - name: Build rolling territorial delta
+
         run: |
           python scripts/build_rolling_territorial_delta.py
 
       - name: Commit updated rolling delta
+
         run: |
+
           git config user.name "github-actions"
+
           git config user.email "github-actions@github.com"
-          git add data/territorial_delta_windows.geojson docs/data/territorial_delta_windows.geojson
+
+          git add data/territorial_delta_30days.geojson
+
+          git add docs/data/territorial_delta_30days.geojson
+
           git commit -m "Update rolling territorial delta" || echo "No changes to commit"
+
           git push
