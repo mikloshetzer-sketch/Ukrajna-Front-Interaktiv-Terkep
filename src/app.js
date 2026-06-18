@@ -15,6 +15,7 @@ import {
   renderBattleNodes,
   resetAllSavedDeltaLabels
 } from './map/layers.js';
+import { initAnnotations } from './map/annotations.js';
 import { fetchDeepStateIndex, fetchDeepStateByFilename } from './data/deepstate.js';
 import { computeNaiveDailyDelta } from './data/deepstateDelta.js';
 import { enrichDeltaItemsWithPlaceNames } from './data/placeLookup.js';
@@ -72,6 +73,7 @@ const dom = {
   toggleBattleNodes: document.getElementById('toggleBattleNodes'),
   toggleDelta: document.getElementById('toggleDelta'),
   toggleHistoricalDelta: document.getElementById('toggleHistoricalDelta'),
+  toggleAnnotations: document.getElementById('toggleAnnotations'),
   toggleBorders: document.getElementById('toggleBorders'),
   toggleFirms: document.getElementById('toggleFirms'),
   toggleOsint: document.getElementById('toggleOsint'),
@@ -79,6 +81,12 @@ const dom = {
 
   historicalDeltaWindow: document.getElementById('historicalDeltaWindow'),
   firmsWindow: document.getElementById('firmsWindow'),
+
+  btnAddAnnotation: document.getElementById('btnAddAnnotation'),
+  btnClearAnnotations: document.getElementById('btnClearAnnotations'),
+  annotationText: document.getElementById('annotationText'),
+  annotationType: document.getElementById('annotationType'),
+  annotationsSummary: document.getElementById('annotationsSummary'),
 };
 
 const appState = {
@@ -87,6 +95,7 @@ const appState = {
   cache: new Map(),
   latestDelta: null,
   historicalDelta: null,
+  annotationsController: null,
   latestFirmsSummary: null,
   latestFirmsPoints: [],
   latestOsintSummary: null,
@@ -1279,6 +1288,16 @@ async function init() {
 
     await loadBorders();
     await renderAtIndex(appState.index.length - 1);
+
+    appState.annotationsController = initAnnotations({
+      map,
+      toggle: dom.toggleAnnotations,
+      addButton: dom.btnAddAnnotation,
+      clearButton: dom.btnClearAnnotations,
+      textInput: dom.annotationText,
+      typeSelect: dom.annotationType,
+      summary: dom.annotationsSummary,
+    });
 
     bindLayerToggles();
     bindControls(player);
