@@ -39,6 +39,20 @@
       border: 1px solid rgba(0,0,0,0.25);
       flex: 0 0 16px;
     }
+
+    #annotationText {
+      width: 100%;
+      box-sizing: border-box;
+      margin-top: 8px;
+      resize: vertical;
+      min-height: 90px;
+      border-radius: 8px;
+      border: 1px solid rgba(0,0,0,0.18);
+      padding: 8px;
+      font-family: inherit;
+      font-size: 13px;
+      line-height: 1.4;
+    }
   </style>
 </head>
 
@@ -101,6 +115,7 @@
         <label class="toggle"><input id="toggleBattleNodes" type="checkbox" checked /> Active battle nodes</label>
         <label class="toggle"><input id="toggleDelta" type="checkbox" checked /> Napi területi delta</label>
         <label class="toggle"><input id="toggleHistoricalDelta" type="checkbox" checked /> Történeti területi delta</label>
+        <label class="toggle"><input id="toggleAnnotations" type="checkbox" checked /> Elemző megjegyzések</label>
         <label class="toggle"><input id="toggleBorders" type="checkbox" checked /> Országhatárok</label>
         <label class="toggle"><input id="toggleFirms" type="checkbox" /> FIRMS hőanomáliák</label>
         <label class="toggle"><input id="toggleOsint" type="checkbox" /> OSINT feed</label>
@@ -125,6 +140,33 @@
 
         <div id="historicalDeltaLegend" class="small top-gap">
           A jelmagyarázat az adatok betöltése után jelenik meg.
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Elemző megjegyzések</h2>
+
+        <select id="annotationType">
+          <option value="analysis">📊 Elemző</option>
+          <option value="operation">⚔️ Műveleti</option>
+          <option value="logistics">🚚 Logisztikai</option>
+          <option value="warning">⚠️ Figyelmeztetés</option>
+          <option value="note">📝 Megjegyzés</option>
+        </select>
+
+        <textarea
+          id="annotationText"
+          rows="4"
+          placeholder="Írd be a térképre kerülő megjegyzést..."
+        ></textarea>
+
+        <div class="grid-2 top-gap">
+          <button id="btnAddAnnotation" type="button">+ Megjegyzés elhelyezése</button>
+          <button id="btnClearAnnotations" class="secondary" type="button">Törlés</button>
+        </div>
+
+        <div id="annotationsSummary" class="small top-gap">
+          Nincs még elemző megjegyzés.
         </div>
       </section>
 
