@@ -1,13 +1,13 @@
 {
-  "updated_utc": "2026-06-18T21:02:27.539341+00:00",
-  "date": "2026-06-18",
+  "updated_utc": "2026-06-19T20:14:54.522131+00:00",
+  "date": "2026-06-19",
   "territorial_sector": {
-    "sector": "Velyka Novosilka",
-    "lat": 47.61648849090644,
-    "lon": 36.14826403710934,
-    "distance_km": 57.4,
+    "sector": "Lyman",
+    "lat": 48.818148023076915,
+    "lon": 37.95928629230769,
+    "distance_km": 22.4,
     "change_type": "russian_gain",
-    "area_km2": 4.01,
+    "area_km2": 4.07,
     "label": "Russian territorial gain"
   },
   "priority_osint_events": [
@@ -24,11 +24,11 @@
       "priority": 106
     },
     {
-      "title": "Reported drone strike near Belgorod",
+      "title": "Reported drone strike near Kyiv",
       "source": "forrás nélkül",
-      "sector": "Moscow / Russia Interior",
-      "lat": 50.595,
-      "lon": 36.587,
+      "sector": "Kyiv Area",
+      "lat": 50.45,
+      "lon": 30.523,
       "distance_to_sector_km": 0,
       "event_type": "drone",
       "event_label": "Drone / UAV activity",
@@ -46,6 +46,18 @@
       "event_label": "Drone / UAV activity",
       "icon": "🛩",
       "priority": 106
+    },
+    {
+      "title": "Reported drone strike near Harkiv",
+      "source": "forrás nélkül",
+      "sector": "Kharkiv",
+      "lat": 49.993,
+      "lon": 36.23,
+      "distance_to_sector_km": 0.3,
+      "event_type": "drone",
+      "event_label": "Drone / UAV activity",
+      "icon": "🛩",
+      "priority": 103
     },
     {
       "title": "Ukraine and Canada advance cooperation on air defence and support for Ukrainian drone production",
@@ -72,18 +84,6 @@
       "priority": 100
     },
     {
-      "title": "Reported ground assault or offensive activity near Kijev",
-      "source": "forrás nélkül",
-      "sector": "Kyiv Area",
-      "lat": 50.45,
-      "lon": 30.523,
-      "distance_to_sector_km": 0,
-      "event_type": "frontline",
-      "event_label": "Frontline pressure",
-      "icon": "⚔",
-      "priority": 98
-    },
-    {
       "title": "Reported ground assault or offensive activity near Moszkva",
       "source": "forrás nélkül",
       "sector": "Moscow / Russia Interior",
@@ -96,28 +96,28 @@
       "priority": 98
     },
     {
-      "title": "Reported drone strike near Szumi",
+      "title": "Reported ground assault or offensive activity near Kijev",
       "source": "forrás nélkül",
-      "sector": "Rear Area / Strategic Depth",
-      "lat": 50.907,
-      "lon": 34.799,
-      "distance_to_sector_km": 143.7,
-      "event_type": "drone",
-      "event_label": "Drone / UAV activity",
-      "icon": "🛩",
+      "sector": "Kyiv Area",
+      "lat": 50.45,
+      "lon": 30.523,
+      "distance_to_sector_km": 0,
+      "event_type": "frontline",
+      "event_label": "Frontline pressure",
+      "icon": "⚔",
       "priority": 98
     },
     {
-      "title": "Reported drone strike near Rosztov",
+      "title": "Russian Offensive Campaign Assessment, June 18, 2026",
       "source": "forrás nélkül",
-      "sector": "Rear Area / Strategic Depth",
-      "lat": 47.235,
-      "lon": 39.701,
-      "distance_to_sector_km": 198.5,
-      "event_type": "drone",
-      "event_label": "Drone / UAV activity",
-      "icon": "🛩",
-      "priority": 98
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "frontline",
+      "event_label": "Frontline pressure",
+      "icon": "⚔",
+      "priority": 95
     },
     {
       "title": "Russian Offensive Campaign Assessment, June 17, 2026",
@@ -144,19 +144,30 @@
       "priority": 95
     },
     {
-      "title": "Russian Offensive Campaign Assessment, June 15, 2026",
+      "title": "Reported rear-area strike near Kyiv",
       "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "frontline",
-      "event_label": "Frontline pressure",
-      "icon": "⚔",
-      "priority": 95
+      "sector": "Kyiv Area",
+      "lat": 50.45,
+      "lon": 30.523,
+      "distance_to_sector_km": 0,
+      "event_type": "strike",
+      "event_label": "Strike / attack",
+      "icon": "✹",
+      "priority": 94
     }
   ],
   "front_pressure_points": [
+    {
+      "sector": "Pokrovsk",
+      "title": "Pokrovsk OSINT activity cluster",
+      "lat": 48.28,
+      "lon": 37.18,
+      "score": 100,
+      "osint": 6,
+      "firms": 58,
+      "pressure_type": "osint_activity_cluster",
+      "icon": "⚔"
+    },
     {
       "sector": "Kherson-Dnipro",
       "title": "Kherson-Dnipro FIRMS thermal cluster",
@@ -164,40 +175,29 @@
       "lon": 32.61,
       "score": 100,
       "osint": 0,
-      "firms": 555,
+      "firms": 498,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
     {
-      "sector": "Pokrovsk",
-      "title": "Pokrovsk OSINT activity cluster",
-      "lat": 48.28,
-      "lon": 37.18,
-      "score": 83,
-      "osint": 5,
-      "firms": 26,
-      "pressure_type": "osint_activity_cluster",
-      "icon": "⚔"
+      "sector": "Lyman",
+      "title": "Lyman territorial gain axis",
+      "lat": 48.99,
+      "lon": 37.8,
+      "score": 98,
+      "osint": 0,
+      "firms": 76,
+      "pressure_type": "territorial_gain_axis",
+      "icon": "▲"
     },
     {
       "sector": "Zaporizhzhia",
       "title": "Zaporizhzhia FIRMS thermal cluster",
       "lat": 47.84,
       "lon": 35.14,
-      "score": 75,
+      "score": 70,
       "osint": 0,
-      "firms": 83,
-      "pressure_type": "thermal_activity_cluster",
-      "icon": "🔥"
-    },
-    {
-      "sector": "Lyman",
-      "title": "Lyman FIRMS thermal cluster",
-      "lat": 48.99,
-      "lon": 37.8,
-      "score": 71,
-      "osint": 0,
-      "firms": 79,
+      "firms": 78,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -206,9 +206,9 @@
       "title": "Kharkiv FIRMS thermal cluster",
       "lat": 49.99,
       "lon": 36.23,
-      "score": 28,
+      "score": 30,
       "osint": 1,
-      "firms": 18,
+      "firms": 20,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -217,28 +217,28 @@
       "title": "Bakhmut-Toretsk FIRMS thermal cluster",
       "lat": 48.58,
       "lon": 37.95,
-      "score": 16,
+      "score": 26,
       "osint": 0,
-      "firms": 18,
+      "firms": 29,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
     {
-      "sector": "Crimea",
-      "title": "Crimea pressure axis",
-      "lat": 45.2,
-      "lon": 34.1,
-      "score": 16,
-      "osint": 1,
-      "firms": 4,
-      "pressure_type": "pressure_axis",
-      "icon": "⚑"
+      "sector": "Velyka Novosilka",
+      "title": "Velyka Novosilka FIRMS thermal cluster",
+      "lat": 47.84,
+      "lon": 36.84,
+      "score": 20,
+      "osint": 0,
+      "firms": 22,
+      "pressure_type": "thermal_activity_cluster",
+      "icon": "🔥"
     }
   ],
   "event_categories": [
     {
       "category": "Drone / UAV activity",
-      "count": 6
+      "count": 5
     },
     {
       "category": "Frontline pressure",
@@ -247,14 +247,18 @@
     {
       "category": "Logistics / infrastructure strike",
       "count": 1
+    },
+    {
+      "category": "Strike / attack",
+      "count": 1
     }
   ],
-  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 78. Russian forces gained approximately 4.23 km², closest to the Velyka Novosilka sector. The main pressure focus is Kherson-Dnipro. The strongest event category is Drone / UAV activity. The system processed 19 OSINT events, 1244 short-term FIRMS hotspots and 10 active sectors.",
+  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 77. Russian forces gained approximately 4.03 km², closest to the Lyman sector. The main pressure focus is Pokrovsk. The strongest event category is Drone / UAV activity. The system processed 17 OSINT events, 1174 short-term FIRMS hotspots and 10 active sectors.",
   "counts": {
     "priority_osint": 12,
     "pressure_points": 7,
-    "firms_3d": 1244,
-    "firms_10d": 3274,
+    "firms_3d": 1174,
+    "firms_10d": 3313,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."
