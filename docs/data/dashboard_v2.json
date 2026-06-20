@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-06-20T17:54:05.618067+00:00",
+  "updated_utc": "2026-06-20T20:04:48.936583+00:00",
   "date": "2026-06-20",
   "territorial_sector": {
     "sector": "Kupiansk",
@@ -48,6 +48,18 @@
       "priority": 100
     },
     {
+      "title": "Reported ground assault or offensive activity near Zaporizzsja",
+      "source": "forrás nélkül",
+      "sector": "Zaporizhzhia",
+      "lat": 47.838,
+      "lon": 35.139,
+      "distance_to_sector_km": 0.2,
+      "event_type": "frontline",
+      "event_label": "Frontline pressure",
+      "icon": "⚔",
+      "priority": 95
+    },
+    {
       "title": "Russian Offensive Campaign Assessment, June 19, 2026",
       "source": "forrás nélkül",
       "sector": "Pokrovsk",
@@ -82,6 +94,18 @@
       "event_label": "Frontline pressure",
       "icon": "⚔",
       "priority": 95
+    },
+    {
+      "title": "Reported rear-area strike near Moszkva",
+      "source": "forrás nélkül",
+      "sector": "Moscow / Russia Interior",
+      "lat": 55.755,
+      "lon": 37.617,
+      "distance_to_sector_km": 0,
+      "event_type": "strike",
+      "event_label": "Strike / attack",
+      "icon": "✹",
+      "priority": 94
     },
     {
       "title": "Reported military-related update near Moszkva",
@@ -155,6 +179,17 @@
       "icon": "🔥"
     },
     {
+      "sector": "Zaporizhzhia",
+      "title": "Zaporizhzhia FIRMS thermal cluster",
+      "lat": 47.84,
+      "lon": 35.14,
+      "score": 41,
+      "osint": 1,
+      "firms": 32,
+      "pressure_type": "thermal_activity_cluster",
+      "icon": "🔥"
+    },
+    {
       "sector": "Crimea",
       "title": "Crimea FIRMS thermal cluster",
       "lat": 45.2,
@@ -162,17 +197,6 @@
       "score": 39,
       "osint": 0,
       "firms": 43,
-      "pressure_type": "thermal_activity_cluster",
-      "icon": "🔥"
-    },
-    {
-      "sector": "Zaporizhzhia",
-      "title": "Zaporizhzhia FIRMS thermal cluster",
-      "lat": 47.84,
-      "lon": 35.14,
-      "score": 29,
-      "osint": 0,
-      "firms": 32,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -202,7 +226,7 @@
   "event_categories": [
     {
       "category": "Frontline pressure",
-      "count": 3
+      "count": 4
     },
     {
       "category": "Military update",
@@ -215,14 +239,18 @@
     {
       "category": "Logistics / infrastructure strike",
       "count": 1
+    },
+    {
+      "category": "Strike / attack",
+      "count": 1
     }
   ],
-  "ai_summary": "Front activity is assessed as CRITICAL with an FAI value of 81. Russian forces gained approximately 7.54 km², closest to the Kupiansk sector. The main pressure focus is Pokrovsk. The strongest event category is Drone / UAV activity. The system processed 9 OSINT events, 840 short-term FIRMS hotspots and 9 active sectors.",
+  "ai_summary": "Front activity is assessed as CRITICAL with an FAI value of 86. Russian forces gained approximately 7.54 km², closest to the Kupiansk sector. The main pressure focus is Pokrovsk. The strongest event category is Drone / UAV activity. The system processed 11 OSINT events, 841 short-term FIRMS hotspots and 9 active sectors.",
   "counts": {
-    "priority_osint": 9,
+    "priority_osint": 11,
     "pressure_points": 7,
-    "firms_3d": 840,
-    "firms_10d": 3479,
+    "firms_3d": 841,
+    "firms_10d": 3480,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."
