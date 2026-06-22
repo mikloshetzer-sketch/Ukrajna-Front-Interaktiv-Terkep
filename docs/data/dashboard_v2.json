@@ -1,14 +1,14 @@
 {
-  "updated_utc": "2026-06-22T14:26:35.502614+00:00",
+  "updated_utc": "2026-06-22T21:20:02.489125+00:00",
   "date": "2026-06-22",
   "territorial_sector": {
-    "sector": "No territorial delta",
-    "lat": null,
-    "lon": null,
-    "distance_km": null,
-    "change_type": "none",
-    "area_km2": 0,
-    "label": "No mapped daily territorial change"
+    "sector": "Pokrovsk",
+    "lat": 48.41976232727272,
+    "lon": 37.24595544545455,
+    "distance_km": 16.3,
+    "change_type": "russian_gain",
+    "area_km2": 0.8,
+    "label": "Russian territorial gain"
   },
   "priority_osint_events": [
     {
@@ -48,6 +48,18 @@
       "priority": 104
     },
     {
+      "title": "“Every drone has its own personality”: a report from an FPV laboratory on the front line",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "drone",
+      "event_label": "Drone / UAV activity",
+      "icon": "🛩",
+      "priority": 103
+    },
+    {
       "title": "Reported ground assault or offensive activity near Krím",
       "source": "forrás nélkül",
       "sector": "Crimea",
@@ -58,6 +70,18 @@
       "event_label": "Frontline pressure",
       "icon": "⚔",
       "priority": 98
+    },
+    {
+      "title": "Reported missile strike near Voronyezs",
+      "source": "forrás nélkül",
+      "sector": "Rear Area / Strategic Depth",
+      "lat": 51.661,
+      "lon": 39.2,
+      "distance_to_sector_km": 244.1,
+      "event_type": "missile",
+      "event_label": "Missile / rocket strike",
+      "icon": "☄",
+      "priority": 96
     },
     {
       "title": "Russian Offensive Campaign Assessment, June 21, 2026",
@@ -108,6 +132,18 @@
       "priority": 94
     },
     {
+      "title": "Strike on the Kyiv Pechersk Lavra: how russia uses disinformation to evade responsibility for War crimes",
+      "source": "forrás nélkül",
+      "sector": "Kyiv Area",
+      "lat": 50.45,
+      "lon": 30.523,
+      "distance_to_sector_km": 0,
+      "event_type": "strike",
+      "event_label": "Strike / attack",
+      "icon": "✹",
+      "priority": 94
+    },
+    {
       "title": "Reported ground assault or offensive activity near Voronyezs",
       "source": "forrás nélkül",
       "sector": "Rear Area / Strategic Depth",
@@ -118,45 +154,20 @@
       "event_label": "Frontline pressure",
       "icon": "⚔",
       "priority": 90
-    },
-    {
-      "title": "Reported military-related update near Krím",
-      "source": "forrás nélkül",
-      "sector": "Crimea",
-      "lat": 45.3,
-      "lon": 34.4,
-      "distance_to_sector_km": 0,
-      "event_type": "naval_rear",
-      "event_label": "Rear-area / Crimea activity",
-      "icon": "⚓",
-      "priority": 88
-    },
-    {
-      "title": "Reported military-related update near Moszkva",
-      "source": "forrás nélkül",
-      "sector": "Moscow / Russia Interior",
-      "lat": 55.755,
-      "lon": 37.617,
-      "distance_to_sector_km": 0,
-      "event_type": "military_update",
-      "event_label": "Military update",
-      "icon": "●",
-      "priority": 66
-    },
-    {
-      "title": "Reported naval-related military activity near Moszkva",
-      "source": "forrás nélkül",
-      "sector": "Moscow / Russia Interior",
-      "lat": 55.755,
-      "lon": 37.617,
-      "distance_to_sector_km": 0,
-      "event_type": "military_update",
-      "event_label": "Military update",
-      "icon": "●",
-      "priority": 66
     }
   ],
   "front_pressure_points": [
+    {
+      "sector": "Pokrovsk",
+      "title": "Pokrovsk territorial gain axis",
+      "lat": 48.28,
+      "lon": 37.18,
+      "score": 130,
+      "osint": 10,
+      "firms": 48,
+      "pressure_type": "territorial_gain_axis",
+      "icon": "▲"
+    },
     {
       "sector": "Lyman",
       "title": "Lyman FIRMS thermal cluster",
@@ -178,17 +189,6 @@
       "firms": 273,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
-    },
-    {
-      "sector": "Pokrovsk",
-      "title": "Pokrovsk OSINT activity cluster",
-      "lat": 48.28,
-      "lon": 37.18,
-      "score": 79,
-      "osint": 3,
-      "firms": 48,
-      "pressure_type": "osint_activity_cluster",
-      "icon": "⚔"
     },
     {
       "sector": "Crimea",
@@ -242,26 +242,18 @@
     },
     {
       "category": "Drone / UAV activity",
-      "count": 2
-    },
-    {
-      "category": "Military update",
-      "count": 2
+      "count": 3
     },
     {
       "category": "Missile / rocket strike",
-      "count": 1
+      "count": 2
     },
     {
       "category": "Strike / attack",
-      "count": 1
-    },
-    {
-      "category": "Rear-area / Crimea activity",
-      "count": 1
+      "count": 2
     }
   ],
-  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 65. No measurable net territorial change was detected. The main pressure focus is Lyman. The strongest event category is Drone / UAV activity. The system processed 15 OSINT events, 1373 short-term FIRMS hotspots and 10 active sectors.",
+  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 67. Russian forces gained approximately 0.80 km², closest to the Pokrovsk sector. The main pressure focus is Pokrovsk. The strongest event category is Drone / UAV activity. The system processed 25 OSINT events, 1373 short-term FIRMS hotspots and 10 active sectors.",
   "counts": {
     "priority_osint": 12,
     "pressure_points": 7,

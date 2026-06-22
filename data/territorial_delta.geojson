@@ -1,14 +1,73 @@
 {
   "type": "FeatureCollection",
   "metadata": {
-    "updated_utc": "2026-06-22T14:26:35.441805+00:00",
-    "error": "HTTP Error 403: rate limit exceeded",
-    "previous_file": null,
-    "current_file": null,
-    "russian_gain_km2": 0,
+    "updated_utc": "2026-06-22T21:20:01.819434+00:00",
+    "previous_file": "deepstatemap_data_20260621.geojson",
+    "current_file": "deepstatemap_data_20260622.geojson",
+    "russian_gain_km2": 0.8,
     "ukrainian_recapture_km2": 0,
-    "net_change_km2": 0,
-    "method": "territorial delta build failed"
+    "net_change_km2": 0.8,
+    "method": "Shapely geometric difference between the latest two DeepState GeoJSON files. Area is approximate."
   },
-  "features": []
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "change_type": "russian_gain",
+        "label": "Russian territorial gain",
+        "area_km2": 0.8
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              37.2501563,
+              48.4166405
+            ],
+            [
+              37.2436766,
+              48.4177552
+            ],
+            [
+              37.238764,
+              48.4201658
+            ],
+            [
+              37.2357391,
+              48.4237155
+            ],
+            [
+              37.2357878,
+              48.4262062
+            ],
+            [
+              37.2481964,
+              48.4258487
+            ],
+            [
+              37.2479271,
+              48.4200131
+            ],
+            [
+              37.2516589,
+              48.4193502
+            ],
+            [
+              37.2513579,
+              48.4172671
+            ],
+            [
+              37.2520895,
+              48.4137828
+            ],
+            [
+              37.2501563,
+              48.4166405
+            ]
+          ]
+        ]
+      }
+    }
+  ]
 }

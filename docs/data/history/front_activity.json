@@ -2995,35 +2995,35 @@
   },
   {
     "date": "2026-06-22",
-    "updated_utc": "2026-06-22T14:26:35.137373+00:00",
-    "front_activity_index": 65,
+    "updated_utc": "2026-06-22T21:20:00.813911+00:00",
+    "front_activity_index": 67,
     "status": "HIGH",
     "components": {
       "osint_density": 25,
       "firms_activity": 20,
-      "territorial_change": 0.0,
+      "territorial_change": 2.4,
       "active_sectors": 10,
       "critical_events": 10
     },
     "counts": {
-      "osint": 15,
+      "osint": 25,
       "firms_3d": 1373,
       "firms_10d": 3749,
       "firms_30d": 7963,
-      "critical_events": 5,
+      "critical_events": 7,
       "active_sectors": 10
     },
     "territorial": {
-      "available": false,
-      "error": "HTTP Error 403: rate limit exceeded",
-      "previous_file": null,
-      "current_file": null,
-      "previous_total_km2": null,
-      "current_total_km2": null,
-      "russian_gain_km2": 0.0,
-      "ukrainian_recapture_km2": 0.0,
-      "net_change_km2": 0.0,
-      "method": "fallback"
+      "available": true,
+      "error": null,
+      "previous_file": "deepstatemap_data_20260621.geojson",
+      "current_file": "deepstatemap_data_20260622.geojson",
+      "previous_total_km2": 116638.26,
+      "current_total_km2": 116639.06,
+      "russian_gain_km2": 0.8,
+      "ukrainian_recapture_km2": 0,
+      "net_change_km2": 0.8,
+      "method": "Approximate total area difference between latest two DeepState GeoJSON files"
     },
     "territorial_hotspot": {
       "sector": "Lyman",
@@ -3031,7 +3031,7 @@
       "lon": 37.8,
       "zoom": 9,
       "score": 100,
-      "change_km2": 0.0,
+      "change_km2": 0.8,
       "method": "Top classified sector based on OSINT + FIRMS density"
     },
     "top_sectors": [
@@ -3042,6 +3042,12 @@
         "score": 100
       },
       {
+        "sector": "Pokrovsk",
+        "osint": 10,
+        "firms": 48,
+        "score": 100
+      },
+      {
         "sector": "Kherson-Dnipro",
         "osint": 0,
         "firms": 273,
@@ -3049,15 +3055,9 @@
       },
       {
         "sector": "Other / Unclassified",
-        "osint": 7,
+        "osint": 10,
         "firms": 673,
         "score": 100
-      },
-      {
-        "sector": "Pokrovsk",
-        "osint": 3,
-        "firms": 48,
-        "score": 79
       },
       {
         "sector": "Crimea",
@@ -3096,24 +3096,24 @@
         "sector": "Crimea"
       },
       {
-        "title": "Reported ground assault or offensive activity near Voronyezs",
+        "title": "$4 billion in New Aid for Ukraine and record contributions to PURL: results of the Ramstein meeting",
         "source": "forrás nélkül",
-        "sector": "Other / Unclassified"
+        "sector": "Pokrovsk"
       },
       {
-        "title": "Reported military-related update near Krím",
+        "title": "“I’m only a gunner”: Liliia Karas of the 23rd Brigade tells how she became a MaxxPro gunner",
         "source": "forrás nélkül",
-        "sector": "Crimea"
+        "sector": "Pokrovsk"
       },
       {
-        "title": "Reported drone strike near Krím",
+        "title": "“Every drone has its own personality”: a report from an FPV laboratory on the front line",
         "source": "forrás nélkül",
-        "sector": "Crimea"
+        "sector": "Pokrovsk"
       },
       {
-        "title": "Reported military-related update near Donyeck",
+        "title": "“Unable to cross an open Kill Zone and clearly stalled”: enemy forces push North on the Pokrovsk Axis",
         "source": "forrás nélkül",
-        "sector": "Kurakhove"
+        "sector": "Pokrovsk"
       }
     ],
     "data_sources": {
