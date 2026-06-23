@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-06-23T13:34:22.983975+00:00",
+  "updated_utc": "2026-06-23T20:32:44.231803+00:00",
   "date": "2026-06-23",
   "territorial_sector": {
     "sector": "Kharkiv",
@@ -36,6 +36,30 @@
       "priority": 106
     },
     {
+      "title": "She used to create beauty, now she destroys the enemy: the story of drone operator “Ksena”",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "drone",
+      "event_label": "Drone / UAV activity",
+      "icon": "🛩",
+      "priority": 103
+    },
+    {
+      "title": "Donetsk–Mariupol highway under fire control of the Spartan Brigade: Drones strike occupiers’ transport",
+      "source": "forrás nélkül",
+      "sector": "Kurakhove",
+      "lat": 48.015,
+      "lon": 37.802,
+      "distance_to_sector_km": 38.9,
+      "event_type": "drone",
+      "event_label": "Drone / UAV activity",
+      "icon": "🛩",
+      "priority": 103
+    },
+    {
       "title": "Reported drone strike near Harkiv",
       "source": "forrás nélkül",
       "sector": "Kharkiv",
@@ -58,6 +82,30 @@
       "event_label": "Drone / UAV activity",
       "icon": "🛩",
       "priority": 103
+    },
+    {
+      "title": "Special Operations Forces destroy railway bridge across the North Crimean Canal",
+      "source": "forrás nélkül",
+      "sector": "Crimea",
+      "lat": 45.3,
+      "lon": 34.4,
+      "distance_to_sector_km": 0,
+      "event_type": "logistics",
+      "event_label": "Logistics / infrastructure strike",
+      "icon": "⛓",
+      "priority": 100
+    },
+    {
+      "title": "Reported ground assault or offensive activity near Kyiv",
+      "source": "forrás nélkül",
+      "sector": "Kyiv Area",
+      "lat": 50.45,
+      "lon": 30.523,
+      "distance_to_sector_km": 0,
+      "event_type": "frontline",
+      "event_label": "Frontline pressure",
+      "icon": "⚔",
+      "priority": 98
     },
     {
       "title": "Reported ground assault or offensive activity near Krím",
@@ -106,54 +154,6 @@
       "event_label": "Frontline pressure",
       "icon": "⚔",
       "priority": 95
-    },
-    {
-      "title": "Reported rear-area strike near Krím",
-      "source": "forrás nélkül",
-      "sector": "Crimea",
-      "lat": 45.3,
-      "lon": 34.4,
-      "distance_to_sector_km": 0,
-      "event_type": "strike",
-      "event_label": "Strike / attack",
-      "icon": "✹",
-      "priority": 94
-    },
-    {
-      "title": "Strike on the Kyiv Pechersk Lavra: how russia uses disinformation to evade responsibility for War crimes",
-      "source": "forrás nélkül",
-      "sector": "Kyiv Area",
-      "lat": 50.45,
-      "lon": 30.523,
-      "distance_to_sector_km": 0,
-      "event_type": "strike",
-      "event_label": "Strike / attack",
-      "icon": "✹",
-      "priority": 94
-    },
-    {
-      "title": "Reported military-related update near Moszkva",
-      "source": "forrás nélkül",
-      "sector": "Moscow / Russia Interior",
-      "lat": 55.755,
-      "lon": 37.617,
-      "distance_to_sector_km": 0,
-      "event_type": "military_update",
-      "event_label": "Military update",
-      "icon": "●",
-      "priority": 66
-    },
-    {
-      "title": "Reported military-related update near Kijev",
-      "source": "forrás nélkül",
-      "sector": "Kyiv Area",
-      "lat": 50.45,
-      "lon": 30.523,
-      "distance_to_sector_km": 0,
-      "event_type": "military_update",
-      "event_label": "Military update",
-      "icon": "●",
-      "priority": 66
     }
   ],
   "front_pressure_points": [
@@ -164,7 +164,7 @@
       "lon": 37.8,
       "score": 100,
       "osint": 0,
-      "firms": 113,
+      "firms": 173,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -174,8 +174,8 @@
       "lat": 48.28,
       "lon": 37.18,
       "score": 100,
-      "osint": 9,
-      "firms": 46,
+      "osint": 12,
+      "firms": 63,
       "pressure_type": "osint_activity_cluster",
       "icon": "⚔"
     },
@@ -186,7 +186,7 @@
       "lon": 35.14,
       "score": 100,
       "osint": 0,
-      "firms": 134,
+      "firms": 193,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -197,40 +197,40 @@
       "lon": 32.61,
       "score": 100,
       "osint": 0,
-      "firms": 504,
+      "firms": 877,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
-    },
-    {
-      "sector": "Kharkiv",
-      "title": "Kharkiv territorial gain axis",
-      "lat": 49.99,
-      "lon": 36.23,
-      "score": 84,
-      "osint": 2,
-      "firms": 33,
-      "pressure_type": "territorial_gain_axis",
-      "icon": "▲"
     },
     {
       "sector": "Crimea",
-      "title": "Crimea FIRMS thermal cluster",
+      "title": "Crimea OSINT activity cluster",
       "lat": 45.2,
       "lon": 34.1,
-      "score": 53,
-      "osint": 2,
-      "firms": 32,
-      "pressure_type": "thermal_activity_cluster",
-      "icon": "🔥"
+      "score": 78,
+      "osint": 4,
+      "firms": 33,
+      "pressure_type": "osint_activity_cluster",
+      "icon": "⚔"
     },
     {
       "sector": "Bakhmut-Toretsk",
       "title": "Bakhmut-Toretsk FIRMS thermal cluster",
       "lat": 48.58,
       "lon": 37.95,
-      "score": 41,
+      "score": 67,
       "osint": 0,
-      "firms": 46,
+      "firms": 74,
+      "pressure_type": "thermal_activity_cluster",
+      "icon": "🔥"
+    },
+    {
+      "sector": "Velyka Novosilka",
+      "title": "Velyka Novosilka FIRMS thermal cluster",
+      "lat": 47.84,
+      "lon": 36.84,
+      "score": 57,
+      "osint": 0,
+      "firms": 63,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     }
@@ -238,27 +238,23 @@
   "event_categories": [
     {
       "category": "Drone / UAV activity",
-      "count": 4
+      "count": 6
     },
     {
       "category": "Frontline pressure",
-      "count": 4
+      "count": 5
     },
     {
-      "category": "Strike / attack",
-      "count": 2
-    },
-    {
-      "category": "Military update",
-      "count": 2
+      "category": "Logistics / infrastructure strike",
+      "count": 1
     }
   ],
-  "ai_summary": "Front activity is assessed as CRITICAL with an FAI value of 80. Russian forces gained approximately 4.91 km², closest to the Kharkiv sector. The main pressure focus is Lyman. The strongest event category is Drone / UAV activity. The system processed 19 OSINT events, 1599 short-term FIRMS hotspots and 10 active sectors.",
+  "ai_summary": "Front activity is assessed as CRITICAL with an FAI value of 80. Russian forces gained approximately 4.91 km², closest to the Kharkiv sector. The main pressure focus is Lyman. The strongest event category is Drone / UAV activity. The system processed 25 OSINT events, 2472 short-term FIRMS hotspots and 10 active sectors.",
   "counts": {
     "priority_osint": 12,
     "pressure_points": 7,
-    "firms_3d": 1599,
-    "firms_10d": 4189,
+    "firms_3d": 2472,
+    "firms_10d": 5062,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."
