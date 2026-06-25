@@ -1,28 +1,16 @@
 {
-  "updated_utc": "2026-06-24T20:18:05.283543+00:00",
-  "date": "2026-06-24",
+  "updated_utc": "2026-06-25T18:55:03.342596+00:00",
+  "date": "2026-06-25",
   "territorial_sector": {
-    "sector": "Kupiansk",
-    "lat": 49.6598156875,
-    "lon": 37.7764779,
-    "distance_km": 13.2,
+    "sector": "Bakhmut-Toretsk",
+    "lat": 48.46266704285714,
+    "lon": 37.64886732857143,
+    "distance_km": 25.7,
     "change_type": "russian_gain",
-    "area_km2": 2.26,
+    "area_km2": 1.03,
     "label": "Russian territorial gain"
   },
   "priority_osint_events": [
-    {
-      "title": "Reported drone strike near Moszkva",
-      "source": "forrás nélkül",
-      "sector": "Moscow / Russia Interior",
-      "lat": 55.755,
-      "lon": 37.617,
-      "distance_to_sector_km": 0,
-      "event_type": "drone",
-      "event_label": "Drone / UAV activity",
-      "icon": "🛩",
-      "priority": 106
-    },
     {
       "title": "Reported drone strike near Krím",
       "source": "forrás nélkül",
@@ -36,12 +24,24 @@
       "priority": 106
     },
     {
-      "title": "Reported drone strike near Herszon",
+      "title": "Reported drone strike near Moszkva",
       "source": "forrás nélkül",
-      "sector": "Kherson-Dnipro",
-      "lat": 46.635,
-      "lon": 32.616,
-      "distance_to_sector_km": 0.7,
+      "sector": "Moscow / Russia Interior",
+      "lat": 55.755,
+      "lon": 37.617,
+      "distance_to_sector_km": 0,
+      "event_type": "drone",
+      "event_label": "Drone / UAV activity",
+      "icon": "🛩",
+      "priority": 106
+    },
+    {
+      "title": "Reported drone strike near Donyeck",
+      "source": "forrás nélkül",
+      "sector": "Kurakhove",
+      "lat": 48.015,
+      "lon": 37.802,
+      "distance_to_sector_km": 38.9,
       "event_type": "drone",
       "event_label": "Drone / UAV activity",
       "icon": "🛩",
@@ -96,16 +96,40 @@
       "priority": 100
     },
     {
-      "title": "Reported missile strike near Voronyezs",
+      "title": "Reported ground assault or offensive activity near Kijev",
+      "source": "forrás nélkül",
+      "sector": "Kyiv Area",
+      "lat": 50.45,
+      "lon": 30.523,
+      "distance_to_sector_km": 0,
+      "event_type": "frontline",
+      "event_label": "Frontline pressure",
+      "icon": "⚔",
+      "priority": 98
+    },
+    {
+      "title": "Reported drone strike near Szumi",
       "source": "forrás nélkül",
       "sector": "Rear Area / Strategic Depth",
-      "lat": 51.661,
-      "lon": 39.2,
-      "distance_to_sector_km": 244.1,
-      "event_type": "missile",
-      "event_label": "Missile / rocket strike",
-      "icon": "☄",
-      "priority": 96
+      "lat": 50.907,
+      "lon": 34.799,
+      "distance_to_sector_km": 143.7,
+      "event_type": "drone",
+      "event_label": "Drone / UAV activity",
+      "icon": "🛩",
+      "priority": 98
+    },
+    {
+      "title": "Russian Offensive Campaign Assessment, June 24, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "frontline",
+      "event_label": "Frontline pressure",
+      "icon": "⚔",
+      "priority": 95
     },
     {
       "title": "Russian Offensive Campaign Assessment, June 23, 2026",
@@ -130,41 +154,17 @@
       "event_label": "Frontline pressure",
       "icon": "⚔",
       "priority": 95
-    },
-    {
-      "title": "Russian Offensive Campaign Assessment, June 21, 2026",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "frontline",
-      "event_label": "Frontline pressure",
-      "icon": "⚔",
-      "priority": 95
-    },
-    {
-      "title": "Reported rear-area strike near Krím",
-      "source": "forrás nélkül",
-      "sector": "Crimea",
-      "lat": 45.3,
-      "lon": 34.4,
-      "distance_to_sector_km": 0,
-      "event_type": "strike",
-      "event_label": "Strike / attack",
-      "icon": "✹",
-      "priority": 94
     }
   ],
   "front_pressure_points": [
     {
-      "sector": "Kupiansk",
-      "title": "Kupiansk territorial gain axis",
-      "lat": 49.71,
-      "lon": 37.61,
-      "score": 116,
+      "sector": "Bakhmut-Toretsk",
+      "title": "Bakhmut-Toretsk territorial gain axis",
+      "lat": 48.58,
+      "lon": 37.95,
+      "score": 112,
       "osint": 0,
-      "firms": 95,
+      "firms": 91,
       "pressure_type": "territorial_gain_axis",
       "icon": "▲"
     },
@@ -175,7 +175,7 @@
       "lon": 37.8,
       "score": 100,
       "osint": 0,
-      "firms": 303,
+      "firms": 257,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -186,7 +186,7 @@
       "lon": 37.18,
       "score": 100,
       "osint": 13,
-      "firms": 124,
+      "firms": 113,
       "pressure_type": "osint_activity_cluster",
       "icon": "⚔"
     },
@@ -197,7 +197,7 @@
       "lon": 35.14,
       "score": 100,
       "osint": 0,
-      "firms": 266,
+      "firms": 270,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -207,19 +207,8 @@
       "lat": 46.64,
       "lon": 32.61,
       "score": 100,
-      "osint": 1,
-      "firms": 976,
-      "pressure_type": "thermal_activity_cluster",
-      "icon": "🔥"
-    },
-    {
-      "sector": "Bakhmut-Toretsk",
-      "title": "Bakhmut-Toretsk FIRMS thermal cluster",
-      "lat": 48.58,
-      "lon": 37.95,
-      "score": 91,
       "osint": 0,
-      "firms": 101,
+      "firms": 1058,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -228,41 +217,44 @@
       "title": "Crimea OSINT activity cluster",
       "lat": 45.2,
       "lon": 34.1,
-      "score": 75,
+      "score": 84,
       "osint": 5,
-      "firms": 17,
+      "firms": 27,
       "pressure_type": "osint_activity_cluster",
       "icon": "⚔"
+    },
+    {
+      "sector": "Kupiansk",
+      "title": "Kupiansk FIRMS thermal cluster",
+      "lat": 49.71,
+      "lon": 37.61,
+      "score": 82,
+      "osint": 0,
+      "firms": 91,
+      "pressure_type": "thermal_activity_cluster",
+      "icon": "🔥"
     }
   ],
   "event_categories": [
     {
       "category": "Drone / UAV activity",
-      "count": 6
+      "count": 7
     },
     {
       "category": "Frontline pressure",
-      "count": 3
+      "count": 4
     },
     {
       "category": "Logistics / infrastructure strike",
       "count": 1
-    },
-    {
-      "category": "Missile / rocket strike",
-      "count": 1
-    },
-    {
-      "category": "Strike / attack",
-      "count": 1
     }
   ],
-  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 78. Russian forces gained approximately 4.22 km², closest to the Kupiansk sector. The main pressure focus is Kupiansk. The strongest event category is Drone / UAV activity. The system processed 27 OSINT events, 2867 short-term FIRMS hotspots and 10 active sectors.",
+  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 68. Russian forces gained approximately 1.03 km², closest to the Bakhmut-Toretsk sector. The main pressure focus is Bakhmut-Toretsk. The strongest event category is Drone / UAV activity. The system processed 27 OSINT events, 2852 short-term FIRMS hotspots and 10 active sectors.",
   "counts": {
     "priority_osint": 12,
     "pressure_points": 7,
-    "firms_3d": 2867,
-    "firms_10d": 5846,
+    "firms_3d": 2852,
+    "firms_10d": 6410,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."
