@@ -1,0 +1,51 @@
+name: Update Telegram OSINT
+
+on:
+  workflow_dispatch:
+
+  schedule:
+    - cron: "15 */6 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  update-telegram-osint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install telethon
+
+      - name: Run Telegram OSINT updater
+        env:
+          TELEGRAM_API_ID: ${{ secrets.TELEGRAM_API_ID }}
+          TELEGRAM_API_HASH: ${{ secrets.TELEGRAM_API_HASH }}
+          TELEGRAM_SESSION: telegram_osint_session
+        run: |
+          python scripts/update_telegram_osint.py
+
+      - name: Commit updated Telegram data
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git add data/telegram_feed.json
+
+          if git diff --cached --quiet; then
+            echo "No Telegram OSINT changes to commit."
+          else
+            git commit -m "Update Telegram OSINT feed"
+            git push
+          fi
