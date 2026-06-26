@@ -20,7 +20,7 @@ DATASETS = [
 ]
 
 # west,south,east,north
-AREA = "21,43,42,43,53,58,60"
+AREA = "21,43,60,58"
 
 SESSION = requests.Session()
 
