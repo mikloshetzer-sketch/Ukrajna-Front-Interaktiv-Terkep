@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-06-26T14:15:26.723452+00:00",
+  "updated_utc": "2026-06-26T20:17:16.653998+00:00",
   "date": "2026-06-26",
   "territorial_sector": {
     "sector": "Pokrovsk",
@@ -84,6 +84,18 @@
       "priority": 100
     },
     {
+      "title": "“The enemy is increasingly using a tactic of information occupation”: Russians are reporting desired advances as actual gains",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "frontline",
+      "event_label": "Frontline pressure",
+      "icon": "⚔",
+      "priority": 95
+    },
+    {
       "title": "Russian Offensive Campaign Assessment, June 25, 2026",
       "source": "forrás nélkül",
       "sector": "Pokrovsk",
@@ -142,18 +154,6 @@
       "event_label": "Strike / attack",
       "icon": "✹",
       "priority": 94
-    },
-    {
-      "title": "Reported rear-area strike near Kyiv",
-      "source": "forrás nélkül",
-      "sector": "Kyiv Area",
-      "lat": 50.45,
-      "lon": 30.523,
-      "distance_to_sector_km": 0,
-      "event_type": "strike",
-      "event_label": "Strike / attack",
-      "icon": "✹",
-      "priority": 94
     }
   ],
   "front_pressure_points": [
@@ -163,8 +163,8 @@
       "lat": 48.28,
       "lon": 37.18,
       "score": 130,
-      "osint": 12,
-      "firms": 98,
+      "osint": 15,
+      "firms": 108,
       "pressure_type": "territorial_gain_axis",
       "icon": "▲"
     },
@@ -175,7 +175,7 @@
       "lon": 37.8,
       "score": 100,
       "osint": 1,
-      "firms": 197,
+      "firms": 202,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -186,7 +186,7 @@
       "lon": 35.14,
       "score": 100,
       "osint": 0,
-      "firms": 203,
+      "firms": 241,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -197,7 +197,7 @@
       "lon": 32.61,
       "score": 100,
       "osint": 0,
-      "firms": 696,
+      "firms": 1193,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -213,6 +213,17 @@
       "icon": "🔥"
     },
     {
+      "sector": "Velyka Novosilka",
+      "title": "Velyka Novosilka FIRMS thermal cluster",
+      "lat": 47.84,
+      "lon": 36.84,
+      "score": 74,
+      "osint": 0,
+      "firms": 82,
+      "pressure_type": "thermal_activity_cluster",
+      "icon": "🔥"
+    },
+    {
       "sector": "Crimea",
       "title": "Crimea OSINT activity cluster",
       "lat": 45.2,
@@ -222,17 +233,6 @@
       "firms": 26,
       "pressure_type": "osint_activity_cluster",
       "icon": "⚔"
-    },
-    {
-      "sector": "Bakhmut-Toretsk",
-      "title": "Bakhmut-Toretsk FIRMS thermal cluster",
-      "lat": 48.58,
-      "lon": 37.95,
-      "score": 58,
-      "osint": 0,
-      "firms": 64,
-      "pressure_type": "thermal_activity_cluster",
-      "icon": "🔥"
     }
   ],
   "event_categories": [
@@ -242,23 +242,23 @@
     },
     {
       "category": "Frontline pressure",
-      "count": 3
+      "count": 4
     },
     {
       "category": "Strike / attack",
-      "count": 3
+      "count": 2
     },
     {
       "category": "Logistics / infrastructure strike",
       "count": 1
     }
   ],
-  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 72. Russian forces gained approximately 2.35 km², closest to the Pokrovsk sector. The main pressure focus is Pokrovsk. The strongest event category is Drone / UAV activity. The system processed 24 OSINT events, 1940 short-term FIRMS hotspots and 10 active sectors.",
+  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 72. Russian forces gained approximately 2.35 km², closest to the Pokrovsk sector. The main pressure focus is Pokrovsk. The strongest event category is Drone / UAV activity. The system processed 29 OSINT events, 3395 short-term FIRMS hotspots and 10 active sectors.",
   "counts": {
     "priority_osint": 12,
     "pressure_points": 7,
-    "firms_3d": 1940,
-    "firms_10d": 6116,
+    "firms_3d": 3395,
+    "firms_10d": 8907,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."
