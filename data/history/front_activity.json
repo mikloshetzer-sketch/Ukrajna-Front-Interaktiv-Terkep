@@ -3520,5 +3520,137 @@
       "deepstate": "cyterat/deepstate-map-data via GitHub API"
     },
     "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
+  },
+  {
+    "date": "2026-06-26",
+    "updated_utc": "2026-06-26T14:15:23.817006+00:00",
+    "front_activity_index": 72,
+    "status": "HIGH",
+    "components": {
+      "osint_density": 25,
+      "firms_activity": 20,
+      "territorial_change": 7.1,
+      "active_sectors": 10,
+      "critical_events": 10
+    },
+    "counts": {
+      "osint": 24,
+      "firms_3d": 1940,
+      "firms_10d": 6116,
+      "firms_30d": 10699,
+      "critical_events": 6,
+      "active_sectors": 10
+    },
+    "territorial": {
+      "available": true,
+      "error": null,
+      "previous_file": "deepstatemap_data_20260625.geojson",
+      "current_file": "deepstatemap_data_20260626.geojson",
+      "previous_total_km2": 116649.21,
+      "current_total_km2": 116651.57,
+      "russian_gain_km2": 2.35,
+      "ukrainian_recapture_km2": 0,
+      "net_change_km2": 2.35,
+      "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    },
+    "territorial_hotspot": {
+      "sector": "Lyman",
+      "lat": 48.99,
+      "lon": 37.8,
+      "zoom": 9,
+      "score": 100,
+      "change_km2": 2.35,
+      "method": "Top classified sector based on OSINT + FIRMS density"
+    },
+    "top_sectors": [
+      {
+        "sector": "Lyman",
+        "osint": 1,
+        "firms": 197,
+        "score": 100
+      },
+      {
+        "sector": "Pokrovsk",
+        "osint": 12,
+        "firms": 98,
+        "score": 100
+      },
+      {
+        "sector": "Zaporizhzhia",
+        "osint": 0,
+        "firms": 203,
+        "score": 100
+      },
+      {
+        "sector": "Kherson-Dnipro",
+        "osint": 0,
+        "firms": 696,
+        "score": 100
+      },
+      {
+        "sector": "Other / Unclassified",
+        "osint": 6,
+        "firms": 478,
+        "score": 100
+      },
+      {
+        "sector": "Kupiansk",
+        "osint": 0,
+        "firms": 85,
+        "score": 76
+      },
+      {
+        "sector": "Crimea",
+        "osint": 4,
+        "firms": 26,
+        "score": 71
+      },
+      {
+        "sector": "Bakhmut-Toretsk",
+        "osint": 0,
+        "firms": 64,
+        "score": 58
+      }
+    ],
+    "top_events": [
+      {
+        "title": "SSU strikes two russian military support vessels and Air Defense assets in Kerch",
+        "source": "forrás nélkül",
+        "sector": "Crimea"
+      },
+      {
+        "title": "Yurii Ihnat: Czech training aircraft will be used to train future military pilots",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "NATO-Ukraine JATEC joint centre participates in Cyber OPFOR seminar",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Occupation “commandant” who tortured ukrainians served with new war crimes notice of suspicion",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Finland allocates another €40 Million for U.S. weapons for Ukraine through PURL",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Ukraine launches first competitive tender for record procurement of Middle Strike drones",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      }
+    ],
+    "data_sources": {
+      "osint": "data/osint_feed.json",
+      "firms_3d": "data/firms_3.json",
+      "firms_10d": "data/firms_10.json",
+      "firms_30d": "data/firms_30.json",
+      "deepstate": "cyterat/deepstate-map-data via GitHub API"
+    },
+    "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
   }
 ]
