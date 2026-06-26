@@ -37,10 +37,10 @@ def chunk_ranges(total_days: int):
     cursor = start_date
 
     while cursor <= end_date:
-      remaining = (end_date - cursor).days + 1
-      chunk_len = min(5, remaining)
-      chunks.append((cursor.isoformat(), chunk_len))
-      cursor += timedelta(days=chunk_len)
+        remaining = (end_date - cursor).days + 1
+        chunk_len = min(5, remaining)
+        chunks.append((cursor.isoformat(), chunk_len))
+        cursor += timedelta(days=chunk_len)
 
     return chunks
 
@@ -138,6 +138,7 @@ def write_json(days: int):
 
     payload = {
         "updated_at": datetime.now(timezone.utc).isoformat(),
+        "window_days": days,
         "points": all_points
     }
 
@@ -147,7 +148,7 @@ def write_json(days: int):
 
 
 def main():
-    for days in (3, 10, 30):
+    for days in (1, 3, 10, 30):
         write_json(days)
 
 
