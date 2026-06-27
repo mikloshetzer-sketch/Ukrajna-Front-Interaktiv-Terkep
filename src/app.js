@@ -17,6 +17,7 @@ import {
 } from './map/layers.js';
 import { initAnnotations } from './map/annotations.js';
 import { initCoordinateMarkers } from './map/coordinateMarkers.js';
+import { initMeasureTool } from './map/measureTool.js';
 import { fetchDeepStateIndex, fetchDeepStateByFilename } from './data/deepstate.js';
 import { computeNaiveDailyDelta } from './data/deepstateDelta.js';
 import { enrichDeltaItemsWithPlaceNames } from './data/placeLookup.js';
@@ -110,11 +111,13 @@ const appState = {
   latestAttackAxes: [],
   latestBattleNodes: [],
   coordinateMarkersController: null,
+  measureToolController: null,
 };
 
 const map = initMap();
 const layerState = createLayers(map);
 const coordinateMarkerLayer = L.layerGroup().addTo(map);
+const measureLayer = L.layerGroup().addTo(map);
 
 function setStatus(text) {
   dom.statusText.textContent = text;
@@ -1179,17 +1182,35 @@ function getToolboxObjectTypeLabel(value) {
   return selectedOption?.textContent || 'Ismeretlen / általános pont';
 }
 
-function updateToolboxStatus() {
+function updateToolboxStatus(customText = null) {
   if (!dom.toolboxStatus) return;
+
+  if (customText) {
+    dom.toolboxStatus.innerHTML = customText;
+    return;
+  }
 
   const mode = dom.toolboxMode?.value || 'coordinate';
   const objectType = dom.toolboxObjectType?.value || 'unknown';
   const markerCount = appState.coordinateMarkersController?.getMarkers?.().length || 0;
+  const measurementCount = appState.measureToolController?.getMeasurements?.().length || 0;
 
   if (mode === 'coordinate') {
     dom.toolboxStatus.innerHTML = `
       Aktív mód: <strong>${getToolboxModeLabel(mode)}</strong><br>
       Bal kattintás a térképen: új koordináta marker.<br>
+      Mentett markerek: <strong>${markerCount}</strong><br>
+      Mentett távolságmérések: <strong>${measurementCount}</strong>
+    `;
+    return;
+  }
+
+  if (mode === 'distance') {
+    dom.toolboxStatus.innerHTML = `
+      Aktív mód: <strong>${getToolboxModeLabel(mode)}</strong><br>
+      Első kattintás: kezdőpont. Második kattintás: végpont.<br>
+      A rendszer vonalat rajzol, és kiszámolja a távolságot, valamint az irányszöget.<br>
+      Mentett távolságmérések: <strong>${measurementCount}</strong><br>
       Mentett markerek: <strong>${markerCount}</strong>
     `;
     return;
@@ -1200,50 +1221,66 @@ function updateToolboxStatus() {
       Aktív mód: <strong>${getToolboxModeLabel(mode)}</strong><br>
       Kiválasztott objektumtípus: <strong>${getToolboxObjectTypeLabel(objectType)}</strong><br>
       Az objektumazonosítás következő lépésben lesz bekötve. Addig a térképi kattintás nem hoz létre új markert.<br>
-      Mentett markerek: <strong>${markerCount}</strong>
-    `;
-    return;
-  }
-
-  if (mode === 'distance') {
-    dom.toolboxStatus.innerHTML = `
-      Aktív mód: <strong>${getToolboxModeLabel(mode)}</strong><br>
-      A távolságmérés következő fejlesztési lépésben lesz bekötve. Addig a térképi kattintás nem hoz létre új markert.<br>
-      Mentett markerek: <strong>${markerCount}</strong>
+      Mentett markerek: <strong>${markerCount}</strong><br>
+      Mentett távolságmérések: <strong>${measurementCount}</strong>
     `;
     return;
   }
 
   dom.toolboxStatus.innerHTML = `
     Aktív mód: <strong>Kikapcsolva</strong><br>
-    A Toolbox nem helyez el új pontot a térképen.<br>
-    Mentett markerek: <strong>${markerCount}</strong>
+    A Toolbox nem helyez el új pontot és nem indít távolságmérést a térképen.<br>
+    Mentett markerek: <strong>${markerCount}</strong><br>
+    Mentett távolságmérések: <strong>${measurementCount}</strong>
   `;
 }
-
 function applyToolboxMode() {
   const mode = dom.toolboxMode?.value || 'coordinate';
-  const controller = appState.coordinateMarkersController;
+  const coordinateController = appState.coordinateMarkersController;
+  const measureController = appState.measureToolController;
 
-  if (!controller) {
-    updateToolboxStatus();
-    return;
+  if (coordinateController) {
+    if (mode === 'coordinate') {
+      coordinateController.enable();
+    } else {
+      coordinateController.disable();
+    }
   }
 
-  if (mode === 'coordinate') {
-    controller.enable();
-  } else {
-    controller.disable();
+  if (measureController) {
+    if (mode === 'distance') {
+      measureController.enable();
+    } else {
+      measureController.disable();
+    }
   }
 
   updateToolboxStatus();
 }
-
 function bindToolboxControls() {
   dom.toolboxMode?.addEventListener('change', applyToolboxMode);
   dom.toolboxObjectType?.addEventListener('change', updateToolboxStatus);
 
   dom.btnToolboxClearMarkers?.addEventListener('click', () => {
+    const mode = dom.toolboxMode?.value || 'coordinate';
+
+    if (mode === 'distance') {
+      if (!appState.measureToolController) return;
+
+      const measurementCount = appState.measureToolController.getMeasurements?.().length || 0;
+      if (!measurementCount) {
+        updateToolboxStatus();
+        return;
+      }
+
+      const confirmed = window.confirm(`Biztosan törlöd az összes távolságmérést? (${measurementCount} db)`);
+      if (!confirmed) return;
+
+      appState.measureToolController.clearMeasurements();
+      updateToolboxStatus();
+      return;
+    }
+
     if (!appState.coordinateMarkersController) return;
 
     const markerCount = appState.coordinateMarkersController.getMarkers?.().length || 0;
@@ -1424,6 +1461,17 @@ async function init() {
       map,
       layerGroup: coordinateMarkerLayer,
       enabled: true,
+    });
+
+    appState.measureToolController = initMeasureTool({
+      map,
+      layerGroup: measureLayer,
+      enabled: false,
+      onStatusChange: (text) => {
+        if (dom.toolboxStatus) {
+          dom.toolboxStatus.innerHTML = text;
+        }
+      },
     });
 
     bindToolboxControls();
