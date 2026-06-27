@@ -18,6 +18,7 @@ import {
 import { initAnnotations } from './map/annotations.js';
 import { initCoordinateMarkers } from './map/coordinateMarkers.js';
 import { initMeasureTool } from './map/measureTool.js';
+import { initObjectIdentificationTool } from './map/objectIdentificationTool.js';
 import { fetchDeepStateIndex, fetchDeepStateByFilename } from './data/deepstate.js';
 import { computeNaiveDailyDelta } from './data/deepstateDelta.js';
 import { enrichDeltaItemsWithPlaceNames } from './data/placeLookup.js';
@@ -112,12 +113,14 @@ const appState = {
   latestBattleNodes: [],
   coordinateMarkersController: null,
   measureToolController: null,
+  objectIdentificationController: null,
 };
 
 const map = initMap();
 const layerState = createLayers(map);
 const coordinateMarkerLayer = L.layerGroup().addTo(map);
 const measureLayer = L.layerGroup().addTo(map);
+const objectIdentificationLayer = L.layerGroup().addTo(map);
 
 function setStatus(text) {
   dom.statusText.textContent = text;
@@ -1194,13 +1197,15 @@ function updateToolboxStatus(customText = null) {
   const objectType = dom.toolboxObjectType?.value || 'unknown';
   const markerCount = appState.coordinateMarkersController?.getMarkers?.().length || 0;
   const measurementCount = appState.measureToolController?.getMeasurements?.().length || 0;
+  const objectCount = appState.objectIdentificationController?.getObjects?.().length || 0;
 
   if (mode === 'coordinate') {
     dom.toolboxStatus.innerHTML = `
       Aktív mód: <strong>${getToolboxModeLabel(mode)}</strong><br>
       Bal kattintás a térképen: új koordináta marker.<br>
       Mentett markerek: <strong>${markerCount}</strong><br>
-      Mentett távolságmérések: <strong>${measurementCount}</strong>
+      Mentett távolságmérések: <strong>${measurementCount}</strong><br>
+      Azonosított objektumok: <strong>${objectCount}</strong>
     `;
     return;
   }
@@ -1211,7 +1216,8 @@ function updateToolboxStatus(customText = null) {
       Első kattintás: kezdőpont. Második kattintás: végpont.<br>
       A rendszer vonalat rajzol, és kiszámolja a távolságot, valamint az irányszöget.<br>
       Mentett távolságmérések: <strong>${measurementCount}</strong><br>
-      Mentett markerek: <strong>${markerCount}</strong>
+      Mentett markerek: <strong>${markerCount}</strong><br>
+      Azonosított objektumok: <strong>${objectCount}</strong>
     `;
     return;
   }
@@ -1220,9 +1226,11 @@ function updateToolboxStatus(customText = null) {
     dom.toolboxStatus.innerHTML = `
       Aktív mód: <strong>${getToolboxModeLabel(mode)}</strong><br>
       Kiválasztott objektumtípus: <strong>${getToolboxObjectTypeLabel(objectType)}</strong><br>
-      Az objektumazonosítás következő lépésben lesz bekötve. Addig a térképi kattintás nem hoz létre új markert.<br>
+      Bal kattintás a térképen: új azonosított objektum a kiválasztott típussal.<br>
       Mentett markerek: <strong>${markerCount}</strong><br>
-      Mentett távolságmérések: <strong>${measurementCount}</strong>
+      Mentett távolságmérések: <strong>${measurementCount}</strong><br>
+      Azonosított objektumok: <strong>${objectCount}</strong><br>
+      Azonosított objektumok: <strong>${objectCount}</strong>
     `;
     return;
   }
@@ -1238,6 +1246,7 @@ function applyToolboxMode() {
   const mode = dom.toolboxMode?.value || 'coordinate';
   const coordinateController = appState.coordinateMarkersController;
   const measureController = appState.measureToolController;
+  const objectController = appState.objectIdentificationController;
 
   if (coordinateController) {
     if (mode === 'coordinate') {
@@ -1252,6 +1261,14 @@ function applyToolboxMode() {
       measureController.enable();
     } else {
       measureController.disable();
+    }
+  }
+
+  if (objectController) {
+    if (mode === 'identify') {
+      objectController.enable();
+    } else {
+      objectController.disable();
     }
   }
 
@@ -1281,6 +1298,23 @@ function bindToolboxControls() {
       return;
     }
 
+    if (mode === 'identify') {
+      if (!appState.objectIdentificationController) return;
+
+      const objectCount = appState.objectIdentificationController.getObjects?.().length || 0;
+      if (!objectCount) {
+        updateToolboxStatus();
+        return;
+      }
+
+      const confirmed = window.confirm(`Biztosan törlöd az összes azonosított objektumot? (${objectCount} db)`);
+      if (!confirmed) return;
+
+      appState.objectIdentificationController.clearObjects();
+      updateToolboxStatus();
+      return;
+    }
+
     if (!appState.coordinateMarkersController) return;
 
     const markerCount = appState.coordinateMarkersController.getMarkers?.().length || 0;
@@ -1297,6 +1331,22 @@ function bindToolboxControls() {
   });
 
   dom.btnToolboxExportGeoJson?.addEventListener('click', () => {
+    const mode = dom.toolboxMode?.value || 'coordinate';
+
+    if (mode === 'identify') {
+      if (!appState.objectIdentificationController) return;
+
+      const objectCount = appState.objectIdentificationController.getObjects?.().length || 0;
+      if (!objectCount) {
+        updateToolboxStatus();
+        return;
+      }
+
+      appState.objectIdentificationController.exportGeoJson();
+      updateToolboxStatus();
+      return;
+    }
+
     if (!appState.coordinateMarkersController) return;
 
     const markerCount = appState.coordinateMarkersController.getMarkers?.().length || 0;
@@ -1311,7 +1361,6 @@ function bindToolboxControls() {
 
   applyToolboxMode();
 }
-
 function bindLayerToggles() {
   dom.toggleOccupied.addEventListener('change', () => {
     if (dom.toggleOccupied.checked) {
@@ -1467,6 +1516,18 @@ async function init() {
       map,
       layerGroup: measureLayer,
       enabled: false,
+      onStatusChange: (text) => {
+        if (dom.toolboxStatus) {
+          dom.toolboxStatus.innerHTML = text;
+        }
+      },
+    });
+
+    appState.objectIdentificationController = initObjectIdentificationTool({
+      map,
+      layerGroup: objectIdentificationLayer,
+      enabled: false,
+      getObjectTypeValue: () => dom.toolboxObjectType?.value || 'unknown',
       onStatusChange: (text) => {
         if (dom.toolboxStatus) {
           dom.toolboxStatus.innerHTML = text;
