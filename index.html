@@ -53,6 +53,35 @@
       font-size: 13px;
       line-height: 1.4;
     }
+
+    .toolbox-note {
+      font-size: 12px;
+      color: #555;
+      line-height: 1.45;
+      margin-top: 8px;
+    }
+
+    .toolbox-row {
+      margin-top: 8px;
+    }
+
+    .toolbox-row label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .toolbox-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .toolbox-actions button {
+      width: 100%;
+    }
   </style>
 </head>
 
@@ -192,6 +221,46 @@
         <div id="unitLayerSummary" class="small top-gap">
           Alakulat-réteg még nincs betöltve. Később ide jöhetnek például MilitaryLand / saját adatbázis alapján
           dandár-, ezred- vagy zászlóaljszintű nyílt forrású pozíciók.
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>OSINT Toolbox</h2>
+
+        <div class="toolbox-row">
+          <label for="toolboxMode">Eszköz mód</label>
+          <select id="toolboxMode">
+            <option value="coordinate" selected>📍 Koordináta jelölés</option>
+            <option value="distance">📏 Távolságmérés</option>
+            <option value="identify">🎯 Objektum azonosítás</option>
+            <option value="off">Kikapcsolva</option>
+          </select>
+        </div>
+
+        <div class="toolbox-row">
+          <label for="toolboxObjectType">Objektumtípus</label>
+          <select id="toolboxObjectType">
+            <option value="unknown" selected>📍 Ismeretlen / általános pont</option>
+            <option value="airfield">✈️ Reptér / légibázis</option>
+            <option value="port">⚓ Kikötő</option>
+            <option value="bridge">🌉 Híd</option>
+            <option value="railway">🚂 Vasút / vasúti csomópont</option>
+            <option value="warehouse">📦 Raktár / logisztikai pont</option>
+            <option value="fuel">🛢 Üzemanyag / olajlétesítmény</option>
+            <option value="industrial">🏭 Ipari objektum</option>
+            <option value="radar">📡 Radar / kommunikáció</option>
+            <option value="airdefense">🛡 Légvédelem</option>
+            <option value="target">🎯 Célpont</option>
+          </select>
+        </div>
+
+        <div class="toolbox-actions">
+          <button id="btnToolboxClearMarkers" class="secondary" type="button">Markerek törlése</button>
+          <button id="btnToolboxExportGeoJson" class="secondary" type="button">GeoJSON export</button>
+        </div>
+
+        <div id="toolboxStatus" class="toolbox-note">
+          Jelenleg a koordináta jelölés aktív. Később innen kapcsolható lesz a távolságmérés és az objektumazonosítás.
         </div>
       </section>
 
