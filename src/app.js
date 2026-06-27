@@ -16,6 +16,7 @@ import {
   resetAllSavedDeltaLabels
 } from './map/layers.js';
 import { initAnnotations } from './map/annotations.js';
+import { initCoordinateMarkers } from './map/coordinateMarkers.js';
 import { fetchDeepStateIndex, fetchDeepStateByFilename } from './data/deepstate.js';
 import { computeNaiveDailyDelta } from './data/deepstateDelta.js';
 import { enrichDeltaItemsWithPlaceNames } from './data/placeLookup.js';
@@ -102,10 +103,12 @@ const appState = {
   latestHeatmapPoints: [],
   latestAttackAxes: [],
   latestBattleNodes: [],
+  coordinateMarkersController: null,
 };
 
 const map = initMap();
 const layerState = createLayers(map);
+const coordinateMarkerLayer = L.layerGroup().addTo(map);
 
 function setStatus(text) {
   dom.statusText.textContent = text;
@@ -1297,6 +1300,12 @@ async function init() {
       textInput: dom.annotationText,
       typeSelect: dom.annotationType,
       summary: dom.annotationsSummary,
+    });
+
+    appState.coordinateMarkersController = initCoordinateMarkers({
+      map,
+      layerGroup: coordinateMarkerLayer,
+      enabled: true,
     });
 
     bindLayerToggles();
