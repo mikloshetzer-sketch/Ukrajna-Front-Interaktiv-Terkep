@@ -1,95 +1,110 @@
 {
-  "date": "2026-06-26",
-  "updated_utc": "2026-06-26T20:17:15.275802+00:00",
-  "front_activity_index": 72,
+  "date": "2026-06-27",
+  "updated_utc": "2026-06-27T19:52:46.043246+00:00",
+  "front_activity_index": 68,
   "status": "HIGH",
   "components": {
     "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 7.1,
+    "territorial_change": 7.5,
     "active_sectors": 10,
-    "critical_events": 10
+    "critical_events": 6
   },
   "counts": {
-    "osint": 29,
-    "firms_3d": 3395,
-    "firms_10d": 8907,
-    "firms_30d": 17476,
-    "critical_events": 7,
+    "osint": 20,
+    "firms_3d": 3271,
+    "firms_10d": 9176,
+    "firms_30d": 18385,
+    "critical_events": 3,
     "active_sectors": 10
   },
   "territorial": {
     "available": true,
     "error": null,
-    "previous_file": "deepstatemap_data_20260625.geojson",
-    "current_file": "deepstatemap_data_20260626.geojson",
-    "previous_total_km2": 116649.21,
-    "current_total_km2": 116651.57,
-    "russian_gain_km2": 2.35,
-    "ukrainian_recapture_km2": 0,
-    "net_change_km2": 2.35,
+    "previous_file": "deepstatemap_data_20260626.geojson",
+    "current_file": "deepstatemap_data_20260627.geojson",
+    "previous_total_km2": 116651.57,
+    "current_total_km2": 116649.07,
+    "russian_gain_km2": 0,
+    "ukrainian_recapture_km2": 2.5,
+    "net_change_km2": -2.5,
     "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
-    "sector": "Lyman",
-    "lat": 48.99,
-    "lon": 37.8,
+    "sector": "Pokrovsk",
+    "lat": 48.28,
+    "lon": 37.18,
     "zoom": 9,
     "score": 100,
-    "change_km2": 2.35,
+    "change_km2": -2.5,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
     {
-      "sector": "Lyman",
-      "osint": 1,
-      "firms": 202,
-      "score": 100
-    },
-    {
       "sector": "Pokrovsk",
-      "osint": 15,
-      "firms": 108,
+      "osint": 12,
+      "firms": 27,
       "score": 100
     },
     {
       "sector": "Zaporizhzhia",
       "osint": 0,
-      "firms": 241,
+      "firms": 190,
       "score": 100
     },
     {
       "sector": "Kherson-Dnipro",
       "osint": 0,
-      "firms": 1193,
+      "firms": 1305,
       "score": 100
     },
     {
       "sector": "Other / Unclassified",
-      "osint": 6,
-      "firms": 1353,
+      "osint": 3,
+      "firms": 1596,
       "score": 100
     },
     {
-      "sector": "Kupiansk",
-      "osint": 0,
-      "firms": 85,
-      "score": 76
+      "sector": "Kharkiv",
+      "osint": 4,
+      "firms": 11,
+      "score": 58
     },
     {
       "sector": "Velyka Novosilka",
       "osint": 0,
-      "firms": 82,
-      "score": 74
+      "firms": 50,
+      "score": 45
     },
     {
       "sector": "Crimea",
-      "osint": 4,
-      "firms": 26,
-      "score": 71
+      "osint": 1,
+      "firms": 28,
+      "score": 37
+    },
+    {
+      "sector": "Lyman",
+      "osint": 0,
+      "firms": 25,
+      "score": 22
     }
   ],
   "top_events": [
+    {
+      "title": "Reported ground assault or offensive activity near Harkiv",
+      "source": "forrás nélkül",
+      "sector": "Kharkiv"
+    },
+    {
+      "title": "Reported rear-area strike near Harkiv",
+      "source": "forrás nélkül",
+      "sector": "Kharkiv"
+    },
+    {
+      "title": "Russian Offensive Campaign Assessment, June 26, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk"
+    },
     {
       "title": "“The enemy is increasingly using a tactic of information occupation”: Russians are reporting desired advances as actual gains",
       "source": "forrás nélkül",
@@ -104,21 +119,6 @@
       "title": "From KPI to the trenches of Kharkiv region: the story of a soldier who voluntarily signed a contract and successfully returned to civilian life",
       "source": "forrás nélkül",
       "sector": "Kharkiv"
-    },
-    {
-      "title": "“They threw everything that could still move”: “Wolfhounds” destroy russian equipment on the Vovchansk axis",
-      "source": "forrás nélkül",
-      "sector": "Kharkiv"
-    },
-    {
-      "title": "Callsign “Mala,” strong in character: 18-year-old Diana joins the Armed Forces under the “18–24” program",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "SSU strikes two russian military support vessels and Air Defense assets in Kerch",
-      "source": "forrás nélkül",
-      "sector": "Crimea"
     }
   ],
   "data_sources": {
