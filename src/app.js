@@ -57,6 +57,12 @@ const dom = {
   sectorBalanceSummary: document.getElementById('sectorBalanceSummary'),
   osintFeedList: document.getElementById('osintFeedList'),
 
+  toolboxMode: document.getElementById('toolboxMode'),
+  toolboxObjectType: document.getElementById('toolboxObjectType'),
+  btnToolboxClearMarkers: document.getElementById('btnToolboxClearMarkers'),
+  btnToolboxExportGeoJson: document.getElementById('btnToolboxExportGeoJson'),
+  toolboxStatus: document.getElementById('toolboxStatus'),
+
   btnLatest: document.getElementById('btnLatest'),
   btnFit: document.getElementById('btnFit'),
   btnMinus7: document.getElementById('btnMinus7'),
@@ -1157,6 +1163,118 @@ async function refreshOsint() {
   }
 }
 
+
+function getToolboxModeLabel(mode) {
+  if (mode === 'coordinate') return 'Koordináta jelölés';
+  if (mode === 'distance') return 'Távolságmérés';
+  if (mode === 'identify') return 'Objektum azonosítás';
+  return 'Kikapcsolva';
+}
+
+function getToolboxObjectTypeLabel(value) {
+  const select = dom.toolboxObjectType;
+  if (!select) return 'Ismeretlen / általános pont';
+
+  const selectedOption = [...select.options].find(option => option.value === value);
+  return selectedOption?.textContent || 'Ismeretlen / általános pont';
+}
+
+function updateToolboxStatus() {
+  if (!dom.toolboxStatus) return;
+
+  const mode = dom.toolboxMode?.value || 'coordinate';
+  const objectType = dom.toolboxObjectType?.value || 'unknown';
+  const markerCount = appState.coordinateMarkersController?.getMarkers?.().length || 0;
+
+  if (mode === 'coordinate') {
+    dom.toolboxStatus.innerHTML = `
+      Aktív mód: <strong>${getToolboxModeLabel(mode)}</strong><br>
+      Bal kattintás a térképen: új koordináta marker.<br>
+      Mentett markerek: <strong>${markerCount}</strong>
+    `;
+    return;
+  }
+
+  if (mode === 'identify') {
+    dom.toolboxStatus.innerHTML = `
+      Aktív mód: <strong>${getToolboxModeLabel(mode)}</strong><br>
+      Kiválasztott objektumtípus: <strong>${getToolboxObjectTypeLabel(objectType)}</strong><br>
+      Az objektumazonosítás következő lépésben lesz bekötve. Addig a térképi kattintás nem hoz létre új markert.<br>
+      Mentett markerek: <strong>${markerCount}</strong>
+    `;
+    return;
+  }
+
+  if (mode === 'distance') {
+    dom.toolboxStatus.innerHTML = `
+      Aktív mód: <strong>${getToolboxModeLabel(mode)}</strong><br>
+      A távolságmérés következő fejlesztési lépésben lesz bekötve. Addig a térképi kattintás nem hoz létre új markert.<br>
+      Mentett markerek: <strong>${markerCount}</strong>
+    `;
+    return;
+  }
+
+  dom.toolboxStatus.innerHTML = `
+    Aktív mód: <strong>Kikapcsolva</strong><br>
+    A Toolbox nem helyez el új pontot a térképen.<br>
+    Mentett markerek: <strong>${markerCount}</strong>
+  `;
+}
+
+function applyToolboxMode() {
+  const mode = dom.toolboxMode?.value || 'coordinate';
+  const controller = appState.coordinateMarkersController;
+
+  if (!controller) {
+    updateToolboxStatus();
+    return;
+  }
+
+  if (mode === 'coordinate') {
+    controller.enable();
+  } else {
+    controller.disable();
+  }
+
+  updateToolboxStatus();
+}
+
+function bindToolboxControls() {
+  dom.toolboxMode?.addEventListener('change', applyToolboxMode);
+  dom.toolboxObjectType?.addEventListener('change', updateToolboxStatus);
+
+  dom.btnToolboxClearMarkers?.addEventListener('click', () => {
+    if (!appState.coordinateMarkersController) return;
+
+    const markerCount = appState.coordinateMarkersController.getMarkers?.().length || 0;
+    if (!markerCount) {
+      updateToolboxStatus();
+      return;
+    }
+
+    const confirmed = window.confirm(`Biztosan törlöd az összes koordináta markert? (${markerCount} db)`);
+    if (!confirmed) return;
+
+    appState.coordinateMarkersController.clearMarkers();
+    updateToolboxStatus();
+  });
+
+  dom.btnToolboxExportGeoJson?.addEventListener('click', () => {
+    if (!appState.coordinateMarkersController) return;
+
+    const markerCount = appState.coordinateMarkersController.getMarkers?.().length || 0;
+    if (!markerCount) {
+      updateToolboxStatus();
+      return;
+    }
+
+    appState.coordinateMarkersController.exportGeoJson();
+    updateToolboxStatus();
+  });
+
+  applyToolboxMode();
+}
+
 function bindLayerToggles() {
   dom.toggleOccupied.addEventListener('change', () => {
     if (dom.toggleOccupied.checked) {
@@ -1308,6 +1426,7 @@ async function init() {
       enabled: true,
     });
 
+    bindToolboxControls();
     bindLayerToggles();
     bindControls(player);
 
