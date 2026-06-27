@@ -1,4 +1,4 @@
-const STORAGE_KEY = 'ukraine_front_coordinate_markers_v2';
+const STORAGE_KEY = 'ukraine_front_coordinate_markers_v3';
 
 function formatCoord(value) {
   return Number(value).toFixed(6);
@@ -15,6 +15,10 @@ function escapeHtml(value) {
 
 function makeMarkerId() {
   return `coord_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
+}
+
+function nowIso() {
+  return new Date().toISOString();
 }
 
 function readStoredMarkers() {
@@ -43,6 +47,24 @@ function writeStoredMarkers(markers) {
   }
 }
 
+function downloadTextFile(filename, content, mimeType = 'application/json') {
+  const blob = new Blob([content], { type: `${mimeType};charset=utf-8` });
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  link.style.display = 'none';
+
+  document.body.appendChild(link);
+  link.click();
+
+  setTimeout(() => {
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }, 0);
+}
+
 function copyText(text) {
   if (navigator.clipboard?.writeText) {
     navigator.clipboard.writeText(text).catch(() => {});
@@ -64,6 +86,23 @@ function copyText(text) {
   }
 
   document.body.removeChild(textarea);
+}
+
+function markerToGeoJsonFeature(marker) {
+  return {
+    type: 'Feature',
+    geometry: {
+      type: 'Point',
+      coordinates: [Number(marker.lng), Number(marker.lat)],
+    },
+    properties: {
+      id: marker.id,
+      source: 'manual_coordinate_marker',
+      createdAt: marker.createdAt || null,
+      updatedAt: marker.updatedAt || null,
+      wgs84: `${formatCoord(marker.lat)}, ${formatCoord(marker.lng)}`,
+    },
+  };
 }
 
 function createPopupHtml(markerData) {
@@ -91,6 +130,24 @@ function createPopupHtml(markerData) {
         style="width:100%; margin-bottom:4px;"
       >
         Copy WGS84
+      </button>
+
+      <button
+        type="button"
+        data-coord-action="export-json"
+        data-coord-id="${escapeHtml(markerData.id)}"
+        style="width:100%; margin-bottom:4px;"
+      >
+        Export this marker JSON
+      </button>
+
+      <button
+        type="button"
+        data-coord-action="export-geojson"
+        data-coord-id="${escapeHtml(markerData.id)}"
+        style="width:100%; margin-bottom:4px;"
+      >
+        Export this marker GeoJSON
       </button>
 
       <button
@@ -126,6 +183,39 @@ export function initCoordinateMarkers({ map, layerGroup, enabled = true } = {}) 
     return markerData.find(item => item.id === id);
   }
 
+  function getMarkers() {
+    return markerData.map(item => ({ ...item }));
+  }
+
+  function exportJson(targetMarkers = markerData, filename = null) {
+    const payload = {
+      generatedAt: nowIso(),
+      source: 'ukraine_front_interactive_map',
+      type: 'manual_coordinate_markers',
+      count: targetMarkers.length,
+      markers: targetMarkers.map(item => ({ ...item })),
+    };
+
+    const safeFilename = filename || `coordinate_markers_${new Date().toISOString().slice(0, 10)}.json`;
+    downloadTextFile(safeFilename, JSON.stringify(payload, null, 2), 'application/json');
+
+    return payload;
+  }
+
+  function exportGeoJson(targetMarkers = markerData, filename = null) {
+    const payload = {
+      type: 'FeatureCollection',
+      generatedAt: nowIso(),
+      source: 'ukraine_front_interactive_map',
+      features: targetMarkers.map(markerToGeoJsonFeature),
+    };
+
+    const safeFilename = filename || `coordinate_markers_${new Date().toISOString().slice(0, 10)}.geojson`;
+    downloadTextFile(safeFilename, JSON.stringify(payload, null, 2), 'application/geo+json');
+
+    return payload;
+  }
+
   function removeMarker(id) {
     const marker = markerMap.get(id);
 
@@ -144,7 +234,7 @@ export function initCoordinateMarkers({ map, layerGroup, enabled = true } = {}) 
 
     item.lat = Number(latlng.lat);
     item.lng = Number(latlng.lng);
-    item.updatedAt = new Date().toISOString();
+    item.updatedAt = nowIso();
 
     const marker = markerMap.get(id);
     if (marker) {
@@ -159,8 +249,8 @@ export function initCoordinateMarkers({ map, layerGroup, enabled = true } = {}) 
       id: data.id || makeMarkerId(),
       lat: Number(data.lat),
       lng: Number(data.lng),
-      createdAt: data.createdAt || new Date().toISOString(),
-      updatedAt: data.updatedAt || new Date().toISOString(),
+      createdAt: data.createdAt || nowIso(),
+      updatedAt: data.updatedAt || nowIso(),
     };
 
     if (!Number.isFinite(normalized.lat) || !Number.isFinite(normalized.lng)) {
@@ -255,6 +345,17 @@ export function initCoordinateMarkers({ map, layerGroup, enabled = true } = {}) 
       setTimeout(() => {
         target.textContent = 'Copy WGS84';
       }, 1200);
+      return;
+    }
+
+    if (action === 'export-json') {
+      exportJson([item], `coordinate_marker_${item.id}.json`);
+      return;
+    }
+
+    if (action === 'export-geojson') {
+      exportGeoJson([item], `coordinate_marker_${item.id}.geojson`);
+      return;
     }
 
     if (action === 'delete') {
@@ -286,6 +387,8 @@ export function initCoordinateMarkers({ map, layerGroup, enabled = true } = {}) 
 
     addMarker,
 
+    removeMarker,
+
     clearMarkers() {
       markerMap.forEach(marker => layerGroup.removeLayer(marker));
       markerMap.clear();
@@ -293,8 +396,14 @@ export function initCoordinateMarkers({ map, layerGroup, enabled = true } = {}) 
       save();
     },
 
-    getMarkers() {
-      return markerData.map(item => ({ ...item }));
+    getMarkers,
+
+    exportJson() {
+      return exportJson(markerData);
+    },
+
+    exportGeoJson() {
+      return exportGeoJson(markerData);
     },
 
     destroy() {
