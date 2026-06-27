@@ -1,0 +1,54 @@
+name: Coordinate Intelligence
+
+on:
+  workflow_dispatch:
+    inputs:
+      lat:
+        description: "Latitude"
+        required: true
+        type: string
+      lon:
+        description: "Longitude"
+        required: true
+        type: string
+      radius:
+        description: "Search radius in meters"
+        required: false
+        default: "750"
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  coordinate-intelligence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install requests
+
+      - name: Run Coordinate Intelligence
+        run: |
+          python scripts/coordinate_intelligence.py \
+            --lat "${{ github.event.inputs.lat }}" \
+            --lon "${{ github.event.inputs.lon }}" \
+            --radius "${{ github.event.inputs.radius }}"
+
+      - name: Commit intelligence output
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add data/intelligence/*.json
+          git diff --cached --quiet || git commit -m "Update coordinate intelligence"
+          git push
