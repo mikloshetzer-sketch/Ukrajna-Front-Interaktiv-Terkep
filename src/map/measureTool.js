@@ -1,4 +1,4 @@
-const STORAGE_KEY = 'ukraine_front_measurements_v1';
+const STORAGE_KEY = 'ukraine_front_measurements_v2';
 
 function nowIso() {
   return new Date().toISOString();
@@ -63,6 +63,13 @@ function midpoint(a, b) {
   return {
     lat: (Number(a.lat) + Number(b.lat)) / 2,
     lng: (Number(a.lng) + Number(b.lng)) / 2,
+  };
+}
+
+function normalizePoint(point) {
+  return {
+    lat: Number(point.lat),
+    lng: Number(point.lng),
   };
 }
 
@@ -170,29 +177,55 @@ function createPopupHtml(measurement) {
       >
         Delete measurement
       </button>
+
+      <div style="font-size:11px; color:#777; margin-top:6px;">
+        A mérési címke egérrel húzható, hogy ne takarja az objektumot.
+      </div>
     </div>
   `;
 }
 
 function buildMeasurement(start, end) {
-  const distanceKm = haversineDistanceKm(start, end);
-  const bearingDeg = bearingDegrees(start, end);
+  const normalizedStart = normalizePoint(start);
+  const normalizedEnd = normalizePoint(end);
+  const distanceKm = haversineDistanceKm(normalizedStart, normalizedEnd);
+  const bearingDeg = bearingDegrees(normalizedStart, normalizedEnd);
+  const mid = midpoint(normalizedStart, normalizedEnd);
 
   return {
     id: makeMeasurementId(),
     createdAt: nowIso(),
     updatedAt: nowIso(),
-    start: {
-      lat: Number(start.lat),
-      lng: Number(start.lng),
-    },
-    end: {
-      lat: Number(end.lat),
-      lng: Number(end.lng),
-    },
+    start: normalizedStart,
+    end: normalizedEnd,
+    labelPosition: mid,
     distanceKm,
     bearingDeg,
   };
+}
+
+function createLabelIcon(measurement) {
+  return L.divIcon({
+    className: 'measurement-label',
+    html: `
+      <div style="
+        background: rgba(17, 24, 39, 0.92);
+        color: #fff;
+        padding: 5px 8px;
+        border-radius: 7px;
+        border: 1px solid rgba(250, 204, 21, 0.9);
+        font-size: 12px;
+        white-space: nowrap;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.28);
+        cursor: move;
+        user-select: none;
+      ">
+        📏 ${formatDistanceKm(measurement.distanceKm)} · ${formatBearing(measurement.bearingDeg)}
+      </div>
+    `,
+    iconSize: [1, 1],
+    iconAnchor: [0, 0],
+  });
 }
 
 export function initMeasureTool({ map, layerGroup, enabled = false, onStatusChange = null } = {}) {
@@ -219,7 +252,43 @@ export function initMeasureTool({ map, layerGroup, enabled = false, onStatusChan
     return measurements.find(item => item.id === id);
   }
 
+  function ensureLabelPosition(measurement) {
+    if (
+      !measurement.labelPosition ||
+      !Number.isFinite(Number(measurement.labelPosition.lat)) ||
+      !Number.isFinite(Number(measurement.labelPosition.lng))
+    ) {
+      measurement.labelPosition = midpoint(measurement.start, measurement.end);
+    }
+
+    measurement.labelPosition = normalizePoint(measurement.labelPosition);
+  }
+
+  function updateMeasurementLabelPosition(id, latlng) {
+    const measurement = findMeasurement(id);
+    if (!measurement) return;
+
+    measurement.labelPosition = normalizePoint(latlng);
+    measurement.updatedAt = nowIso();
+    save();
+
+    const item = rendered.get(id);
+    if (!item) return;
+
+    const mid = midpoint(measurement.start, measurement.end);
+    item.connector.setLatLngs([
+      [mid.lat, mid.lng],
+      [measurement.labelPosition.lat, measurement.labelPosition.lng],
+    ]);
+
+    item.label.bindPopup(createPopupHtml(measurement));
+    item.line.bindPopup(createPopupHtml(measurement));
+    item.connector.bindPopup(createPopupHtml(measurement));
+  }
+
   function renderMeasurement(measurement, shouldOpen = false) {
+    ensureLabelPosition(measurement);
+
     const line = L.polyline(
       [
         [measurement.start.lat, measurement.start.lng],
@@ -235,36 +304,41 @@ export function initMeasureTool({ map, layerGroup, enabled = false, onStatusChan
 
     const mid = midpoint(measurement.start, measurement.end);
 
-    const label = L.marker([mid.lat, mid.lng], {
+    const connector = L.polyline(
+      [
+        [mid.lat, mid.lng],
+        [measurement.labelPosition.lat, measurement.labelPosition.lng],
+      ],
+      {
+        color: '#facc15',
+        weight: 1.5,
+        opacity: 0.55,
+        dashArray: '3 5',
+      }
+    );
+
+    const label = L.marker([measurement.labelPosition.lat, measurement.labelPosition.lng], {
+      draggable: true,
       interactive: true,
-      icon: L.divIcon({
-        className: 'measurement-label',
-        html: `
-          <div style="
-            background: rgba(17, 24, 39, 0.92);
-            color: #fff;
-            padding: 4px 7px;
-            border-radius: 6px;
-            border: 1px solid rgba(250, 204, 21, 0.85);
-            font-size: 12px;
-            white-space: nowrap;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.25);
-          ">
-            📏 ${formatDistanceKm(measurement.distanceKm)} · ${formatBearing(measurement.bearingDeg)}
-          </div>
-        `,
-        iconSize: [1, 1],
-        iconAnchor: [0, 0],
-      }),
+      icon: createLabelIcon(measurement),
+      title: 'Measurement label',
+      zIndexOffset: 900,
     });
 
     label.bindPopup(createPopupHtml(measurement));
     line.bindPopup(createPopupHtml(measurement));
+    connector.bindPopup(createPopupHtml(measurement));
+
+    label.on('dragend', () => {
+      updateMeasurementLabelPosition(measurement.id, label.getLatLng());
+      emitStatus(`Mérési címke áthelyezve: ${formatDistanceKm(measurement.distanceKm)} · ${formatBearing(measurement.bearingDeg)}.`);
+    });
 
     line.addTo(layerGroup);
+    connector.addTo(layerGroup);
     label.addTo(layerGroup);
 
-    rendered.set(measurement.id, { line, label });
+    rendered.set(measurement.id, { line, connector, label });
 
     if (shouldOpen) {
       label.openPopup();
@@ -295,6 +369,7 @@ export function initMeasureTool({ map, layerGroup, enabled = false, onStatusChan
 
     if (item) {
       layerGroup.removeLayer(item.line);
+      layerGroup.removeLayer(item.connector);
       layerGroup.removeLayer(item.label);
       rendered.delete(id);
     }
@@ -330,6 +405,7 @@ export function initMeasureTool({ map, layerGroup, enabled = false, onStatusChan
     if (target.closest?.('.leaflet-popup')) return true;
     if (target.closest?.('.leaflet-control')) return true;
     if (target.closest?.('#sidebar')) return true;
+    if (target.closest?.('.measurement-label')) return true;
 
     return false;
   }
@@ -354,7 +430,7 @@ export function initMeasureTool({ map, layerGroup, enabled = false, onStatusChan
     pendingStart = null;
 
     emitStatus(
-      `Távolság: ${formatDistanceKm(measurement.distanceKm)} · irány: ${formatBearing(measurement.bearingDeg)}.`
+      `Távolság: ${formatDistanceKm(measurement.distanceKm)} · irány: ${formatBearing(measurement.bearingDeg)}. A címke egérrel mozgatható.`
     );
   }
 
