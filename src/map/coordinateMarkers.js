@@ -1,4 +1,4 @@
-const STORAGE_KEY = 'ukraine_front_coordinate_markers_v1';
+const STORAGE_KEY = 'ukraine_front_coordinate_markers_v2';
 
 function formatCoord(value) {
   return Number(value).toFixed(6);
@@ -208,12 +208,28 @@ export function initCoordinateMarkers({ map, layerGroup, enabled = true } = {}) 
     });
   }
 
+  function shouldIgnoreClick(event) {
+    const target = event.originalEvent?.target;
+
+    if (!target) return false;
+
+    const tagName = String(target.tagName || '').toLowerCase();
+
+    if (['button', 'input', 'select', 'textarea', 'a'].includes(tagName)) {
+      return true;
+    }
+
+    if (target.closest?.('.leaflet-popup')) return true;
+    if (target.closest?.('.leaflet-control')) return true;
+    if (target.closest?.('#sidebar')) return true;
+
+    return false;
+  }
+
   function handleMapClick(event) {
     if (!isEnabled) return;
-
-    if (!event.originalEvent?.shiftKey) {
-      return;
-    }
+    if (!event?.latlng) return;
+    if (shouldIgnoreClick(event)) return;
 
     addMarker({
       lat: event.latlng.lat,
