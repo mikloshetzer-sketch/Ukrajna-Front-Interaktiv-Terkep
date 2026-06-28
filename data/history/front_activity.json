@@ -3784,5 +3784,137 @@
       "deepstate": "cyterat/deepstate-map-data via GitHub API"
     },
     "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
+  },
+  {
+    "date": "2026-06-28",
+    "updated_utc": "2026-06-28T19:54:04.102566+00:00",
+    "front_activity_index": 71,
+    "status": "HIGH",
+    "components": {
+      "osint_density": 25,
+      "firms_activity": 20,
+      "territorial_change": 11.8,
+      "active_sectors": 10,
+      "critical_events": 4
+    },
+    "counts": {
+      "osint": 19,
+      "firms_3d": 3665,
+      "firms_10d": 10133,
+      "firms_30d": 19469,
+      "critical_events": 2,
+      "active_sectors": 10
+    },
+    "territorial": {
+      "available": true,
+      "error": null,
+      "previous_file": "deepstatemap_data_20260627.geojson",
+      "current_file": "deepstatemap_data_20260628.geojson",
+      "previous_total_km2": 116649.07,
+      "current_total_km2": 116652.99,
+      "russian_gain_km2": 3.92,
+      "ukrainian_recapture_km2": 0,
+      "net_change_km2": 3.92,
+      "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    },
+    "territorial_hotspot": {
+      "sector": "Pokrovsk",
+      "lat": 48.28,
+      "lon": 37.18,
+      "zoom": 9,
+      "score": 100,
+      "change_km2": 3.92,
+      "method": "Top classified sector based on OSINT + FIRMS density"
+    },
+    "top_sectors": [
+      {
+        "sector": "Pokrovsk",
+        "osint": 11,
+        "firms": 27,
+        "score": 100
+      },
+      {
+        "sector": "Zaporizhzhia",
+        "osint": 0,
+        "firms": 178,
+        "score": 100
+      },
+      {
+        "sector": "Kherson-Dnipro",
+        "osint": 0,
+        "firms": 1253,
+        "score": 100
+      },
+      {
+        "sector": "Other / Unclassified",
+        "osint": 4,
+        "firms": 2026,
+        "score": 100
+      },
+      {
+        "sector": "Kharkiv",
+        "osint": 3,
+        "firms": 22,
+        "score": 56
+      },
+      {
+        "sector": "Lyman",
+        "osint": 0,
+        "firms": 52,
+        "score": 47
+      },
+      {
+        "sector": "Velyka Novosilka",
+        "osint": 0,
+        "firms": 41,
+        "score": 37
+      },
+      {
+        "sector": "Crimea",
+        "osint": 1,
+        "firms": 14,
+        "score": 25
+      }
+    ],
+    "top_events": [
+      {
+        "title": "Reported rear-area strike near Krasznodar",
+        "source": "forrás nélkül",
+        "sector": "Other / Unclassified"
+      },
+      {
+        "title": "Reported rear-area strike near Harkiv",
+        "source": "forrás nélkül",
+        "sector": "Kharkiv"
+      },
+      {
+        "title": "Russian Offensive Campaign Assessment, June 27, 2026",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Russian Offensive Campaign Assessment, June 26, 2026",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "“The enemy is increasingly using a tactic of information occupation”: Russians are reporting desired advances as actual gains",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Ukraine and the World stand against russian aggression: sanctions in action",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      }
+    ],
+    "data_sources": {
+      "osint": "data/osint_feed.json",
+      "firms_3d": "data/firms_3.json",
+      "firms_10d": "data/firms_10.json",
+      "firms_30d": "data/firms_30.json",
+      "deepstate": "cyterat/deepstate-map-data via GitHub API"
+    },
+    "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
   }
 ]
