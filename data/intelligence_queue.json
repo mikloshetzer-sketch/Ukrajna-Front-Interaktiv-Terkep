@@ -1,7 +1,21 @@
 {
-  "updated_at": null,
-  "status": "ready",
-  "queue": [],
+  "updated_at": "2026-06-29T08:00:53.082879+00:00",
+  "status": "pending",
+  "queue": [
+    {
+      "id": "ci_20260629_080053",
+      "type": "coordinate_intelligence",
+      "status": "pending",
+      "created_at": "2026-06-29T08:00:53.082835+00:00",
+      "updated_at": "2026-06-29T08:00:53.082843+00:00",
+      "coordinate": {
+        "lat": 45.336702,
+        "lon": 36.464868
+      },
+      "radius": 750,
+      "source": "manual_map_request"
+    }
+  ],
   "completed": [],
   "failed": [],
   "note": "Coordinate Intelligence analysis queue. Pending items will be processed by GitHub Actions in a later step."
