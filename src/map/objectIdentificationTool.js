@@ -326,6 +326,25 @@ function getSelectedAnalysisRadius() {
   return Number(selected?.value || 750);
 }
 
+
+async function loadLatestIntelligenceResult() {
+  const response = await fetch('data/intelligence/latest.json?_=' + Date.now(), {cache:'no-store'});
+  if(!response.ok) throw new Error('latest.json not available');
+  return await response.json();
+}
+
+function renderLatestIntelligenceResult(data){
+  const summary=data.summary||{};
+  const features=(data.nearby_features||[]).slice(0,5).map(f=>`• ${f.name} (${f.feature_type})`).join('<br>');
+  setAnalystPanelStatus(
+    `<strong>Analysis completed</strong><br><br>`+
+    `Likely object: <strong>${summary.likely_object||'-'}</strong><br>`+
+    `Confidence: <strong>${summary.confidence||'-'}</strong><br><br>`+
+    `<strong>Assessment</strong><br>${data.assessment||'-'}<br><br>`+
+    `<strong>Nearby features</strong><br>${features||'No nearby mapped features.'}`
+  );
+}
+
 function setAnalystPanelStatus(html) {
   const status = document.getElementById('coordinateIntelligenceStatus');
   if (status) {
@@ -819,10 +838,19 @@ export function initObjectIdentificationTool({
       copyText(workflowInput);
 
       setAnalystPanelStatus(
-        `Status: workflow input copied to clipboard.<br>` +
-        `Radius: <strong>${radius} m</strong><br>` +
-        `<a href="${workflowUrl}" target="_blank" rel="noopener noreferrer" style="color:#facc15;">Open Coordinate Intelligence workflow</a>`
+        `Workflow input prepared.<br>Run the GitHub workflows, then this panel will load the latest result...`
       );
+
+      loadLatestIntelligenceResult()
+        .then(renderLatestIntelligenceResult)
+        .catch(() => {
+          setAnalystPanelStatus(
+            `Workflow input copied.<br>`+
+            `Radius: <strong>${radius} m</strong><br>`+
+            `<a href="${workflowUrl}" target="_blank" rel="noopener noreferrer" style="color:#facc15;">Open Coordinate Intelligence workflow</a><br><br>`+
+            `Latest analysis result not available yet.`
+          );
+        });
 
       emitStatus(
         `Coordinate Intelligence előkészítve.<br>` +
