@@ -10,22 +10,24 @@ import requests
 OVERPASS_URL = "https://overpass-api.de/api/interpreter"
 OUTPUT_DIR = "data/intelligence"
 
+PRIMARY_RADIUS_M = 40
+SECONDARY_RADIUS_M = 150
+
 STRONG_FEATURE_TYPES = {
+    "bridge",
+    "road",
+    "railway",
     "port",
     "airfield",
-    "railway",
     "storage",
     "fuel",
     "industrial",
     "power",
-    "bridge",
     "military",
     "warehouse",
 }
 
-WEAK_FEATURE_TYPES = {
-    "other",
-}
+WEAK_FEATURE_TYPES = {"other"}
 
 
 def now_iso():
@@ -62,15 +64,11 @@ def build_overpass_query(lat, lon, radius):
 
 
 def fetch_overpass(lat, lon, radius):
-    query = build_overpass_query(lat, lon, radius)
-
     response = requests.post(
         OVERPASS_URL,
-        data={"data": query},
+        data={"data": build_overpass_query(lat, lon, radius)},
         timeout=60,
-        headers={
-            "User-Agent": "Ukraine-Front-OSINT-Coordinate-Intelligence/2.0"
-        },
+        headers={"User-Agent": "Ukraine-Front-OSINT-Coordinate-Intelligence/3.0"},
     )
     response.raise_for_status()
     return response.json()
@@ -90,6 +88,15 @@ def element_lat_lon(element):
 def classify_element(tags):
     tags = tags or {}
 
+    if tags.get("bridge") or tags.get("man_made") == "bridge":
+        return "bridge"
+
+    if tags.get("highway"):
+        return "road"
+
+    if tags.get("railway"):
+        return "railway"
+
     if tags.get("harbour") or tags.get("seamark:type") == "harbour":
         return "port"
 
@@ -99,11 +106,11 @@ def classify_element(tags):
     if tags.get("landuse") == "port":
         return "port"
 
+    if tags.get("man_made") in {"pier", "breakwater", "quay"}:
+        return "port"
+
     if tags.get("aeroway") in {"aerodrome", "runway", "taxiway", "apron", "hangar"}:
         return "airfield"
-
-    if tags.get("railway"):
-        return "railway"
 
     if tags.get("man_made") in {"storage_tank", "silo", "petroleum_well"}:
         return "storage"
@@ -111,7 +118,7 @@ def classify_element(tags):
     if tags.get("industrial") in {"oil", "petroleum", "refinery", "fuel"}:
         return "fuel"
 
-    if tags.get("amenity") in {"fuel"}:
+    if tags.get("amenity") == "fuel":
         return "fuel"
 
     if tags.get("landuse") == "industrial":
@@ -123,53 +130,77 @@ def classify_element(tags):
     if tags.get("power"):
         return "power"
 
-    if tags.get("bridge"):
-        return "bridge"
-
     if tags.get("military"):
         return "military"
 
     if tags.get("building") in {"warehouse", "industrial", "hangar"}:
         return "warehouse"
 
-    if tags.get("man_made") in {"pier", "breakwater", "quay"}:
-        return "port"
-
     return "other"
 
 
-def feature_weight(feature_type, distance):
-    if feature_type == "port":
-        base = 7
-    elif feature_type == "airfield":
-        base = 7
-    elif feature_type == "fuel":
-        base = 6
-    elif feature_type == "storage":
-        base = 5
-    elif feature_type == "railway":
-        base = 4
-    elif feature_type == "industrial":
-        base = 3
-    elif feature_type == "warehouse":
-        base = 3
-    elif feature_type == "military":
-        base = 6
-    elif feature_type == "power":
-        base = 4
-    elif feature_type == "bridge":
-        base = 4
-    else:
-        base = 0
+def readable_name(name, feature_type, tags):
+    if name and name != "Unnamed object":
+        return name
 
-    if distance <= 100:
-        multiplier = 1.25
-    elif distance <= 250:
-        multiplier = 1.0
+    if feature_type == "bridge":
+        return "Bridge segment"
+    if feature_type == "road":
+        return "Road segment"
+    if feature_type == "railway":
+        return "Railway segment"
+    if feature_type == "port":
+        if tags.get("man_made") == "pier":
+            return "Pier / berth"
+        if tags.get("man_made") == "breakwater":
+            return "Breakwater"
+        if tags.get("man_made") == "quay":
+            return "Quay"
+        return "Port infrastructure"
+    if feature_type == "storage":
+        return "Storage tank / silo"
+    if feature_type == "fuel":
+        return "Fuel facility"
+    if feature_type == "industrial":
+        return "Industrial area"
+    if feature_type == "warehouse":
+        return "Warehouse / logistics building"
+    if feature_type == "power":
+        return "Power infrastructure"
+    if feature_type == "airfield":
+        return "Airfield infrastructure"
+    if feature_type == "military":
+        return "Military-related object"
+
+    return "Unclassified mapped object"
+
+
+def feature_weight(feature_type, distance):
+    base_weights = {
+        "bridge": 9,
+        "road": 3,
+        "railway": 5,
+        "port": 7,
+        "airfield": 8,
+        "fuel": 7,
+        "storage": 6,
+        "industrial": 4,
+        "warehouse": 4,
+        "military": 7,
+        "power": 5,
+        "other": 0,
+    }
+
+    base = base_weights.get(feature_type, 0)
+
+    if distance <= 40:
+        multiplier = 1.6
+    elif distance <= 150:
+        multiplier = 1.15
     elif distance <= 500:
-        multiplier = 0.75
+        multiplier = 0.8
     else:
-        multiplier = 0.5
+        multiplier = 0.45
 
     return round(base * multiplier, 2)
 
@@ -184,9 +215,7 @@ def collect_features(overpass_data, lat, lon):
         if el_lat is None or el_lon is None:
             continue
 
-        feature_type = classify_element(tags)
-
-        name = (
+        raw_name = (
             tags.get("name")
             or tags.get("name:en")
             or tags.get("official_name")
@@ -194,6 +223,7 @@ def collect_features(overpass_data, lat, lon):
             or "Unnamed object"
         )
 
+        feature_type = classify_element(tags)
         dist = round(distance_m(lat, lon, el_lat, el_lon), 1)
         weight = feature_weight(feature_type, dist)
 
@@ -201,7 +231,8 @@ def collect_features(overpass_data, lat, lon):
             {
                 "osm_id": element.get("id"),
                 "osm_type": element.get("type"),
-                "name": name,
+                "name": readable_name(raw_name, feature_type, tags),
+                "raw_name": raw_name,
                 "feature_type": feature_type,
                 "evidence_strength": "strong" if feature_type in STRONG_FEATURE_TYPES else "weak",
                 "weight": weight,
@@ -217,11 +248,9 @@ def collect_features(overpass_data, lat, lon):
 
 def summarize_counts(features):
     counts = {}
-
     for item in features:
         key = item["feature_type"]
         counts[key] = counts.get(key, 0) + 1
-
     return counts
 
 
@@ -231,22 +260,86 @@ def split_features(features):
     return evidence, weak
 
 
+def features_within(features, radius):
+    return [f for f in features if f["distance_m"] <= radius]
+
+
 def total_weight(features, feature_type):
     return sum(f["weight"] for f in features if f["feature_type"] == feature_type)
 
 
-def infer_likely_object(features):
+def infer_primary_object(features):
+    primary_features = features_within(features, PRIMARY_RADIUS_M)
+    primary_evidence = [f for f in primary_features if f["feature_type"] in STRONG_FEATURE_TYPES]
+
+    if not primary_evidence:
+        return {
+            "type": "Unknown / no clear primary object",
+            "confidence": "LOW",
+            "score": 0,
+            "reason": "No strong mapped object was found within the immediate target radius.",
+            "evidence": [],
+        }
+
+    type_scores = {}
+    for feature in primary_evidence:
+        feature_type = feature["feature_type"]
+        type_scores[feature_type] = type_scores.get(feature_type, 0) + feature["weight"]
+
+    best_type, best_score = max(type_scores.items(), key=lambda x: x[1])
+
+    if best_type == "bridge":
+        label = "Bridge infrastructure"
+    elif best_type in {"road", "railway"}:
+        if type_scores.get("road", 0) > 0 and type_scores.get("railway", 0) > 0:
+            label = "Road / rail transport corridor"
+        elif best_type == "railway":
+            label = "Railway infrastructure"
+        else:
+            label = "Road infrastructure"
+    elif best_type == "port":
+        label = "Port infrastructure"
+    elif best_type == "airfield":
+        label = "Airfield / airbase infrastructure"
+    elif best_type in {"storage", "fuel"}:
+        label = "Fuel or storage facility"
+    elif best_type == "industrial":
+        label = "Industrial infrastructure"
+    elif best_type == "military":
+        label = "Military-related infrastructure"
+    elif best_type == "power":
+        label = "Power infrastructure"
+    else:
+        label = "Mapped infrastructure object"
+
+    if best_score >= 12:
+        confidence = "HIGH"
+    elif best_score >= 6:
+        confidence = "MEDIUM"
+    else:
+        confidence = "LOW"
+
+    return {
+        "type": label,
+        "feature_type": best_type,
+        "confidence": confidence,
+        "score": round(best_score, 2),
+        "reason": f"Primary object inferred from mapped features within {PRIMARY_RADIUS_M} m.",
+        "evidence": primary_evidence[:8],
+    }
+
+
+def infer_operational_environment(features):
     evidence_features, weak_features = split_features(features)
     counts = summarize_counts(features)
 
-    evidence_score = round(sum(f["weight"] for f in evidence_features), 2)
-
-    if evidence_score < 4:
+    if not evidence_features:
         return {
-            "likely_object": "Unknown / insufficient OSM evidence",
+            "type": "Unknown / insufficient surrounding evidence",
             "confidence": "LOW",
-            "score": evidence_score,
-            "reason": "No strong mapped infrastructure evidence was found near the coordinate.",
+            "score": 0,
+            "reason": "No strong surrounding infrastructure evidence was found.",
+            "score_breakdown": {},
         }
 
     port_score = (
@@ -278,6 +371,12 @@ def infer_likely_object(features):
         + total_weight(features, "storage") * 0.3
     )
 
+    bridge_score = (
+        total_weight(features, "bridge") * 1.8
+        + total_weight(features, "road") * 0.7
+        + total_weight(features, "railway") * 0.7
+    )
+
     military_score = (
         total_weight(features, "military") * 1.6
         + total_weight(features, "airfield") * 1.0
@@ -296,6 +395,7 @@ def infer_likely_object(features):
         "Airfield / airbase area": round(airfield_score, 2),
         "Fuel or storage facility": round(fuel_score, 2),
         "Rail logistics area": round(rail_score, 2),
+        "Bridge / transport crossing environment": round(bridge_score, 2),
         "Military-related area": round(military_score, 2),
         "Industrial area": round(industrial_score, 2),
     }
@@ -313,11 +413,10 @@ def infer_likely_object(features):
         confidence = "LOW"
 
     return {
-        "likely_object": best_label,
+        "type": best_label,
         "confidence": confidence,
         "score": best_score,
         "reason": (
-            f"Strong evidence score: {evidence_score}. "
             f"Strong feature types: {strong_type_count}. "
             f"Nearby strong features within 500 m: {nearby_strong_count}."
         ),
@@ -326,35 +425,35 @@ def infer_likely_object(features):
     }
 
 
-def build_assessment(inference, features):
-    evidence_features, weak_features = split_features(features)
-    top_evidence = evidence_features[:8]
+def build_final_assessment(primary, environment, features):
+    primary_type = primary.get("type", "Unknown")
+    environment_type = environment.get("type", "Unknown")
 
-    if inference["confidence"] == "LOW":
+    if primary.get("confidence") == "LOW" and environment.get("confidence") == "LOW":
         return (
             "The coordinate could not be identified with high confidence from OpenStreetMap data. "
-            "The mapped evidence is weak or insufficient. Manual satellite review is recommended."
+            "Manual satellite review is recommended."
         )
 
-    evidence_types = sorted(set(item["feature_type"] for item in top_evidence))
-
     return (
-        f"The selected coordinate is assessed as a likely {inference['likely_object'].lower()}. "
-        f"The assessment is based on nearby mapped infrastructure evidence: {', '.join(evidence_types)}. "
-        f"Confidence is {inference['confidence']} based on weighted OpenStreetMap/Overpass indicators. "
-        f"{inference.get('reason', '')}"
+        f"The selected coordinate is primarily assessed as {primary_type.lower()} "
+        f"with {primary.get('confidence')} confidence. "
+        f"The surrounding operational environment is assessed as {environment_type.lower()} "
+        f"with {environment.get('confidence')} confidence. "
+        "This is a rule-based OpenStreetMap/Overpass assessment and should be verified by satellite imagery."
     )
 
 
 def build_payload(lat, lon, radius, features):
     evidence_features, weak_features = split_features(features)
+    primary = infer_primary_object(features)
+    environment = infer_operational_environment(features)
     counts = summarize_counts(features)
-    inference = infer_likely_object(features)
 
     return {
         "generated_at": now_iso(),
         "source": "OpenStreetMap / Overpass API",
-        "version": "coordinate-intelligence-v2-quality",
+        "version": "coordinate-intelligence-v3-target-context",
         "status": "ok",
         "note": "This is rule-based OSINT assistance, not confirmed target identification.",
         "coordinate": {
@@ -362,20 +461,29 @@ def build_payload(lat, lon, radius, features):
             "lon": safe_coord(lon),
         },
         "search_radius_m": radius,
+        "primary_radius_m": PRIMARY_RADIUS_M,
+        "secondary_radius_m": SECONDARY_RADIUS_M,
         "summary": {
-            "likely_object": inference["likely_object"],
-            "confidence": inference["confidence"],
-            "score": inference["score"],
-            "reason": inference.get("reason"),
-            "score_breakdown": inference.get("score_breakdown", {}),
-            "feature_counts": counts,
+            "likely_object": primary["type"],
+            "confidence": primary["confidence"],
+            "score": primary["score"],
+            "operational_environment": environment["type"],
+            "environment_confidence": environment["confidence"],
+            "environment_score": environment["score"],
+            "feature_counts": {
+                key: value
+                for key, value in counts.items()
+                if key != "other"
+            },
             "strong_feature_count": len(evidence_features),
             "weak_feature_count": len(weak_features),
         },
+        "primary_object": primary,
+        "operational_environment": environment,
         "evidence_features": evidence_features[:25],
         "weak_features": weak_features[:25],
         "nearby_features": features[:25],
-        "assessment": build_assessment(inference, features),
+        "assessment": build_final_assessment(primary, environment, features),
     }
 
 
@@ -401,7 +509,7 @@ def save_payload(payload, lat, lon):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Coordinate Intelligence Engine v2")
+    parser = argparse.ArgumentParser(description="Coordinate Intelligence Engine v3")
     parser.add_argument("--lat", required=True, type=float)
     parser.add_argument("--lon", required=True, type=float)
     parser.add_argument("--radius", default=750, type=int)
@@ -420,10 +528,10 @@ def main():
 
     print(f"Coordinate intelligence saved: {path}")
     print(f"Latest intelligence saved: {latest_path}")
-    print(f"Likely object: {payload['summary']['likely_object']}")
-    print(f"Confidence: {payload['summary']['confidence']}")
-    print(f"Strong features: {payload['summary']['strong_feature_count']}")
-    print(f"Weak features: {payload['summary']['weak_feature_count']}")
+    print(f"Primary object: {payload['summary']['likely_object']}")
+    print(f"Primary confidence: {payload['summary']['confidence']}")
+    print(f"Environment: {payload['summary']['operational_environment']}")
+    print(f"Environment confidence: {payload['summary']['environment_confidence']}")
 
 
 if __name__ == "__main__":
