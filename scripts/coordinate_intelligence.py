@@ -1,13 +1,11 @@
 import argparse
 import json
 import os
-from datetime import datetime, timezone
-from math import asin, cos, radians, sin, sqrt
 
-import requests
+from intelligence.overpass import fetch_overpass
+from intelligence.utils import distance_m, now_iso, safe_coord
 
 
-OVERPASS_URL = "https://overpass-api.de/api/interpreter"
 OUTPUT_DIR = "data/intelligence"
 
 PRIMARY_RADIUS_M = 40
@@ -28,50 +26,6 @@ STRONG_FEATURE_TYPES = {
 }
 
 WEAK_FEATURE_TYPES = {"other"}
-
-
-def now_iso():
-    return datetime.now(timezone.utc).isoformat()
-
-
-def safe_coord(value):
-    return round(float(value), 6)
-
-
-def distance_m(lat1, lon1, lat2, lon2):
-    r = 6371008.8
-    dlat = radians(lat2 - lat1)
-    dlon = radians(lon2 - lon1)
-
-    a = (
-        sin(dlat / 2) ** 2
-        + cos(radians(lat1)) * cos(radians(lat2)) * sin(dlon / 2) ** 2
-    )
-
-    return 2 * r * asin(sqrt(a))
-
-
-def build_overpass_query(lat, lon, radius):
-    return f"""
-    [out:json][timeout:40];
-    (
-      node(around:{radius},{lat},{lon});
-      way(around:{radius},{lat},{lon});
-      relation(around:{radius},{lat},{lon});
-    );
-    out center tags;
-    """
-
-
-def fetch_overpass(lat, lon, radius):
-    response = requests.post(
-        OVERPASS_URL,
-        data={"data": build_overpass_query(lat, lon, radius)},
-        timeout=60,
-        headers={"User-Agent": "Ukraine-Front-OSINT-Coordinate-Intelligence/3.0"},
-    )
-    response.raise_for_status()
-    return response.json()
 
 
 def element_lat_lon(element):
@@ -453,7 +407,7 @@ def build_payload(lat, lon, radius, features):
     return {
         "generated_at": now_iso(),
         "source": "OpenStreetMap / Overpass API",
-        "version": "coordinate-intelligence-v3-target-context",
+        "version": "coordinate-intelligence-v4-modular-foundation",
         "status": "ok",
         "note": "This is rule-based OSINT assistance, not confirmed target identification.",
         "coordinate": {
@@ -509,7 +463,7 @@ def save_payload(payload, lat, lon):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Coordinate Intelligence Engine v3")
+    parser = argparse.ArgumentParser(description="Coordinate Intelligence Engine v4 modular foundation")
     parser.add_argument("--lat", required=True, type=float)
     parser.add_argument("--lon", required=True, type=float)
     parser.add_argument("--radius", default=750, type=int)
