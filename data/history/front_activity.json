@@ -3916,5 +3916,137 @@
       "deepstate": "cyterat/deepstate-map-data via GitHub API"
     },
     "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
+  },
+  {
+    "date": "2026-06-29",
+    "updated_utc": "2026-06-29T19:07:45.220248+00:00",
+    "front_activity_index": 63,
+    "status": "HIGH",
+    "components": {
+      "osint_density": 25,
+      "firms_activity": 20,
+      "territorial_change": 0.0,
+      "active_sectors": 10,
+      "critical_events": 8
+    },
+    "counts": {
+      "osint": 23,
+      "firms_3d": 3847,
+      "firms_10d": 11098,
+      "firms_30d": 20807,
+      "critical_events": 4,
+      "active_sectors": 10
+    },
+    "territorial": {
+      "available": false,
+      "error": "HTTP Error 403: rate limit exceeded",
+      "previous_file": null,
+      "current_file": null,
+      "previous_total_km2": null,
+      "current_total_km2": null,
+      "russian_gain_km2": 0.0,
+      "ukrainian_recapture_km2": 0.0,
+      "net_change_km2": 0.0,
+      "method": "fallback"
+    },
+    "territorial_hotspot": {
+      "sector": "Pokrovsk",
+      "lat": 48.28,
+      "lon": 37.18,
+      "zoom": 9,
+      "score": 100,
+      "change_km2": 0.0,
+      "method": "Top classified sector based on OSINT + FIRMS density"
+    },
+    "top_sectors": [
+      {
+        "sector": "Pokrovsk",
+        "osint": 11,
+        "firms": 53,
+        "score": 100
+      },
+      {
+        "sector": "Zaporizhzhia",
+        "osint": 0,
+        "firms": 285,
+        "score": 100
+      },
+      {
+        "sector": "Kherson-Dnipro",
+        "osint": 2,
+        "firms": 1276,
+        "score": 100
+      },
+      {
+        "sector": "Other / Unclassified",
+        "osint": 4,
+        "firms": 1938,
+        "score": 100
+      },
+      {
+        "sector": "Crimea",
+        "osint": 4,
+        "firms": 42,
+        "score": 86
+      },
+      {
+        "sector": "Lyman",
+        "osint": 0,
+        "firms": 90,
+        "score": 81
+      },
+      {
+        "sector": "Kharkiv",
+        "osint": 2,
+        "firms": 39,
+        "score": 59
+      },
+      {
+        "sector": "Velyka Novosilka",
+        "osint": 0,
+        "firms": 61,
+        "score": 55
+      }
+    ],
+    "top_events": [
+      {
+        "title": "Reported military-related update near Kurszk",
+        "source": "forrás nélkül",
+        "sector": "Other / Unclassified"
+      },
+      {
+        "title": "Reported ground assault or offensive activity near Krím",
+        "source": "forrás nélkül",
+        "sector": "Crimea"
+      },
+      {
+        "title": "Reported drone strike near Herszon",
+        "source": "forrás nélkül",
+        "sector": "Kherson-Dnipro"
+      },
+      {
+        "title": "Reported rear-area strike near Krím",
+        "source": "forrás nélkül",
+        "sector": "Crimea"
+      },
+      {
+        "title": "Reported military-related update near Herszon",
+        "source": "forrás nélkül",
+        "sector": "Kherson-Dnipro"
+      },
+      {
+        "title": "Reported military-related update near Krím",
+        "source": "forrás nélkül",
+        "sector": "Crimea"
+      }
+    ],
+    "data_sources": {
+      "osint": "data/osint_feed.json",
+      "firms_3d": "data/firms_3.json",
+      "firms_10d": "data/firms_10.json",
+      "firms_30d": "data/firms_30.json",
+      "deepstate": "cyterat/deepstate-map-data via GitHub API"
+    },
+    "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
   }
 ]

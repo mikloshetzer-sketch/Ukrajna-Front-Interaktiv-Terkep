@@ -1,34 +1,34 @@
 {
-  "date": "2026-06-28",
-  "updated_utc": "2026-06-28T19:54:04.102566+00:00",
-  "front_activity_index": 71,
+  "date": "2026-06-29",
+  "updated_utc": "2026-06-29T19:07:45.220248+00:00",
+  "front_activity_index": 63,
   "status": "HIGH",
   "components": {
     "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 11.8,
+    "territorial_change": 0.0,
     "active_sectors": 10,
-    "critical_events": 4
+    "critical_events": 8
   },
   "counts": {
-    "osint": 19,
-    "firms_3d": 3665,
-    "firms_10d": 10133,
-    "firms_30d": 19469,
-    "critical_events": 2,
+    "osint": 23,
+    "firms_3d": 3847,
+    "firms_10d": 11098,
+    "firms_30d": 20807,
+    "critical_events": 4,
     "active_sectors": 10
   },
   "territorial": {
-    "available": true,
-    "error": null,
-    "previous_file": "deepstatemap_data_20260627.geojson",
-    "current_file": "deepstatemap_data_20260628.geojson",
-    "previous_total_km2": 116649.07,
-    "current_total_km2": 116652.99,
-    "russian_gain_km2": 3.92,
-    "ukrainian_recapture_km2": 0,
-    "net_change_km2": 3.92,
-    "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    "available": false,
+    "error": "HTTP Error 403: rate limit exceeded",
+    "previous_file": null,
+    "current_file": null,
+    "previous_total_km2": null,
+    "current_total_km2": null,
+    "russian_gain_km2": 0.0,
+    "ukrainian_recapture_km2": 0.0,
+    "net_change_km2": 0.0,
+    "method": "fallback"
   },
   "territorial_hotspot": {
     "sector": "Pokrovsk",
@@ -36,89 +36,89 @@
     "lon": 37.18,
     "zoom": 9,
     "score": 100,
-    "change_km2": 3.92,
+    "change_km2": 0.0,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
     {
       "sector": "Pokrovsk",
       "osint": 11,
-      "firms": 27,
+      "firms": 53,
       "score": 100
     },
     {
       "sector": "Zaporizhzhia",
       "osint": 0,
-      "firms": 178,
+      "firms": 285,
       "score": 100
     },
     {
       "sector": "Kherson-Dnipro",
-      "osint": 0,
-      "firms": 1253,
+      "osint": 2,
+      "firms": 1276,
       "score": 100
     },
     {
       "sector": "Other / Unclassified",
       "osint": 4,
-      "firms": 2026,
+      "firms": 1938,
       "score": 100
     },
     {
-      "sector": "Kharkiv",
-      "osint": 3,
-      "firms": 22,
-      "score": 56
+      "sector": "Crimea",
+      "osint": 4,
+      "firms": 42,
+      "score": 86
     },
     {
       "sector": "Lyman",
       "osint": 0,
-      "firms": 52,
-      "score": 47
+      "firms": 90,
+      "score": 81
+    },
+    {
+      "sector": "Kharkiv",
+      "osint": 2,
+      "firms": 39,
+      "score": 59
     },
     {
       "sector": "Velyka Novosilka",
       "osint": 0,
-      "firms": 41,
-      "score": 37
-    },
-    {
-      "sector": "Crimea",
-      "osint": 1,
-      "firms": 14,
-      "score": 25
+      "firms": 61,
+      "score": 55
     }
   ],
   "top_events": [
     {
-      "title": "Reported rear-area strike near Krasznodar",
+      "title": "Reported military-related update near Kurszk",
       "source": "forrás nélkül",
       "sector": "Other / Unclassified"
     },
     {
-      "title": "Reported rear-area strike near Harkiv",
+      "title": "Reported ground assault or offensive activity near Krím",
       "source": "forrás nélkül",
-      "sector": "Kharkiv"
+      "sector": "Crimea"
     },
     {
-      "title": "Russian Offensive Campaign Assessment, June 27, 2026",
+      "title": "Reported drone strike near Herszon",
       "source": "forrás nélkül",
-      "sector": "Pokrovsk"
+      "sector": "Kherson-Dnipro"
     },
     {
-      "title": "Russian Offensive Campaign Assessment, June 26, 2026",
+      "title": "Reported rear-area strike near Krím",
       "source": "forrás nélkül",
-      "sector": "Pokrovsk"
+      "sector": "Crimea"
     },
     {
-      "title": "“The enemy is increasingly using a tactic of information occupation”: Russians are reporting desired advances as actual gains",
+      "title": "Reported military-related update near Herszon",
       "source": "forrás nélkül",
-      "sector": "Pokrovsk"
+      "sector": "Kherson-Dnipro"
     },
     {
-      "title": "Ukraine and the World stand against russian aggression: sanctions in action",
+      "title": "Reported military-related update near Krím",
       "source": "forrás nélkül",
-      "sector": "Pokrovsk"
+      "sector": "Crimea"
     }
   ],
   "data_sources": {
