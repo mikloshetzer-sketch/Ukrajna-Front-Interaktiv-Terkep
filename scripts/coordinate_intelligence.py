@@ -12,7 +12,7 @@ from intelligence.maritime import analyse_maritime
 
 OUTPUT_DIR = "data/intelligence"
 
-PRIMARY_RADIUS_M = 40
+PRIMARY_RADIUS_M = 75
 SECONDARY_RADIUS_M = 150
 
 STRONG_FEATURE_TYPES = {
@@ -151,7 +151,7 @@ def feature_weight(feature_type, distance):
 
     base = base_weights.get(feature_type, 0)
 
-    if distance <= 40:
+    if distance <= 75:
         multiplier = 1.6
     elif distance <= 150:
         multiplier = 1.15
@@ -233,6 +233,7 @@ def infer_primary_object(features):
     if not primary_evidence:
         return {
             "type": "Unknown / no clear primary object",
+            "feature_type": "unknown",
             "confidence": "LOW",
             "score": 0,
             "reason": "No strong mapped object was found within the immediate target radius.",
@@ -246,29 +247,24 @@ def infer_primary_object(features):
 
     best_type, best_score = max(type_scores.items(), key=lambda x: x[1])
 
-    if best_type == "bridge":
-        label = "Bridge infrastructure"
-    elif best_type in {"road", "railway"}:
-        if type_scores.get("road", 0) > 0 and type_scores.get("railway", 0) > 0:
-            label = "Road / rail transport corridor"
-        elif best_type == "railway":
-            label = "Railway infrastructure"
-        else:
-            label = "Road infrastructure"
-    elif best_type == "port":
-        label = "Port infrastructure"
-    elif best_type == "airfield":
-        label = "Airfield / airbase infrastructure"
-    elif best_type in {"storage", "fuel"}:
-        label = "Fuel or storage facility"
-    elif best_type == "industrial":
-        label = "Industrial infrastructure"
-    elif best_type == "military":
-        label = "Military-related infrastructure"
-    elif best_type == "power":
-        label = "Power infrastructure"
+    labels = {
+        "bridge": "Bridge infrastructure",
+        "road": "Road infrastructure",
+        "railway": "Railway infrastructure",
+        "port": "Port infrastructure",
+        "airfield": "Airfield / airbase infrastructure",
+        "storage": "Fuel or storage facility",
+        "fuel": "Fuel or storage facility",
+        "industrial": "Industrial infrastructure",
+        "warehouse": "Warehouse / logistics building",
+        "military": "Military-related infrastructure",
+        "power": "Power infrastructure",
+    }
+
+    if type_scores.get("road", 0) > 0 and type_scores.get("railway", 0) > 0:
+        label = "Road / rail transport corridor"
     else:
-        label = "Mapped infrastructure object"
+        label = labels.get(best_type, "Mapped infrastructure object")
 
     if best_score >= 12:
         confidence = "HIGH"
@@ -384,39 +380,125 @@ def infer_operational_environment(features):
     }
 
 
-def build_final_assessment(primary, environment, nominatim, wikidata, railway, maritime):
-    primary_type = primary.get("type", "Unknown")
-    environment_type = environment.get("type", "Unknown")
+def build_location(nominatim):
+    if not isinstance(nominatim, dict) or nominatim.get("status") != "ok":
+        return {
+            "status": "unknown",
+            "country": None,
+            "region": None,
+            "county": None,
+            "city": None,
+            "locality": None,
+            "road": None,
+            "display_name": None,
+        }
 
-    place_name = None
-    if nominatim.get("status") == "ok":
-        place_name = nominatim.get("name") or nominatim.get("display_name")
+    address = nominatim.get("address") or {}
 
-    wikidata_name = None
-    nearest_wikidata = wikidata.get("nearest") if isinstance(wikidata, dict) else None
-    if nearest_wikidata:
-        wikidata_name = nearest_wikidata.get("name")
+    return {
+        "status": "ok",
+        "country": address.get("country"),
+        "country_code": address.get("country_code"),
+        "region": address.get("region"),
+        "county": address.get("county"),
+        "city": address.get("city"),
+        "locality": address.get("locality"),
+        "road": address.get("road"),
+        "nearest_named_place": nominatim.get("name"),
+        "display_name": nominatim.get("display_name"),
+    }
 
+
+def infer_fusion_profile(primary, environment, counts, railway, maritime):
+    warehouse_count = counts.get("warehouse", 0)
+    railway_count = counts.get("railway", 0)
+    industrial_count = counts.get("industrial", 0)
+    power_count = counts.get("power", 0)
+    port_count = counts.get("port", 0)
+    storage_count = counts.get("storage", 0)
+    fuel_count = counts.get("fuel", 0)
+
+    rail_present = isinstance(railway, dict) and railway.get("rail_present")
+    port_present = isinstance(maritime, dict) and maritime.get("port_present")
+
+    if port_present and railway_count >= 5:
+        return {
+            "type": "Commercial port with integrated rail logistics",
+            "confidence": "HIGH",
+            "reason": "Port infrastructure and significant railway support are both present.",
+        }
+
+    if warehouse_count >= 10 and rail_present:
+        return {
+            "type": "Rail-connected industrial logistics hub",
+            "confidence": "HIGH",
+            "reason": "Warehouse concentration and rail infrastructure are both present.",
+        }
+
+    if warehouse_count >= 5 and industrial_count >= 2:
+        return {
+            "type": "Industrial logistics complex",
+            "confidence": "MEDIUM",
+            "reason": "Warehouse and industrial infrastructure are clustered around the coordinate.",
+        }
+
+    if power_count >= 10 and industrial_count >= 1:
+        return {
+            "type": "Industrial / power infrastructure area",
+            "confidence": "MEDIUM",
+            "reason": "Power and industrial infrastructure are both present.",
+        }
+
+    if storage_count >= 5 or fuel_count >= 2:
+        return {
+            "type": "Storage or fuel-support infrastructure area",
+            "confidence": "MEDIUM",
+            "reason": "Storage or fuel-related infrastructure is present.",
+        }
+
+    if primary.get("confidence") != "LOW":
+        return {
+            "type": primary.get("type"),
+            "confidence": primary.get("confidence"),
+            "reason": "Fusion profile follows the primary object assessment.",
+        }
+
+    return {
+        "type": environment.get("type"),
+        "confidence": environment.get("confidence"),
+        "reason": "Fusion profile follows the surrounding operational environment.",
+    }
+
+
+def build_final_assessment(primary, environment, fusion, location, wikidata, railway, maritime):
     parts = [
-        f"The selected coordinate is primarily assessed as {primary_type.lower()} "
+        f"The selected coordinate is assessed as {fusion.get('type', 'unknown').lower()} "
+        f"with {fusion.get('confidence')} confidence.",
+        f"The primary mapped object is {primary.get('type', 'unknown').lower()} "
         f"with {primary.get('confidence')} confidence.",
-        f"The surrounding operational environment is assessed as {environment_type.lower()} "
+        f"The surrounding operational environment is {environment.get('type', 'unknown').lower()} "
         f"with {environment.get('confidence')} confidence.",
     ]
 
-    if place_name:
-        parts.append(f"Nominatim identifies the nearest named context as {place_name}.")
+    city = location.get("city")
+    region = location.get("region")
+    country = location.get("country")
 
-    if wikidata_name:
-        parts.append(f"Wikidata nearest candidate is {wikidata_name}.")
+    loc_parts = [item for item in [city, region, country] if item]
+    if loc_parts:
+        parts.append(f"The nearest settlement context is {', '.join(loc_parts)}.")
 
-    if railway.get("rail_present"):
+    nearest_wikidata = wikidata.get("nearest") if isinstance(wikidata, dict) else None
+    if nearest_wikidata:
+        parts.append(f"Wikidata nearest candidate is {nearest_wikidata.get('name')}.")
+
+    if isinstance(railway, dict) and railway.get("rail_present"):
         parts.append(
-            f"Railway intelligence confirms rail-related infrastructure nearby "
+            f"Railway intelligence confirms nearby rail-related infrastructure "
             f"with {railway.get('confidence')} confidence."
         )
 
-    if maritime.get("port_present"):
+    if isinstance(maritime, dict) and maritime.get("port_present"):
         parts.append(
             f"Maritime intelligence identifies {maritime.get('profile').lower()} "
             f"with {maritime.get('confidence')} confidence."
@@ -431,14 +513,17 @@ def build_final_assessment(primary, environment, nominatim, wikidata, railway, m
 
 def build_payload(lat, lon, radius, features, nominatim, wikidata, railway, maritime):
     evidence_features, weak_features = split_features(features)
+    counts = summarize_counts(features)
+
     primary = infer_primary_object(features)
     environment = infer_operational_environment(features)
-    counts = summarize_counts(features)
+    location = build_location(nominatim)
+    fusion = infer_fusion_profile(primary, environment, counts, railway, maritime)
 
     return {
         "generated_at": now_iso(),
         "source": "OSM Overpass + Nominatim + Wikidata + Railway + Maritime modules",
-        "version": "coordinate-intelligence-v5-fusion-modules",
+        "version": "coordinate-intelligence-v6-location-fusion",
         "status": "ok",
         "note": "This is rule-based OSINT assistance, not confirmed target identification.",
         "coordinate": {
@@ -448,13 +533,27 @@ def build_payload(lat, lon, radius, features, nominatim, wikidata, railway, mari
         "search_radius_m": radius,
         "primary_radius_m": PRIMARY_RADIUS_M,
         "secondary_radius_m": SECONDARY_RADIUS_M,
+        "location": location,
         "summary": {
-            "likely_object": primary["type"],
-            "confidence": primary["confidence"],
-            "score": primary["score"],
+            "likely_object": fusion["type"],
+            "confidence": fusion["confidence"],
+            "primary_object": primary["type"],
+            "primary_confidence": primary["confidence"],
             "operational_environment": environment["type"],
             "environment_confidence": environment["confidence"],
             "environment_score": environment["score"],
+            "fusion_reason": fusion["reason"],
+            "country": location.get("country"),
+            "region": location.get("region"),
+            "nearest_city": location.get("city"),
+            "nearest_locality": location.get("locality"),
+            "nearest_road": location.get("road"),
+            "nearest_named_place": location.get("nearest_named_place"),
+            "nearest_wikidata": (
+                wikidata.get("nearest", {}).get("name")
+                if isinstance(wikidata, dict) and wikidata.get("nearest")
+                else None
+            ),
             "feature_counts": {
                 key: value
                 for key, value in counts.items()
@@ -462,17 +561,12 @@ def build_payload(lat, lon, radius, features, nominatim, wikidata, railway, mari
             },
             "strong_feature_count": len(evidence_features),
             "weak_feature_count": len(weak_features),
-            "nearest_named_place": nominatim.get("name") if isinstance(nominatim, dict) else None,
-            "nearest_wikidata": (
-                wikidata.get("nearest", {}).get("name")
-                if isinstance(wikidata, dict) and wikidata.get("nearest")
-                else None
-            ),
             "railway_confidence": railway.get("confidence") if isinstance(railway, dict) else None,
             "maritime_confidence": maritime.get("confidence") if isinstance(maritime, dict) else None,
         },
         "primary_object": primary,
         "operational_environment": environment,
+        "fusion_profile": fusion,
         "nominatim": nominatim,
         "wikidata": wikidata,
         "railway": railway,
@@ -483,7 +577,8 @@ def build_payload(lat, lon, radius, features, nominatim, wikidata, railway, mari
         "assessment": build_final_assessment(
             primary=primary,
             environment=environment,
-            nominatim=nominatim,
+            fusion=fusion,
+            location=location,
             wikidata=wikidata,
             railway=railway,
             maritime=maritime,
@@ -513,7 +608,7 @@ def save_payload(payload, lat, lon):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Coordinate Intelligence Engine v5 fusion modules")
+    parser = argparse.ArgumentParser(description="Coordinate Intelligence Engine v6 location fusion")
     parser.add_argument("--lat", required=True, type=float)
     parser.add_argument("--lon", required=True, type=float)
     parser.add_argument("--radius", default=750, type=int)
@@ -547,14 +642,12 @@ def main():
 
     print(f"Coordinate intelligence saved: {path}")
     print(f"Latest intelligence saved: {latest_path}")
-    print(f"Primary object: {payload['summary']['likely_object']}")
-    print(f"Primary confidence: {payload['summary']['confidence']}")
+    print(f"Likely object: {payload['summary']['likely_object']}")
+    print(f"Confidence: {payload['summary']['confidence']}")
+    print(f"Nearest city: {payload['summary']['nearest_city']}")
+    print(f"Region: {payload['summary']['region']}")
+    print(f"Country: {payload['summary']['country']}")
     print(f"Environment: {payload['summary']['operational_environment']}")
-    print(f"Environment confidence: {payload['summary']['environment_confidence']}")
-    print(f"Nominatim: {payload['summary']['nearest_named_place']}")
-    print(f"Wikidata: {payload['summary']['nearest_wikidata']}")
-    print(f"Railway confidence: {payload['summary']['railway_confidence']}")
-    print(f"Maritime confidence: {payload['summary']['maritime_confidence']}")
 
 
 if __name__ == "__main__":
