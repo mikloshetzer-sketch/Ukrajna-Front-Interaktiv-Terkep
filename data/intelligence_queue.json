@@ -1,21 +1,7 @@
 {
-  "updated_at": "2026-06-29T08:28:41.161100+00:00",
-  "status": "pending",
-  "queue": [
-    {
-      "id": "ci_20260629_082841",
-      "type": "coordinate_intelligence",
-      "status": "pending",
-      "created_at": "2026-06-29T08:28:41.161061+00:00",
-      "updated_at": "2026-06-29T08:28:41.161067+00:00",
-      "coordinate": {
-        "lat": 45.336702,
-        "lon": 36.464868
-      },
-      "radius": 750,
-      "source": "manual_map_request"
-    }
-  ],
+  "updated_at": "2026-06-29T08:29:55.203774+00:00",
+  "status": "ready",
+  "queue": [],
   "completed": [
     {
       "id": "ci_20260629_080053",
@@ -34,6 +20,25 @@
       "result": {
         "latest_path": "data/intelligence/latest.json",
         "history_path": "data/intelligence/history/ci_20260629_080053.json"
+      }
+    },
+    {
+      "id": "ci_20260629_082841",
+      "type": "coordinate_intelligence",
+      "status": "completed",
+      "created_at": "2026-06-29T08:28:41.161061+00:00",
+      "updated_at": "2026-06-29T08:29:55.203745+00:00",
+      "coordinate": {
+        "lat": 45.336702,
+        "lon": 36.464868
+      },
+      "radius": 750,
+      "source": "manual_map_request",
+      "started_at": "2026-06-29T08:29:51.186043+00:00",
+      "completed_at": "2026-06-29T08:29:55.203739+00:00",
+      "result": {
+        "latest_path": "data/intelligence/latest.json",
+        "history_path": "data/intelligence/history/ci_20260629_082841.json"
       }
     }
   ],
