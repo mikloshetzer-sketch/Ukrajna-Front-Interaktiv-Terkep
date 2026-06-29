@@ -1,0 +1,43 @@
+name: Process Analysis Queue
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  process-analysis-queue:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install requests
+
+      - name: Process analysis queue
+        run: |
+          python scripts/process_analysis_queue.py
+
+      - name: Commit analysis results
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git add \
+            data/intelligence_queue.json \
+            data/intelligence/latest.json \
+            data/intelligence/history/*.json
+
+          git diff --cached --quiet || git commit -m "Process Coordinate Intelligence queue"
+
+          git push
