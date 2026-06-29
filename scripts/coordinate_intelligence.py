@@ -288,7 +288,7 @@ def infer_primary_object(features):
 
 
 def infer_operational_environment(features):
-    evidence_features, weak_features = split_features(features)
+    evidence_features, _ = split_features(features)
     counts = summarize_counts(features)
 
     if not evidence_features:
@@ -305,3 +305,257 @@ def infer_operational_environment(features):
         total_weight(features, "port") * 1.5
         + total_weight(features, "railway") * 0.7
         + total_weight(features, "storage") * 0.8
+        + total_weight(features, "fuel") * 1.0
+        + total_weight(features, "industrial") * 0.4
+        + total_weight(features, "warehouse") * 0.4
+    )
+
+    airfield_score = (
+        total_weight(features, "airfield") * 1.7
+        + total_weight(features, "military") * 0.7
+        + total_weight(features, "industrial") * 0.2
+    )
+
+    fuel_score = (
+        total_weight(features, "fuel") * 1.6
+        + total_weight(features, "storage") * 1.2
+        + total_weight(features, "industrial") * 0.4
+        + total_weight(features, "railway") * 0.4
+    )
+
+    rail_score = (
+        total_weight(features, "railway") * 1.4
+        + total_weight(features, "warehouse") * 0.8
+        + total_weight(features, "industrial") * 0.4
+        + total_weight(features, "storage") * 0.3
+    )
+
+    bridge_score = (
+        total_weight(features, "bridge") * 1.8
+        + total_weight(features, "road") * 0.7
+        + total_weight(features, "railway") * 0.7
+    )
+
+    military_score = (
+        total_weight(features, "military") * 1.6
+        + total_weight(features, "airfield") * 1.0
+        + total_weight(features, "storage") * 0.4
+    )
+
+    industrial_score = (
+        total_weight(features, "industrial") * 1.3
+        + total_weight(features, "warehouse") * 0.8
+        + total_weight(features, "storage") * 0.5
+        + total_weight(features, "power") * 0.4
+    )
+
+    scores = {
+        "Commercial port / logistics hub": round(port_score, 2),
+        "Airfield / airbase area": round(airfield_score, 2),
+        "Fuel or storage facility": round(fuel_score, 2),
+        "Rail logistics area": round(rail_score, 2),
+        "Bridge / transport crossing environment": round(bridge_score, 2),
+        "Military-related area": round(military_score, 2),
+        "Industrial area": round(industrial_score, 2),
+    }
+
+    best_label, best_score = max(scores.items(), key=lambda x: x[1])
+
+    strong_type_count = len(set(f["feature_type"] for f in evidence_features))
+    nearby_strong_count = len([f for f in evidence_features if f["distance_m"] <= 500])
+
+    if best_score >= 18 and strong_type_count >= 2 and nearby_strong_count >= 2:
+        confidence = "HIGH"
+    elif best_score >= 8 and nearby_strong_count >= 1:
+        confidence = "MEDIUM"
+    else:
+        confidence = "LOW"
+
+    return {
+        "type": best_label,
+        "confidence": confidence,
+        "score": best_score,
+        "reason": (
+            f"Strong feature types: {strong_type_count}. "
+            f"Nearby strong features within 500 m: {nearby_strong_count}."
+        ),
+        "score_breakdown": scores,
+        "feature_counts": counts,
+    }
+
+
+def build_final_assessment(primary, environment, nominatim, wikidata, railway, maritime):
+    primary_type = primary.get("type", "Unknown")
+    environment_type = environment.get("type", "Unknown")
+
+    place_name = None
+    if nominatim.get("status") == "ok":
+        place_name = nominatim.get("name") or nominatim.get("display_name")
+
+    wikidata_name = None
+    nearest_wikidata = wikidata.get("nearest") if isinstance(wikidata, dict) else None
+    if nearest_wikidata:
+        wikidata_name = nearest_wikidata.get("name")
+
+    parts = [
+        f"The selected coordinate is primarily assessed as {primary_type.lower()} "
+        f"with {primary.get('confidence')} confidence.",
+        f"The surrounding operational environment is assessed as {environment_type.lower()} "
+        f"with {environment.get('confidence')} confidence.",
+    ]
+
+    if place_name:
+        parts.append(f"Nominatim identifies the nearest named context as {place_name}.")
+
+    if wikidata_name:
+        parts.append(f"Wikidata nearest candidate is {wikidata_name}.")
+
+    if railway.get("rail_present"):
+        parts.append(
+            f"Railway intelligence confirms rail-related infrastructure nearby "
+            f"with {railway.get('confidence')} confidence."
+        )
+
+    if maritime.get("port_present"):
+        parts.append(
+            f"Maritime intelligence identifies {maritime.get('profile').lower()} "
+            f"with {maritime.get('confidence')} confidence."
+        )
+
+    parts.append(
+        "This is a rule-based multi-source OSINT assessment and should be verified by satellite imagery."
+    )
+
+    return " ".join(parts)
+
+
+def build_payload(lat, lon, radius, features, nominatim, wikidata, railway, maritime):
+    evidence_features, weak_features = split_features(features)
+    primary = infer_primary_object(features)
+    environment = infer_operational_environment(features)
+    counts = summarize_counts(features)
+
+    return {
+        "generated_at": now_iso(),
+        "source": "OSM Overpass + Nominatim + Wikidata + Railway + Maritime modules",
+        "version": "coordinate-intelligence-v5-fusion-modules",
+        "status": "ok",
+        "note": "This is rule-based OSINT assistance, not confirmed target identification.",
+        "coordinate": {
+            "lat": safe_coord(lat),
+            "lon": safe_coord(lon),
+        },
+        "search_radius_m": radius,
+        "primary_radius_m": PRIMARY_RADIUS_M,
+        "secondary_radius_m": SECONDARY_RADIUS_M,
+        "summary": {
+            "likely_object": primary["type"],
+            "confidence": primary["confidence"],
+            "score": primary["score"],
+            "operational_environment": environment["type"],
+            "environment_confidence": environment["confidence"],
+            "environment_score": environment["score"],
+            "feature_counts": {
+                key: value
+                for key, value in counts.items()
+                if key != "other"
+            },
+            "strong_feature_count": len(evidence_features),
+            "weak_feature_count": len(weak_features),
+            "nearest_named_place": nominatim.get("name") if isinstance(nominatim, dict) else None,
+            "nearest_wikidata": (
+                wikidata.get("nearest", {}).get("name")
+                if isinstance(wikidata, dict) and wikidata.get("nearest")
+                else None
+            ),
+            "railway_confidence": railway.get("confidence") if isinstance(railway, dict) else None,
+            "maritime_confidence": maritime.get("confidence") if isinstance(maritime, dict) else None,
+        },
+        "primary_object": primary,
+        "operational_environment": environment,
+        "nominatim": nominatim,
+        "wikidata": wikidata,
+        "railway": railway,
+        "maritime": maritime,
+        "evidence_features": evidence_features[:25],
+        "weak_features": weak_features[:25],
+        "nearby_features": features[:25],
+        "assessment": build_final_assessment(
+            primary=primary,
+            environment=environment,
+            nominatim=nominatim,
+            wikidata=wikidata,
+            railway=railway,
+            maritime=maritime,
+        ),
+    }
+
+
+def output_filename(lat, lon):
+    safe_lat = str(safe_coord(lat)).replace(".", "_").replace("-", "m")
+    safe_lon = str(safe_coord(lon)).replace(".", "_").replace("-", "m")
+    return f"{safe_lat}_{safe_lon}.json"
+
+
+def save_payload(payload, lat, lon):
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+    path = os.path.join(OUTPUT_DIR, output_filename(lat, lon))
+
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(payload, f, ensure_ascii=False, indent=2)
+
+    latest_path = os.path.join(OUTPUT_DIR, "latest.json")
+    with open(latest_path, "w", encoding="utf-8") as f:
+        json.dump(payload, f, ensure_ascii=False, indent=2)
+
+    return path, latest_path
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Coordinate Intelligence Engine v5 fusion modules")
+    parser.add_argument("--lat", required=True, type=float)
+    parser.add_argument("--lon", required=True, type=float)
+    parser.add_argument("--radius", default=750, type=int)
+
+    args = parser.parse_args()
+
+    lat = safe_coord(args.lat)
+    lon = safe_coord(args.lon)
+    radius = int(args.radius)
+
+    overpass_data = fetch_overpass(lat, lon, radius)
+    features = collect_features(overpass_data, lat, lon)
+
+    nominatim = fetch_nominatim(lat, lon)
+    wikidata = fetch_wikidata(lat, lon, radius)
+    railway = analyse_railway(features)
+    maritime = analyse_maritime(features)
+
+    payload = build_payload(
+        lat=lat,
+        lon=lon,
+        radius=radius,
+        features=features,
+        nominatim=nominatim,
+        wikidata=wikidata,
+        railway=railway,
+        maritime=maritime,
+    )
+
+    path, latest_path = save_payload(payload, lat, lon)
+
+    print(f"Coordinate intelligence saved: {path}")
+    print(f"Latest intelligence saved: {latest_path}")
+    print(f"Primary object: {payload['summary']['likely_object']}")
+    print(f"Primary confidence: {payload['summary']['confidence']}")
+    print(f"Environment: {payload['summary']['operational_environment']}")
+    print(f"Environment confidence: {payload['summary']['environment_confidence']}")
+    print(f"Nominatim: {payload['summary']['nearest_named_place']}")
+    print(f"Wikidata: {payload['summary']['nearest_wikidata']}")
+    print(f"Railway confidence: {payload['summary']['railway_confidence']}")
+    print(f"Maritime confidence: {payload['summary']['maritime_confidence']}")
+
+
+if __name__ == "__main__":
+    main()
