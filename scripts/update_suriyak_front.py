@@ -8,9 +8,9 @@ Input:
   Public Google My Maps KML export from Suriyak Maps
 
 Outputs:
-  docs/data/suriyak_front.geojson
-  docs/data/suriyak_front_summary.json
-  docs/data/suriyak_overlay.geojson
+  data/suriyak_front.geojson
+  data/suriyak_front_summary.json
+  data/suriyak_overlay.geojson
 
 The overlay file contains only Polygon and LineString geometries.
 Point objects are excluded because they would overload the map layer.
@@ -36,9 +36,9 @@ KML_URL = (
     f"?mid={SURIYAK_MID}&forcekml=1"
 )
 
-OUTPUT_PATH = Path("docs/data/suriyak_front.geojson")
-SUMMARY_PATH = Path("docs/data/suriyak_front_summary.json")
-OVERLAY_PATH = Path("docs/data/suriyak_overlay.geojson")
+OUTPUT_PATH = Path("data/suriyak_front.geojson")
+SUMMARY_PATH = Path("data/suriyak_front_summary.json")
+OVERLAY_PATH = Path("data/suriyak_overlay.geojson")
 
 NS = {
     "kml": "http://www.opengis.net/kml/2.2",
@@ -236,24 +236,6 @@ def collect_geometry_types(geometry, counter: Counter):
             collect_geometry_types(sub_geometry, counter)
     else:
         counter[geometry_type] += 1
-
-
-def geometry_has_overlay_type(geometry):
-    if not geometry:
-        return False
-
-    geometry_type = geometry.get("type")
-
-    if geometry_type in {"Polygon", "LineString", "MultiPolygon", "MultiLineString"}:
-        return True
-
-    if geometry_type == "GeometryCollection":
-        return any(
-            geometry_has_overlay_type(sub_geometry)
-            for sub_geometry in geometry.get("geometries", [])
-        )
-
-    return False
 
 
 def filter_geometry_for_overlay(geometry):
