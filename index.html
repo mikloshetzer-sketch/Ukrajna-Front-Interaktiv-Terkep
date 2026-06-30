@@ -160,6 +160,19 @@
       line-height: 1.35;
     }
 
+
+    .satellite-contrast-note {
+      display: none;
+      margin: 6px 0 8px 22px;
+      font-size: 11px;
+      color: #555;
+      line-height: 1.35;
+    }
+
+    .satellite-contrast-note.is-open {
+      display: block;
+    }
+
   </style>
 </head>
 
@@ -234,6 +247,10 @@
           <div id="suriyakLegendNote" class="suriyak-legend-note">
             A főkapcsoló aktiválása után jelennek meg a kategorizált Suriyak térképi rétegek.
           </div>
+        </div>
+        <label class="toggle"><input id="toggleSatelliteContrast" type="checkbox" /> Műholdas kontraszt mód</label>
+        <div id="satelliteContrastNote" class="satellite-contrast-note">
+          Erősebb kontúrok és visszafogottabb kitöltések műholdas háttérhez. A DeepState és a Suriyak rétegek együtt kapnak kontrasztosabb stílust.
         </div>
         <label class="toggle"><input id="toggleAxes" type="checkbox" checked /> Main attack axes</label>
         <label class="toggle"><input id="toggleBattleNodes" type="checkbox" checked /> Active battle nodes</label>
