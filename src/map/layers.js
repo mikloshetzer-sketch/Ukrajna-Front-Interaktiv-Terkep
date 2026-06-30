@@ -1145,9 +1145,13 @@ export function renderSuriyakLayer(layerState, data) {
   if (!features.length) return;
 
   L.geoJSON(data, {
+    interactive: false,
+    bubblingMouseEvents: false,
     style: getSuriyakStyle,
     onEachFeature: (feature, layer) => {
-      layer.bindPopup(buildSuriyakPopup(feature));
+      // Popup intentionally disabled in normal mode so OSINT tools,
+      // distance measurement and object identification keep working.
+      // A future "Suriyak information mode" can re-enable interaction.
     }
   }).addTo(layerState.suriyakLayer);
 }
