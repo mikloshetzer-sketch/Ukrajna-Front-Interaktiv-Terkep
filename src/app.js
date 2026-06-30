@@ -13,6 +13,7 @@ import {
   renderHeatmapLayer,
   renderAttackAxes,
   renderBattleNodes,
+  renderSuriyakLayer,
   resetAllSavedDeltaLabels
 } from './map/layers.js';
 import { initAnnotations } from './map/annotations.js';
@@ -33,6 +34,7 @@ const OSINT_FEED_LIMIT = 8;
 
 const bordersUrl = 'https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson';
 const historicalDeltaUrl = './data/territorial_delta_30days.geojson';
+const suriyakOverlayUrl = './data/suriyak_overlay.geojson';
 
 const borderCountries = new Set([
   'Ukraine',
@@ -78,6 +80,7 @@ const dom = {
 
   toggleOccupied: document.getElementById('toggleOccupied'),
   toggleFrontline: document.getElementById('toggleFrontline'),
+  toggleSuriyak: document.getElementById('toggleSuriyak'),
   toggleAxes: document.getElementById('toggleAxes'),
   toggleBattleNodes: document.getElementById('toggleBattleNodes'),
   toggleDelta: document.getElementById('toggleDelta'),
@@ -104,6 +107,7 @@ const appState = {
   cache: new Map(),
   latestDelta: null,
   historicalDelta: null,
+  suriyakOverlay: null,
   annotationsController: null,
   latestFirmsSummary: null,
   latestFirmsPoints: [],
@@ -248,6 +252,54 @@ async function loadHistoricalDelta() {
 
   appState.historicalDelta = await fetchJson(historicalDeltaUrl);
   return appState.historicalDelta;
+}
+
+async function loadSuriyakOverlay() {
+  if (appState.suriyakOverlay) {
+    return appState.suriyakOverlay;
+  }
+
+  appState.suriyakOverlay = await fetchJson(suriyakOverlayUrl);
+  return appState.suriyakOverlay;
+}
+
+async function refreshSuriyak() {
+  try {
+    if (!layerState.suriyakLayer) return;
+
+    if (!dom.toggleSuriyak?.checked) {
+      layerState.suriyakLayer.clearLayers();
+
+      if (map.hasLayer(layerState.suriyakLayer)) {
+        map.removeLayer(layerState.suriyakLayer);
+      }
+
+      return;
+    }
+
+    const data = await loadSuriyakOverlay();
+    renderSuriyakLayer(layerState, data);
+
+    if (!map.hasLayer(layerState.suriyakLayer)) {
+      layerState.suriyakLayer.addTo(map);
+    }
+  } catch (error) {
+    console.error('Suriyak overlay hiba:', error);
+
+    if (layerState.suriyakLayer) {
+      layerState.suriyakLayer.clearLayers();
+
+      if (map.hasLayer(layerState.suriyakLayer)) {
+        map.removeLayer(layerState.suriyakLayer);
+      }
+    }
+
+    if (dom.toggleSuriyak) {
+      dom.toggleSuriyak.checked = false;
+    }
+
+    setStatus(`Suriyak hiba: ${error.message}`);
+  }
 }
 
 function renderHistoricalLegend(days, data) {
@@ -1003,6 +1055,10 @@ async function renderAtIndex(index) {
 
   await renderHistoricalDelta();
 
+  if (dom.toggleSuriyak?.checked) {
+    await refreshSuriyak();
+  }
+
   if (dom.toggleFirms.checked) {
     await refreshFirms();
   }
@@ -1413,6 +1469,7 @@ function bindLayerToggles() {
     }
   });
 
+  dom.toggleSuriyak?.addEventListener('change', refreshSuriyak);
   dom.toggleFirms.addEventListener('change', refreshFirms);
   dom.toggleOsint.addEventListener('change', refreshOsint);
   dom.toggleHeatmap.addEventListener('change', refreshHeatmap);
