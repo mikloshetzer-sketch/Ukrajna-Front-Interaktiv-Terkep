@@ -1,14 +1,14 @@
 {
-  "updated_utc": "2026-06-29T20:24:19.792501+00:00",
-  "date": "2026-06-29",
+  "updated_utc": "2026-06-30T08:24:07.052453+00:00",
+  "date": "2026-06-30",
   "territorial_sector": {
-    "sector": "No territorial delta",
-    "lat": null,
-    "lon": null,
-    "distance_km": null,
-    "change_type": "none",
-    "area_km2": 0,
-    "label": "No mapped daily territorial change"
+    "sector": "Velyka Novosilka",
+    "lat": 47.66852198075737,
+    "lon": 36.20977989534483,
+    "distance_km": 50.8,
+    "change_type": "russian_gain",
+    "area_km2": 3.49,
+    "label": "Russian territorial gain"
   },
   "priority_osint_events": [
     {
@@ -164,7 +164,7 @@
       "lon": 37.18,
       "score": 100,
       "osint": 11,
-      "firms": 53,
+      "firms": 52,
       "pressure_type": "osint_activity_cluster",
       "icon": "⚔"
     },
@@ -175,7 +175,7 @@
       "lon": 35.14,
       "score": 100,
       "osint": 0,
-      "firms": 285,
+      "firms": 241,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -186,7 +186,7 @@
       "lon": 32.61,
       "score": 100,
       "osint": 2,
-      "firms": 1276,
+      "firms": 883,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -195,20 +195,31 @@
       "title": "Crimea OSINT activity cluster",
       "lat": 45.2,
       "lon": 34.1,
-      "score": 86,
+      "score": 88,
       "osint": 4,
-      "firms": 42,
+      "firms": 44,
       "pressure_type": "osint_activity_cluster",
       "icon": "⚔"
+    },
+    {
+      "sector": "Velyka Novosilka",
+      "title": "Velyka Novosilka territorial gain axis",
+      "lat": 47.84,
+      "lon": 36.84,
+      "score": 83,
+      "osint": 0,
+      "firms": 59,
+      "pressure_type": "territorial_gain_axis",
+      "icon": "▲"
     },
     {
       "sector": "Lyman",
       "title": "Lyman FIRMS thermal cluster",
       "lat": 48.99,
       "lon": 37.8,
-      "score": 81,
+      "score": 58,
       "osint": 0,
-      "firms": 90,
+      "firms": 65,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -217,20 +228,9 @@
       "title": "Kharkiv FIRMS thermal cluster",
       "lat": 49.99,
       "lon": 36.23,
-      "score": 59,
+      "score": 58,
       "osint": 2,
-      "firms": 39,
-      "pressure_type": "thermal_activity_cluster",
-      "icon": "🔥"
-    },
-    {
-      "sector": "Velyka Novosilka",
-      "title": "Velyka Novosilka FIRMS thermal cluster",
-      "lat": 47.84,
-      "lon": 36.84,
-      "score": 55,
-      "osint": 0,
-      "firms": 61,
+      "firms": 38,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     }
@@ -257,12 +257,12 @@
       "count": 1
     }
   ],
-  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 63. No measurable net territorial change was detected. The main pressure focus is Pokrovsk. The strongest event category is Drone / UAV activity. The system processed 23 OSINT events, 3847 short-term FIRMS hotspots and 10 active sectors.",
+  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 79. Russian forces gained approximately 5.28 km², closest to the Velyka Novosilka sector. The main pressure focus is Pokrovsk. The strongest event category is Drone / UAV activity. The system processed 23 OSINT events, 2827 short-term FIRMS hotspots and 9 active sectors.",
   "counts": {
     "priority_osint": 12,
     "pressure_points": 7,
-    "firms_3d": 3847,
-    "firms_10d": 11098,
+    "firms_3d": 2827,
+    "firms_10d": 10719,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."
