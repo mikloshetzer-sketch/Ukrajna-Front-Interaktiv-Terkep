@@ -82,6 +82,84 @@
     .toolbox-actions button {
       width: 100%;
     }
+
+    .suriyak-subpanel {
+      display: none;
+      margin: 8px 0 10px 22px;
+      padding: 8px 10px;
+      border-left: 3px solid rgba(37, 99, 235, 0.55);
+      background: rgba(37, 99, 235, 0.06);
+      border-radius: 8px;
+    }
+
+    .suriyak-subpanel.is-open {
+      display: block;
+    }
+
+    .suriyak-subpanel-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #1f2937;
+    }
+
+    .suriyak-meta {
+      font-size: 11px;
+      font-weight: 600;
+      color: #555;
+      white-space: nowrap;
+    }
+
+    .suriyak-category-list {
+      display: grid;
+      gap: 5px;
+    }
+
+    .suriyak-category-row {
+      display: grid;
+      grid-template-columns: 18px 16px 1fr auto;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .suriyak-category-row input {
+      margin: 0;
+    }
+
+    .suriyak-swatch {
+      width: 13px;
+      height: 13px;
+      border-radius: 3px;
+      border: 1px solid rgba(0,0,0,0.25);
+      display: inline-block;
+      background: #757575;
+    }
+
+    .suriyak-category-count {
+      font-size: 11px;
+      color: #666;
+      white-space: nowrap;
+    }
+
+    .suriyak-legend-note {
+      font-size: 11px;
+      color: #555;
+      line-height: 1.35;
+      margin-top: 8px;
+    }
+
+    .suriyak-legend-empty {
+      font-size: 11px;
+      color: #777;
+      line-height: 1.35;
+    }
+
   </style>
 </head>
 
@@ -141,6 +219,22 @@
         <label class="toggle"><input id="toggleOccupied" type="checkbox" checked /> Megszállt terület</label>
         <label class="toggle"><input id="toggleFrontline" type="checkbox" checked /> Frontline emphasis</label>
         <label class="toggle"><input id="toggleSuriyak" type="checkbox" /> Suriyak Maps árnyékréteg</label>
+        <div id="suriyakSubpanel" class="suriyak-subpanel" aria-live="polite">
+          <div class="suriyak-subpanel-title">
+            <span>Suriyak Maps alrétegek</span>
+            <span id="suriyakLayerMeta" class="suriyak-meta">Nincs betöltve</span>
+          </div>
+
+          <div id="suriyakCategoryList" class="suriyak-category-list">
+            <div class="suriyak-legend-empty">
+              A kategóriák a <code>data/suriyak_legend.json</code> fájlból töltődnek be.
+            </div>
+          </div>
+
+          <div id="suriyakLegendNote" class="suriyak-legend-note">
+            A főkapcsoló aktiválása után jelennek meg a kategorizált Suriyak rétegek.
+          </div>
+        </div>
         <label class="toggle"><input id="toggleAxes" type="checkbox" checked /> Main attack axes</label>
         <label class="toggle"><input id="toggleBattleNodes" type="checkbox" checked /> Active battle nodes</label>
         <label class="toggle"><input id="toggleDelta" type="checkbox" checked /> Napi területi delta</label>
