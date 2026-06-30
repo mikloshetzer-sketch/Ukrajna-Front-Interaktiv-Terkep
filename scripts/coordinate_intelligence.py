@@ -8,6 +8,7 @@ from intelligence.nominatim import fetch_nominatim
 from intelligence.wikidata import fetch_wikidata
 from intelligence.railway import analyse_railway
 from intelligence.maritime import analyse_maritime
+from intelligence.firms import analyse_firms
 
 
 OUTPUT_DIR = "data/intelligence"
@@ -414,12 +415,18 @@ def infer_fusion_profile(primary, environment, counts, railway, maritime):
     railway_count = counts.get("railway", 0)
     industrial_count = counts.get("industrial", 0)
     power_count = counts.get("power", 0)
-    port_count = counts.get("port", 0)
     storage_count = counts.get("storage", 0)
     fuel_count = counts.get("fuel", 0)
 
     rail_present = isinstance(railway, dict) and railway.get("rail_present")
     port_present = isinstance(maritime, dict) and maritime.get("port_present")
+
+    if port_present and (fuel_count >= 2 or storage_count >= 5 or industrial_count >= 2):
+        return {
+            "type": "Port-linked energy / refinery infrastructure",
+            "confidence": "HIGH",
+            "reason": "Port infrastructure is combined with fuel, storage or industrial indicators.",
+        }
 
     if port_present and railway_count >= 5:
         return {
@@ -470,7 +477,7 @@ def infer_fusion_profile(primary, environment, counts, railway, maritime):
     }
 
 
-def build_final_assessment(primary, environment, fusion, location, wikidata, railway, maritime):
+def build_final_assessment(primary, environment, fusion, location, wikidata, railway, maritime, firms):
     parts = [
         f"The selected coordinate is assessed as {fusion.get('type', 'unknown').lower()} "
         f"with {fusion.get('confidence')} confidence.",
@@ -504,6 +511,17 @@ def build_final_assessment(primary, environment, fusion, location, wikidata, rai
             f"with {maritime.get('confidence')} confidence."
         )
 
+    if isinstance(firms, dict) and firms.get("activity_detected"):
+        parts.append(
+            f"FIRMS thermal anomaly activity is detected within the selected radius "
+            f"with {firms.get('confidence')} confidence. "
+            f"Nearest hotspot is {firms.get('nearest_hotspot_m')} m."
+        )
+    elif isinstance(firms, dict):
+        parts.append(
+            "No FIRMS thermal anomaly is detected within the selected radius in the available local FIRMS windows."
+        )
+
     parts.append(
         "This is a rule-based multi-source OSINT assessment and should be verified by satellite imagery."
     )
@@ -511,7 +529,7 @@ def build_final_assessment(primary, environment, fusion, location, wikidata, rai
     return " ".join(parts)
 
 
-def build_payload(lat, lon, radius, features, nominatim, wikidata, railway, maritime):
+def build_payload(lat, lon, radius, features, nominatim, wikidata, railway, maritime, firms):
     evidence_features, weak_features = split_features(features)
     counts = summarize_counts(features)
 
@@ -522,8 +540,8 @@ def build_payload(lat, lon, radius, features, nominatim, wikidata, railway, mari
 
     return {
         "generated_at": now_iso(),
-        "source": "OSM Overpass + Nominatim + Wikidata + Railway + Maritime modules",
-        "version": "coordinate-intelligence-v6-location-fusion",
+        "source": "OSM Overpass + Nominatim + Wikidata + Railway + Maritime + FIRMS modules",
+        "version": "coordinate-intelligence-v7-firms",
         "status": "ok",
         "note": "This is rule-based OSINT assistance, not confirmed target identification.",
         "coordinate": {
@@ -563,6 +581,12 @@ def build_payload(lat, lon, radius, features, nominatim, wikidata, railway, mari
             "weak_feature_count": len(weak_features),
             "railway_confidence": railway.get("confidence") if isinstance(railway, dict) else None,
             "maritime_confidence": maritime.get("confidence") if isinstance(maritime, dict) else None,
+            "firms_activity_detected": firms.get("activity_detected") if isinstance(firms, dict) else None,
+            "firms_activity_window": firms.get("activity_window") if isinstance(firms, dict) else None,
+            "firms_activity_count": firms.get("activity_count") if isinstance(firms, dict) else None,
+            "firms_nearest_hotspot_m": firms.get("nearest_hotspot_m") if isinstance(firms, dict) else None,
+            "firms_confidence": firms.get("confidence") if isinstance(firms, dict) else None,
+            "firms_latest_detection": firms.get("latest_detection") if isinstance(firms, dict) else None,
         },
         "primary_object": primary,
         "operational_environment": environment,
@@ -571,6 +595,7 @@ def build_payload(lat, lon, radius, features, nominatim, wikidata, railway, mari
         "wikidata": wikidata,
         "railway": railway,
         "maritime": maritime,
+        "firms": firms,
         "evidence_features": evidence_features[:25],
         "weak_features": weak_features[:25],
         "nearby_features": features[:25],
@@ -582,6 +607,7 @@ def build_payload(lat, lon, radius, features, nominatim, wikidata, railway, mari
             wikidata=wikidata,
             railway=railway,
             maritime=maritime,
+            firms=firms,
         ),
     }
 
@@ -608,7 +634,7 @@ def save_payload(payload, lat, lon):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Coordinate Intelligence Engine v6 location fusion")
+    parser = argparse.ArgumentParser(description="Coordinate Intelligence Engine v7 FIRMS")
     parser.add_argument("--lat", required=True, type=float)
     parser.add_argument("--lon", required=True, type=float)
     parser.add_argument("--radius", default=750, type=int)
@@ -626,6 +652,7 @@ def main():
     wikidata = fetch_wikidata(lat, lon, radius)
     railway = analyse_railway(features)
     maritime = analyse_maritime(features)
+    firms = analyse_firms(lat, lon, radius)
 
     payload = build_payload(
         lat=lat,
@@ -636,6 +663,7 @@ def main():
         wikidata=wikidata,
         railway=railway,
         maritime=maritime,
+        firms=firms,
     )
 
     path, latest_path = save_payload(payload, lat, lon)
@@ -648,6 +676,9 @@ def main():
     print(f"Region: {payload['summary']['region']}")
     print(f"Country: {payload['summary']['country']}")
     print(f"Environment: {payload['summary']['operational_environment']}")
+    print(f"FIRMS activity: {payload['summary']['firms_activity_detected']}")
+    print(f"FIRMS count: {payload['summary']['firms_activity_count']}")
+    print(f"FIRMS confidence: {payload['summary']['firms_confidence']}")
 
 
 if __name__ == "__main__":
