@@ -35,6 +35,8 @@ const OSINT_FEED_LIMIT = 8;
 const bordersUrl = 'https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson';
 const historicalDeltaUrl = './data/territorial_delta_30days.geojson';
 const suriyakOverlayUrl = './data/suriyak_overlay.geojson';
+const suriyakLegendUrl = './data/suriyak_legend.json';
+const SURIYAK_CATEGORY_STORAGE_KEY = 'ukraine_front_suriyak_category_selection_v1';
 
 const borderCountries = new Set([
   'Ukraine',
@@ -91,6 +93,11 @@ const dom = {
   toggleOsint: document.getElementById('toggleOsint'),
   toggleHeatmap: document.getElementById('toggleHeatmap'),
 
+  suriyakSubpanel: document.getElementById('suriyakSubpanel'),
+  suriyakLayerMeta: document.getElementById('suriyakLayerMeta'),
+  suriyakCategoryList: document.getElementById('suriyakCategoryList'),
+  suriyakLegendNote: document.getElementById('suriyakLegendNote'),
+
   historicalDeltaWindow: document.getElementById('historicalDeltaWindow'),
   firmsWindow: document.getElementById('firmsWindow'),
 
@@ -108,6 +115,8 @@ const appState = {
   latestDelta: null,
   historicalDelta: null,
   suriyakOverlay: null,
+  suriyakLegend: null,
+  suriyakSelectedCategories: null,
   annotationsController: null,
   latestFirmsSummary: null,
   latestFirmsPoints: [],
@@ -254,6 +263,188 @@ async function loadHistoricalDelta() {
   return appState.historicalDelta;
 }
 
+
+function loadSavedSuriyakCategorySelection() {
+  try {
+    const raw = localStorage.getItem(SURIYAK_CATEGORY_STORAGE_KEY);
+    if (!raw) return null;
+
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return null;
+
+    return new Set(parsed.map(item => String(item)));
+  } catch (error) {
+    console.warn('Could not load saved Suriyak category selection:', error);
+    return null;
+  }
+}
+
+function saveSuriyakCategorySelection() {
+  try {
+    const values = [...(appState.suriyakSelectedCategories || new Set())];
+    localStorage.setItem(SURIYAK_CATEGORY_STORAGE_KEY, JSON.stringify(values));
+  } catch (error) {
+    console.warn('Could not save Suriyak category selection:', error);
+  }
+}
+
+function getSuriyakCategoriesFromLegend(legend) {
+  return Array.isArray(legend?.categories) ? legend.categories : [];
+}
+
+function getSuriyakCategoryColor(category) {
+  return (
+    category?.display?.fillColor ||
+    category?.display?.color ||
+    category?.style_colors?.[0]?.color ||
+    '#757575'
+  );
+}
+
+function ensureSuriyakCategorySelection(legend) {
+  const categories = getSuriyakCategoriesFromLegend(legend);
+  const ids = categories.map(category => category.id).filter(Boolean);
+
+  if (!appState.suriyakSelectedCategories) {
+    const saved = loadSavedSuriyakCategorySelection();
+    appState.suriyakSelectedCategories = saved || new Set(ids);
+  }
+
+  ids.forEach(id => {
+    if (!appState.suriyakSelectedCategories.has(id) && appState.suriyakSelectedCategories.size === 0) {
+      appState.suriyakSelectedCategories.add(id);
+    }
+  });
+
+  return appState.suriyakSelectedCategories;
+}
+
+async function loadSuriyakLegend() {
+  if (appState.suriyakLegend) {
+    return appState.suriyakLegend;
+  }
+
+  appState.suriyakLegend = await fetchJson(suriyakLegendUrl);
+  return appState.suriyakLegend;
+}
+
+function updateSuriyakSubpanelVisibility(isVisible) {
+  if (!dom.suriyakSubpanel) return;
+  dom.suriyakSubpanel.classList.toggle('is-open', Boolean(isVisible));
+}
+
+function buildSuriyakCategoryList(legend) {
+  if (!dom.suriyakCategoryList) return;
+
+  const categories = getSuriyakCategoriesFromLegend(legend);
+  if (!categories.length) {
+    dom.suriyakCategoryList.innerHTML = `
+      <div class="suriyak-legend-empty">
+        Nincs elérhető Suriyak kategória a legend fájlban.
+      </div>
+    `;
+    return;
+  }
+
+  const selected = ensureSuriyakCategorySelection(legend);
+
+  dom.suriyakCategoryList.innerHTML = categories.map(category => {
+    const id = category.id;
+    const checked = selected.has(id) ? 'checked' : '';
+    const color = getSuriyakCategoryColor(category);
+    const count = Number(category.feature_count || 0);
+    const lengthKm = Number(category.total_length_km || 0);
+    const areaKm2 = Number(category.total_area_km2 || 0);
+    const metricParts = [];
+
+    if (lengthKm > 0) metricParts.push(`${lengthKm.toFixed(0)} km`);
+    if (areaKm2 > 0) metricParts.push(`${areaKm2.toFixed(0)} km²`);
+
+    const metricText = metricParts.length ? ` · ${metricParts.join(' · ')}` : '';
+
+    return `
+      <label class="suriyak-category-row" title="${category.description || ''}">
+        <input
+          type="checkbox"
+          class="suriyak-category-toggle"
+          data-category-id="${id}"
+          ${checked}
+        />
+        <span class="suriyak-swatch" style="background:${color};"></span>
+        <span>${category.label || id}</span>
+        <span class="suriyak-category-count">${count}${metricText}</span>
+      </label>
+    `;
+  }).join('');
+}
+
+function updateSuriyakLegendPanel(legend) {
+  const categories = getSuriyakCategoriesFromLegend(legend);
+  const total = Number(legend?.total_overlay_features || 0);
+  const generatedAt = legend?.generated_at ? String(legend.generated_at).slice(0, 10) : 'n/a';
+
+  if (dom.suriyakLayerMeta) {
+    dom.suriyakLayerMeta.textContent = `${total} objektum · ${generatedAt}`;
+  }
+
+  buildSuriyakCategoryList(legend);
+
+  if (dom.suriyakLegendNote) {
+    dom.suriyakLegendNote.innerHTML = `
+      Automatikus besorolás a <code>suriyak_style_rules.json</code> alapján.
+      A kategóriák elemzői címkék, nem hivatalos Suriyak dokumentáció.
+    `;
+  }
+}
+
+async function syncSuriyakLegendPanel() {
+  try {
+    const legend = await loadSuriyakLegend();
+    ensureSuriyakCategorySelection(legend);
+    updateSuriyakLegendPanel(legend);
+    return legend;
+  } catch (error) {
+    console.error('Suriyak legend hiba:', error);
+
+    if (dom.suriyakLayerMeta) {
+      dom.suriyakLayerMeta.textContent = 'Legend hiba';
+    }
+
+    if (dom.suriyakCategoryList) {
+      dom.suriyakCategoryList.innerHTML = `
+        <div class="suriyak-legend-empty">
+          A Suriyak legend nem tölthető be: ${error.message}
+        </div>
+      `;
+    }
+
+    return null;
+  }
+}
+
+function getActiveSuriyakCategoryIds() {
+  return new Set([...(appState.suriyakSelectedCategories || new Set())]);
+}
+
+function filterSuriyakOverlayByCategories(data) {
+  const selected = getActiveSuriyakCategoryIds();
+
+  if (!selected.size) {
+    return {
+      ...(data || {}),
+      features: [],
+    };
+  }
+
+  return {
+    ...(data || {}),
+    features: (data?.features || []).filter(feature => {
+      const category = feature?.properties?.suriyak_category || 'other_suriyak';
+      return selected.has(category);
+    }),
+  };
+}
+
 async function loadSuriyakOverlay() {
   if (appState.suriyakOverlay) {
     return appState.suriyakOverlay;
@@ -268,6 +459,7 @@ async function refreshSuriyak() {
     if (!layerState.suriyakLayer) return;
 
     if (!dom.toggleSuriyak?.checked) {
+      updateSuriyakSubpanelVisibility(false);
       layerState.suriyakLayer.clearLayers();
 
       if (map.hasLayer(layerState.suriyakLayer)) {
@@ -277,12 +469,19 @@ async function refreshSuriyak() {
       return;
     }
 
+    updateSuriyakSubpanelVisibility(true);
+    await syncSuriyakLegendPanel();
+
     const data = await loadSuriyakOverlay();
-    renderSuriyakLayer(layerState, data);
+    const filteredData = filterSuriyakOverlayByCategories(data);
+    renderSuriyakLayer(layerState, filteredData);
 
     if (!map.hasLayer(layerState.suriyakLayer)) {
       layerState.suriyakLayer.addTo(map);
     }
+
+    const shown = filteredData.features?.length || 0;
+    setStatus(`Suriyak betöltve: ${shown} objektum`);
   } catch (error) {
     console.error('Suriyak overlay hiba:', error);
 
@@ -298,10 +497,10 @@ async function refreshSuriyak() {
       dom.toggleSuriyak.checked = false;
     }
 
+    updateSuriyakSubpanelVisibility(false);
     setStatus(`Suriyak hiba: ${error.message}`);
   }
 }
-
 function renderHistoricalLegend(days, data) {
   if (!dom.historicalDeltaLegend) return;
 
@@ -1470,6 +1669,31 @@ function bindLayerToggles() {
   });
 
   dom.toggleSuriyak?.addEventListener('change', refreshSuriyak);
+
+  dom.suriyakCategoryList?.addEventListener('change', async (event) => {
+    const target = event.target;
+    if (!target?.classList?.contains('suriyak-category-toggle')) return;
+
+    const categoryId = target.dataset.categoryId;
+    if (!categoryId) return;
+
+    if (!appState.suriyakSelectedCategories) {
+      const legend = await loadSuriyakLegend();
+      ensureSuriyakCategorySelection(legend);
+    }
+
+    if (target.checked) {
+      appState.suriyakSelectedCategories.add(categoryId);
+    } else {
+      appState.suriyakSelectedCategories.delete(categoryId);
+    }
+
+    saveSuriyakCategorySelection();
+
+    if (dom.toggleSuriyak?.checked) {
+      await refreshSuriyak();
+    }
+  });
   dom.toggleFirms.addEventListener('change', refreshFirms);
   dom.toggleOsint.addEventListener('change', refreshOsint);
   dom.toggleHeatmap.addEventListener('change', refreshHeatmap);
@@ -1552,6 +1776,8 @@ async function init() {
 
     await loadBorders();
     await renderAtIndex(appState.index.length - 1);
+    updateSuriyakSubpanelVisibility(Boolean(dom.toggleSuriyak?.checked));
+    await syncSuriyakLegendPanel();
 
     appState.annotationsController = initAnnotations({
       map,
