@@ -13,14 +13,20 @@ Output:
 This script is intentionally standalone and uses only Python standard library.
 It is a best-effort converter. If Google or the source map changes structure,
 the script may need adjustment.
+
+It also prints a diagnostic summary:
+  - total feature count
+  - geometry type distribution
+  - most common feature names
+  - most common style URLs
 """
 
 import json
-import os
 import sys
-import urllib.request
 import urllib.error
+import urllib.request
 import xml.etree.ElementTree as ET
+from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -33,6 +39,7 @@ KML_URL = (
 )
 
 OUTPUT_PATH = Path("docs/data/suriyak_front.geojson")
+SUMMARY_PATH = Path("docs/data/suriyak_front_summary.json")
 
 NS = {
     "kml": "http://www.opengis.net/kml/2.2",
@@ -214,6 +221,100 @@ def placemark_to_feature(placemark):
     }
 
 
+def collect_geometry_types(geometry, counter: Counter):
+    if not geometry:
+        counter["Unknown"] += 1
+        return
+
+    geometry_type = geometry.get("type", "Unknown")
+
+    if geometry_type == "GeometryCollection":
+        for sub_geometry in geometry.get("geometries", []):
+            collect_geometry_types(sub_geometry, counter)
+    else:
+        counter[geometry_type] += 1
+
+
+def build_summary(features):
+    geometry_counter = Counter()
+    name_counter = Counter()
+    style_counter = Counter()
+
+    unnamed_count = 0
+
+    for feature in features:
+        properties = feature.get("properties", {})
+        name = properties.get("name", "").strip()
+        style_url = properties.get("style_url", "").strip()
+
+        collect_geometry_types(feature.get("geometry"), geometry_counter)
+
+        if name:
+            name_counter[name] += 1
+        else:
+            unnamed_count += 1
+
+        if style_url:
+            style_counter[style_url] += 1
+        else:
+            style_counter["no_style_url"] += 1
+
+    summary = {
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "source": "Suriyak Maps",
+        "source_mid": SURIYAK_MID,
+        "source_url": KML_URL,
+        "total_features": len(features),
+        "unnamed_features": unnamed_count,
+        "geometry_types": dict(geometry_counter.most_common()),
+        "top_names": [
+            {"name": name, "count": count}
+            for name, count in name_counter.most_common(50)
+        ],
+        "top_style_urls": [
+            {"style_url": style_url, "count": count}
+            for style_url, count in style_counter.most_common(50)
+        ],
+    }
+
+    return summary
+
+
+def print_summary(summary):
+    print("")
+    print("========== SURIYAK DATA SUMMARY ==========")
+    print(f"Generated at: {summary['generated_at']}")
+    print(f"Total features: {summary['total_features']}")
+    print(f"Unnamed features: {summary['unnamed_features']}")
+    print("")
+
+    print("Geometry types:")
+    if summary["geometry_types"]:
+        for geometry_type, count in summary["geometry_types"].items():
+            print(f"  {geometry_type}: {count}")
+    else:
+        print("  No geometry types found")
+
+    print("")
+    print("Top feature names:")
+    if summary["top_names"]:
+        for item in summary["top_names"][:25]:
+            print(f"  {item['name']}: {item['count']}")
+    else:
+        print("  No named features found")
+
+    print("")
+    print("Top style URLs:")
+    if summary["top_style_urls"]:
+        for item in summary["top_style_urls"][:25]:
+            print(f"  {item['style_url']}: {item['count']}")
+    else:
+        print("  No style URLs found")
+
+    print("==========================================")
+    print("")
+
+
 def kml_to_geojson(kml_text: str):
     try:
         root = ET.fromstring(kml_text)
@@ -227,7 +328,9 @@ def kml_to_geojson(kml_text: str):
         if feature:
             features.append(feature)
 
-    return {
+    summary = build_summary(features)
+
+    geojson = {
         "type": "FeatureCollection",
         "metadata": {
             "source": "Suriyak Maps",
@@ -235,6 +338,7 @@ def kml_to_geojson(kml_text: str):
             "source_url": KML_URL,
             "generated_at": datetime.now(timezone.utc).isoformat(),
             "feature_count": len(features),
+            "geometry_types": summary["geometry_types"],
             "note": (
                 "Unofficial best-effort conversion from public Google My Maps KML. "
                 "Use as comparison layer, not as sole ground truth."
@@ -242,6 +346,8 @@ def kml_to_geojson(kml_text: str):
         },
         "features": features,
     }
+
+    return geojson, summary
 
 
 def main():
@@ -254,15 +360,21 @@ def main():
         sys.exit(1)
 
     print("Converting KML to GeoJSON...")
-    geojson = kml_to_geojson(kml_text)
+    geojson, summary = kml_to_geojson(kml_text)
 
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 
     with OUTPUT_PATH.open("w", encoding="utf-8") as f:
         json.dump(geojson, f, ensure_ascii=False, indent=2)
 
-    print(f"Saved: {OUTPUT_PATH}")
+    with SUMMARY_PATH.open("w", encoding="utf-8") as f:
+        json.dump(summary, f, ensure_ascii=False, indent=2)
+
+    print(f"Saved GeoJSON: {OUTPUT_PATH}")
+    print(f"Saved summary: {SUMMARY_PATH}")
     print(f"Features: {geojson['metadata']['feature_count']}")
+
+    print_summary(summary)
 
     if geojson["metadata"]["feature_count"] == 0:
         print("Warning: no features were extracted from the KML.")
