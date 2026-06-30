@@ -7,18 +7,16 @@ Suriyak Maps -> GeoJSON converter
 Input:
   Public Google My Maps KML export from Suriyak Maps
 
-Output:
+Outputs:
   docs/data/suriyak_front.geojson
+  docs/data/suriyak_front_summary.json
+  docs/data/suriyak_overlay.geojson
 
-This script is intentionally standalone and uses only Python standard library.
-It is a best-effort converter. If Google or the source map changes structure,
-the script may need adjustment.
+The overlay file contains only Polygon and LineString geometries.
+Point objects are excluded because they would overload the map layer.
 
-It also prints a diagnostic summary:
-  - total feature count
-  - geometry type distribution
-  - most common feature names
-  - most common style URLs
+This is an unofficial best-effort converter. If Google or the source map
+changes structure, the script may need adjustment.
 """
 
 import json
@@ -40,11 +38,16 @@ KML_URL = (
 
 OUTPUT_PATH = Path("docs/data/suriyak_front.geojson")
 SUMMARY_PATH = Path("docs/data/suriyak_front_summary.json")
+OVERLAY_PATH = Path("docs/data/suriyak_overlay.geojson")
 
 NS = {
     "kml": "http://www.opengis.net/kml/2.2",
     "gx": "http://www.google.com/kml/ext/2.2",
 }
+
+
+def now_utc():
+    return datetime.now(timezone.utc).isoformat()
 
 
 def download_text(url: str) -> str:
@@ -215,7 +218,7 @@ def placemark_to_feature(placemark):
             "name": name,
             "description": description,
             "style_url": style_url,
-            "updated_at": datetime.now(timezone.utc).isoformat(),
+            "updated_at": now_utc(),
         },
         "geometry": geometry,
     }
@@ -233,6 +236,55 @@ def collect_geometry_types(geometry, counter: Counter):
             collect_geometry_types(sub_geometry, counter)
     else:
         counter[geometry_type] += 1
+
+
+def geometry_has_overlay_type(geometry):
+    if not geometry:
+        return False
+
+    geometry_type = geometry.get("type")
+
+    if geometry_type in {"Polygon", "LineString", "MultiPolygon", "MultiLineString"}:
+        return True
+
+    if geometry_type == "GeometryCollection":
+        return any(
+            geometry_has_overlay_type(sub_geometry)
+            for sub_geometry in geometry.get("geometries", [])
+        )
+
+    return False
+
+
+def filter_geometry_for_overlay(geometry):
+    if not geometry:
+        return None
+
+    geometry_type = geometry.get("type")
+
+    if geometry_type in {"Polygon", "LineString", "MultiPolygon", "MultiLineString"}:
+        return geometry
+
+    if geometry_type == "GeometryCollection":
+        kept = []
+
+        for sub_geometry in geometry.get("geometries", []):
+            filtered = filter_geometry_for_overlay(sub_geometry)
+            if filtered:
+                kept.append(filtered)
+
+        if not kept:
+            return None
+
+        if len(kept) == 1:
+            return kept[0]
+
+        return {
+            "type": "GeometryCollection",
+            "geometries": kept,
+        }
+
+    return None
 
 
 def build_summary(features):
@@ -259,8 +311,8 @@ def build_summary(features):
         else:
             style_counter["no_style_url"] += 1
 
-    summary = {
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+    return {
+        "generated_at": now_utc(),
         "source": "Suriyak Maps",
         "source_mid": SURIYAK_MID,
         "source_url": KML_URL,
@@ -277,12 +329,54 @@ def build_summary(features):
         ],
     }
 
-    return summary
+
+def build_overlay_geojson(features):
+    overlay_features = []
+
+    for feature in features:
+        geometry = filter_geometry_for_overlay(feature.get("geometry"))
+
+        if geometry is None:
+            continue
+
+        properties = dict(feature.get("properties", {}))
+        properties["overlay_layer"] = "suriyak_polygon_lines_only"
+        properties["overlay_note"] = (
+            "Point features removed. Only Polygon and LineString geometries are kept."
+        )
+
+        overlay_features.append(
+            {
+                "type": "Feature",
+                "properties": properties,
+                "geometry": geometry,
+            }
+        )
+
+    overlay_summary = build_summary(overlay_features)
+
+    return {
+        "type": "FeatureCollection",
+        "metadata": {
+            "source": "Suriyak Maps",
+            "source_mid": SURIYAK_MID,
+            "source_url": KML_URL,
+            "generated_at": now_utc(),
+            "feature_count": len(overlay_features),
+            "geometry_types": overlay_summary["geometry_types"],
+            "filter": "Polygon and LineString geometries only. Point features excluded.",
+            "note": (
+                "Unofficial best-effort comparison overlay from public Google My Maps KML. "
+                "Use as a shadow layer beside DeepState, not as sole ground truth."
+            ),
+        },
+        "features": overlay_features,
+    }
 
 
-def print_summary(summary):
+def print_summary(summary, title):
     print("")
-    print("========== SURIYAK DATA SUMMARY ==========")
+    print(f"========== {title} ==========")
     print(f"Generated at: {summary['generated_at']}")
     print(f"Total features: {summary['total_features']}")
     print(f"Unnamed features: {summary['unnamed_features']}")
@@ -336,7 +430,7 @@ def kml_to_geojson(kml_text: str):
             "source": "Suriyak Maps",
             "source_mid": SURIYAK_MID,
             "source_url": KML_URL,
-            "generated_at": datetime.now(timezone.utc).isoformat(),
+            "generated_at": now_utc(),
             "feature_count": len(features),
             "geometry_types": summary["geometry_types"],
             "note": (
@@ -347,7 +441,9 @@ def kml_to_geojson(kml_text: str):
         "features": features,
     }
 
-    return geojson, summary
+    overlay_geojson = build_overlay_geojson(features)
+
+    return geojson, summary, overlay_geojson
 
 
 def main():
@@ -360,7 +456,7 @@ def main():
         sys.exit(1)
 
     print("Converting KML to GeoJSON...")
-    geojson, summary = kml_to_geojson(kml_text)
+    geojson, summary, overlay_geojson = kml_to_geojson(kml_text)
 
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 
@@ -370,15 +466,25 @@ def main():
     with SUMMARY_PATH.open("w", encoding="utf-8") as f:
         json.dump(summary, f, ensure_ascii=False, indent=2)
 
+    with OVERLAY_PATH.open("w", encoding="utf-8") as f:
+        json.dump(overlay_geojson, f, ensure_ascii=False, indent=2)
+
     print(f"Saved GeoJSON: {OUTPUT_PATH}")
     print(f"Saved summary: {SUMMARY_PATH}")
+    print(f"Saved overlay: {OVERLAY_PATH}")
     print(f"Features: {geojson['metadata']['feature_count']}")
+    print(f"Overlay features: {overlay_geojson['metadata']['feature_count']}")
 
-    print_summary(summary)
+    print_summary(summary, "SURIYAK FULL DATA SUMMARY")
+    print_summary(build_summary(overlay_geojson["features"]), "SURIYAK OVERLAY SUMMARY")
 
     if geojson["metadata"]["feature_count"] == 0:
         print("Warning: no features were extracted from the KML.")
         sys.exit(2)
+
+    if overlay_geojson["metadata"]["feature_count"] == 0:
+        print("Warning: no overlay features were extracted.")
+        sys.exit(3)
 
 
 if __name__ == "__main__":
