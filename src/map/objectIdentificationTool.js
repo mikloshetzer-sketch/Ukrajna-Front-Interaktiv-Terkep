@@ -106,6 +106,11 @@ function removeExistingAnalystPanel() {
   if (existing) existing.remove();
 }
 
+function removeExistingSummaryPanel() {
+  const existing = document.getElementById('coordinateIntelligenceSummaryPanel');
+  if (existing) existing.remove();
+}
+
 function getSelectedAnalysisRadius() {
   const selected = document.querySelector('input[name="ciRadius"]:checked');
   return Number(selected?.value || 750);
@@ -679,6 +684,7 @@ export function initObjectIdentificationTool({
 
     objects = readStoredObjects();
     objects.forEach(item => renderObject(item, false));
+    renderSummaryPanel();
   }
 
   function addObject(latlng, objectType = 'unknown', shouldOpen = true) {
@@ -700,6 +706,7 @@ export function initObjectIdentificationTool({
     objects.push(objectItem);
     save();
     renderObject(objectItem, shouldOpen);
+    renderSummaryPanel();
 
     emitStatus(`Koordináta rögzítve: ${formatCoord(objectItem.lat)}, ${formatCoord(objectItem.lng)}.`);
 
@@ -724,6 +731,7 @@ export function initObjectIdentificationTool({
     }
 
     save();
+    renderSummaryPanel();
   }
 
   function removeObject(id) {
@@ -736,6 +744,7 @@ export function initObjectIdentificationTool({
 
     objects = objects.filter(item => item.id !== id);
     save();
+    renderSummaryPanel();
     emitStatus('Koordináta törölve.');
   }
 
@@ -744,6 +753,7 @@ export function initObjectIdentificationTool({
     rendered.clear();
     objects = [];
     save();
+    renderSummaryPanel();
     emitStatus('Az azonosított objektumok törölve.');
   }
 
@@ -762,6 +772,127 @@ export function initObjectIdentificationTool({
       `Lat: <strong>${formatCoord(objectItem.lat)}</strong><br>` +
       `Lon: <strong>${formatCoord(objectItem.lng)}</strong>`
     );
+  }
+
+
+  function analysedObjects() {
+    return objects
+      .filter(item => item.analysisSummary)
+      .slice()
+      .sort((a, b) => String(b.analysisUpdatedAt || b.updatedAt || '').localeCompare(String(a.analysisUpdatedAt || a.updatedAt || '')));
+  }
+
+  function confidenceColor(confidence) {
+    const value = String(confidence || '').toUpperCase();
+    if (value === 'HIGH') return '#22c55e';
+    if (value === 'MEDIUM') return '#f59e0b';
+    if (value === 'LOW') return '#94a3b8';
+    return '#cbd5e1';
+  }
+
+  function shortText(value, maxLength = 44) {
+    const text = String(value || '-');
+    if (text.length <= maxLength) return text;
+    return text.slice(0, maxLength - 1) + '…';
+  }
+
+  function createSummaryRowHtml(item) {
+    const analysis = item.analysisSummary || {};
+    const confidence = analysis.confidence || '-';
+    const title = analysis.detectedObject || analysis.locationTitle || 'Analysed coordinate';
+    const subtitle = analysis.functionalAssessment || analysis.operationalEnvironment || '-';
+    const location = analysis.locationTitle || '-';
+    const time = analysis.generatedAt ? formatDateTime(analysis.generatedAt) : formatDateTime(item.analysisUpdatedAt);
+
+    return `
+      <button
+        type="button"
+        data-ci-summary-action="open"
+        data-object-id="${escapeHtml(item.id)}"
+        style="
+          width:100%;
+          text-align:left;
+          background:rgba(15, 23, 42, 0.72);
+          border:1px solid rgba(148, 163, 184, 0.22);
+          border-radius:8px;
+          color:#f8fafc;
+          padding:8px;
+          margin-bottom:6px;
+          cursor:pointer;
+          font-family:inherit;
+        "
+      >
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+          <div style="font-size:12px;font-weight:900;line-height:1.2;">${escapeHtml(shortText(title, 42))}</div>
+          <div style="font-size:10px;font-weight:900;color:${confidenceColor(confidence)};border:1px solid rgba(148,163,184,.28);border-radius:999px;padding:2px 6px;white-space:nowrap;">${escapeHtml(confidence)}</div>
+        </div>
+        <div style="font-size:11px;color:#facc15;font-weight:800;margin-top:3px;line-height:1.2;">${escapeHtml(shortText(subtitle, 48))}</div>
+        <div style="font-size:10px;color:#94a3b8;margin-top:3px;line-height:1.2;">${escapeHtml(shortText(location, 48))}</div>
+        <div style="font-size:10px;color:#64748b;margin-top:3px;line-height:1.2;">${escapeHtml(time)}</div>
+      </button>
+    `;
+  }
+
+  function createSummaryPanelHtml() {
+    const analysed = analysedObjects();
+    const rows = analysed.map(createSummaryRowHtml).join('');
+
+    return `
+      <div
+        id="coordinateIntelligenceSummaryPanel"
+        style="
+          position:fixed;
+          right:24px;
+          bottom:22px;
+          z-index:9999;
+          width:360px;
+          max-width:calc(100vw - 48px);
+          background:rgba(15, 23, 42, 0.95);
+          color:#f8fafc;
+          border:1px solid rgba(148, 163, 184, 0.35);
+          border-left:4px solid rgba(34, 197, 94, 0.9);
+          border-radius:10px;
+          box-shadow:0 12px 28px rgba(0,0,0,.34);
+          font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+          overflow:hidden;
+        "
+      >
+        <div style="padding:9px 11px;background:rgba(30,41,59,.92);border-bottom:1px solid rgba(148,163,184,.25);display:flex;align-items:center;justify-content:space-between;gap:8px;">
+          <div>
+            <div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#cbd5e1;font-weight:900;">Identified Objects</div>
+            <div style="font-size:12px;color:#94a3b8;margin-top:2px;">Analysed points: <strong style="color:#f8fafc;">${analysed.length}</strong></div>
+          </div>
+          <button type="button" data-ci-summary-action="toggle" style="background:rgba(148,163,184,.16);color:#f8fafc;border:1px solid rgba(148,163,184,.35);border-radius:6px;padding:5px 8px;font-size:11px;font-weight:800;cursor:pointer;">Hide</button>
+        </div>
+        <div id="coordinateIntelligenceSummaryBody" style="padding:8px;max-height:310px;overflow:auto;">
+          ${analysed.length ? rows : '<div style="font-size:12px;color:#94a3b8;line-height:1.35;padding:4px;">No analysed coordinates yet. Run Coordinate Intelligence on a selected point and it will appear here.</div>'}
+        </div>
+      </div>
+    `;
+  }
+
+  function renderSummaryPanel() {
+    removeExistingSummaryPanel();
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = createSummaryPanelHtml().trim();
+    document.body.appendChild(wrapper.firstElementChild);
+  }
+
+  function openSummaryObject(id) {
+    const item = findObject(id);
+    if (!item) return;
+
+    if (typeof map.setView === 'function') {
+      const nextZoom = Math.max(Number(map.getZoom?.() || 0), 13);
+      map.setView([item.lat, item.lng], nextZoom);
+    }
+
+    const marker = rendered.get(item.id);
+    if (marker) {
+      marker.openPopup();
+    }
+
+    openAnalystPanel(item);
   }
 
   function shouldIgnoreClick(event) {
@@ -839,6 +970,23 @@ export function initObjectIdentificationTool({
     const target = event.target;
     if (!target?.dataset) return;
 
+    const summaryAction = target.dataset.ciSummaryAction;
+    if (summaryAction === 'toggle') {
+      const body = document.getElementById('coordinateIntelligenceSummaryBody');
+      if (body) {
+        const isHidden = body.style.display === 'none';
+        body.style.display = isHidden ? 'block' : 'none';
+        target.textContent = isHidden ? 'Hide' : 'Show';
+      }
+      return;
+    }
+
+    if (summaryAction === 'open') {
+      const id = target.dataset.objectId;
+      openSummaryObject(id);
+      return;
+    }
+
     const action = target.dataset.ciAction;
     if (!action) return;
 
@@ -892,6 +1040,7 @@ export function initObjectIdentificationTool({
           save();
           refreshRenderedObject(item);
           updatePanelFromAnalysis(analysis);
+          renderSummaryPanel();
 
           emitStatus(
             `Coordinate Intelligence betöltve.<br>` +
@@ -960,6 +1109,7 @@ export function initObjectIdentificationTool({
       document.removeEventListener('click', handlePopupClick);
       document.removeEventListener('click', handleAnalystPanelClick);
       removeExistingAnalystPanel();
+      removeExistingSummaryPanel();
       layerGroup.clearLayers();
       rendered.clear();
     },
