@@ -1,0 +1,233 @@
+{
+  "version": "suriyak-style-rules-v1",
+  "description": "Classification rules for Suriyak Maps KML-derived GeoJSON layers. These rules are used to generate a legend and later to split the Suriyak overlay into meaningful switchable sublayers.",
+  "categories": [
+    {
+      "id": "current_frontline",
+      "label": "Current / Main Frontline",
+      "description": "Likely active or main frontline/contact-line objects. Use this as the primary Suriyak comparison line against DeepState.",
+      "display": {
+        "color": "#C2185B",
+        "weight": 4,
+        "opacity": 0.95,
+        "fillOpacity": 0.0,
+        "dashArray": null
+      },
+      "match": {
+        "name_contains_any": [
+          "frontline",
+          "front line",
+          "contact line"
+        ],
+        "name_excludes_any": [
+          "2022",
+          "2023",
+          "2024",
+          "31 december 2022",
+          "31 december 2023",
+          "31 december 2024",
+          "24 october 2022",
+          "2014"
+        ],
+        "geometry_any": [
+          "LineString",
+          "MultiLineString",
+          "GeometryCollection"
+        ]
+      }
+    },
+    {
+      "id": "historical_frontline",
+      "label": "Historical Frontlines",
+      "description": "Older Suriyak frontline snapshots and dated historical contact lines.",
+      "display": {
+        "color": "#7E57C2",
+        "weight": 3,
+        "opacity": 0.75,
+        "fillOpacity": 0.0,
+        "dashArray": "7,5"
+      },
+      "match": {
+        "name_contains_any": [
+          "frontline 31 december 2022",
+          "frontline 31 december 2023",
+          "frontline 31 december 2024",
+          "frontline 24 october 2022",
+          "2022",
+          "2023",
+          "2024"
+        ],
+        "geometry_any": [
+          "LineString",
+          "MultiLineString",
+          "GeometryCollection"
+        ]
+      }
+    },
+    {
+      "id": "russian_control",
+      "label": "Russian / Russian-aligned Control",
+      "description": "Polygon areas or boundaries linked to Russian Armed Forces, DPR/LPR forces, or Russian-controlled zones.",
+      "display": {
+        "color": "#E65100",
+        "weight": 2,
+        "opacity": 0.82,
+        "fillColor": "#E65100",
+        "fillOpacity": 0.16,
+        "dashArray": null
+      },
+      "match": {
+        "name_contains_any": [
+          "russian armed forces",
+          "russia",
+          "russian",
+          "dpr",
+          "lpr",
+          "donetsk people's republic",
+          "luhansk people's republic",
+          "dpr forces",
+          "lpr forces"
+        ],
+        "geometry_any": [
+          "Polygon",
+          "MultiPolygon",
+          "GeometryCollection"
+        ]
+      }
+    },
+    {
+      "id": "ukrainian_control",
+      "label": "Ukrainian Control / AFU Positions",
+      "description": "Polygon areas or boundaries linked to Ukrainian Armed Forces or Ukrainian-held positions.",
+      "display": {
+        "color": "#0288D1",
+        "weight": 2,
+        "opacity": 0.82,
+        "fillColor": "#0288D1",
+        "fillOpacity": 0.12,
+        "dashArray": null
+      },
+      "match": {
+        "name_contains_any": [
+          "ukrainian armed forces",
+          "ukrainian armed forces positions",
+          "afu",
+          "ukraine",
+          "ukrainian"
+        ],
+        "geometry_any": [
+          "Polygon",
+          "MultiPolygon",
+          "GeometryCollection"
+        ]
+      }
+    },
+    {
+      "id": "russian_defense_line",
+      "label": "Russian Defense Lines",
+      "description": "Russian defensive belts, prepared defensive lines and fortification-related line features.",
+      "display": {
+        "color": "#F9A825",
+        "weight": 3,
+        "opacity": 0.88,
+        "fillOpacity": 0.0,
+        "dashArray": "8,6"
+      },
+      "match": {
+        "name_contains_any": [
+          "russian defense line",
+          "russian defence line",
+          "1st russian defense line",
+          "2nd russian defense line",
+          "3rd russian defense line",
+          "defense line",
+          "defence line",
+          "fortification"
+        ],
+        "geometry_any": [
+          "LineString",
+          "MultiLineString",
+          "GeometryCollection"
+        ]
+      }
+    },
+    {
+      "id": "historical_border_2014",
+      "label": "2014 Borders / Legacy Contact Lines",
+      "description": "2014 borders, DPR/LPR legacy lines and pre-2022 positional references.",
+      "display": {
+        "color": "#455A64",
+        "weight": 2,
+        "opacity": 0.75,
+        "fillOpacity": 0.0,
+        "dashArray": "5,5"
+      },
+      "match": {
+        "name_contains_any": [
+          "2014 border",
+          "2014",
+          "dpr forces positions",
+          "ukrainian armed forces positions"
+        ],
+        "geometry_any": [
+          "LineString",
+          "MultiLineString",
+          "Polygon",
+          "MultiPolygon",
+          "GeometryCollection"
+        ]
+      }
+    },
+    {
+      "id": "operational_sector",
+      "label": "Operational Sectors / Regional Areas",
+      "description": "Named regional sector polygons or sector-level operational areas, such as Kharkiv, Sumy, Donetsk or Zaporizhzhia sector objects.",
+      "display": {
+        "color": "#0097A7",
+        "weight": 2,
+        "opacity": 0.7,
+        "fillColor": "#0097A7",
+        "fillOpacity": 0.08,
+        "dashArray": "6,4"
+      },
+      "match": {
+        "name_contains_any": [
+          "sumy",
+          "kharkiv",
+          "kharkov",
+          "donetsk",
+          "luhansk",
+          "zaporizh",
+          "kherson",
+          "kursk",
+          "chernihiv",
+          "dnipropetrovsk",
+          "nykolaiv"
+        ],
+        "geometry_any": [
+          "Polygon",
+          "MultiPolygon",
+          "LineString",
+          "MultiLineString",
+          "GeometryCollection"
+        ]
+      }
+    },
+    {
+      "id": "other_suriyak",
+      "label": "Other Suriyak Layers",
+      "description": "Unclassified Suriyak features. These require manual review before being used for analytical conclusions.",
+      "display": {
+        "color": "#757575",
+        "weight": 2,
+        "opacity": 0.65,
+        "fillColor": "#757575",
+        "fillOpacity": 0.06,
+        "dashArray": "4,4"
+      },
+      "match": {
+        "fallback": true
+      }
+    }
+  ]
+}
