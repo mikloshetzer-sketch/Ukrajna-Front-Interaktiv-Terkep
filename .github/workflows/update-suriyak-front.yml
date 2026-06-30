@@ -32,9 +32,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git add docs/data/suriyak_front.geojson
-          git add docs/data/suriyak_front_summary.json
-          git add docs/data/suriyak_overlay.geojson
+          git add data/suriyak_front.geojson
+          git add data/suriyak_front_summary.json
+          git add data/suriyak_overlay.geojson
 
           if git diff --cached --quiet; then
             echo "No Suriyak data changes to commit."
