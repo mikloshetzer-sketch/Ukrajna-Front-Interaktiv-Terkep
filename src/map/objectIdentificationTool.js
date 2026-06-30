@@ -79,21 +79,15 @@ function copyText(text) {
 }
 
 function buildAnalyzeCommand(objectItem, radius = 750) {
-  const lat = formatCoord(objectItem.lat);
-  const lon = formatCoord(objectItem.lng);
-
-  return `python scripts/coordinate_intelligence.py --lat ${lat} --lon ${lon} --radius ${radius}`;
+  return `python scripts/coordinate_intelligence.py --lat ${formatCoord(objectItem.lat)} --lon ${formatCoord(objectItem.lng)} --radius ${radius}`;
 }
 
 function buildWorkflowInputText(objectItem, radius = 750) {
-  const lat = formatCoord(objectItem.lat);
-  const lon = formatCoord(objectItem.lng);
-
   return [
     'Coordinate Intelligence workflow input',
     '',
-    `lat: ${lat}`,
-    `lon: ${lon}`,
+    `lat: ${formatCoord(objectItem.lat)}`,
+    `lon: ${formatCoord(objectItem.lng)}`,
     `radius: ${radius}`,
     '',
     'Local command:',
@@ -104,7 +98,6 @@ function buildWorkflowInputText(objectItem, radius = 750) {
 function buildWorkflowUrl() {
   const pathParts = window.location.pathname.split('/').filter(Boolean);
   const repoName = pathParts[0] || 'Ukrajna-Front-Interaktiv-Terkep';
-
   return `https://github.com/mikloshetzer-sketch/${repoName}/actions/workflows/coordinate-intelligence.yml`;
 }
 
@@ -328,13 +321,13 @@ function createPopupHtml(objectItem) {
   const hasAnalysis = Boolean(objectItem.analysisSummary);
 
   return `
-    <div style="min-width:260px; max-width:310px;">
+    <div style="min-width:250px; max-width:300px;">
       <div style="font-weight:800; margin-bottom:6px; font-size:14px;">
         ${SELECTION_MARKER.icon} Selected Coordinate
       </div>
 
       <div style="font-size:12px; color:#555; margin-bottom:6px;">
-        This is a manually selected map coordinate. Object identification appears only in the Coordinate Intelligence panel after analysis.
+        Manual map point. Run Coordinate Intelligence to identify the location and nearby infrastructure.
       </div>
 
       <hr style="margin:6px 0;">
@@ -351,18 +344,8 @@ function createPopupHtml(objectItem) {
       </div>
 
       ${hasAnalysis ? `
-        <hr style="margin:6px 0;">
-        <div style="font-size:12px; line-height:1.35;">
-          <b>Saved analysis:</b><br>
-          ${escapeHtml(objectItem.analysisSummary.locationTitle || '-')}${objectItem.analysisSummary.locationSubtitle ? `<br>${escapeHtml(objectItem.analysisSummary.locationSubtitle)}` : ''}
-          <br><br>
-          <b>Detected:</b><br>
-          ${escapeHtml(objectItem.analysisSummary.detectedObject || '-')}
-          <br><br>
-          <b>Assessment:</b><br>
-          ${escapeHtml(objectItem.analysisSummary.functionalAssessment || '-')}
-          <br>
-          <b>Confidence:</b> ${escapeHtml(objectItem.analysisSummary.confidence || '-')}
+        <div style="font-size:12px; color:#166534; margin-top:6px; font-weight:700;">
+          Saved analysis available
         </div>
       ` : ''}
 
@@ -396,7 +379,7 @@ function createPopupHtml(objectItem) {
           cursor:pointer;
         "
       >
-        Analyze Coordinate
+        ${hasAnalysis ? 'Open saved analysis' : 'Analyze Coordinate'}
       </button>
 
       <button type="button" data-object-action="delete" data-object-id="${escapeHtml(objectItem.id)}" style="width:100%;">
@@ -404,9 +387,41 @@ function createPopupHtml(objectItem) {
       </button>
 
       <div style="font-size:11px; color:#777; margin-top:6px;">
-        Drag the marker to refine the coordinate.
+        Drag the marker to refine the coordinate. Moving it clears the saved analysis.
       </div>
     </div>
+  `;
+}
+
+function renderAnalysisStatusHtml(analysis) {
+  return `
+    <strong>Analysis completed</strong><br>
+    <span style="color:#94a3b8;">${escapeHtml(formatDateTime(analysis.generatedAt))}</span><br><br>
+
+    <strong>Location</strong><br>
+    ${escapeHtml(analysis.locationTitle || '-')}<br>
+    ${escapeHtml(analysis.locationSubtitle || '-')}<br><br>
+
+    <strong>Nearest mapped object</strong><br>
+    ${escapeHtml(analysis.detectedObject || '-')}<br>
+    <span style="color:#94a3b8;">${escapeHtml(analysis.detectedObjectType || '')}</span><br><br>
+
+    <strong>Functional assessment</strong><br>
+    <span style="color:#facc15; font-weight:800;">${escapeHtml(analysis.functionalAssessment || '-')}</span><br>
+    Confidence: <strong>${escapeHtml(analysis.confidence || '-')}</strong><br><br>
+
+    <strong>Operational environment</strong><br>
+    ${escapeHtml(analysis.operationalEnvironment || '-')}<br>
+    Confidence: <strong>${escapeHtml(analysis.environmentConfidence || '-')}</strong><br><br>
+
+    <strong>Nearest road / place</strong><br>
+    ${escapeHtml(analysis.nearestRoad || analysis.nearestNamedPlace || '-')}<br><br>
+
+    <strong>Infrastructure counts</strong><br>
+    ${featureCountsHtml({ feature_counts: analysis.featureCounts || {} })}<br><br>
+
+    <strong>Assessment text</strong><br>
+    ${escapeHtml(analysis.assessment || '-')}
   `;
 }
 
@@ -449,11 +464,11 @@ function createAnalystPanelHtml(objectItem) {
         </div>
 
         <div id="ciPanelLocationTitle" style="font-size:17px; font-weight:900; margin-top:4px; line-height:1.2;">
-          ${analysis ? escapeHtml(analysis.locationTitle) : 'Awaiting analysis'}
+          ${analysis ? escapeHtml(analysis.locationTitle) : 'Selected coordinate'}
         </div>
 
         <div id="ciPanelLocationSubtitle" style="font-size:12px; color:#cbd5e1; margin-top:3px; line-height:1.25;">
-          ${analysis ? escapeHtml(analysis.locationSubtitle || '') : 'Run the workflow to identify the selected coordinate.'}
+          ${analysis ? escapeHtml(analysis.locationSubtitle || '') : 'Run the workflow to identify this coordinate.'}
         </div>
       </div>
 
@@ -475,18 +490,10 @@ function createAnalystPanelHtml(objectItem) {
           </div>
 
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px; font-size:12px;">
-            <label style="display:flex; align-items:center; gap:5px;">
-              <input type="radio" name="ciRadius" value="250"> 250 m
-            </label>
-            <label style="display:flex; align-items:center; gap:5px;">
-              <input type="radio" name="ciRadius" value="500"> 500 m
-            </label>
-            <label style="display:flex; align-items:center; gap:5px;">
-              <input type="radio" name="ciRadius" value="750" checked> 750 m
-            </label>
-            <label style="display:flex; align-items:center; gap:5px;">
-              <input type="radio" name="ciRadius" value="1000"> 1000 m
-            </label>
+            <label style="display:flex; align-items:center; gap:5px;"><input type="radio" name="ciRadius" value="250"> 250 m</label>
+            <label style="display:flex; align-items:center; gap:5px;"><input type="radio" name="ciRadius" value="500"> 500 m</label>
+            <label style="display:flex; align-items:center; gap:5px;"><input type="radio" name="ciRadius" value="750" checked> 750 m</label>
+            <label style="display:flex; align-items:center; gap:5px;"><input type="radio" name="ciRadius" value="1000"> 1000 m</label>
           </div>
         </div>
 
@@ -509,77 +516,16 @@ function createAnalystPanelHtml(objectItem) {
         </div>
 
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
-          <button
-            type="button"
-            data-ci-action="run"
-            data-object-id="${escapeHtml(objectItem.id)}"
-            style="
-              background:#facc15;
-              color:#111827;
-              border:0;
-              border-radius:6px;
-              padding:7px 8px;
-              font-weight:800;
-              cursor:pointer;
-            "
-          >
+          <button type="button" data-ci-action="run" data-object-id="${escapeHtml(objectItem.id)}" style="background:#facc15;color:#111827;border:0;border-radius:6px;padding:7px 8px;font-weight:800;cursor:pointer;">
             Run Analysis
           </button>
 
-          <button
-            type="button"
-            data-ci-action="close"
-            style="
-              background:rgba(148, 163, 184, 0.18);
-              color:#f8fafc;
-              border:1px solid rgba(148, 163, 184, 0.35);
-              border-radius:6px;
-              padding:7px 8px;
-              font-weight:700;
-              cursor:pointer;
-            "
-          >
-            Cancel
+          <button type="button" data-ci-action="close" style="background:rgba(148, 163, 184, 0.18);color:#f8fafc;border:1px solid rgba(148, 163, 184, 0.35);border-radius:6px;padding:7px 8px;font-weight:700;cursor:pointer;">
+            Close
           </button>
         </div>
       </div>
     </div>
-  `;
-}
-
-function renderAnalysisStatusHtml(analysis) {
-  return `
-    <strong>Analysis completed</strong><br>
-    <span style="color:#94a3b8;">${escapeHtml(formatDateTime(analysis.generatedAt))}</span><br><br>
-
-    <strong>Location</strong><br>
-    ${escapeHtml(analysis.locationTitle || '-')}<br>
-    ${escapeHtml(analysis.locationSubtitle || '-')}<br><br>
-
-    <strong>Nearest mapped object</strong><br>
-    ${escapeHtml(analysis.detectedObject || '-')}<br>
-    <span style="color:#94a3b8;">${escapeHtml(analysis.detectedObjectType || '')}</span><br><br>
-
-    <strong>Functional assessment</strong><br>
-    <span style="color:#facc15; font-weight:800;">${escapeHtml(analysis.functionalAssessment || '-')}</span><br>
-    Confidence: <strong>${escapeHtml(analysis.confidence || '-')}</strong><br><br>
-
-    <strong>Primary mapped object</strong><br>
-    ${escapeHtml(analysis.primaryObject || '-')}<br>
-    Confidence: <strong>${escapeHtml(analysis.primaryConfidence || '-')}</strong><br><br>
-
-    <strong>Operational environment</strong><br>
-    ${escapeHtml(analysis.operationalEnvironment || '-')}<br>
-    Confidence: <strong>${escapeHtml(analysis.environmentConfidence || '-')}</strong><br><br>
-
-    <strong>Nearest road / place</strong><br>
-    ${escapeHtml(analysis.nearestRoad || analysis.nearestNamedPlace || '-')}<br><br>
-
-    <strong>Infrastructure counts</strong><br>
-    ${featureCountsHtml({ feature_counts: analysis.featureCounts || {} })}<br><br>
-
-    <strong>Assessment text</strong><br>
-    ${escapeHtml(analysis.assessment || '-')}
   `;
 }
 
@@ -655,9 +601,7 @@ export function initObjectIdentificationTool({
   const rendered = new Map();
 
   function emitStatus(text) {
-    if (typeof onStatusChange === 'function') {
-      onStatusChange(text);
-    }
+    if (typeof onStatusChange === 'function') onStatusChange(text);
   }
 
   function save() {
@@ -717,9 +661,7 @@ export function initObjectIdentificationTool({
     marker.addTo(layerGroup);
     rendered.set(objectItem.id, marker);
 
-    if (shouldOpen) {
-      marker.openPopup();
-    }
+    if (shouldOpen) marker.openPopup();
   }
 
   function refreshRenderedObject(objectItem) {
@@ -736,10 +678,7 @@ export function initObjectIdentificationTool({
     rendered.clear();
 
     objects = readStoredObjects();
-
-    objects.forEach(item => {
-      renderObject(item, false);
-    });
+    objects.forEach(item => renderObject(item, false));
   }
 
   function addObject(latlng, objectType = 'unknown', shouldOpen = true) {
@@ -756,9 +695,7 @@ export function initObjectIdentificationTool({
       analysisUpdatedAt: null,
     };
 
-    if (!Number.isFinite(objectItem.lat) || !Number.isFinite(objectItem.lng)) {
-      return null;
-    }
+    if (!Number.isFinite(objectItem.lat) || !Number.isFinite(objectItem.lng)) return null;
 
     objects.push(objectItem);
     save();
@@ -776,7 +713,6 @@ export function initObjectIdentificationTool({
     item.lat = Number(latlng.lat);
     item.lng = Number(latlng.lng);
     item.updatedAt = nowIso();
-
     item.analysisSummary = null;
     item.analysisResult = null;
     item.analysisUpdatedAt = null;
@@ -847,11 +783,7 @@ export function initObjectIdentificationTool({
     if (!event?.latlng) return;
     if (shouldIgnoreClick(event)) return;
 
-    const selectedType =
-      typeof getObjectTypeValue === 'function'
-        ? getObjectTypeValue()
-        : 'unknown';
-
+    const selectedType = typeof getObjectTypeValue === 'function' ? getObjectTypeValue() : 'unknown';
     addObject(event.latlng, selectedType, true);
   }
 
@@ -1011,11 +943,8 @@ export function initObjectIdentificationTool({
     },
 
     addObject,
-
     removeObject,
-
     clearObjects,
-
     getObjects,
 
     exportJson() {
