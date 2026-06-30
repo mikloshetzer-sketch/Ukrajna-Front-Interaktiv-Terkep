@@ -35,6 +35,8 @@ jobs:
           git add data/suriyak_front.geojson
           git add data/suriyak_front_summary.json
           git add data/suriyak_overlay.geojson
+          git add data/suriyak_legend.json
+          git add data/suriyak_style_rules.json
 
           if git diff --cached --quiet; then
             echo "No Suriyak data changes to commit."
