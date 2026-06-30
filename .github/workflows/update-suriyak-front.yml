@@ -27,16 +27,17 @@ jobs:
         run: |
           python scripts/update_suriyak_front.py
 
-      - name: Commit updated Suriyak GeoJSON
+      - name: Commit updated Suriyak data
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           git add docs/data/suriyak_front.geojson
+          git add docs/data/suriyak_front_summary.json
 
           if git diff --cached --quiet; then
-            echo "No Suriyak front changes to commit."
+            echo "No Suriyak data changes to commit."
           else
-            git commit -m "Update Suriyak front comparison layer"
+            git commit -m "Update Suriyak front comparison data"
             git push
           fi
