@@ -242,6 +242,13 @@ function buildAnalysisSummary(data) {
     railwayConfidence: summary.railway_confidence || '-',
     maritimeConfidence: summary.maritime_confidence || '-',
     featureCounts: summary.feature_counts || {},
+    firms: data?.firms || null,
+    firmsActivityDetected: summary.firms_activity_detected ?? data?.firms?.activity_detected ?? null,
+    firmsActivityWindow: summary.firms_activity_window || data?.firms?.activity_window || null,
+    firmsActivityCount: summary.firms_activity_count ?? data?.firms?.activity_count ?? null,
+    firmsNearestHotspotM: summary.firms_nearest_hotspot_m ?? data?.firms?.nearest_hotspot_m ?? null,
+    firmsConfidence: summary.firms_confidence || data?.firms?.confidence || null,
+    firmsLatestDetection: summary.firms_latest_detection || data?.firms?.latest_detection || null,
     assessment: data?.assessment || '-',
     lat: data?.coordinate?.lat,
     lon: data?.coordinate?.lon,
@@ -398,6 +405,46 @@ function createPopupHtml(objectItem) {
   `;
 }
 
+
+function renderFirmsStatusHtml(analysis) {
+  const hasFirmsBlock = analysis?.firms && typeof analysis.firms === 'object';
+
+  if (!hasFirmsBlock) {
+    return `
+      <strong>FIRMS activity</strong><br>
+      <span style="color:#94a3b8;">No FIRMS data block available for this analysis.</span><br><br>
+    `;
+  }
+
+  const detected = Boolean(analysis.firmsActivityDetected);
+  const confidence = analysis.firmsConfidence || '-';
+  const count = analysis.firmsActivityCount ?? 0;
+  const windowValue = analysis.firmsActivityWindow || '-';
+  const nearest = analysis.firmsNearestHotspotM ?? null;
+  const latest = analysis.firmsLatestDetection || null;
+  const maxFrp = analysis.firms?.max_frp ?? null;
+
+  if (!detected) {
+    return `
+      <strong>FIRMS activity</strong><br>
+      <span style="color:#94a3b8;">No thermal anomaly detected within the selected radius in the available FIRMS windows.</span><br>
+      Confidence: <strong>${escapeHtml(confidence)}</strong><br><br>
+    `;
+  }
+
+  return `
+    <strong>🔥 FIRMS activity</strong><br>
+    Activity window: <strong>${escapeHtml(windowValue)}</strong><br>
+    Hotspots: <strong>${escapeHtml(count)}</strong><br>
+    Nearest hotspot: <strong>${nearest !== null ? `${escapeHtml(nearest)} m` : '-'}</strong><br>
+    Max FRP: <strong>${maxFrp !== null ? escapeHtml(maxFrp) : '-'}</strong><br>
+    Latest detection: <strong>${escapeHtml(formatDateTime(latest))}</strong><br>
+    Confidence: <strong>${escapeHtml(confidence)}</strong><br>
+    <span style="color:#94a3b8;">FIRMS is a thermal anomaly indicator, not confirmed damage or strike attribution.</span><br><br>
+  `;
+}
+
+
 function renderAnalysisStatusHtml(analysis) {
   return `
     <strong>Analysis completed</strong><br>
@@ -424,6 +471,8 @@ function renderAnalysisStatusHtml(analysis) {
 
     <strong>Infrastructure counts</strong><br>
     ${featureCountsHtml({ feature_counts: analysis.featureCounts || {} })}<br><br>
+
+    ${renderFirmsStatusHtml(analysis)}
 
     <strong>Assessment text</strong><br>
     ${escapeHtml(analysis.assessment || '-')}
