@@ -292,6 +292,44 @@ function getSuriyakCategoriesFromLegend(legend) {
   return Array.isArray(legend?.categories) ? legend.categories : [];
 }
 
+
+const suriyakHungarianLabels = {
+  current_frontline: 'Jelenlegi fő frontvonal',
+  historical_frontline: 'Történelmi frontvonalak',
+  russian_control: 'Orosz ellenőrzésű területek',
+  ukrainian_control: 'Ukrán ellenőrzés / AFU állások',
+  russian_defense_line: 'Orosz védelmi vonalak',
+  historical_border_2014: '2014-es határvonalak és korábbi érintkezési vonalak',
+  operational_sector: 'Műveleti szektorok / regionális területek',
+  other_suriyak: 'Egyéb Suriyak rétegek'
+};
+
+const suriyakHungarianDescriptions = {
+  current_frontline: 'A Suriyak által jelölt jelenlegi vagy fő érintkezési vonal. DeepState mellé kapcsolva összehasonlító rétegként érdemes használni.',
+  historical_frontline: 'Korábbi, dátummal jelölt frontvonalak és történeti érintkezési vonalak. Nem aktuális frontként, hanem összehasonlítási háttérként kezelendők.',
+  russian_control: 'Orosz vagy oroszbarát erőkhöz kötött ellenőrzési területek, illetve ezek határvonalai.',
+  ukrainian_control: 'Ukrán fegyveres erőkhöz vagy ukrán ellenőrzésű állásokhoz kötött területek és pozíciók.',
+  russian_defense_line: 'Orosz védelmi övek, előkészített védelmi vonalak és erődítési jellegű vonalas elemek.',
+  historical_border_2014: '2014-es határvonalak, korábbi érintkezési vonalak és régebbi pozíciós hivatkozások.',
+  operational_sector: 'Térségi vagy műveleti szektorokat jelölő Suriyak elemek, például Szumi, Harkiv, Donyeck, Zaporizzsja vagy Herszon térségében.',
+  other_suriyak: 'Automatikusan nem besorolt Suriyak elemek. Elemzési következtetés előtt külön ellenőrzést igényelnek.'
+};
+
+function getSuriyakHungarianLabel(category) {
+  const id = category?.id || 'other_suriyak';
+  return suriyakHungarianLabels[id] || category?.label || id;
+}
+
+function getSuriyakHungarianDescription(category) {
+  const id = category?.id || 'other_suriyak';
+  return suriyakHungarianDescriptions[id] || category?.description || '';
+}
+
+function formatSuriyakNumber(value) {
+  const number = Number(value || 0);
+  return new Intl.NumberFormat('hu-HU', { maximumFractionDigits: 0 }).format(number);
+}
+
 function getSuriyakCategoryColor(category) {
   return (
     category?.display?.fillColor ||
@@ -357,13 +395,13 @@ function buildSuriyakCategoryList(legend) {
     const areaKm2 = Number(category.total_area_km2 || 0);
     const metricParts = [];
 
-    if (lengthKm > 0) metricParts.push(`${lengthKm.toFixed(0)} km`);
-    if (areaKm2 > 0) metricParts.push(`${areaKm2.toFixed(0)} km²`);
+    if (lengthKm > 0) metricParts.push(`${formatSuriyakNumber(lengthKm)} km`);
+    if (areaKm2 > 0) metricParts.push(`${formatSuriyakNumber(areaKm2)} km²`);
 
-    const metricText = metricParts.length ? ` · ${metricParts.join(' · ')}` : '';
+    const metricText = metricParts.length ? ` • ${metricParts.join(' • ')}` : '';
 
     return `
-      <label class="suriyak-category-row" title="${category.description || ''}">
+      <label class="suriyak-category-row" title="${getSuriyakHungarianDescription(category)}">
         <input
           type="checkbox"
           class="suriyak-category-toggle"
@@ -371,8 +409,8 @@ function buildSuriyakCategoryList(legend) {
           ${checked}
         />
         <span class="suriyak-swatch" style="background:${color};"></span>
-        <span>${category.label || id}</span>
-        <span class="suriyak-category-count">${count}${metricText}</span>
+        <span>${getSuriyakHungarianLabel(category)}</span>
+        <span class="suriyak-category-count">${formatSuriyakNumber(count)} objektum${metricText}</span>
       </label>
     `;
   }).join('');
@@ -384,15 +422,15 @@ function updateSuriyakLegendPanel(legend) {
   const generatedAt = legend?.generated_at ? String(legend.generated_at).slice(0, 10) : 'n/a';
 
   if (dom.suriyakLayerMeta) {
-    dom.suriyakLayerMeta.textContent = `${total} objektum · ${generatedAt}`;
+    dom.suriyakLayerMeta.textContent = `${formatSuriyakNumber(total)} objektum • Frissítve: ${generatedAt}`;
   }
 
   buildSuriyakCategoryList(legend);
 
   if (dom.suriyakLegendNote) {
     dom.suriyakLegendNote.innerHTML = `
-      Automatikus besorolás a <code>suriyak_style_rules.json</code> alapján.
-      A kategóriák elemzői címkék, nem hivatalos Suriyak dokumentáció.
+      A kategóriák automatikusan kerülnek besorolásra a <code>suriyak_style_rules.json</code> alapján.
+      Az elnevezések elemzési célokat szolgálnak, és nem a Suriyak hivatalos kategóriái.
     `;
   }
 }
@@ -481,7 +519,7 @@ async function refreshSuriyak() {
     }
 
     const shown = filteredData.features?.length || 0;
-    setStatus(`Suriyak betöltve: ${shown} objektum`);
+    setStatus(`Suriyak betöltve: ${formatSuriyakNumber(shown)} objektum`);
   } catch (error) {
     console.error('Suriyak overlay hiba:', error);
 
