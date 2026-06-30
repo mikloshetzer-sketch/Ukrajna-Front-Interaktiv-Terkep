@@ -1,0 +1,42 @@
+name: Update Suriyak Front Layer
+
+on:
+  workflow_dispatch:
+
+  schedule:
+    - cron: "30 5 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  update-suriyak-front:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run Suriyak front updater
+        run: |
+          python scripts/update_suriyak_front.py
+
+      - name: Commit updated Suriyak GeoJSON
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add docs/data/suriyak_front.geojson
+
+          if git diff --cached --quiet; then
+            echo "No Suriyak front changes to commit."
+          else
+            git commit -m "Update Suriyak front comparison layer"
+            git push
+          fi
