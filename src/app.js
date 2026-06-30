@@ -14,6 +14,7 @@ import {
   renderAttackAxes,
   renderBattleNodes,
   renderSuriyakLayer,
+  setSatelliteContrastMode,
   resetAllSavedDeltaLabels
 } from './map/layers.js';
 import { initAnnotations } from './map/annotations.js';
@@ -83,6 +84,7 @@ const dom = {
   toggleOccupied: document.getElementById('toggleOccupied'),
   toggleFrontline: document.getElementById('toggleFrontline'),
   toggleSuriyak: document.getElementById('toggleSuriyak'),
+  toggleSatelliteContrast: document.getElementById('toggleSatelliteContrast'),
   toggleAxes: document.getElementById('toggleAxes'),
   toggleBattleNodes: document.getElementById('toggleBattleNodes'),
   toggleDelta: document.getElementById('toggleDelta'),
@@ -97,6 +99,7 @@ const dom = {
   suriyakLayerMeta: document.getElementById('suriyakLayerMeta'),
   suriyakCategoryList: document.getElementById('suriyakCategoryList'),
   suriyakLegendNote: document.getElementById('suriyakLegendNote'),
+  satelliteContrastNote: document.getElementById('satelliteContrastNote'),
 
   historicalDeltaWindow: document.getElementById('historicalDeltaWindow'),
   firmsWindow: document.getElementById('firmsWindow'),
@@ -1654,6 +1657,21 @@ function bindToolboxControls() {
 
   applyToolboxMode();
 }
+
+function refreshSatelliteContrastMode() {
+  const enabled = Boolean(dom.toggleSatelliteContrast?.checked);
+
+  setSatelliteContrastMode(layerState, enabled);
+
+  if (dom.satelliteContrastNote) {
+    dom.satelliteContrastNote.classList.toggle('is-open', enabled);
+  }
+
+  if (enabled) {
+    setStatus('Műholdas kontraszt mód bekapcsolva');
+  }
+}
+
 function bindLayerToggles() {
   dom.toggleOccupied.addEventListener('change', () => {
     if (dom.toggleOccupied.checked) {
@@ -1707,6 +1725,7 @@ function bindLayerToggles() {
   });
 
   dom.toggleSuriyak?.addEventListener('change', refreshSuriyak);
+  dom.toggleSatelliteContrast?.addEventListener('change', refreshSatelliteContrastMode);
 
   dom.suriyakCategoryList?.addEventListener('change', async (event) => {
     const target = event.target;
@@ -1858,6 +1877,7 @@ async function init() {
 
     bindToolboxControls();
     bindLayerToggles();
+refreshSatelliteContrastMode();
     bindControls(player);
 
     setStatus('Kész');
