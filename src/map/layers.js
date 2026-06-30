@@ -354,6 +354,68 @@ function getOsintColor(sourceType) {
   return '#1f5f8b';
 }
 
+function getSuriyakColor(feature) {
+  const styleUrl = String(feature?.properties?.style_url || '');
+  const match = styleUrl.match(/#(?:poly|line)-([0-9A-Fa-f]{6})-/);
+
+  if (match) {
+    return `#${match[1]}`;
+  }
+
+  const name = String(feature?.properties?.name || '').toLowerCase();
+
+  if (name.includes('russian')) return '#a52714';
+  if (name.includes('ukrainian')) return '#0288d1';
+  if (name.includes('frontline')) return '#6d28d9';
+  if (name.includes('defense') || name.includes('defence')) return '#f59e0b';
+
+  return '#7c3aed';
+}
+
+function getSuriyakStyle(feature) {
+  const geometryType = feature?.geometry?.type || '';
+  const color = getSuriyakColor(feature);
+  const name = String(feature?.properties?.name || '').toLowerCase();
+  const isFrontline = name.includes('frontline');
+  const isDefenseLine = name.includes('defense') || name.includes('defence');
+
+  if (geometryType.includes('LineString')) {
+    return {
+      color,
+      weight: isFrontline ? 4 : 3,
+      opacity: isFrontline ? 0.95 : 0.82,
+      fillOpacity: 0,
+      dashArray: isDefenseLine ? '8,6' : null,
+      lineCap: 'round',
+      lineJoin: 'round',
+    };
+  }
+
+  return {
+    color,
+    weight: isFrontline ? 3 : 2,
+    opacity: 0.78,
+    fillColor: color,
+    fillOpacity: 0.14,
+    dashArray: isDefenseLine ? '8,6' : null,
+  };
+}
+
+function buildSuriyakPopup(feature) {
+  const props = feature?.properties || {};
+
+  return `
+    <b>Suriyak Maps comparison layer</b><br>
+    <b>Name:</b> ${props.name || 'Unnamed feature'}<br>
+    <b>Source:</b> ${props.source || 'Suriyak Maps'}<br>
+    <b>Geometry:</b> ${feature?.geometry?.type || 'Unknown'}<br>
+    <b>Style:</b> ${props.style_url || 'n/a'}<br>
+    <b>Updated:</b> ${props.updated_at || 'n/a'}<br>
+    <hr style="margin:6px 0;">
+    <span style="color:#444;">Unofficial shadow layer generated from public Google My Maps KML. Use for comparison beside DeepState, not as sole ground truth.</span>
+  `;
+}
+
 function buildPopupHtml(number, isGain, previousDate, currentDate, areaKm2, sectorName, nearestPlace) {
   return `
     <b>#${number} – ${isGain ? 'Russian territorial gain' : 'Ukrainian recapture'}</b><br>
@@ -1074,6 +1136,22 @@ export function renderOsintHighlights(layerState, osintSummary) {
   });
 }
 
+export function renderSuriyakLayer(layerState, data) {
+  if (!layerState.suriyakLayer) return;
+
+  layerState.suriyakLayer.clearLayers();
+
+  const features = Array.isArray(data?.features) ? data.features : [];
+  if (!features.length) return;
+
+  L.geoJSON(data, {
+    style: getSuriyakStyle,
+    onEachFeature: (feature, layer) => {
+      layer.bindPopup(buildSuriyakPopup(feature));
+    }
+  }).addTo(layerState.suriyakLayer);
+}
+
 export function renderHeatmapLayer(layerState, points) {
   if (!layerState.heatmapLayer) return;
 
@@ -1111,6 +1189,8 @@ export function createLayers(map) {
     }
   }).addTo(map);
 
+  const suriyakLayer = L.layerGroup();
+
   const deltaLayer = L.layerGroup().addTo(map);
   const historicalDeltaLayer = L.layerGroup().addTo(map);
 
@@ -1146,6 +1226,7 @@ export function createLayers(map) {
     map,
     occupiedLayer,
     frontlineLayer,
+    suriyakLayer,
     deltaLayer,
     historicalDeltaLayer,
     borderLayer,
