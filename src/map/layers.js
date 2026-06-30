@@ -372,7 +372,168 @@ function getSuriyakColor(feature) {
   return '#7c3aed';
 }
 
-function getSuriyakStyle(feature) {
+
+function isSatelliteContrastEnabled(layerState) {
+  return Boolean(layerState?.satelliteContrastEnabled);
+}
+
+function getDeepStateOccupiedStyle(layerState) {
+  if (isSatelliteContrastEnabled(layerState)) {
+    return {
+      color: '#ff2d2d',
+      weight: 2.4,
+      opacity: 0.95,
+      fillColor: '#ff2d2d',
+      fillOpacity: 0.10,
+    };
+  }
+
+  return {
+    color: '#c0392b',
+    weight: 1,
+    fillColor: '#c0392b',
+    fillOpacity: 0.33,
+  };
+}
+
+function getDeepStateFrontlineStyle(layerState) {
+  if (isSatelliteContrastEnabled(layerState)) {
+    return {
+      color: '#ffffff',
+      weight: 6,
+      opacity: 0.95,
+      fillOpacity: 0,
+      dashArray: null,
+    };
+  }
+
+  return {
+    color: '#991b1b',
+    weight: 4,
+    opacity: 0.95,
+    fillOpacity: 0,
+  };
+}
+
+function getSuriyakSatelliteStyle(feature) {
+  const props = feature?.properties || {};
+  const category = String(props.suriyak_category || 'other_suriyak');
+  const geometryType = feature?.geometry?.type || '';
+  const isLine = geometryType.includes('LineString');
+
+  const styles = {
+    current_frontline: {
+      color: '#ff00ff',
+      fillColor: '#ff00ff',
+      weight: 5,
+      opacity: 0.98,
+      fillOpacity: 0.02,
+      dashArray: null,
+    },
+    historical_frontline: {
+      color: '#c084fc',
+      fillColor: '#c084fc',
+      weight: 3.4,
+      opacity: 0.92,
+      fillOpacity: 0.02,
+      dashArray: '8,5',
+    },
+    russian_defense_line: {
+      color: '#ffff00',
+      fillColor: '#ffff00',
+      weight: 3.6,
+      opacity: 0.96,
+      fillOpacity: 0.02,
+      dashArray: '9,6',
+    },
+    russian_control: {
+      color: '#ff8c00',
+      fillColor: '#ff8c00',
+      weight: 2.8,
+      opacity: 0.94,
+      fillOpacity: 0.10,
+      dashArray: null,
+    },
+    ukrainian_control: {
+      color: '#00d4ff',
+      fillColor: '#00d4ff',
+      weight: 2.8,
+      opacity: 0.94,
+      fillOpacity: 0.08,
+      dashArray: null,
+    },
+    historical_border_2014: {
+      color: '#ffffff',
+      fillColor: '#ffffff',
+      weight: 2.8,
+      opacity: 0.92,
+      fillOpacity: 0.02,
+      dashArray: '6,6',
+    },
+    operational_sector: {
+      color: '#00ff99',
+      fillColor: '#00ff99',
+      weight: 2.4,
+      opacity: 0.86,
+      fillOpacity: 0.05,
+      dashArray: '6,4',
+    },
+    other_suriyak: {
+      color: '#d1d5db',
+      fillColor: '#d1d5db',
+      weight: 2.2,
+      opacity: 0.78,
+      fillOpacity: 0.04,
+      dashArray: '4,4',
+    },
+  };
+
+  const selected = styles[category] || styles.other_suriyak;
+
+  if (isLine) {
+    return {
+      color: selected.color,
+      weight: selected.weight,
+      opacity: selected.opacity,
+      fillOpacity: 0,
+      dashArray: selected.dashArray,
+      lineCap: 'round',
+      lineJoin: 'round',
+    };
+  }
+
+  return {
+    color: selected.color,
+    weight: selected.weight,
+    opacity: selected.opacity,
+    fillColor: selected.fillColor,
+    fillOpacity: selected.fillOpacity,
+    dashArray: selected.dashArray,
+  };
+}
+
+export function setSatelliteContrastMode(layerState, enabled) {
+  if (!layerState) return;
+
+  layerState.satelliteContrastEnabled = Boolean(enabled);
+
+  if (layerState.occupiedLayer?.setStyle) {
+    layerState.occupiedLayer.setStyle(getDeepStateOccupiedStyle(layerState));
+  }
+
+  if (layerState.frontlineLayer?.setStyle) {
+    layerState.frontlineLayer.setStyle(getDeepStateFrontlineStyle(layerState));
+  }
+
+  if (layerState.lastSuriyakData) {
+    renderSuriyakLayer(layerState, layerState.lastSuriyakData);
+  }
+}
+
+function getSuriyakStyle(feature, layerState = null) {
+  if (isSatelliteContrastEnabled(layerState)) {
+    return getSuriyakSatelliteStyle(feature);
+  }
   const geometryType = feature?.geometry?.type || '';
   const color = getSuriyakColor(feature);
   const name = String(feature?.properties?.name || '').toLowerCase();
@@ -1139,6 +1300,7 @@ export function renderOsintHighlights(layerState, osintSummary) {
 export function renderSuriyakLayer(layerState, data) {
   if (!layerState.suriyakLayer) return;
 
+  layerState.lastSuriyakData = data;
   layerState.suriyakLayer.clearLayers();
 
   const features = Array.isArray(data?.features) ? data.features : [];
@@ -1147,7 +1309,7 @@ export function renderSuriyakLayer(layerState, data) {
   L.geoJSON(data, {
     interactive: false,
     bubblingMouseEvents: false,
-    style: getSuriyakStyle,
+    style: (feature) => getSuriyakStyle(feature, layerState),
     onEachFeature: (feature, layer) => {
       // Popup intentionally disabled in normal mode so OSINT tools,
       // distance measurement and object identification keep working.
@@ -1176,21 +1338,11 @@ export function renderHeatmapLayer(layerState, points) {
 
 export function createLayers(map) {
   const occupiedLayer = L.geoJSON(null, {
-    style: {
-      color: '#c0392b',
-      weight: 1,
-      fillColor: '#c0392b',
-      fillOpacity: 0.33
-    }
+    style: () => getDeepStateOccupiedStyle(layerState)
   }).addTo(map);
 
   const frontlineLayer = L.geoJSON(null, {
-    style: {
-      color: '#991b1b',
-      weight: 4,
-      opacity: 0.95,
-      fillOpacity: 0,
-    }
+    style: () => getDeepStateFrontlineStyle(layerState)
   }).addTo(map);
 
   const suriyakLayer = L.layerGroup();
@@ -1242,6 +1394,8 @@ export function createLayers(map) {
     osintLayer,
     osintHighlightLayer,
     heatmapLayer,
+    satelliteContrastEnabled: false,
+    lastSuriyakData: null,
     lastDeltaPayload: null,
     savedDeltaLabelPositions: loadSavedJson(DELTA_LABEL_STORAGE_KEY),
     savedFirmsBoxPositions: loadSavedJson(FIRMS_LABEL_STORAGE_KEY),
