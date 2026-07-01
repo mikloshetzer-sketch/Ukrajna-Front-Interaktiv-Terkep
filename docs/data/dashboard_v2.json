@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-07-01T14:14:37.161200+00:00",
+  "updated_utc": "2026-07-01T20:24:49.357646+00:00",
   "date": "2026-07-01",
   "territorial_sector": {
     "sector": "No territorial delta",
@@ -158,13 +158,24 @@
   ],
   "front_pressure_points": [
     {
+      "sector": "Lyman",
+      "title": "Lyman FIRMS thermal cluster",
+      "lat": 48.99,
+      "lon": 37.8,
+      "score": 100,
+      "osint": 0,
+      "firms": 124,
+      "pressure_type": "thermal_activity_cluster",
+      "icon": "🔥"
+    },
+    {
       "sector": "Pokrovsk",
       "title": "Pokrovsk OSINT activity cluster",
       "lat": 48.28,
       "lon": 37.18,
       "score": 100,
       "osint": 6,
-      "firms": 63,
+      "firms": 191,
       "pressure_type": "osint_activity_cluster",
       "icon": "⚔"
     },
@@ -175,7 +186,7 @@
       "lon": 36.84,
       "score": 100,
       "osint": 0,
-      "firms": 213,
+      "firms": 392,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -186,7 +197,7 @@
       "lon": 35.14,
       "score": 100,
       "osint": 0,
-      "firms": 554,
+      "firms": 891,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -197,7 +208,7 @@
       "lon": 32.61,
       "score": 100,
       "osint": 0,
-      "firms": 1227,
+      "firms": 1827,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -206,20 +217,9 @@
       "title": "Crimea FIRMS thermal cluster",
       "lat": 45.2,
       "lon": 34.1,
-      "score": 43,
+      "score": 82,
       "osint": 0,
-      "firms": 48,
-      "pressure_type": "thermal_activity_cluster",
-      "icon": "🔥"
-    },
-    {
-      "sector": "Lyman",
-      "title": "Lyman FIRMS thermal cluster",
-      "lat": 48.99,
-      "lon": 37.8,
-      "score": 40,
-      "osint": 0,
-      "firms": 44,
+      "firms": 91,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -228,9 +228,9 @@
       "title": "Kharkiv FIRMS thermal cluster",
       "lat": 49.99,
       "lon": 36.23,
-      "score": 27,
-      "osint": 0,
-      "firms": 30,
+      "score": 66,
+      "osint": 1,
+      "firms": 60,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     }
@@ -253,12 +253,12 @@
       "count": 1
     }
   ],
-  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 65. No measurable net territorial change was detected. The main pressure focus is Pokrovsk. The strongest event category is Drone / UAV activity. The system processed 14 OSINT events, 3563 short-term FIRMS hotspots and 10 active sectors.",
+  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 65. No measurable net territorial change was detected. The main pressure focus is Lyman. The strongest event category is Drone / UAV activity. The system processed 15 OSINT events, 5807 short-term FIRMS hotspots and 10 active sectors.",
   "counts": {
     "priority_osint": 12,
     "pressure_points": 7,
-    "firms_3d": 3563,
-    "firms_10d": 11815,
+    "firms_3d": 5807,
+    "firms_10d": 14059,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."
