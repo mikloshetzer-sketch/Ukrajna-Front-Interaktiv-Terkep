@@ -1,33 +1,33 @@
 {
-  "date": "2026-07-01",
-  "updated_utc": "2026-07-01T20:24:47.078990+00:00",
-  "front_activity_index": 65,
-  "status": "HIGH",
+  "date": "2026-07-02",
+  "updated_utc": "2026-07-02T20:02:28.879184+00:00",
+  "front_activity_index": 100,
+  "status": "CRITICAL",
   "components": {
     "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 0.0,
+    "territorial_change": 35,
     "active_sectors": 10,
     "critical_events": 10
   },
   "counts": {
-    "osint": 15,
-    "firms_3d": 5807,
-    "firms_10d": 14059,
-    "firms_30d": 24869,
-    "critical_events": 5,
+    "osint": 17,
+    "firms_3d": 7562,
+    "firms_10d": 16394,
+    "firms_30d": 27821,
+    "critical_events": 6,
     "active_sectors": 10
   },
   "territorial": {
     "available": true,
     "error": null,
-    "previous_file": "deepstatemap_data_20260630.geojson",
-    "current_file": "deepstatemap_data_20260701.geojson",
+    "previous_file": "deepstatemap_data_20260701.geojson",
+    "current_file": "deepstatemap_data_20260702.geojson",
     "previous_total_km2": 116658.27,
-    "current_total_km2": 116658.27,
-    "russian_gain_km2": 0,
+    "current_total_km2": 116671.91,
+    "russian_gain_km2": 13.64,
     "ukrainian_recapture_km2": 0,
-    "net_change_km2": 0.0,
+    "net_change_km2": 13.64,
     "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
@@ -36,74 +36,79 @@
     "lon": 37.8,
     "zoom": 9,
     "score": 100,
-    "change_km2": 0.0,
+    "change_km2": 13.64,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
     {
       "sector": "Lyman",
       "osint": 0,
-      "firms": 124,
+      "firms": 226,
+      "score": 100
+    },
+    {
+      "sector": "Bakhmut-Toretsk",
+      "osint": 0,
+      "firms": 200,
       "score": 100
     },
     {
       "sector": "Pokrovsk",
-      "osint": 6,
-      "firms": 191,
+      "osint": 7,
+      "firms": 273,
       "score": 100
     },
     {
       "sector": "Velyka Novosilka",
       "osint": 0,
-      "firms": 392,
+      "firms": 638,
       "score": 100
     },
     {
       "sector": "Zaporizhzhia",
       "osint": 0,
-      "firms": 891,
+      "firms": 1216,
       "score": 100
     },
     {
       "sector": "Kherson-Dnipro",
       "osint": 0,
-      "firms": 1827,
-      "score": 100
-    },
-    {
-      "sector": "Other / Unclassified",
-      "osint": 7,
-      "firms": 2132,
+      "firms": 2124,
       "score": 100
     },
     {
       "sector": "Crimea",
-      "osint": 0,
-      "firms": 91,
-      "score": 82
+      "osint": 2,
+      "firms": 106,
+      "score": 100
     },
     {
-      "sector": "Kharkiv",
-      "osint": 1,
-      "firms": 60,
-      "score": 66
+      "sector": "Other / Unclassified",
+      "osint": 8,
+      "firms": 2567,
+      "score": 100
     }
   ],
   "top_events": [
     {
-      "title": "Drone Deal, anti-ballistic capabilities: Ukraine and Denmark deepen defence cooperation",
+      "title": "Reported military-related update near Krím",
+      "source": "forrás nélkül",
+      "sector": "Crimea"
+    },
+    {
+      "title": "Reported naval-related military activity near Krím",
+      "source": "forrás nélkül",
+      "sector": "Crimea"
+    },
+    {
+      "title": "Russian Offensive Campaign Assessment, July 1, 2026",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     },
     {
-      "title": "Reported military-related update near Harkiv",
+      "title": "Drone Deal, anti-ballistic capabilities: Ukraine and Denmark deepen defence cooperation",
       "source": "forrás nélkül",
-      "sector": "Kharkiv"
-    },
-    {
-      "title": "Reported drone strike near Donyeck",
-      "source": "forrás nélkül",
-      "sector": "Kurakhove"
+      "sector": "Pokrovsk"
     },
     {
       "title": "Russian Offensive Campaign Assessment, June 30, 2026",
@@ -112,11 +117,6 @@
     },
     {
       "title": "The Government of Ukraine approves the framework for using EU funds for defence procurement",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Ukraine’s Defence Forces Strike Russia’s Dubna Space Communications Centre for the Second Time",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     }

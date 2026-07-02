@@ -4312,5 +4312,137 @@
       "deepstate": "cyterat/deepstate-map-data via GitHub API"
     },
     "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
+  },
+  {
+    "date": "2026-07-02",
+    "updated_utc": "2026-07-02T20:02:28.879184+00:00",
+    "front_activity_index": 100,
+    "status": "CRITICAL",
+    "components": {
+      "osint_density": 25,
+      "firms_activity": 20,
+      "territorial_change": 35,
+      "active_sectors": 10,
+      "critical_events": 10
+    },
+    "counts": {
+      "osint": 17,
+      "firms_3d": 7562,
+      "firms_10d": 16394,
+      "firms_30d": 27821,
+      "critical_events": 6,
+      "active_sectors": 10
+    },
+    "territorial": {
+      "available": true,
+      "error": null,
+      "previous_file": "deepstatemap_data_20260701.geojson",
+      "current_file": "deepstatemap_data_20260702.geojson",
+      "previous_total_km2": 116658.27,
+      "current_total_km2": 116671.91,
+      "russian_gain_km2": 13.64,
+      "ukrainian_recapture_km2": 0,
+      "net_change_km2": 13.64,
+      "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    },
+    "territorial_hotspot": {
+      "sector": "Lyman",
+      "lat": 48.99,
+      "lon": 37.8,
+      "zoom": 9,
+      "score": 100,
+      "change_km2": 13.64,
+      "method": "Top classified sector based on OSINT + FIRMS density"
+    },
+    "top_sectors": [
+      {
+        "sector": "Lyman",
+        "osint": 0,
+        "firms": 226,
+        "score": 100
+      },
+      {
+        "sector": "Bakhmut-Toretsk",
+        "osint": 0,
+        "firms": 200,
+        "score": 100
+      },
+      {
+        "sector": "Pokrovsk",
+        "osint": 7,
+        "firms": 273,
+        "score": 100
+      },
+      {
+        "sector": "Velyka Novosilka",
+        "osint": 0,
+        "firms": 638,
+        "score": 100
+      },
+      {
+        "sector": "Zaporizhzhia",
+        "osint": 0,
+        "firms": 1216,
+        "score": 100
+      },
+      {
+        "sector": "Kherson-Dnipro",
+        "osint": 0,
+        "firms": 2124,
+        "score": 100
+      },
+      {
+        "sector": "Crimea",
+        "osint": 2,
+        "firms": 106,
+        "score": 100
+      },
+      {
+        "sector": "Other / Unclassified",
+        "osint": 8,
+        "firms": 2567,
+        "score": 100
+      }
+    ],
+    "top_events": [
+      {
+        "title": "Reported military-related update near Krím",
+        "source": "forrás nélkül",
+        "sector": "Crimea"
+      },
+      {
+        "title": "Reported naval-related military activity near Krím",
+        "source": "forrás nélkül",
+        "sector": "Crimea"
+      },
+      {
+        "title": "Russian Offensive Campaign Assessment, July 1, 2026",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Drone Deal, anti-ballistic capabilities: Ukraine and Denmark deepen defence cooperation",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Russian Offensive Campaign Assessment, June 30, 2026",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "The Government of Ukraine approves the framework for using EU funds for defence procurement",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      }
+    ],
+    "data_sources": {
+      "osint": "data/osint_feed.json",
+      "firms_3d": "data/firms_3.json",
+      "firms_10d": "data/firms_10.json",
+      "firms_30d": "data/firms_30.json",
+      "deepstate": "cyterat/deepstate-map-data via GitHub API"
+    },
+    "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
   }
 ]
