@@ -1,13 +1,13 @@
 {
-  "updated_utc": "2026-07-04T19:44:38.582733+00:00",
-  "date": "2026-07-04",
+  "updated_utc": "2026-07-05T19:03:35.859596+00:00",
+  "date": "2026-07-05",
   "territorial_sector": {
-    "sector": "Lyman",
-    "lat": 48.86205848749999,
-    "lon": 37.9170910125,
-    "distance_km": 16.6,
+    "sector": "Pokrovsk",
+    "lat": 48.361877314285714,
+    "lon": 37.1982111,
+    "distance_km": 9.2,
     "change_type": "russian_gain",
-    "area_km2": 2.02,
+    "area_km2": 0.44,
     "label": "Russian territorial gain"
   },
   "priority_osint_events": [
@@ -24,42 +24,6 @@
       "priority": 106
     },
     {
-      "title": "Reported drone strike near Krím",
-      "source": "forrás nélkül",
-      "sector": "Crimea",
-      "lat": 45.3,
-      "lon": 34.4,
-      "distance_to_sector_km": 0,
-      "event_type": "drone",
-      "event_label": "Drone / UAV activity",
-      "icon": "🛩",
-      "priority": 106
-    },
-    {
-      "title": "Drone Deal, anti-ballistic capabilities: Ukraine and Denmark deepen defence cooperation",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "drone",
-      "event_label": "Drone / UAV activity",
-      "icon": "🛩",
-      "priority": 103
-    },
-    {
-      "title": "The sky that never fell: how Ukraine’s surface-to-Air Missile Forces became one of the defining symbols of the Nation’s Resilience",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "missile",
-      "event_label": "Missile / rocket strike",
-      "icon": "☄",
-      "priority": 101
-    },
-    {
       "title": "Reported ground assault or offensive activity near Moszkva",
       "source": "forrás nélkül",
       "sector": "Moscow / Russia Interior",
@@ -70,6 +34,18 @@
       "event_label": "Frontline pressure",
       "icon": "⚔",
       "priority": 98
+    },
+    {
+      "title": "Russian Offensive Campaign Assessment, July 4, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "frontline",
+      "event_label": "Frontline pressure",
+      "icon": "⚔",
+      "priority": 95
     },
     {
       "title": "Russian Offensive Campaign Assessment, July 3, 2026",
@@ -96,16 +72,16 @@
       "priority": 95
     },
     {
-      "title": "Russian Offensive Campaign Assessment, July 1, 2026",
+      "title": "Reported rear-area strike near Moszkva",
       "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "frontline",
-      "event_label": "Frontline pressure",
-      "icon": "⚔",
-      "priority": 95
+      "sector": "Moscow / Russia Interior",
+      "lat": 55.755,
+      "lon": 37.617,
+      "distance_to_sector_km": 0,
+      "event_type": "strike",
+      "event_label": "Strike / attack",
+      "icon": "✹",
+      "priority": 94
     },
     {
       "title": "Reported military-related update near Moszkva",
@@ -142,29 +118,17 @@
       "event_label": "Military update",
       "icon": "●",
       "priority": 63
-    },
-    {
-      "title": "Army Aviation has changed the concept of warfare: helicopters adapted to western weapons, with 15 Heroes of Ukraine serving in its ranks",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "military_update",
-      "event_label": "Military update",
-      "icon": "●",
-      "priority": 63
     }
   ],
   "front_pressure_points": [
     {
-      "sector": "Lyman",
-      "title": "Lyman territorial gain axis",
-      "lat": 48.99,
-      "lon": 37.8,
+      "sector": "Pokrovsk",
+      "title": "Pokrovsk territorial gain axis",
+      "lat": 48.28,
+      "lon": 37.18,
       "score": 130,
-      "osint": 0,
-      "firms": 454,
+      "osint": 3,
+      "firms": 171,
       "pressure_type": "territorial_gain_axis",
       "icon": "▲"
     },
@@ -175,7 +139,18 @@
       "lon": 37.61,
       "score": 100,
       "osint": 0,
-      "firms": 179,
+      "firms": 127,
+      "pressure_type": "thermal_activity_cluster",
+      "icon": "🔥"
+    },
+    {
+      "sector": "Lyman",
+      "title": "Lyman FIRMS thermal cluster",
+      "lat": 48.99,
+      "lon": 37.8,
+      "score": 100,
+      "osint": 0,
+      "firms": 316,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -186,20 +161,9 @@
       "lon": 37.95,
       "score": 100,
       "osint": 0,
-      "firms": 308,
+      "firms": 170,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
-    },
-    {
-      "sector": "Pokrovsk",
-      "title": "Pokrovsk OSINT activity cluster",
-      "lat": 48.28,
-      "lon": 37.18,
-      "score": 100,
-      "osint": 7,
-      "firms": 297,
-      "pressure_type": "osint_activity_cluster",
-      "icon": "⚔"
     },
     {
       "sector": "Kurakhove",
@@ -208,7 +172,7 @@
       "lon": 37.28,
       "score": 100,
       "osint": 1,
-      "firms": 266,
+      "firms": 193,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -219,7 +183,7 @@
       "lon": 36.84,
       "score": 100,
       "osint": 0,
-      "firms": 476,
+      "firms": 193,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -230,7 +194,7 @@
       "lon": 35.14,
       "score": 100,
       "osint": 0,
-      "firms": 763,
+      "firms": 335,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -241,7 +205,7 @@
       "lon": 32.61,
       "score": 100,
       "osint": 0,
-      "firms": 1282,
+      "firms": 610,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     }
@@ -253,23 +217,23 @@
     },
     {
       "category": "Military update",
-      "count": 4
-    },
-    {
-      "category": "Drone / UAV activity",
       "count": 3
     },
     {
-      "category": "Missile / rocket strike",
+      "category": "Drone / UAV activity",
+      "count": 1
+    },
+    {
+      "category": "Strike / attack",
       "count": 1
     }
   ],
-  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 71. Russian forces gained approximately 2.00 km², closest to the Lyman sector. The main pressure focus is Lyman. The strongest event category is Drone / UAV activity. The system processed 13 OSINT events, 6474 short-term FIRMS hotspots and 10 active sectors.",
+  "ai_summary": "Front activity is assessed as ELEVATED with an FAI value of 59. Russian forces gained approximately 0.93 km², closest to the Pokrovsk sector. The main pressure focus is Pokrovsk. The strongest event category is Drone / UAV activity. The system processed 9 OSINT events, 3738 short-term FIRMS hotspots and 10 active sectors.",
   "counts": {
-    "priority_osint": 12,
+    "priority_osint": 9,
     "pressure_points": 8,
-    "firms_3d": 6474,
-    "firms_10d": 17236,
+    "firms_3d": 3738,
+    "firms_10d": 17008,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."
