@@ -1,0 +1,39 @@
+{
+  "generated_at": "2026-07-06T19:24:17Z",
+  "module": "satellite",
+  "status": "ready",
+  "default_provider": "sentinel2",
+  "provider": {
+    "key": "sentinel2",
+    "name": "Sentinel-2",
+    "type": "optical",
+    "enabled": true,
+    "source": "Copernicus Data Space Ecosystem",
+    "resolution_m": 10,
+    "auth_required": true
+  },
+  "ui": {
+    "layer_label_hu": "Sentinel-2 műholdkép",
+    "layer_label_en": "Sentinel-2 satellite imagery",
+    "default_visible": false
+  },
+  "imagery": {
+    "image_available": false,
+    "latest_image": null,
+    "history_dir": "data/satellite/sentinel2/history/",
+    "cloud_cover_percent": null,
+    "acquisition_date": null,
+    "bbox": null,
+    "bounds": null
+  },
+  "capabilities": {
+    "true_color": true,
+    "false_color": false,
+    "burn_index": false,
+    "before_after": false,
+    "change_detection": false,
+    "sentinel1_radar": false,
+    "maxar_ready": false
+  },
+  "next_step": "Add Sentinel-2 image download and static map overlay generation."
+}
