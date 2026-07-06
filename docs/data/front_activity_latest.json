@@ -1,112 +1,122 @@
 {
-  "date": "2026-07-05",
-  "updated_utc": "2026-07-05T19:50:21.170982+00:00",
-  "front_activity_index": 59,
-  "status": "ELEVATED",
+  "date": "2026-07-06",
+  "updated_utc": "2026-07-06T18:16:13.101433+00:00",
+  "front_activity_index": 65,
+  "status": "HIGH",
   "components": {
-    "osint_density": 22.5,
+    "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 2.8,
+    "territorial_change": 0.0,
     "active_sectors": 10,
-    "critical_events": 4
+    "critical_events": 10
   },
   "counts": {
-    "osint": 9,
-    "firms_3d": 3744,
-    "firms_10d": 17014,
-    "firms_30d": 31069,
-    "critical_events": 2,
+    "osint": 23,
+    "firms_3d": 2443,
+    "firms_10d": 16690,
+    "firms_30d": 31580,
+    "critical_events": 9,
     "active_sectors": 10
   },
   "territorial": {
     "available": true,
     "error": null,
-    "previous_file": "deepstatemap_data_20260704.geojson",
-    "current_file": "deepstatemap_data_20260705.geojson",
-    "previous_total_km2": 116672.04,
+    "previous_file": "deepstatemap_data_20260705.geojson",
+    "current_file": "deepstatemap_data_20260706.geojson",
+    "previous_total_km2": 116672.96,
     "current_total_km2": 116672.96,
-    "russian_gain_km2": 0.93,
+    "russian_gain_km2": 0,
     "ukrainian_recapture_km2": 0,
-    "net_change_km2": 0.93,
+    "net_change_km2": 0.0,
     "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
-    "sector": "Kupiansk",
-    "lat": 49.71,
-    "lon": 37.61,
+    "sector": "Lyman",
+    "lat": 48.99,
+    "lon": 37.8,
     "zoom": 9,
     "score": 100,
-    "change_km2": 0.93,
+    "change_km2": 0.0,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
     {
-      "sector": "Kupiansk",
-      "osint": 0,
-      "firms": 127,
-      "score": 100
-    },
-    {
       "sector": "Lyman",
       "osint": 0,
-      "firms": 316,
-      "score": 100
-    },
-    {
-      "sector": "Bakhmut-Toretsk",
-      "osint": 0,
-      "firms": 170,
+      "firms": 117,
       "score": 100
     },
     {
       "sector": "Pokrovsk",
-      "osint": 3,
-      "firms": 171,
-      "score": 100
-    },
-    {
-      "sector": "Kurakhove",
-      "osint": 1,
-      "firms": 193,
-      "score": 100
-    },
-    {
-      "sector": "Velyka Novosilka",
-      "osint": 0,
-      "firms": 193,
+      "osint": 13,
+      "firms": 77,
       "score": 100
     },
     {
       "sector": "Zaporizhzhia",
       "osint": 0,
-      "firms": 335,
+      "firms": 163,
       "score": 100
     },
     {
       "sector": "Kherson-Dnipro",
       "osint": 0,
-      "firms": 610,
+      "firms": 416,
       "score": 100
+    },
+    {
+      "sector": "Crimea",
+      "osint": 3,
+      "firms": 86,
+      "score": 100
+    },
+    {
+      "sector": "Other / Unclassified",
+      "osint": 7,
+      "firms": 1296,
+      "score": 100
+    },
+    {
+      "sector": "Velyka Novosilka",
+      "osint": 0,
+      "firms": 82,
+      "score": 74
+    },
+    {
+      "sector": "Kupiansk",
+      "osint": 0,
+      "firms": 70,
+      "score": 63
     }
   ],
   "top_events": [
     {
-      "title": "Reported military-related update near Donyeck",
+      "title": "Reported military-related update near Krím",
       "source": "forrás nélkül",
-      "sector": "Kurakhove"
+      "sector": "Crimea"
     },
     {
-      "title": "Russian Offensive Campaign Assessment, July 4, 2026",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Russian Offensive Campaign Assessment, July 3, 2026",
+      "title": "Nearly 3,000 km from the border: Special Operations Forces strike Russia’s largest oil refinery in Omsk",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     },
     {
-      "title": "Russian Offensive Campaign Assessment, July 2, 2026",
+      "title": "Defence Industry Companies Invited to Training on Hiring and Integrating Veterans",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk"
+    },
+    {
+      "title": "Fuel tankers, S-400 systems, and an oil depot: Unmanned Systems Forces launch a series of strikes against critical targets deep behind enemy lines",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk"
+    },
+    {
+      "title": "Ukrainian Defense Forces strike two oil refineries, missile brigade base, and petroleum transshipment terminal in Crimea",
+      "source": "forrás nélkül",
+      "sector": "Crimea"
+    },
+    {
+      "title": "She fires assault rifles, grenade launchers, and mortars, and commands artillery: the story of defender Daryna",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     }
