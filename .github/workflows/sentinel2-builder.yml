@@ -1,0 +1,40 @@
+name: Sentinel-2 Image Builder
+
+on:
+  workflow_dispatch:
+
+  schedule:
+    - cron: "45 5 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  build-sentinel2-image:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Download Sentinel-2 image for Konstantynivka
+        env:
+          SENTINELHUB_CLIENT_ID: ${{ secrets.SENTINELHUB_CLIENT_ID }}
+          SENTINELHUB_CLIENT_SECRET: ${{ secrets.SENTINELHUB_CLIENT_SECRET }}
+        run: |
+          python scripts/update_sentinel2.py --lat 48.527 --lon 37.706 --radius-km 10
+
+      - name: Commit Sentinel-2 image and metadata
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Update Sentinel-2 imagery"
+          file_pattern: |
+            docs/data/satellite/satellite-metadata.json
+            docs/data/satellite/sentinel2/latest.png
+            docs/data/satellite/sentinel2/history/**
