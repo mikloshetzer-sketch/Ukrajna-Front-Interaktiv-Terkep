@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-07-06T19:24:17Z",
+  "generated_at": "2026-07-06T19:59:50Z",
   "module": "satellite",
-  "status": "ready",
+  "status": "ok",
   "default_provider": "sentinel2",
   "provider": {
     "key": "sentinel2",
     "name": "Sentinel-2",
     "type": "optical",
     "enabled": true,
-    "source": "Copernicus Data Space Ecosystem",
+    "source": "Sentinel Hub / Copernicus Data Space Ecosystem",
     "resolution_m": 10,
     "auth_required": true
   },
@@ -18,13 +18,24 @@
     "default_visible": false
   },
   "imagery": {
-    "image_available": false,
-    "latest_image": null,
-    "history_dir": "data/satellite/sentinel2/history/",
-    "cloud_cover_percent": null,
+    "image_available": true,
+    "latest_image": "data/satellite/sentinel2/latest.png",
+    "history_image": "data/satellite/sentinel2/history/sentinel2_20260706T195950Z_48.527_37.706.png",
     "acquisition_date": null,
-    "bbox": null,
-    "bounds": null
+    "requested_time_range": {
+      "from": "2026-06-06",
+      "to": "2026-07-06"
+    },
+    "cloud_cover_percent": null,
+    "max_cloud_coverage_requested": 80,
+    "width": 1024,
+    "height": 1024,
+    "bounds": {
+      "west": 37.570358,
+      "south": 48.437169,
+      "east": 37.841642,
+      "north": 48.616831
+    }
   },
   "capabilities": {
     "true_color": true,
@@ -35,5 +46,17 @@
     "sentinel1_radar": false,
     "maxar_ready": false
   },
-  "next_step": "Add Sentinel-2 image download and static map overlay generation."
+  "next_step": "Add Sentinel-2 image overlay to the Leaflet map.",
+  "target_area": {
+    "mode": "coordinate_radius",
+    "lat": 48.527,
+    "lon": 37.706,
+    "radius_km": 10.0,
+    "bbox": [
+      37.570358,
+      48.437169,
+      37.841642,
+      48.616831
+    ]
+  }
 }
