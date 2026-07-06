@@ -1,0 +1,39 @@
+{
+  "version": "1.0.0",
+  "module": "satellite",
+  "status": "prepared",
+  "default_provider": "sentinel2",
+  "providers": {
+    "sentinel2": {
+      "enabled": true,
+      "name": "Sentinel-2",
+      "type": "optical",
+      "resolution_m": 10,
+      "source": "Copernicus Data Space Ecosystem",
+      "description": "Sentinel-2 optical satellite imagery prepared for future map overlay integration.",
+      "auth_required": true,
+      "planned_outputs": [
+        "true_color",
+        "false_color",
+        "burn_index",
+        "before_after",
+        "change_detection"
+      ]
+    }
+  },
+  "ui": {
+    "layer_label_hu": "Sentinel-2 műholdkép",
+    "layer_label_en": "Sentinel-2 satellite imagery",
+    "default_visible": false
+  },
+  "data_paths": {
+    "metadata": "data/satellite/satellite-metadata.json",
+    "latest_image": "data/satellite/sentinel2/latest.png",
+    "history_dir": "data/satellite/sentinel2/history/"
+  },
+  "notes": [
+    "This configuration file prepares the satellite module structure.",
+    "The first operational version will add a GitHub Actions compatible Sentinel-2 download script.",
+    "Map integration will use static generated imagery from docs/data/satellite/ to keep GitHub Pages stable."
+  ]
+}
