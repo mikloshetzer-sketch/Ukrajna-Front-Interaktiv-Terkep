@@ -30,19 +30,31 @@ jobs:
         run: |
           python scripts/update_sentinel2.py --lat 48.527 --lon 37.706 --radius-km 10
 
-      - name: Show generated satellite files
+      - name: Verify generated files
         run: |
-          echo "Generated satellite files:"
-          find docs/data/satellite -maxdepth 4 -type f -print
-          echo "Git status:"
+          echo "Satellite directory:"
+          find docs/data/satellite -maxdepth 5 -type f -print
+
+          echo "Latest image:"
+          ls -lh docs/data/satellite/sentinel2/latest.png
+
+          echo "History images:"
+          ls -lh docs/data/satellite/sentinel2/history/ || true
+
+      - name: Commit generated Sentinel-2 files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add docs/data/satellite/satellite-metadata.json
+          git add -f docs/data/satellite/sentinel2/latest.png
+          git add -f docs/data/satellite/sentinel2/history/*.png
+
           git status --short
 
-      - name: Commit Sentinel-2 image and metadata
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "Update Sentinel-2 imagery"
-          add_options: "-f"
-          file_pattern: |
-            docs/data/satellite/satellite-metadata.json
-            docs/data/satellite/sentinel2/latest.png
-            docs/data/satellite/sentinel2/history/*.png
+          if git diff --cached --quiet; then
+            echo "No Sentinel-2 changes to commit."
+          else
+            git commit -m "Update Sentinel-2 imagery"
+            git push
+          fi
