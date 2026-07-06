@@ -2,6 +2,19 @@ name: Sentinel-2 Image Builder
 
 on:
   workflow_dispatch:
+    inputs:
+      lat:
+        description: "Latitude / szélesség"
+        required: true
+        default: "48.527"
+      lon:
+        description: "Longitude / hosszúság"
+        required: true
+        default: "37.706"
+      radius_km:
+        description: "Radius in km / sugár km-ben"
+        required: true
+        default: "10"
 
   schedule:
     - cron: "45 5 * * *"
@@ -23,12 +36,43 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Download Sentinel-2 image for Konstantynivka
+      - name: Resolve target coordinates
+        id: target
+        run: |
+          LAT="${{ github.event.inputs.lat }}"
+          LON="${{ github.event.inputs.lon }}"
+          RADIUS_KM="${{ github.event.inputs.radius_km }}"
+
+          if [ -z "$LAT" ]; then
+            LAT="48.527"
+          fi
+
+          if [ -z "$LON" ]; then
+            LON="37.706"
+          fi
+
+          if [ -z "$RADIUS_KM" ]; then
+            RADIUS_KM="10"
+          fi
+
+          echo "lat=$LAT" >> "$GITHUB_OUTPUT"
+          echo "lon=$LON" >> "$GITHUB_OUTPUT"
+          echo "radius_km=$RADIUS_KM" >> "$GITHUB_OUTPUT"
+
+          echo "Selected target:"
+          echo "LAT=$LAT"
+          echo "LON=$LON"
+          echo "RADIUS_KM=$RADIUS_KM"
+
+      - name: Download Sentinel-2 image
         env:
           SENTINELHUB_CLIENT_ID: ${{ secrets.SENTINELHUB_CLIENT_ID }}
           SENTINELHUB_CLIENT_SECRET: ${{ secrets.SENTINELHUB_CLIENT_SECRET }}
         run: |
-          python scripts/update_sentinel2.py --lat 48.527 --lon 37.706 --radius-km 10
+          python scripts/update_sentinel2.py \
+            --lat "${{ steps.target.outputs.lat }}" \
+            --lon "${{ steps.target.outputs.lon }}" \
+            --radius-km "${{ steps.target.outputs.radius_km }}"
 
       - name: Verify generated files
         run: |
