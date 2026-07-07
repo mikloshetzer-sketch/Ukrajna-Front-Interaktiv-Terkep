@@ -1,51 +1,42 @@
 import { SatelliteArchive, formatSatelliteRecordLabel } from './satelliteArchive.js';
 
+function normalizeDom(dom = {}) {
+  return {
+    ...dom,
+    baseMapSelect: dom.baseMapSelect || document.getElementById('baseMapSelect'),
+    satelliteSourceSelect: dom.satelliteSourceSelect || document.getElementById('satelliteSourceSelect'),
+  };
+}
+
 function setText(element, text) {
-  if (element) {
-    element.textContent = text;
-  }
+  if (element) element.textContent = text;
 }
 
 function setHtml(element, html) {
-  if (element) {
-    element.innerHTML = html;
-  }
+  if (element) element.innerHTML = html;
 }
 
 function clearSelect(selectElement) {
   if (!selectElement) return;
-
-  while (selectElement.firstChild) {
-    selectElement.removeChild(selectElement.firstChild);
-  }
+  while (selectElement.firstChild) selectElement.removeChild(selectElement.firstChild);
 }
 
 function addOption(selectElement, value, label, selected = false) {
   if (!selectElement) return;
-
   const option = document.createElement('option');
   option.value = value;
   option.textContent = label;
   option.selected = selected;
-
   selectElement.appendChild(option);
 }
 
 function formatDateForUi(record) {
   if (!record) return 'n/a';
-
-  return (
-    record.timestamp ||
-    record.generated_at ||
-    record.imagery?.requested_time_range?.to ||
-    'n/a'
-  );
+  return record.timestamp || record.generated_at || record.imagery?.requested_time_range?.to || 'n/a';
 }
 
 function buildSummary(record, mode = 'sentinel2') {
-  if (!record && mode !== 'off') {
-    return 'Nincs kiválasztott Sentinel-2 kép.';
-  }
+  if (!record && mode !== 'off') return 'Nincs kiválasztott Sentinel-2 kép.';
 
   if (mode === 'off') {
     return `
@@ -87,7 +78,6 @@ function setBaseMap(map, key) {
   if (typeof map?.setBaseLayer === 'function') {
     return map.setBaseLayer(key);
   }
-
   console.warn('map.setBaseLayer() is not available. Check src/map/initMap.js.');
   return null;
 }
@@ -104,6 +94,8 @@ export async function initSatelliteControls({
   dom,
   onStatus,
 } = {}) {
+  dom = normalizeDom(dom);
+
   const archive = new SatelliteArchive();
 
   const state = {
@@ -115,9 +107,7 @@ export async function initSatelliteControls({
   };
 
   function status(text) {
-    if (typeof onStatus === 'function') {
-      onStatus(text);
-    }
+    if (typeof onStatus === 'function') onStatus(text);
   }
 
   function getSelectedRecord() {
@@ -149,12 +139,7 @@ export async function initSatelliteControls({
     }
 
     records.forEach((record, index) => {
-      addOption(
-        dom.satelliteImageSelect,
-        record.id,
-        formatSatelliteRecordLabel(record),
-        index === 0
-      );
+      addOption(dom.satelliteImageSelect, record.id, formatSatelliteRecordLabel(record), index === 0);
     });
 
     state.selectedRecordId = records[0].id;
@@ -173,12 +158,7 @@ export async function initSatelliteControls({
     }
 
     locations.forEach((location, index) => {
-      addOption(
-        dom.satelliteLocationSelect,
-        location.slug,
-        `${location.name} (${location.count})`,
-        index === 0
-      );
+      addOption(dom.satelliteLocationSelect, location.slug, `${location.name} (${location.count})`, index === 0);
     });
 
     state.selectedLocationSlug = locations[0].slug;
@@ -195,11 +175,7 @@ export async function initSatelliteControls({
       satelliteLayer.hide();
       setBaseMap(map, selectedBaseMap);
       updateBaseMapUi(dom, selectedBaseMap);
-
-      if (dom.toggleSatellite) {
-        dom.toggleSatellite.checked = false;
-      }
-
+      if (dom.toggleSatellite) dom.toggleSatellite.checked = false;
       setHtml(dom.satelliteSummary, buildSummary(null, mode));
       return null;
     }
@@ -207,17 +183,8 @@ export async function initSatelliteControls({
     if (mode === 'hybrid') {
       setBaseMap(map, 'esri');
       updateBaseMapUi(dom, 'esri');
-
-      if (dom.toggleSatellite) {
-        dom.toggleSatellite.checked = true;
-      }
-
-      if (record) {
-        satelliteLayer.show(record, {
-          fitBounds: Boolean(options.fitBounds),
-        });
-      }
-
+      if (dom.toggleSatellite) dom.toggleSatellite.checked = true;
+      if (record) satelliteLayer.show(record, { fitBounds: Boolean(options.fitBounds) });
       setHtml(dom.satelliteSummary, buildSummary(record, mode));
       return record;
     }
@@ -225,9 +192,7 @@ export async function initSatelliteControls({
     setBaseMap(map, selectedBaseMap);
 
     if (dom.toggleSatellite?.checked && record) {
-      satelliteLayer.show(record, {
-        fitBounds: Boolean(options.fitBounds),
-      });
+      satelliteLayer.show(record, { fitBounds: Boolean(options.fitBounds) });
     } else {
       satelliteLayer.hide();
     }
@@ -247,25 +212,11 @@ export async function initSatelliteControls({
         dom.toggleSatellite.disabled = true;
       }
 
-      if (dom.satelliteSourceSelect) {
-        dom.satelliteSourceSelect.disabled = false;
-      }
-
-      if (dom.baseMapSelect) {
-        dom.baseMapSelect.disabled = false;
-      }
-
-      if (dom.satelliteLocationSelect) {
-        dom.satelliteLocationSelect.disabled = true;
-      }
-
-      if (dom.satelliteImageSelect) {
-        dom.satelliteImageSelect.disabled = true;
-      }
-
-      if (dom.satelliteOpacity) {
-        dom.satelliteOpacity.disabled = true;
-      }
+      if (dom.satelliteSourceSelect) dom.satelliteSourceSelect.disabled = false;
+      if (dom.baseMapSelect) dom.baseMapSelect.disabled = false;
+      if (dom.satelliteLocationSelect) dom.satelliteLocationSelect.disabled = true;
+      if (dom.satelliteImageSelect) dom.satelliteImageSelect.disabled = true;
+      if (dom.satelliteOpacity) dom.satelliteOpacity.disabled = true;
 
       setHtml(dom.satelliteSummary, 'Nincs elérhető Sentinel-2 archívum. A háttértérképek ettől még használhatók.');
       return;
@@ -291,7 +242,6 @@ export async function initSatelliteControls({
     status(`Sentinel-2 archívum betöltve: ${archive.getRecords().length} kép`);
   } catch (error) {
     console.error('Sentinel-2 archívum hiba:', error);
-
     updateAvailabilityUi();
     setHtml(dom.satelliteSummary, `Sentinel-2 archívum hiba: ${error.message}`);
     status(`Sentinel-2 hiba: ${error.message}`);
@@ -357,24 +307,19 @@ export async function initSatelliteControls({
     refreshImageSelect();
     const record = applySelectedRecord({ fitBounds: true });
 
-    if (record) {
-      status(`Sentinel-2 helyszín: ${record.location_name}`);
-    }
+    if (record) status(`Sentinel-2 helyszín: ${record.location_name}`);
   });
 
   dom.satelliteImageSelect?.addEventListener('change', () => {
     state.selectedRecordId = dom.satelliteImageSelect.value || null;
     const record = applySelectedRecord({ fitBounds: true });
 
-    if (record) {
-      status(`Sentinel-2 kép kiválasztva: ${record.location_name}`);
-    }
+    if (record) status(`Sentinel-2 kép kiválasztva: ${record.location_name}`);
   });
 
   dom.satelliteOpacity?.addEventListener('input', () => {
     const value = Number(dom.satelliteOpacity.value || 72) / 100;
     satelliteLayer.setOpacity(value);
-
     setText(dom.satelliteOpacityValue, `${Math.round(value * 100)}%`);
   });
 
