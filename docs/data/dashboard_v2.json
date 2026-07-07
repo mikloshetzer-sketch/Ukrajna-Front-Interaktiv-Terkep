@@ -1,6 +1,6 @@
 {
-  "updated_utc": "2026-07-06T20:24:06.552194+00:00",
-  "date": "2026-07-06",
+  "updated_utc": "2026-07-07T19:45:19.550744+00:00",
+  "date": "2026-07-07",
   "territorial_sector": {
     "sector": "No territorial delta",
     "lat": null,
@@ -12,11 +12,11 @@
   },
   "priority_osint_events": [
     {
-      "title": "Drones from the “Shadow Fleet”: russia spent 19 months spying on NATO bases and Europe’s nuclear facilities",
+      "title": "Reported drone strike near Kijev",
       "source": "forrás nélkül",
-      "sector": "Crimea",
-      "lat": 48.5,
-      "lon": 36.5,
+      "sector": "Kyiv Area",
+      "lat": 50.45,
+      "lon": 30.523,
       "distance_to_sector_km": 0,
       "event_type": "drone",
       "event_label": "Drone / UAV activity",
@@ -24,11 +24,11 @@
       "priority": 106
     },
     {
-      "title": "Reported drone strike near Kijev",
+      "title": "Drones from the “Shadow Fleet”: russia spent 19 months spying on NATO bases and Europe’s nuclear facilities",
       "source": "forrás nélkül",
-      "sector": "Kyiv Area",
-      "lat": 50.45,
-      "lon": 30.523,
+      "sector": "Crimea",
+      "lat": 48.5,
+      "lon": 36.5,
       "distance_to_sector_km": 0,
       "event_type": "drone",
       "event_label": "Drone / UAV activity",
@@ -48,7 +48,7 @@
       "priority": 104
     },
     {
-      "title": "Second strike in a week: SSU hits aircraft at Saky Air Base and Shahed drone hangars at Hvardiiske",
+      "title": "“FPV drones are my life”: 18-Year-Old “Multyk” joins the Pathfinder Battalion",
       "source": "forrás nélkül",
       "sector": "Pokrovsk",
       "lat": 48.5,
@@ -60,16 +60,16 @@
       "priority": 103
     },
     {
-      "title": "The sky that never fell: how Ukraine’s surface-to-Air Missile Forces became one of the defining symbols of the Nation’s Resilience",
+      "title": "Second strike in a week: SSU hits aircraft at Saky Air Base and Shahed drone hangars at Hvardiiske",
       "source": "forrás nélkül",
       "sector": "Pokrovsk",
       "lat": 48.5,
       "lon": 36.5,
       "distance_to_sector_km": 55.9,
-      "event_type": "missile",
-      "event_label": "Missile / rocket strike",
-      "icon": "☄",
-      "priority": 101
+      "event_type": "drone",
+      "event_label": "Drone / UAV activity",
+      "icon": "🛩",
+      "priority": 103
     },
     {
       "title": "“Moscow is burning — that’s a good thing”: Commander of the 7th Air Assault Corps on striking deep behind enemy lines",
@@ -108,6 +108,18 @@
       "priority": 97
     },
     {
+      "title": "Russian Offensive Campaign Assessment, July 6, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "frontline",
+      "event_label": "Frontline pressure",
+      "icon": "⚔",
+      "priority": 95
+    },
+    {
       "title": "She fires assault rifles, grenade launchers, and mortars, and commands artillery: the story of defender Daryna",
       "source": "forrás nélkül",
       "sector": "Pokrovsk",
@@ -142,26 +154,14 @@
       "event_label": "Frontline pressure",
       "icon": "⚔",
       "priority": 95
-    },
-    {
-      "title": "Russian Offensive Campaign Assessment, July 3, 2026",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "frontline",
-      "event_label": "Frontline pressure",
-      "icon": "⚔",
-      "priority": 95
     }
   ],
   "front_pressure_points": [
     {
-      "sector": "Lyman",
-      "title": "Lyman FIRMS thermal cluster",
-      "lat": 48.99,
-      "lon": 37.8,
+      "sector": "Bakhmut-Toretsk",
+      "title": "Bakhmut-Toretsk FIRMS thermal cluster",
+      "lat": 48.58,
+      "lon": 37.95,
       "score": 100,
       "osint": 0,
       "firms": 117,
@@ -174,10 +174,21 @@
       "lat": 48.28,
       "lon": 37.18,
       "score": 100,
-      "osint": 14,
-      "firms": 77,
+      "osint": 17,
+      "firms": 93,
       "pressure_type": "osint_activity_cluster",
       "icon": "⚔"
+    },
+    {
+      "sector": "Velyka Novosilka",
+      "title": "Velyka Novosilka FIRMS thermal cluster",
+      "lat": 47.84,
+      "lon": 36.84,
+      "score": 100,
+      "osint": 0,
+      "firms": 155,
+      "pressure_type": "thermal_activity_cluster",
+      "icon": "🔥"
     },
     {
       "sector": "Zaporizhzhia",
@@ -186,7 +197,7 @@
       "lon": 35.14,
       "score": 100,
       "osint": 0,
-      "firms": 163,
+      "firms": 285,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -197,40 +208,29 @@
       "lon": 32.61,
       "score": 100,
       "osint": 0,
-      "firms": 416,
+      "firms": 514,
+      "pressure_type": "thermal_activity_cluster",
+      "icon": "🔥"
+    },
+    {
+      "sector": "Kurakhove",
+      "title": "Kurakhove FIRMS thermal cluster",
+      "lat": 47.99,
+      "lon": 37.28,
+      "score": 97,
+      "osint": 1,
+      "firms": 94,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
     {
       "sector": "Crimea",
-      "title": "Crimea OSINT activity cluster",
+      "title": "Crimea FIRMS thermal cluster",
       "lat": 45.2,
       "lon": 34.1,
-      "score": 100,
-      "osint": 3,
-      "firms": 86,
-      "pressure_type": "osint_activity_cluster",
-      "icon": "⚔"
-    },
-    {
-      "sector": "Velyka Novosilka",
-      "title": "Velyka Novosilka FIRMS thermal cluster",
-      "lat": 47.84,
-      "lon": 36.84,
-      "score": 74,
-      "osint": 0,
-      "firms": 82,
-      "pressure_type": "thermal_activity_cluster",
-      "icon": "🔥"
-    },
-    {
-      "sector": "Kupiansk",
-      "title": "Kupiansk FIRMS thermal cluster",
-      "lat": 49.71,
-      "lon": 37.61,
-      "score": 63,
-      "osint": 0,
-      "firms": 70,
+      "score": 80,
+      "osint": 2,
+      "firms": 62,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     }
@@ -242,23 +242,23 @@
     },
     {
       "category": "Drone / UAV activity",
-      "count": 3
-    },
-    {
-      "category": "Missile / rocket strike",
-      "count": 2
+      "count": 4
     },
     {
       "category": "Logistics / infrastructure strike",
       "count": 2
+    },
+    {
+      "category": "Missile / rocket strike",
+      "count": 1
     }
   ],
-  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 65. No measurable net territorial change was detected. The main pressure focus is Lyman. The strongest event category is Drone / UAV activity. The system processed 24 OSINT events, 2443 short-term FIRMS hotspots and 10 active sectors.",
+  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 65. No measurable net territorial change was detected. The main pressure focus is Bakhmut-Toretsk. The strongest event category is Drone / UAV activity. The system processed 26 OSINT events, 2892 short-term FIRMS hotspots and 10 active sectors.",
   "counts": {
     "priority_osint": 12,
     "pressure_points": 7,
-    "firms_3d": 2443,
-    "firms_10d": 16690,
+    "firms_3d": 2892,
+    "firms_10d": 16820,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."

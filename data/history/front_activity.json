@@ -4962,5 +4962,137 @@
       "deepstate": "cyterat/deepstate-map-data via GitHub API"
     },
     "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
+  },
+  {
+    "date": "2026-07-07",
+    "updated_utc": "2026-07-07T19:45:18.302417+00:00",
+    "front_activity_index": 65,
+    "status": "HIGH",
+    "components": {
+      "osint_density": 25,
+      "firms_activity": 20,
+      "territorial_change": 0.0,
+      "active_sectors": 10,
+      "critical_events": 10
+    },
+    "counts": {
+      "osint": 26,
+      "firms_3d": 2892,
+      "firms_10d": 16820,
+      "firms_30d": 32406,
+      "critical_events": 9,
+      "active_sectors": 10
+    },
+    "territorial": {
+      "available": true,
+      "error": null,
+      "previous_file": "deepstatemap_data_20260706.geojson",
+      "current_file": "deepstatemap_data_20260707.geojson",
+      "previous_total_km2": 116672.96,
+      "current_total_km2": 116672.96,
+      "russian_gain_km2": 0,
+      "ukrainian_recapture_km2": 0,
+      "net_change_km2": 0.0,
+      "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    },
+    "territorial_hotspot": {
+      "sector": "Bakhmut-Toretsk",
+      "lat": 48.58,
+      "lon": 37.95,
+      "zoom": 9,
+      "score": 100,
+      "change_km2": 0.0,
+      "method": "Top classified sector based on OSINT + FIRMS density"
+    },
+    "top_sectors": [
+      {
+        "sector": "Bakhmut-Toretsk",
+        "osint": 0,
+        "firms": 117,
+        "score": 100
+      },
+      {
+        "sector": "Pokrovsk",
+        "osint": 17,
+        "firms": 93,
+        "score": 100
+      },
+      {
+        "sector": "Velyka Novosilka",
+        "osint": 0,
+        "firms": 155,
+        "score": 100
+      },
+      {
+        "sector": "Zaporizhzhia",
+        "osint": 0,
+        "firms": 285,
+        "score": 100
+      },
+      {
+        "sector": "Kherson-Dnipro",
+        "osint": 0,
+        "firms": 514,
+        "score": 100
+      },
+      {
+        "sector": "Other / Unclassified",
+        "osint": 6,
+        "firms": 1475,
+        "score": 100
+      },
+      {
+        "sector": "Kurakhove",
+        "osint": 1,
+        "firms": 94,
+        "score": 97
+      },
+      {
+        "sector": "Crimea",
+        "osint": 2,
+        "firms": 62,
+        "score": 80
+      }
+    ],
+    "top_events": [
+      {
+        "title": "Reported military-related update near Krím",
+        "source": "forrás nélkül",
+        "sector": "Crimea"
+      },
+      {
+        "title": "Head of Donetsk Pre-Trial Detention Center notified of suspicion for war crime against civilians",
+        "source": "forrás nélkül",
+        "sector": "Kurakhove"
+      },
+      {
+        "title": "“The occupiers plant flags to create the illusion that they have captured the city”: Omega officer on the fighting for Kostiantynivka",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "“FPV drones are my life”: 18-Year-Old “Multyk” joins the Pathfinder Battalion",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "11 electronic warfare systems and 18 artillery systems hit — Unmanned Systems Forces of the Armed Forces of Ukraine",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "“Don’t be afraid of the hard work of the infantry”: The story of a contract soldier from the Black Zaporozhians Brigade",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      }
+    ],
+    "data_sources": {
+      "osint": "data/osint_feed.json",
+      "firms_3d": "data/firms_3.json",
+      "firms_10d": "data/firms_10.json",
+      "firms_30d": "data/firms_30.json",
+      "deepstate": "cyterat/deepstate-map-data via GitHub API"
+    },
+    "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
   }
 ]
