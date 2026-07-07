@@ -1,5 +1,33 @@
-const DEFAULT_LATEST_URL = './data/satellite/sentinel2/latest.json';
-const DEFAULT_INDEX_URL = './data/satellite/sentinel2/index.json';
+const DEFAULT_LATEST_URL = './docs/data/satellite/sentinel2/latest.json';
+const DEFAULT_INDEX_URL = './docs/data/satellite/sentinel2/index.json';
+
+function normalizeAssetPath(path) {
+  if (!path) return null;
+
+  const value = String(path);
+
+  if (value.startsWith('http://') || value.startsWith('https://')) {
+    return value;
+  }
+
+  if (value.startsWith('./')) {
+    return value;
+  }
+
+  if (value.startsWith('/')) {
+    return value;
+  }
+
+  if (value.startsWith('data/satellite/')) {
+    return `./docs/${value}`;
+  }
+
+  if (value.startsWith('docs/data/satellite/')) {
+    return `./${value}`;
+  }
+
+  return value;
+}
 
 async function fetchJson(url) {
   const response = await fetch(url, { cache: 'no-store' });
@@ -42,7 +70,7 @@ function normalizeRecord(record) {
     ...record,
     location_name: locationName,
     location_slug: locationSlug,
-    satellite_image: historyImage || latestImage,
+    satellite_image: normalizeAssetPath(historyImage || latestImage),
     bbox,
     bounds: bounds || (
       Array.isArray(bbox) && bbox.length === 4
