@@ -270,8 +270,17 @@
 
         <label class="toggle">
           <input id="toggleSatellite" type="checkbox" />
-          Sentinel-2 műholdkép
+          Műholdas réteg bekapcsolása
         </label>
+
+        <div class="toolbox-row">
+          <label for="satelliteSourceSelect">Műholdas forrás</label>
+          <select id="satelliteSourceSelect">
+            <option value="sentinel2" selected>Sentinel-2 archívum</option>
+            <option value="esri">Részletes háttérkép / Esri World Imagery</option>
+            <option value="hybrid">Hybrid mód: Esri + Sentinel-2</option>
+          </select>
+        </div>
 
         <div class="toolbox-row">
           <label for="satelliteLocationSelect">Helyszín</label>
