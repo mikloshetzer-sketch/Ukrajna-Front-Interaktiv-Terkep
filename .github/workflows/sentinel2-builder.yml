@@ -3,6 +3,10 @@ name: Sentinel-2 Image Builder
 on:
   workflow_dispatch:
     inputs:
+      location_name:
+        description: "Location name / helyszín neve"
+        required: true
+        default: "Konstantynivka"
       lat:
         description: "Latitude / szélesség"
         required: true
@@ -36,12 +40,17 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Resolve target coordinates
+      - name: Resolve target
         id: target
         run: |
+          LOCATION_NAME="${{ github.event.inputs.location_name }}"
           LAT="${{ github.event.inputs.lat }}"
           LON="${{ github.event.inputs.lon }}"
           RADIUS_KM="${{ github.event.inputs.radius_km }}"
+
+          if [ -z "$LOCATION_NAME" ]; then
+            LOCATION_NAME="Konstantynivka"
+          fi
 
           if [ -z "$LAT" ]; then
             LAT="48.527"
@@ -55,11 +64,13 @@ jobs:
             RADIUS_KM="10"
           fi
 
+          echo "location_name=$LOCATION_NAME" >> "$GITHUB_OUTPUT"
           echo "lat=$LAT" >> "$GITHUB_OUTPUT"
           echo "lon=$LON" >> "$GITHUB_OUTPUT"
           echo "radius_km=$RADIUS_KM" >> "$GITHUB_OUTPUT"
 
           echo "Selected target:"
+          echo "LOCATION_NAME=$LOCATION_NAME"
           echo "LAT=$LAT"
           echo "LON=$LON"
           echo "RADIUS_KM=$RADIUS_KM"
@@ -70,6 +81,7 @@ jobs:
           SENTINELHUB_CLIENT_SECRET: ${{ secrets.SENTINELHUB_CLIENT_SECRET }}
         run: |
           python scripts/update_sentinel2.py \
+            --location-name "${{ steps.target.outputs.location_name }}" \
             --lat "${{ steps.target.outputs.lat }}" \
             --lon "${{ steps.target.outputs.lon }}" \
             --radius-km "${{ steps.target.outputs.radius_km }}"
@@ -77,10 +89,16 @@ jobs:
       - name: Verify generated files
         run: |
           echo "Satellite directory:"
-          find docs/data/satellite -maxdepth 5 -type f -print
+          find docs/data/satellite -maxdepth 6 -type f -print
 
           echo "Latest image:"
           ls -lh docs/data/satellite/sentinel2/latest.png
+
+          echo "Latest JSON:"
+          ls -lh docs/data/satellite/sentinel2/latest.json
+
+          echo "Index JSON:"
+          ls -lh docs/data/satellite/sentinel2/index.json
 
           echo "History images:"
           ls -lh docs/data/satellite/sentinel2/history/ || true
@@ -92,7 +110,9 @@ jobs:
 
           git add docs/data/satellite/satellite-metadata.json
           git add -f docs/data/satellite/sentinel2/latest.png
-          git add -f docs/data/satellite/sentinel2/history/*.png
+          git add docs/data/satellite/sentinel2/latest.json
+          git add docs/data/satellite/sentinel2/index.json
+          git add -f docs/data/satellite/sentinel2/history/**/*.png
 
           git status --short
 
