@@ -69,17 +69,7 @@ def slugify(value: str) -> str:
     value = re.sub(r"[^\w\s\-]", "", value, flags=re.UNICODE)
     value = re.sub(r"\s+", "_", value)
     value = value.strip("_")
-
-    if not value:
-        return "unknown_location"
-
-    return value
-
-
-def default_location_name(lat: float, lon: float) -> str:
-    safe_lat = str(safe_coord(lat)).replace(".", "_").replace("-", "m")
-    safe_lon = str(safe_coord(lon)).replace(".", "_").replace("-", "m")
-    return f"location_{safe_lat}_{safe_lon}"
+    return value or "unknown_location"
 
 
 def bbox_from_center(lat: float, lon: float, radius_km: float) -> list[float]:
@@ -228,6 +218,29 @@ def write_json(path: Path, payload) -> None:
         json.dump(payload, file, ensure_ascii=False, indent=2)
 
 
+def save_png(image_bytes: bytes, location_slug: str) -> dict:
+    LATEST_IMAGE_PATH.write_bytes(image_bytes)
+
+    timestamp = utc_now().strftime("%Y-%m-%dT%H%M%SZ")
+    record_id = f"{location_slug}_{timestamp}"
+
+    location_history_dir = SENTINEL2_HISTORY_DIR / location_slug
+    location_history_dir.mkdir(parents=True, exist_ok=True)
+
+    history_name = f"{timestamp}.png"
+    history_path = location_history_dir / history_name
+    history_path.write_bytes(image_bytes)
+
+    return {
+        "record_id": record_id,
+        "timestamp": timestamp,
+        "latest": "data/satellite/sentinel2/latest.png",
+        "history": f"data/satellite/sentinel2/history/{location_slug}/{history_name}",
+        "latest_abs": str(LATEST_IMAGE_PATH),
+        "history_abs": str(history_path),
+    }
+
+
 def build_record(
     location_name: str,
     location_slug: str,
@@ -245,6 +258,7 @@ def build_record(
     return {
         "id": image_paths["record_id"],
         "generated_at": utc_now_iso(),
+        "timestamp": image_paths["timestamp"],
         "provider": "sentinel2",
         "source": "Sentinel Hub / Copernicus Data Space Ecosystem",
         "product": "Sentinel-2 L2A True Color",
@@ -277,28 +291,6 @@ def build_record(
                 "north": bbox[3],
             },
         },
-    }
-
-
-def save_png(image_bytes: bytes, location_slug: str, lat: float, lon: float) -> dict:
-    LATEST_IMAGE_PATH.write_bytes(image_bytes)
-
-    timestamp = utc_now().strftime("%Y%m%dT%H%M%SZ")
-    record_id = f"{location_slug}_{timestamp}"
-
-    location_history_dir = SENTINEL2_HISTORY_DIR / location_slug
-    location_history_dir.mkdir(parents=True, exist_ok=True)
-
-    history_name = f"{record_id}.png"
-    history_path = location_history_dir / history_name
-    history_path.write_bytes(image_bytes)
-
-    return {
-        "record_id": record_id,
-        "latest": "data/satellite/sentinel2/latest.png",
-        "history": f"data/satellite/sentinel2/history/{location_slug}/{history_name}",
-        "latest_abs": str(LATEST_IMAGE_PATH),
-        "history_abs": str(history_path),
     }
 
 
@@ -362,10 +354,10 @@ def write_metadata(record: dict) -> None:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Sentinel-2 True Color image downloader")
 
+    parser.add_argument("--location-name", required=True, type=str)
     parser.add_argument("--lat", required=True, type=float)
     parser.add_argument("--lon", required=True, type=float)
     parser.add_argument("--radius-km", default=10, type=float)
-    parser.add_argument("--location-name", default=None, type=str)
 
     parser.add_argument("--days-back", default=30, type=int)
     parser.add_argument("--width", default=1024, type=int)
@@ -383,7 +375,7 @@ def main() -> None:
     lon = safe_coord(args.lon)
     radius_km = float(args.radius_km)
 
-    location_name = args.location_name or default_location_name(lat, lon)
+    location_name = args.location_name.strip()
     location_slug = slugify(location_name)
 
     end_dt = utc_now().date()
@@ -396,6 +388,7 @@ def main() -> None:
 
     print("Sentinel-2 download started")
     print(f"Location: {location_name}")
+    print(f"Location slug: {location_slug}")
     print(f"Coordinate: {lat}, {lon}")
     print(f"Radius: {radius_km} km")
     print(f"BBox: {bbox}")
@@ -420,8 +413,6 @@ def main() -> None:
     image_paths = save_png(
         image_bytes=image_bytes,
         location_slug=location_slug,
-        lat=lat,
-        lon=lon,
     )
 
     record = build_record(
