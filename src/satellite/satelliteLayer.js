@@ -1,3 +1,15 @@
+const SATELLITE_PANE_NAME = 'sentinel2SatellitePane';
+
+function ensureSatellitePane(map) {
+  if (!map.getPane(SATELLITE_PANE_NAME)) {
+    const pane = map.createPane(SATELLITE_PANE_NAME);
+    pane.style.zIndex = 250;
+    pane.style.pointerEvents = 'none';
+  }
+
+  return SATELLITE_PANE_NAME;
+}
+
 function boundsFromRecord(record) {
   const bounds = record?.bounds || record?.imagery?.bounds || null;
 
@@ -31,6 +43,7 @@ export class SatelliteImageLayer {
     this.currentRecord = null;
     this.opacity = Number(options.opacity ?? 0.72);
     this.fitOnLoad = Boolean(options.fitOnLoad ?? false);
+    this.paneName = ensureSatellitePane(map);
   }
 
   setOpacity(opacity) {
@@ -75,12 +88,18 @@ export class SatelliteImageLayer {
     this.currentRecord = record;
     this.layer = L.imageOverlay(imageUrl, bounds, {
       opacity: Number(options.opacity ?? this.opacity),
-      interactive: true,
+      interactive: false,
+      pane: this.paneName,
       attribution: 'Sentinel-2 / Copernicus Data Space / Sentinel Hub',
       className: 'sentinel2-image-overlay',
     });
 
     this.layer.addTo(this.map);
+
+    const element = this.layer.getElement();
+    if (element) {
+      element.style.pointerEvents = 'none';
+    }
 
     if (options.fitBounds ?? this.fitOnLoad) {
       this.map.fitBounds(bounds, {
