@@ -274,11 +274,20 @@
         </label>
 
         <div class="toolbox-row">
-          <label for="satelliteSourceSelect">Műholdas forrás</label>
+          <label for="baseMapSelect">Base map / háttértérkép</label>
+          <select id="baseMapSelect">
+            <option value="osm" selected>OpenStreetMap</option>
+            <option value="carto">CARTO Light</option>
+            <option value="esri">Esri World Imagery</option>
+          </select>
+        </div>
+
+        <div class="toolbox-row">
+          <label for="satelliteSourceSelect">Satellite analysis mód</label>
           <select id="satelliteSourceSelect">
             <option value="sentinel2" selected>Sentinel-2 archívum</option>
-            <option value="esri">Részletes háttérkép / Esri World Imagery</option>
             <option value="hybrid">Hybrid mód: Esri + Sentinel-2</option>
+            <option value="off">Csak háttértérkép / Sentinel nélkül</option>
           </select>
         </div>
 
@@ -313,8 +322,8 @@
         </div>
 
         <div class="small top-gap">
-          A Sentinel-2 réteg statikus PNG képet jelenít meg a GitHub Actions által generált archívumból.
-          A réteg a mérőpontok és saját markerek alatt marad, ezért nem akadályozza az OSINT eszközök használatát.
+          A Base map választó kezeli az OpenStreetMap, CARTO és Esri World Imagery hátteret.
+          A Sentinel-2 archívum külön elemző overlayként jelenik meg, és a mérőpontok, saját markerek, FIRMS és frontvonalak alatt marad.
         </div>
       </section>
 
