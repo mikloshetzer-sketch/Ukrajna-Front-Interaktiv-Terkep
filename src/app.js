@@ -1,4 +1,7 @@
 import { initMap } from './map/initMap.js';
+import { ensureMapPanes } from './map/panes.js';
+import { SatelliteImageLayer } from './satellite/satelliteLayer.js';
+import { initSatelliteControls } from './satellite/satelliteControls.js';
 import {
   createLayers,
   replaceOccupiedLayer,
@@ -85,6 +88,14 @@ const dom = {
   toggleFrontline: document.getElementById('toggleFrontline'),
   toggleSuriyak: document.getElementById('toggleSuriyak'),
   toggleSatelliteContrast: document.getElementById('toggleSatelliteContrast'),
+  toggleSatellite: document.getElementById('toggleSatellite'),
+  satelliteLocationSelect: document.getElementById('satelliteLocationSelect'),
+  satelliteImageSelect: document.getElementById('satelliteImageSelect'),
+  satelliteOpacity: document.getElementById('satelliteOpacity'),
+  satelliteOpacityValue: document.getElementById('satelliteOpacityValue'),
+  satelliteSummary: document.getElementById('satelliteSummary'),
+  btnSatelliteFit: document.getElementById('btnSatelliteFit'),
+  btnSatelliteRefresh: document.getElementById('btnSatelliteRefresh'),
   toggleAxes: document.getElementById('toggleAxes'),
   toggleBattleNodes: document.getElementById('toggleBattleNodes'),
   toggleDelta: document.getElementById('toggleDelta'),
@@ -130,10 +141,16 @@ const appState = {
   coordinateMarkersController: null,
   measureToolController: null,
   objectIdentificationController: null,
+  satelliteController: null,
 };
 
 const map = initMap();
+ensureMapPanes(map);
 const layerState = createLayers(map);
+const satelliteImageLayer = new SatelliteImageLayer(map, {
+  opacity: 0.72,
+  fitOnLoad: false,
+});
 const coordinateMarkerLayer = L.layerGroup().addTo(map);
 const measureLayer = L.layerGroup().addTo(map);
 const objectIdentificationLayer = L.layerGroup().addTo(map);
@@ -1875,9 +1892,16 @@ async function init() {
       },
     });
 
+    appState.satelliteController = await initSatelliteControls({
+      map,
+      satelliteLayer: satelliteImageLayer,
+      dom,
+      onStatus: setStatus,
+    });
+
     bindToolboxControls();
     bindLayerToggles();
-refreshSatelliteContrastMode();
+    refreshSatelliteContrastMode();
     bindControls(player);
 
     setStatus('Kész');
