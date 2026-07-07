@@ -265,6 +265,50 @@
         <label class="toggle"><input id="toggleFrontDashboard" type="checkbox" /> Napi front dashboard</label>
       </section>
 
+      <section class="panel" id="satelliteIntelligencePanel">
+        <h2>🛰 Satellite Intelligence</h2>
+
+        <label class="toggle">
+          <input id="toggleSatellite" type="checkbox" />
+          Sentinel-2 műholdkép
+        </label>
+
+        <div class="toolbox-row">
+          <label for="satelliteLocationSelect">Helyszín</label>
+          <select id="satelliteLocationSelect">
+            <option value="">Archívum betöltése…</option>
+          </select>
+        </div>
+
+        <div class="toolbox-row">
+          <label for="satelliteImageSelect">Archív kép</label>
+          <select id="satelliteImageSelect">
+            <option value="">Nincs kiválasztott kép</option>
+          </select>
+        </div>
+
+        <div class="toolbox-row">
+          <label for="satelliteOpacity">
+            Átlátszóság: <span id="satelliteOpacityValue">72%</span>
+          </label>
+          <input id="satelliteOpacity" type="range" min="0" max="100" step="1" value="72" />
+        </div>
+
+        <div class="grid-2 top-gap">
+          <button id="btnSatelliteFit" type="button" class="secondary">Képre zoom</button>
+          <button id="btnSatelliteRefresh" type="button" class="secondary">Archívum frissítése</button>
+        </div>
+
+        <div id="satelliteSummary" class="small top-gap">
+          Sentinel-2 archívum betöltése…
+        </div>
+
+        <div class="small top-gap">
+          A Sentinel-2 réteg statikus PNG képet jelenít meg a GitHub Actions által generált archívumból.
+          A réteg a mérőpontok és saját markerek alatt marad, ezért nem akadályozza az OSINT eszközök használatát.
+        </div>
+      </section>
+
       <section class="panel">
         <h2>Történeti területi delta</h2>
 
