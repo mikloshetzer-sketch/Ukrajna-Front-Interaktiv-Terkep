@@ -5094,5 +5094,137 @@
       "deepstate": "cyterat/deepstate-map-data via GitHub API"
     },
     "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
+  },
+  {
+    "date": "2026-07-08",
+    "updated_utc": "2026-07-08T20:03:22.832242+00:00",
+    "front_activity_index": 83,
+    "status": "CRITICAL",
+    "components": {
+      "osint_density": 25,
+      "firms_activity": 20,
+      "territorial_change": 18.0,
+      "active_sectors": 10,
+      "critical_events": 10
+    },
+    "counts": {
+      "osint": 36,
+      "firms_3d": 3102,
+      "firms_10d": 16553,
+      "firms_30d": 32732,
+      "critical_events": 13,
+      "active_sectors": 10
+    },
+    "territorial": {
+      "available": true,
+      "error": null,
+      "previous_file": "deepstatemap_data_20260707.geojson",
+      "current_file": "deepstatemap_data_20260708.geojson",
+      "previous_total_km2": 116672.96,
+      "current_total_km2": 116678.98,
+      "russian_gain_km2": 6.01,
+      "ukrainian_recapture_km2": 0,
+      "net_change_km2": 6.01,
+      "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    },
+    "territorial_hotspot": {
+      "sector": "Lyman",
+      "lat": 48.99,
+      "lon": 37.8,
+      "zoom": 9,
+      "score": 100,
+      "change_km2": 6.01,
+      "method": "Top classified sector based on OSINT + FIRMS density"
+    },
+    "top_sectors": [
+      {
+        "sector": "Lyman",
+        "osint": 0,
+        "firms": 281,
+        "score": 100
+      },
+      {
+        "sector": "Bakhmut-Toretsk",
+        "osint": 0,
+        "firms": 284,
+        "score": 100
+      },
+      {
+        "sector": "Pokrovsk",
+        "osint": 20,
+        "firms": 109,
+        "score": 100
+      },
+      {
+        "sector": "Kurakhove",
+        "osint": 1,
+        "firms": 132,
+        "score": 100
+      },
+      {
+        "sector": "Velyka Novosilka",
+        "osint": 0,
+        "firms": 176,
+        "score": 100
+      },
+      {
+        "sector": "Zaporizhzhia",
+        "osint": 0,
+        "firms": 287,
+        "score": 100
+      },
+      {
+        "sector": "Kherson-Dnipro",
+        "osint": 1,
+        "firms": 464,
+        "score": 100
+      },
+      {
+        "sector": "Other / Unclassified",
+        "osint": 10,
+        "firms": 1293,
+        "score": 100
+      }
+    ],
+    "top_events": [
+      {
+        "title": "“Ukraine is responding to russia entirely justly”: President announces new strikes on russia",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "SSU’s “Alpha” unit strikes the enemy rear: Dzhankoi Air Base and logistics hubs hit",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Two Oil Refineries, an Airfield, six tankers, and enemy bridges hit — General Staff of the Armed Forces of Ukraine",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Ukraine signs a Drone Deal agreement with Denmark",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Ukraine opens the market for logistical support of foreign volunteers",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Ukraine and the Netherlands sign a Drone Deal",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      }
+    ],
+    "data_sources": {
+      "osint": "data/osint_feed.json",
+      "firms_3d": "data/firms_3.json",
+      "firms_10d": "data/firms_10.json",
+      "firms_30d": "data/firms_30.json",
+      "deepstate": "cyterat/deepstate-map-data via GitHub API"
+    },
+    "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
   }
 ]
