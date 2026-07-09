@@ -5226,5 +5226,137 @@
       "deepstate": "cyterat/deepstate-map-data via GitHub API"
     },
     "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
+  },
+  {
+    "date": "2026-07-09",
+    "updated_utc": "2026-07-09T20:18:37.231468+00:00",
+    "front_activity_index": 83,
+    "status": "CRITICAL",
+    "components": {
+      "osint_density": 25,
+      "firms_activity": 20,
+      "territorial_change": 18.0,
+      "active_sectors": 10,
+      "critical_events": 10
+    },
+    "counts": {
+      "osint": 32,
+      "firms_3d": 2405,
+      "firms_10d": 15374,
+      "firms_30d": 32431,
+      "critical_events": 11,
+      "active_sectors": 10
+    },
+    "territorial": {
+      "available": true,
+      "error": null,
+      "previous_file": "deepstatemap_data_20260707.geojson",
+      "current_file": "deepstatemap_data_20260708.geojson",
+      "previous_total_km2": 116672.96,
+      "current_total_km2": 116678.98,
+      "russian_gain_km2": 6.01,
+      "ukrainian_recapture_km2": 0,
+      "net_change_km2": 6.01,
+      "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    },
+    "territorial_hotspot": {
+      "sector": "Lyman",
+      "lat": 48.99,
+      "lon": 37.8,
+      "zoom": 9,
+      "score": 100,
+      "change_km2": 6.01,
+      "method": "Top classified sector based on OSINT + FIRMS density"
+    },
+    "top_sectors": [
+      {
+        "sector": "Lyman",
+        "osint": 0,
+        "firms": 304,
+        "score": 100
+      },
+      {
+        "sector": "Bakhmut-Toretsk",
+        "osint": 0,
+        "firms": 268,
+        "score": 100
+      },
+      {
+        "sector": "Pokrovsk",
+        "osint": 18,
+        "firms": 75,
+        "score": 100
+      },
+      {
+        "sector": "Kurakhove",
+        "osint": 0,
+        "firms": 111,
+        "score": 100
+      },
+      {
+        "sector": "Velyka Novosilka",
+        "osint": 0,
+        "firms": 128,
+        "score": 100
+      },
+      {
+        "sector": "Zaporizhzhia",
+        "osint": 0,
+        "firms": 227,
+        "score": 100
+      },
+      {
+        "sector": "Kherson-Dnipro",
+        "osint": 2,
+        "firms": 247,
+        "score": 100
+      },
+      {
+        "sector": "Other / Unclassified",
+        "osint": 10,
+        "firms": 987,
+        "score": 100
+      }
+    ],
+    "top_events": [
+      {
+        "title": "Primary objective is to develop solutions to strengthen Air Defense: Defense Minister pays working visit to Sumy Oblast",
+        "source": "forrás nélkül",
+        "sector": "Other / Unclassified"
+      },
+      {
+        "title": "Patriot missiles, drones, and diplomacy: Volodymyr Zelenskyy and Donald Trump hold meeting at NATO summit in Ankara",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Artillerymen of the 40th Brigade save a “Krab” self-propelled howitzer from a swarm of enemy drones",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "“Crimean power switch — OFF”: Key electricity supply entry point from Russia to Crimea hit",
+        "source": "forrás nélkül",
+        "sector": "Crimea"
+      },
+      {
+        "title": "Ukrainian naval drone strikes Russian shadow fleet tanker",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Occupiers forced to walk more than 10 km to reach positions on the Prydniprovskyi axis",
+        "source": "forrás nélkül",
+        "sector": "Kherson-Dnipro"
+      }
+    ],
+    "data_sources": {
+      "osint": "data/osint_feed.json",
+      "firms_3d": "data/firms_3.json",
+      "firms_10d": "data/firms_10.json",
+      "firms_30d": "data/firms_30.json",
+      "deepstate": "cyterat/deepstate-map-data via GitHub API"
+    },
+    "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
   }
 ]
