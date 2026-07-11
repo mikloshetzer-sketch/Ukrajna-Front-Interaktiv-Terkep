@@ -1,104 +1,109 @@
 {
-  "date": "2026-07-10",
-  "updated_utc": "2026-07-10T19:58:27.897386+00:00",
-  "front_activity_index": 94,
-  "status": "CRITICAL",
+  "date": "2026-07-11",
+  "updated_utc": "2026-07-11T19:41:17.107179+00:00",
+  "front_activity_index": 79,
+  "status": "HIGH",
   "components": {
     "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 29.4,
+    "territorial_change": 14.2,
     "active_sectors": 10,
     "critical_events": 10
   },
   "counts": {
     "osint": 27,
-    "firms_3d": 1586,
-    "firms_10d": 13686,
-    "firms_30d": 32222,
-    "critical_events": 10,
-    "active_sectors": 10
+    "firms_3d": 965,
+    "firms_10d": 11592,
+    "firms_30d": 31885,
+    "critical_events": 11,
+    "active_sectors": 9
   },
   "territorial": {
     "available": true,
     "error": null,
-    "previous_file": "deepstatemap_data_20260708.geojson",
-    "current_file": "deepstatemap_data_20260710.geojson",
-    "previous_total_km2": 116678.98,
-    "current_total_km2": 116688.77,
-    "russian_gain_km2": 9.79,
+    "previous_file": "deepstatemap_data_20260710.geojson",
+    "current_file": "deepstatemap_data_20260711.geojson",
+    "previous_total_km2": 116688.77,
+    "current_total_km2": 116693.5,
+    "russian_gain_km2": 4.73,
     "ukrainian_recapture_km2": 0,
-    "net_change_km2": 9.79,
+    "net_change_km2": 4.73,
     "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
-    "sector": "Lyman",
-    "lat": 48.99,
-    "lon": 37.8,
+    "sector": "Pokrovsk",
+    "lat": 48.28,
+    "lon": 37.18,
     "zoom": 9,
     "score": 100,
-    "change_km2": 9.79,
+    "change_km2": 4.73,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
     {
-      "sector": "Lyman",
-      "osint": 0,
-      "firms": 253,
-      "score": 100
-    },
-    {
-      "sector": "Bakhmut-Toretsk",
-      "osint": 0,
-      "firms": 183,
-      "score": 100
-    },
-    {
       "sector": "Pokrovsk",
       "osint": 18,
-      "firms": 15,
+      "firms": 0,
       "score": 100
     },
     {
       "sector": "Other / Unclassified",
-      "osint": 6,
-      "firms": 874,
+      "osint": 4,
+      "firms": 866,
       "score": 100
-    },
-    {
-      "sector": "Kherson-Dnipro",
-      "osint": 1,
-      "firms": 90,
-      "score": 93
-    },
-    {
-      "sector": "Zaporizhzhia",
-      "osint": 0,
-      "firms": 61,
-      "score": 55
-    },
-    {
-      "sector": "Kurakhove",
-      "osint": 0,
-      "firms": 43,
-      "score": 39
     },
     {
       "sector": "Crimea",
       "osint": 2,
+      "firms": 21,
+      "score": 43
+    },
+    {
+      "sector": "Kherson-Dnipro",
+      "osint": 1,
+      "firms": 33,
+      "score": 42
+    },
+    {
+      "sector": "Velyka Novosilka",
+      "osint": 0,
+      "firms": 15,
+      "score": 14
+    },
+    {
+      "sector": "Kurakhove",
+      "osint": 1,
+      "firms": 0,
+      "score": 12
+    },
+    {
+      "sector": "Kharkiv",
+      "osint": 1,
+      "firms": 0,
+      "score": 12
+    },
+    {
+      "sector": "Lyman",
+      "osint": 0,
       "firms": 11,
-      "score": 34
+      "score": 10
     }
   ],
   "top_events": [
     {
-      "title": "Reported rear-area strike near Rosztov",
+      "title": "Reported drone strike near Donyeck",
       "source": "forrás nélkül",
-      "sector": "Other / Unclassified"
+      "sector": "Kurakhove"
     },
     {
-      "title": "Reported drone strike near Szumi",
+      "title": "Reported drone strike near Harkiv",
       "source": "forrás nélkül",
-      "sector": "Other / Unclassified"
+      "sector": "Kharkiv"
+    },
+    {
+      "title": "Russian Offensive Campaign Assessment, July 10, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk"
     },
     {
       "title": "Russian Offensive Campaign Assessment, July 9, 2026",
@@ -112,11 +117,6 @@
     },
     {
       "title": "Patriot missiles, drones, and diplomacy: Volodymyr Zelenskyy and Donald Trump hold meeting at NATO summit in Ankara",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Artillerymen of the 40th Brigade save a “Krab” self-propelled howitzer from a swarm of enemy drones",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     }
