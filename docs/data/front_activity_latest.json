@@ -1,95 +1,110 @@
 {
-  "date": "2026-07-12",
-  "updated_utc": "2026-07-12T19:37:55.178380+00:00",
+  "date": "2026-07-13",
+  "updated_utc": "2026-07-13T19:58:03.033595+00:00",
   "front_activity_index": 74,
   "status": "HIGH",
   "components": {
     "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 9.3,
+    "territorial_change": 13.5,
     "active_sectors": 10,
-    "critical_events": 10
+    "critical_events": 6
   },
   "counts": {
-    "osint": 13,
-    "firms_3d": 1117,
-    "firms_10d": 8575,
-    "firms_30d": 31730,
-    "critical_events": 5,
-    "active_sectors": 8
+    "osint": 11,
+    "firms_3d": 1530,
+    "firms_10d": 7092,
+    "firms_30d": 32138,
+    "critical_events": 3,
+    "active_sectors": 9
   },
   "territorial": {
     "available": true,
     "error": null,
-    "previous_file": "deepstatemap_data_20260711.geojson",
-    "current_file": "deepstatemap_data_20260712.geojson",
-    "previous_total_km2": 116693.5,
-    "current_total_km2": 116696.61,
-    "russian_gain_km2": 3.11,
+    "previous_file": "deepstatemap_data_20260712.geojson",
+    "current_file": "deepstatemap_data_20260713.geojson",
+    "previous_total_km2": 116696.61,
+    "current_total_km2": 116701.1,
+    "russian_gain_km2": 4.49,
     "ukrainian_recapture_km2": 0,
-    "net_change_km2": 3.11,
+    "net_change_km2": 4.49,
     "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
-    "sector": "Pokrovsk",
-    "lat": 48.28,
-    "lon": 37.18,
+    "sector": "Velyka Novosilka",
+    "lat": 47.84,
+    "lon": 36.84,
     "zoom": 9,
-    "score": 88,
-    "change_km2": 3.11,
+    "score": 100,
+    "change_km2": 4.49,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
     {
+      "sector": "Velyka Novosilka",
+      "osint": 0,
+      "firms": 294,
+      "score": 100
+    },
+    {
+      "sector": "Zaporizhzhia",
+      "osint": 1,
+      "firms": 168,
+      "score": 100
+    },
+    {
       "sector": "Other / Unclassified",
-      "osint": 4,
-      "firms": 911,
+      "osint": 7,
+      "firms": 766,
       "score": 100
     },
     {
       "sector": "Pokrovsk",
-      "osint": 7,
-      "firms": 4,
+      "osint": 3,
+      "firms": 58,
       "score": 88
     },
     {
       "sector": "Kherson-Dnipro",
-      "osint": 1,
-      "firms": 65,
-      "score": 70
-    },
-    {
-      "sector": "Velyka Novosilka",
       "osint": 0,
-      "firms": 64,
-      "score": 58
-    },
-    {
-      "sector": "Crimea",
-      "osint": 1,
-      "firms": 27,
-      "score": 36
-    },
-    {
-      "sector": "Zaporizhzhia",
-      "osint": 0,
-      "firms": 29,
-      "score": 26
-    },
-    {
-      "sector": "Bakhmut-Toretsk",
-      "osint": 0,
-      "firms": 8,
-      "score": 7
+      "firms": 70,
+      "score": 63
     },
     {
       "sector": "Kurakhove",
       "osint": 0,
-      "firms": 8,
-      "score": 7
+      "firms": 60,
+      "score": 54
+    },
+    {
+      "sector": "Bakhmut-Toretsk",
+      "osint": 0,
+      "firms": 39,
+      "score": 35
+    },
+    {
+      "sector": "Lyman",
+      "osint": 0,
+      "firms": 37,
+      "score": 33
     }
   ],
   "top_events": [
+    {
+      "title": "Reported rear-area strike near Odessza",
+      "source": "forrás nélkül",
+      "sector": "Other / Unclassified"
+    },
+    {
+      "title": "Reported drone strike near Zaporizzsja",
+      "source": "forrás nélkül",
+      "sector": "Zaporizhzhia"
+    },
+    {
+      "title": "Russian Offensive Campaign Assessment, July 12, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk"
+    },
     {
       "title": "Russian Offensive Campaign Assessment, July 11, 2026",
       "source": "forrás nélkül",
@@ -99,26 +114,6 @@
       "title": "Russian Offensive Campaign Assessment, July 10, 2026",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
-    },
-    {
-      "title": "Primary objective is to develop solutions to strengthen Air Defense: Defense Minister pays working visit to Sumy Oblast",
-      "source": "forrás nélkül",
-      "sector": "Other / Unclassified"
-    },
-    {
-      "title": "Patriot missiles, drones, and diplomacy: Volodymyr Zelenskyy and Donald Trump hold meeting at NATO summit in Ankara",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Artillerymen of the 40th Brigade save a “Krab” self-propelled howitzer from a swarm of enemy drones",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "“Crimean power switch — OFF”: Key electricity supply entry point from Russia to Crimea hit",
-      "source": "forrás nélkül",
-      "sector": "Crimea"
     }
   ],
   "data_sources": {
