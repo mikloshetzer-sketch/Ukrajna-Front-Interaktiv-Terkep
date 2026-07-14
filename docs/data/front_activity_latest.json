@@ -1,104 +1,109 @@
 {
-  "date": "2026-07-13",
-  "updated_utc": "2026-07-13T19:58:03.033595+00:00",
-  "front_activity_index": 74,
+  "date": "2026-07-14",
+  "updated_utc": "2026-07-14T18:19:09.093093+00:00",
+  "front_activity_index": 72,
   "status": "HIGH",
   "components": {
-    "osint_density": 25,
+    "osint_density": 22.5,
     "firms_activity": 20,
-    "territorial_change": 13.5,
+    "territorial_change": 15.2,
     "active_sectors": 10,
-    "critical_events": 6
+    "critical_events": 4
   },
   "counts": {
-    "osint": 11,
-    "firms_3d": 1530,
-    "firms_10d": 7092,
-    "firms_30d": 32138,
-    "critical_events": 3,
+    "osint": 9,
+    "firms_3d": 1848,
+    "firms_10d": 6876,
+    "firms_30d": 32232,
+    "critical_events": 2,
     "active_sectors": 9
   },
   "territorial": {
     "available": true,
     "error": null,
-    "previous_file": "deepstatemap_data_20260712.geojson",
-    "current_file": "deepstatemap_data_20260713.geojson",
-    "previous_total_km2": 116696.61,
-    "current_total_km2": 116701.1,
-    "russian_gain_km2": 4.49,
+    "previous_file": "deepstatemap_data_20260713.geojson",
+    "current_file": "deepstatemap_data_20260714.geojson",
+    "previous_total_km2": 116701.1,
+    "current_total_km2": 116706.16,
+    "russian_gain_km2": 5.06,
     "ukrainian_recapture_km2": 0,
-    "net_change_km2": 4.49,
+    "net_change_km2": 5.06,
     "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
-    "sector": "Velyka Novosilka",
-    "lat": 47.84,
-    "lon": 36.84,
+    "sector": "Pokrovsk",
+    "lat": 48.28,
+    "lon": 37.18,
     "zoom": 9,
     "score": 100,
-    "change_km2": 4.49,
+    "change_km2": 5.06,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
     {
+      "sector": "Pokrovsk",
+      "osint": 4,
+      "firms": 69,
+      "score": 100
+    },
+    {
       "sector": "Velyka Novosilka",
       "osint": 0,
-      "firms": 294,
+      "firms": 330,
       "score": 100
     },
     {
       "sector": "Zaporizhzhia",
-      "osint": 1,
-      "firms": 168,
+      "osint": 0,
+      "firms": 181,
       "score": 100
     },
     {
       "sector": "Other / Unclassified",
-      "osint": 7,
-      "firms": 766,
+      "osint": 4,
+      "firms": 964,
       "score": 100
-    },
-    {
-      "sector": "Pokrovsk",
-      "osint": 3,
-      "firms": 58,
-      "score": 88
-    },
-    {
-      "sector": "Kherson-Dnipro",
-      "osint": 0,
-      "firms": 70,
-      "score": 63
     },
     {
       "sector": "Kurakhove",
       "osint": 0,
-      "firms": 60,
-      "score": 54
+      "firms": 86,
+      "score": 77
+    },
+    {
+      "sector": "Kherson-Dnipro",
+      "osint": 0,
+      "firms": 74,
+      "score": 67
     },
     {
       "sector": "Bakhmut-Toretsk",
       "osint": 0,
-      "firms": 39,
-      "score": 35
+      "firms": 66,
+      "score": 59
     },
     {
       "sector": "Lyman",
       "osint": 0,
-      "firms": 37,
-      "score": 33
+      "firms": 58,
+      "score": 52
     }
   ],
   "top_events": [
     {
-      "title": "Reported rear-area strike near Odessza",
+      "title": "Ukraine received a new batch of mobile F-16 simulators to train more pilots",
       "source": "forrás nélkül",
-      "sector": "Other / Unclassified"
+      "sector": "Pokrovsk"
     },
     {
-      "title": "Reported drone strike near Zaporizzsja",
+      "title": "Reported drone strike near Krím",
       "source": "forrás nélkül",
-      "sector": "Zaporizhzhia"
+      "sector": "Crimea"
+    },
+    {
+      "title": "Russian Offensive Campaign Assessment, July 13, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk"
     },
     {
       "title": "Russian Offensive Campaign Assessment, July 12, 2026",
@@ -107,11 +112,6 @@
     },
     {
       "title": "Russian Offensive Campaign Assessment, July 11, 2026",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Russian Offensive Campaign Assessment, July 10, 2026",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     }
