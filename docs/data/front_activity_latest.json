@@ -1,33 +1,33 @@
 {
-  "date": "2026-07-14",
-  "updated_utc": "2026-07-14T19:51:09.891676+00:00",
-  "front_activity_index": 72,
-  "status": "HIGH",
+  "date": "2026-07-15",
+  "updated_utc": "2026-07-15T19:45:26.804279+00:00",
+  "front_activity_index": 100,
+  "status": "CRITICAL",
   "components": {
-    "osint_density": 22.5,
+    "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 15.2,
+    "territorial_change": 35,
     "active_sectors": 10,
-    "critical_events": 4
+    "critical_events": 10
   },
   "counts": {
-    "osint": 9,
-    "firms_3d": 1848,
-    "firms_10d": 6876,
-    "firms_30d": 32232,
-    "critical_events": 2,
-    "active_sectors": 9
+    "osint": 18,
+    "firms_3d": 1883,
+    "firms_10d": 6533,
+    "firms_30d": 32339,
+    "critical_events": 5,
+    "active_sectors": 10
   },
   "territorial": {
     "available": true,
     "error": null,
-    "previous_file": "deepstatemap_data_20260713.geojson",
-    "current_file": "deepstatemap_data_20260714.geojson",
-    "previous_total_km2": 116701.1,
-    "current_total_km2": 116706.16,
-    "russian_gain_km2": 5.06,
-    "ukrainian_recapture_km2": 0,
-    "net_change_km2": 5.06,
+    "previous_file": "deepstatemap_data_20260714.geojson",
+    "current_file": "deepstatemap_data_20260715.geojson",
+    "previous_total_km2": 116706.16,
+    "current_total_km2": 116662.88,
+    "russian_gain_km2": 0,
+    "ukrainian_recapture_km2": 43.28,
+    "net_change_km2": -43.28,
     "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
@@ -36,82 +36,87 @@
     "lon": 37.18,
     "zoom": 9,
     "score": 100,
-    "change_km2": 5.06,
+    "change_km2": -43.28,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
     {
       "sector": "Pokrovsk",
-      "osint": 4,
-      "firms": 69,
+      "osint": 6,
+      "firms": 75,
       "score": 100
     },
     {
       "sector": "Velyka Novosilka",
       "osint": 0,
-      "firms": 330,
+      "firms": 333,
       "score": 100
     },
     {
       "sector": "Zaporizhzhia",
       "osint": 0,
-      "firms": 181,
+      "firms": 174,
       "score": 100
     },
     {
       "sector": "Other / Unclassified",
-      "osint": 4,
-      "firms": 964,
+      "osint": 11,
+      "firms": 969,
       "score": 100
-    },
-    {
-      "sector": "Kurakhove",
-      "osint": 0,
-      "firms": 86,
-      "score": 77
     },
     {
       "sector": "Kherson-Dnipro",
       "osint": 0,
-      "firms": 74,
-      "score": 67
+      "firms": 95,
+      "score": 86
+    },
+    {
+      "sector": "Kurakhove",
+      "osint": 0,
+      "firms": 91,
+      "score": 82
     },
     {
       "sector": "Bakhmut-Toretsk",
       "osint": 0,
-      "firms": 66,
-      "score": 59
+      "firms": 69,
+      "score": 62
     },
     {
       "sector": "Lyman",
       "osint": 0,
-      "firms": 58,
-      "score": 52
+      "firms": 61,
+      "score": 55
     }
   ],
   "top_events": [
-    {
-      "title": "Ukraine received a new batch of mobile F-16 simulators to train more pilots",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
     {
       "title": "Reported drone strike near Krím",
       "source": "forrás nélkül",
       "sector": "Crimea"
     },
     {
-      "title": "Russian Offensive Campaign Assessment, July 13, 2026",
+      "title": "UAS Forces Strike the First 20 Vessels of russia’s Shadow Fleet in the Black Sea",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     },
     {
-      "title": "Russian Offensive Campaign Assessment, July 12, 2026",
+      "title": "The new Boeing-Saab T-7A Red Hawk training aircraft for the U.S. Air Force",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     },
     {
-      "title": "Russian Offensive Campaign Assessment, July 11, 2026",
+      "title": "Reported drone strike near Odessza",
+      "source": "forrás nélkül",
+      "sector": "Other / Unclassified"
+    },
+    {
+      "title": "Reported rear-area strike near Odessza",
+      "source": "forrás nélkül",
+      "sector": "Other / Unclassified"
+    },
+    {
+      "title": "Russian Offensive Campaign Assessment, July 14, 2026",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     }
