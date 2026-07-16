@@ -1197,7 +1197,7 @@
           <div class="chart-card-head">
             <div class="chart-title">FIRMS területi megoszlás</div>
             <div class="chart-subtitle">
-              Frontközeli, ukrán hátország, orosz hátország, Krím és egyéb – elmúlt 30 nap
+              Csak a besorolt hőpontok: frontközeli, ukrán hátország, orosz hátország és Krím – elmúlt 30 nap
             </div>
           </div>
           <div class="chart-wrap"><canvas id="firmsShareChart"></canvas></div>
@@ -1233,21 +1233,35 @@
 
         <article class="chart-card">
           <div class="chart-card-head">
-            <div class="chart-title">Éves területi változás</div>
+            <div class="chart-title">Éves orosz területi nyereség és nettó mérleg</div>
             <div class="chart-subtitle">
-              DeepState történeti delta összesítve – évről évre
+              Az éves orosz előrenyomulás és a visszafoglalásokkal korrigált nettó változás
             </div>
           </div>
           <div class="strategic-chart-wrap">
             <canvas id="yearlyTerritorialChart"></canvas>
           </div>
         </article>
+
+        <article class="chart-card">
+          <div class="chart-card-head">
+            <div class="chart-title">Éves ukrán visszafoglalás</div>
+            <div class="chart-subtitle">
+              Az orosz ellenőrzésből kikerült területek éves összesítése
+            </div>
+          </div>
+          <div class="strategic-chart-wrap">
+            <canvas id="yearlyRecaptureChart"></canvas>
+          </div>
+        </article>
       </div>
 
       <div class="comparison-method" id="historyMethodNote">
         A hosszú távú diagramok a <code>data/dashboard_long_term_summary.json</code>
-        fájlból töltődnek. Az összesítőt a mellékelt Python-szkript készíti a
-        rendelkezésre álló DeepState területi delta rekordokból.
+        fájlból töltődnek. Fontos: az orosz területi nyereség csökkenése önmagában
+        nem jelent ukrán visszafoglalást. A két adatsor külön folyamatot mér:
+        az egyik az újonnan orosz ellenőrzés alá került, a másik az orosz
+        ellenőrzésből kikerült területet mutatja.
       </div>
     </div>
   </section>
@@ -2472,17 +2486,15 @@ let firmsShareChart=new Chart(document.getElementById('firmsShareChart'),{
       'Frontközeli',
       'Ukrán hátország',
       'Orosz hátország',
-      'Krím',
-      'Egyéb'
+      'Krím'
     ],
     datasets:[{
-      data:[45,25,12,12,6],
+      data:[45,25,12,12],
       backgroundColor:[
         '#d8463f',
         '#2f83bd',
         '#c58c25',
-        '#6c4dc5',
-        '#9aa8b5'
+        '#6c4dc5'
       ],
       borderColor:'#fff',
       borderWidth:3
@@ -2549,12 +2561,6 @@ let yearlyTerritorialChart=new Chart(
           borderRadius:5
         },
         {
-          label:'Ukrán visszafoglalás',
-          data:[],
-          backgroundColor:'rgba(47,138,97,.72)',
-          borderRadius:5
-        },
-        {
           type:'line',
           label:'Nettó változás',
           data:[],
@@ -2569,6 +2575,32 @@ let yearlyTerritorialChart=new Chart(
       responsive:true,
       maintainAspectRatio:false,
       interaction:{mode:'index',intersect:false},
+      plugins:{legend:{position:'bottom'}},
+      scales:{y:{beginAtZero:true,title:{display:true,text:'km²'}}}
+    }
+  }
+);
+
+let yearlyRecaptureChart=new Chart(
+  document.getElementById('yearlyRecaptureChart'),
+  {
+    type:'bar',
+    data:{
+      labels:[],
+      datasets:[
+        {
+          label:'Ukrán visszafoglalás',
+          data:[],
+          backgroundColor:'rgba(47,138,97,.76)',
+          borderColor:'#2f8a61',
+          borderWidth:1,
+          borderRadius:5
+        }
+      ]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
       plugins:{legend:{position:'bottom'}},
       scales:{y:{beginAtZero:true,title:{display:true,text:'km²'}}}
     }
@@ -2609,8 +2641,15 @@ function updateLongTermCharts(summary){
     yearly.map(item=>String(item.year)),
     [
       yearly.map(item=>Number(item.russian_gain_km2||0)),
-      yearly.map(item=>Number(item.ukrainian_recapture_km2||0)),
       yearly.map(item=>Number(item.net_change_km2||0))
+    ]
+  );
+
+  updateChart(
+    yearlyRecaptureChart,
+    yearly.map(item=>String(item.year)),
+    [
+      yearly.map(item=>Number(item.ukrainian_recapture_km2||0))
     ]
   );
 
@@ -2647,8 +2686,7 @@ function updateFirmsCharts(summary){
       Number(shares.frontline||0),
       Number(shares.ukrainian_rear||0),
       Number(shares.russian_rear||0),
-      Number(shares.crimea||0),
-      Number(shares.other||0)
+      Number(shares.crimea||0)
     ];
     firmsShareChart.update();
   }
@@ -2695,5 +2733,4 @@ loadFrontComparisonAndFortressCities();
 
 </body>
 </html>
-
 
