@@ -6,60 +6,95 @@ on:
   schedule:
     - cron: "25 7 * * *"
 
-  push:
-    paths:
-      - "data/**"
-      - "scripts/build_dashboard_long_term_summary.py"
-
 permissions:
   contents: write
 
 jobs:
   build-summary:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
 
     steps:
-      - name: Checkout repository
+      - name: Checkout dashboard repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - name: Build dashboard long-term summary
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install "shapely>=2.0,<3.0" "pyproj>=3.6,<4.0"
+
+      - name: Download DeepState history
+        run: |
+          rm -rf /tmp/deepstate-map-data
+          git clone --depth 1 \
+            https://github.com/cyterat/deepstate-map-data.git \
+            /tmp/deepstate-map-data
+
+          echo "DeepState file count:"
+          find /tmp/deepstate-map-data/data \
+            -maxdepth 1 \
+            -name 'deepstatemap_data_*.geojson' \
+            | wc -l
+
+      - name: Build territorial history and summary
         run: |
           python scripts/build_dashboard_long_term_summary.py
 
-      - name: Verify generated file
+      - name: Verify generated files
         run: |
-          echo "Repository tree:"
-          ls -R
+          test -f data/territorial_history_daily.json
+          test -f data/dashboard_long_term_summary.json
 
-          echo ""
-          echo "Data folder:"
-          ls -la data || true
+          python - <<'PY'
+          import json
+          from pathlib import Path
 
-          if [ ! -f data/dashboard_long_term_summary.json ]; then
-            echo "ERROR: dashboard_long_term_summary.json was not generated."
-            exit 1
-          fi
+          history = json.loads(
+              Path("data/territorial_history_daily.json")
+              .read_text(encoding="utf-8")
+          )
+          summary = json.loads(
+              Path("data/dashboard_long_term_summary.json")
+              .read_text(encoding="utf-8")
+          )
 
-          echo ""
-          echo "Generated file:"
-          cat data/dashboard_long_term_summary.json
+          daily = history.get("daily", [])
+          monthly = summary.get("territorial", {}).get("monthly", [])
+          yearly = summary.get("territorial", {}).get("yearly", [])
 
-      - name: Commit updated summary
+          print("Daily records:", len(daily))
+          print("Monthly rows:", len(monthly))
+          print("Yearly rows:", len(yearly))
+
+          if not daily:
+              raise SystemExit("ERROR: no daily records generated")
+          if not monthly:
+              raise SystemExit("ERROR: no monthly rows generated")
+          if not yearly:
+              raise SystemExit("ERROR: no yearly rows generated")
+          PY
+
+      - name: Commit generated data
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add -A data/dashboard_long_term_summary.json
+          git add -f \
+            data/territorial_history_daily.json \
+            data/dashboard_long_term_summary.json
 
           if git diff --cached --quiet; then
             echo "No summary changes."
             exit 0
           fi
 
-          git commit -m "Update dashboard long-term summary"
+          git commit -m "Update long-term DeepState territorial history"
           git push
