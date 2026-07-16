@@ -724,6 +724,234 @@
       .comparison-kpis{grid-template-columns:1fr}
     }
 
+
+    .header-link{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff !important;
+      text-decoration:none !important;
+      transition:.18s ease;
+    }
+
+    .header-link:hover{
+      transform:translateY(-1px);
+      filter:brightness(.96);
+    }
+
+    .line-comparison-grid{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:8px;
+      margin-bottom:10px;
+    }
+
+    .line-comparison-kpi{
+      padding:12px 9px;
+      border:1px solid var(--line);
+      border-radius:10px;
+      background:var(--soft);
+      text-align:center;
+    }
+
+    .line-comparison-kpi strong{
+      display:block;
+      color:#0f456e;
+      font-size:22px;
+      line-height:1;
+    }
+
+    .line-comparison-kpi span{
+      display:block;
+      margin-top:7px;
+      color:var(--muted);
+      font-size:8px;
+      font-weight:900;
+      letter-spacing:.05em;
+      text-transform:uppercase;
+    }
+
+    .line-comparison-detail{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:9px;
+    }
+
+    .line-source-card{
+      padding:12px;
+      border:1px solid var(--line);
+      border-radius:10px;
+      background:var(--soft);
+    }
+
+    .line-source-card.deepstate{border-left:4px solid var(--red)}
+    .line-source-card.suriyak{border-left:4px solid var(--blue)}
+
+    .line-source-title{
+      margin-bottom:8px;
+      color:var(--text);
+      font-family:Georgia,"Times New Roman",serif;
+      font-size:17px;
+      font-weight:800;
+    }
+
+    .line-fact{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      padding:7px 8px;
+      margin-top:6px;
+      border:1px solid var(--line);
+      border-radius:8px;
+      background:#fff;
+      color:var(--muted);
+      font-size:10px;
+    }
+
+    .line-fact strong{
+      color:var(--body);
+      text-align:right;
+    }
+
+    .fortress-grid{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:9px;
+    }
+
+    .fortress-card{
+      padding:12px;
+      border:1px solid var(--line);
+      border-top:4px solid var(--blue);
+      border-radius:10px;
+      background:var(--soft);
+    }
+
+    .fortress-card.alert{border-top-color:var(--red)}
+    .fortress-card.elevated{border-top-color:var(--orange)}
+
+    .fortress-head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:8px;
+    }
+
+    .fortress-name{
+      color:var(--text);
+      font-family:Georgia,"Times New Roman",serif;
+      font-size:17px;
+      font-weight:800;
+    }
+
+    .fortress-role{
+      margin-top:2px;
+      color:var(--muted);
+      font-size:9px;
+      line-height:1.35;
+    }
+
+    .fortress-risk{
+      padding:4px 6px;
+      border-radius:999px;
+      background:var(--blue-soft);
+      color:var(--blue-dark);
+      font-size:8px;
+      font-weight:900;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+
+    .fortress-risk.high{
+      background:var(--red-soft);
+      color:var(--red);
+    }
+
+    .fortress-risk.medium{
+      background:var(--orange-soft);
+      color:#a55b21;
+    }
+
+    .fortress-statuses{
+      display:grid;
+      gap:6px;
+      margin-top:10px;
+    }
+
+    .fortress-status-row{
+      display:grid;
+      grid-template-columns:70px 1fr;
+      gap:8px;
+      padding:7px 8px;
+      border:1px solid var(--line);
+      border-radius:8px;
+      background:#fff;
+      font-size:9px;
+    }
+
+    .fortress-status-row span{color:var(--muted)}
+    .fortress-status-row strong{
+      color:var(--body);
+      text-align:right;
+    }
+
+    .fortress-firms{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:6px;
+      margin-top:8px;
+    }
+
+    .fortress-stat{
+      padding:8px 5px;
+      border:1px solid var(--line);
+      border-radius:8px;
+      background:#fff;
+      text-align:center;
+    }
+
+    .fortress-stat strong{
+      display:block;
+      color:#0f456e;
+      font-size:16px;
+      line-height:1;
+    }
+
+    .fortress-stat span{
+      display:block;
+      margin-top:5px;
+      color:var(--muted);
+      font-size:7px;
+      font-weight:900;
+      line-height:1.2;
+      text-transform:uppercase;
+    }
+
+    .fortress-note{
+      margin-top:9px;
+      padding:9px 10px;
+      border:1px solid var(--line);
+      border-left:4px solid var(--blue);
+      border-radius:8px;
+      background:var(--soft);
+      color:var(--muted);
+      font-size:9px;
+      line-height:1.5;
+    }
+
+    @media(max-width:1200px){
+      .fortress-grid{grid-template-columns:repeat(2,1fr)}
+    }
+
+    @media(max-width:900px){
+      .line-comparison-grid{grid-template-columns:repeat(2,1fr)}
+      .line-comparison-detail{grid-template-columns:1fr}
+    }
+
+    @media(max-width:620px){
+      .line-comparison-grid,.fortress-grid{grid-template-columns:1fr}
+    }
+
   </style>
 </head>
 
@@ -745,7 +973,12 @@
     <div class="header-actions">
       <div class="header-pill primary">Verified front data</div>
       <div class="header-pill">Adatok frissítése</div>
-      <div class="header-pill blue">Interaktív térkép</div>
+      <a
+        class="header-pill blue header-link"
+        href="https://mikloshetzer-sketch.github.io/Ukrajna-Front-Interaktiv-Terkep/"
+      >
+        ← Interaktív térkép
+      </a>
     </div>
   </div>
 </header>
@@ -805,9 +1038,9 @@
   <section class="panel">
     <div class="panel-head">
       <div>
-        <h2 class="panel-title">DeepState–Suriyak Front Interpretation</h2>
+        <h2 class="panel-title">DeepState–Suriyak Frontline Comparison</h2>
         <div class="panel-subtitle">
-          Két aktuális frontértelmezés térbeli összevetése – nem újabb területi trendkimutatás
+          A két forrás aktuális frontvonalának távolságalapú összevetése
         </div>
       </div>
       <div class="panel-badge" id="comparisonStatusBadge">betöltés</div>
@@ -818,6 +1051,35 @@
         <div class="comparison-loading">
           A DeepState és a Suriyak legfrissebb adatainak összehasonlítása folyamatban…
         </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <h2 class="panel-title">Fortress Cities Monitoring</h2>
+        <div class="panel-subtitle">
+          Az ukrán védelmi városlánc ellenőrzési státusza, fronttávolsága és FIRMS-aktivitása
+        </div>
+      </div>
+      <div class="panel-badge">30 km-es FIRMS-körzet</div>
+    </div>
+
+    <div class="panel-body">
+      <div id="fortressCities">
+        <div class="comparison-loading">
+          Az erődvárosok adatainak feldolgozása folyamatban…
+        </div>
+      </div>
+
+      <div class="fortress-note">
+        A DeepState és a Suriyak besorolása a városközpont koordinátáján alapul.
+        A „frontközeli” jelzés nem változtatja meg az ellenőrzési státuszt, csak azt
+        mutatja, hogy a város milyen távol van az aktuális frontvonaltól. A FIRMS-hőpont
+        ipari, mezőgazdasági vagy katonai eredetű is lehet, ezért önmagában nem bizonyít
+        támadást vagy harctevékenységet.
       </div>
     </div>
   </section>
@@ -1139,16 +1401,47 @@ function render(period){
 }
 
 
+
 const FRONT_COMPARISON_CONFIG = {
   deepStateApi:
     'https://api.github.com/repos/cyterat/deepstate-map-data/contents/data',
   deepStateRaw:
     'https://cdn.jsdelivr.net/gh/cyterat/deepstate-map-data@main/data/',
-  suriyakUrl:
-    '../data/suriyak_overlay.geojson',
-  corridorBufferKm: 30,
-  sampleStepDegrees: 0.025
+  suriyakUrl:'../data/suriyak_overlay.geojson',
+  firms1Url:'../data/firms_1.json',
+  firms30Url:'../data/firms_30.json',
+  comparisonSampleKm:5,
+  agreementThresholdKm:2,
+  frontNearThresholdKm:15,
+  firmsRadiusKm:30
 };
+
+const FORTRESS_CITIES = [
+  {
+    id:'kostiantynivka',
+    name:'Kostiantynivka',
+    coordinates:[37.7069,48.5277],
+    role:'Déli kapuváros és közlekedési csomópont'
+  },
+  {
+    id:'druzhkivka',
+    name:'Druzhkivka',
+    coordinates:[37.5277,48.6208],
+    role:'A városlánc középső logisztikai eleme'
+  },
+  {
+    id:'kramatorsk',
+    name:'Kramatorszk',
+    coordinates:[37.5844,48.7389],
+    role:'Regionális irányítási és logisztikai központ'
+  },
+  {
+    id:'sloviansk',
+    name:'Szlovjanszk',
+    coordinates:[37.6053,48.8532],
+    role:'Északi védelmi és közlekedési csomópont'
+  }
+];
 
 function fc(features){
   return {
@@ -1157,7 +1450,7 @@ function fc(features){
   };
 }
 
-function polygonFeaturesFromGeometry(geometry, properties = {}){
+function polygonFeaturesFromGeometry(geometry,properties = {}){
   if(!geometry) return [];
 
   if(geometry.type === 'Polygon' || geometry.type === 'MultiPolygon'){
@@ -1170,32 +1463,33 @@ function polygonFeaturesFromGeometry(geometry, properties = {}){
 
   if(geometry.type === 'GeometryCollection'){
     return (geometry.geometries || []).flatMap(item =>
-      polygonFeaturesFromGeometry(item, properties)
+      polygonFeaturesFromGeometry(item,properties)
     );
   }
 
   return [];
 }
 
-function extractPolygonFeatures(data, predicate = () => true){
-  return (data?.features || []).flatMap(feature => {
-    if(!predicate(feature)) return [];
-    return polygonFeaturesFromGeometry(
-      feature?.geometry,
-      feature?.properties || {}
-    );
-  });
-}
-
 function lineFeaturesFromGeometry(geometry,properties = {}){
   if(!geometry) return [];
 
-  if(geometry.type === 'LineString' || geometry.type === 'MultiLineString'){
+  if(geometry.type === 'LineString'){
     return [{
       type:'Feature',
       properties:{...properties},
       geometry
     }];
+  }
+
+  if(geometry.type === 'MultiLineString'){
+    return (geometry.coordinates || []).map(coordinates => ({
+      type:'Feature',
+      properties:{...properties},
+      geometry:{
+        type:'LineString',
+        coordinates
+      }
+    }));
   }
 
   if(geometry.type === 'GeometryCollection'){
@@ -1207,9 +1501,21 @@ function lineFeaturesFromGeometry(geometry,properties = {}){
   return [];
 }
 
+function extractPolygonFeatures(data,predicate = () => true){
+  return (data?.features || []).flatMap(feature => {
+    if(!predicate(feature)) return [];
+
+    return polygonFeaturesFromGeometry(
+      feature?.geometry,
+      feature?.properties || {}
+    );
+  });
+}
+
 function extractLineFeatures(data,predicate = () => true){
   return (data?.features || []).flatMap(feature => {
     if(!predicate(feature)) return [];
+
     return lineFeaturesFromGeometry(
       feature?.geometry,
       feature?.properties || {}
@@ -1217,51 +1523,38 @@ function extractLineFeatures(data,predicate = () => true){
   });
 }
 
-function buildFrontCorridor(frontLines,bufferKm){
-  if(!frontLines.length) return null;
-
-  try{
-    const buffered = frontLines.map(line =>
-      turf.buffer(line,bufferKm,{units:'kilometers'})
-    );
-
-    if(buffered.length === 1){
-      return buffered[0];
-    }
-
-    let merged = buffered[0];
-
-    for(let index = 1; index < buffered.length; index += 1){
-      try{
-        const unioned = turf.union(
-          turf.featureCollection([merged,buffered[index]])
-        );
-        if(unioned) merged = unioned;
-      }catch(error){}
-    }
-
-    return merged;
-  }catch(error){
-    console.error('Front corridor:',error);
-    return null;
-  }
-}
-
-function safeAreaKm2(features){
-  return features.reduce((sum, feature) => {
+function polygonsToBoundaryLines(polygons){
+  return polygons.flatMap(polygon => {
     try{
-      return sum + turf.area(feature) / 1e6;
+      const boundary = turf.polygonToLine(polygon);
+
+      if(boundary.type === 'FeatureCollection'){
+        return boundary.features.flatMap(feature =>
+          lineFeaturesFromGeometry(
+            feature.geometry,
+            feature.properties || {}
+          )
+        );
+      }
+
+      return lineFeaturesFromGeometry(
+        boundary.geometry,
+        boundary.properties || {}
+      );
     }catch(error){
-      return sum;
+      return [];
     }
-  },0);
+  });
 }
 
-function formatKm2(value){
-  return Number(value || 0).toLocaleString('hu-HU',{
-    minimumFractionDigits:1,
-    maximumFractionDigits:1
-  }) + ' km²';
+function formatDistance(value){
+  if(!Number.isFinite(value)) return 'n/a';
+
+  if(value < 1){
+    return `${Math.round(value * 1000)} m`;
+  }
+
+  return `${value.toFixed(1).replace('.',',')} km`;
 }
 
 function formatInteger(value){
@@ -1270,145 +1563,23 @@ function formatInteger(value){
   });
 }
 
-function pointInAnyPolygon(point, features){
-  for(const feature of features){
-    try{
-      if(turf.booleanPointInPolygon(point, feature)){
-        return true;
-      }
-    }catch(error){
-      // Invalid individual geometry is skipped.
-    }
-  }
-  return false;
-}
-
-function combinedBbox(featureGroups){
-  const all = featureGroups.flat();
-  if(!all.length) return null;
-
-  try{
-    return turf.bbox(fc(all));
-  }catch(error){
-    return null;
-  }
-}
-
-function approximateSpatialAgreement(
-  deepFeatures,
-  suriyakFeatures,
-  corridorFeature,
-  step
-){
-  if(!corridorFeature){
-    return {
-      agreementPercent:0,
-      disagreementAreaKm2:0,
-      deepOnlyAreaKm2:0,
-      suriyakOnlyAreaKm2:0,
-      commonAreaKm2:0,
-      deepAreaKm2:0,
-      suriyakAreaKm2:0,
-      sampledCells:0
-    };
-  }
-
-  let bbox;
-  try{
-    bbox = turf.bbox(corridorFeature);
-  }catch(error){
-    return {
-      agreementPercent:0,
-      disagreementAreaKm2:0,
-      deepOnlyAreaKm2:0,
-      suriyakOnlyAreaKm2:0,
-      commonAreaKm2:0,
-      deepAreaKm2:0,
-      suriyakAreaKm2:0,
-      sampledCells:0
-    };
-  }
-
-  const [minX,minY,maxX,maxY] = bbox;
-  let deepOnlyAreaKm2 = 0;
-  let suriyakOnlyAreaKm2 = 0;
-  let commonAreaKm2 = 0;
-  let deepAreaKm2 = 0;
-  let suriyakAreaKm2 = 0;
-  let unionAreaKm2 = 0;
-  let sampledCells = 0;
-
-  for(let lat = minY + step / 2; lat <= maxY; lat += step){
-    for(let lng = minX + step / 2; lng <= maxX; lng += step){
-      const point = turf.point([lng,lat]);
-      let inCorridor = false;
-
-      try{
-        inCorridor = turf.booleanPointInPolygon(point,corridorFeature);
-      }catch(error){
-        inCorridor = false;
-      }
-
-      if(!inCorridor) continue;
-      sampledCells += 1;
-
-      const inDeep = pointInAnyPolygon(point,deepFeatures);
-      const inSuriyak = pointInAnyPolygon(point,suriyakFeatures);
-
-      if(!inDeep && !inSuriyak) continue;
-
-      const cell = turf.polygon([[
-        [lng-step/2,lat-step/2],
-        [lng+step/2,lat-step/2],
-        [lng+step/2,lat+step/2],
-        [lng-step/2,lat+step/2],
-        [lng-step/2,lat-step/2]
-      ]]);
-
-      const cellAreaKm2 = turf.area(cell) / 1e6;
-      unionAreaKm2 += cellAreaKm2;
-
-      if(inDeep) deepAreaKm2 += cellAreaKm2;
-      if(inSuriyak) suriyakAreaKm2 += cellAreaKm2;
-
-      if(inDeep && inSuriyak){
-        commonAreaKm2 += cellAreaKm2;
-      }else if(inDeep){
-        deepOnlyAreaKm2 += cellAreaKm2;
-      }else{
-        suriyakOnlyAreaKm2 += cellAreaKm2;
-      }
-    }
-  }
-
-  return {
-    agreementPercent:
-      unionAreaKm2 > 0 ? (commonAreaKm2 / unionAreaKm2) * 100 : 0,
-    disagreementAreaKm2:deepOnlyAreaKm2 + suriyakOnlyAreaKm2,
-    deepOnlyAreaKm2,
-    suriyakOnlyAreaKm2,
-    commonAreaKm2,
-    deepAreaKm2,
-    suriyakAreaKm2,
-    sampledCells
-  };
-}
-
 function parseDeepStateDate(filename){
   const match = String(filename || '').match(/(\d{4})(\d{2})(\d{2})/);
   return match ? `${match[1]}-${match[2]}-${match[3]}` : 'n/a';
 }
 
 async function fetchLatestDeepState(){
-  const response = await fetch(FRONT_COMPARISON_CONFIG.deepStateApi,{
-    cache:'no-store'
-  });
+  const response = await fetch(
+    FRONT_COMPARISON_CONFIG.deepStateApi,
+    {cache:'no-store'}
+  );
 
   if(!response.ok){
     throw new Error(`DeepState index HTTP ${response.status}`);
   }
 
   const files = await response.json();
+
   const candidates = files
     .filter(item =>
       /^deepstatemap_data_\d{8}\.geojson$/i.test(item.name)
@@ -1454,70 +1625,173 @@ function isSuriyakRussianControl(feature){
   );
 }
 
-function isSuriyakCurrentFrontline(feature){
-  return String(
-    feature?.properties?.suriyak_category || ''
-  ).toLowerCase() === 'current_frontline';
-}
-
 function isSuriyakUkrainianControl(feature){
-  return String(
+  const category = String(
     feature?.properties?.suriyak_category || ''
-  ).toLowerCase() === 'ukrainian_control';
-}
+  ).toLowerCase();
 
-function isSuriyakDefenseLine(feature){
-  return String(
-    feature?.properties?.suriyak_category || ''
-  ).toLowerCase() === 'russian_defense_line';
-}
-
-function comparisonNarrative(metrics){
-  const agreement = metrics.agreementPercent;
-
-  let agreementText;
-  if(agreement >= 90){
-    agreementText = 'nagyon magas';
-  }else if(agreement >= 75){
-    agreementText = 'magas';
-  }else if(agreement >= 55){
-    agreementText = 'közepes';
-  }else{
-    agreementText = 'alacsony';
-  }
-
-  let directionText;
-
-  if(Math.abs(metrics.suriyakOnlyAreaKm2 - metrics.deepOnlyAreaKm2) < 25){
-    directionText =
-      'A kizárólag az egyik forrás által jelölt területek nagysága közel azonos.';
-  }else if(metrics.suriyakOnlyAreaKm2 > metrics.deepOnlyAreaKm2){
-    directionText =
-      `A Suriyak a frontközeli sávban körülbelül ` +
-      `${formatKm2(metrics.suriyakOnlyAreaKm2)} olyan területet jelöl ` +
-      `orosz ellenőrzésűként, amelyet a DeepState nem.`;
-  }else{
-    directionText =
-      `A DeepState a frontközeli sávban körülbelül ` +
-      `${formatKm2(metrics.deepOnlyAreaKm2)} olyan területet jelöl ` +
-      `orosz ellenőrzésűként, amelyet a Suriyak nem.`;
-  }
+  const name = String(
+    feature?.properties?.name || ''
+  ).toLowerCase();
 
   return (
-    `Az összehasonlítás nem a teljes megszállt területet vizsgálja, ` +
-    `hanem kizárólag a Suriyak jelenlegi frontvonala körüli ` +
-    `±${FRONT_COMPARISON_CONFIG.corridorBufferKm} km-es műveleti sávot. ` +
-    `Ebben a közös vizsgálati térben a két forrás térbeli egyezése ` +
-    `${agreementText} (${agreement.toFixed(1).replace('.',',')}%). ` +
-    `${directionText} A teljes becsült eltérési terület ` +
-    `${formatKm2(metrics.disagreementAreaKm2)}. ` +
-    `A mutató nem a napi frontváltozást ismétli meg, hanem azt jelzi, ` +
-    `hogy a két elemző az aktív front közvetlen környezetében mennyire ` +
-    `hasonlóan értelmezi az ellenőrzési határokat.`
+    category === 'ukrainian_control' ||
+    name.includes('ukrainian armed forces') ||
+    name.includes('ukrainian-controlled') ||
+    name.includes('ukrainian controlled')
   );
 }
 
-function renderComparison(metrics){
+function isSuriyakCurrentFrontline(feature){
+  const category = String(
+    feature?.properties?.suriyak_category || ''
+  ).toLowerCase();
+
+  const name = String(
+    feature?.properties?.name || ''
+  ).toLowerCase();
+
+  return (
+    category === 'current_frontline' ||
+    name.includes('current frontline') ||
+    name.includes('current front line')
+  );
+}
+
+function pointInAnyPolygon(point,features){
+  for(const feature of features){
+    try{
+      if(turf.booleanPointInPolygon(point,feature)){
+        return true;
+      }
+    }catch(error){}
+  }
+
+  return false;
+}
+
+function nearestDistanceToLines(point,lines){
+  let minimum = Infinity;
+
+  for(const line of lines){
+    try{
+      const nearest = turf.nearestPointOnLine(
+        line,
+        point,
+        {units:'kilometers'}
+      );
+
+      const distance = Number(
+        nearest?.properties?.dist
+      );
+
+      if(Number.isFinite(distance) && distance < minimum){
+        minimum = distance;
+      }
+    }catch(error){}
+  }
+
+  return minimum;
+}
+
+function sampleLines(lines,intervalKm){
+  const samples = [];
+
+  for(const line of lines){
+    let length = 0;
+
+    try{
+      length = turf.length(line,{units:'kilometers'});
+    }catch(error){
+      continue;
+    }
+
+    if(!Number.isFinite(length) || length <= 0) continue;
+
+    for(let distance = 0; distance <= length; distance += intervalKm){
+      try{
+        samples.push(
+          turf.along(line,distance,{units:'kilometers'})
+        );
+      }catch(error){}
+    }
+  }
+
+  return samples;
+}
+
+function compareFrontLines(deepLines,suriyakLines){
+  const samples = sampleLines(
+    suriyakLines,
+    FRONT_COMPARISON_CONFIG.comparisonSampleKm
+  );
+
+  const distances = samples
+    .map(point => nearestDistanceToLines(point,deepLines))
+    .filter(Number.isFinite);
+
+  if(!distances.length){
+    return {
+      averageKm:NaN,
+      medianKm:NaN,
+      maximumKm:NaN,
+      agreementPercent:0,
+      sampleCount:0
+    };
+  }
+
+  const sorted = [...distances].sort((a,b) => a-b);
+  const middle = Math.floor(sorted.length / 2);
+
+  const median =
+    sorted.length % 2
+      ? sorted[middle]
+      : (sorted[middle-1] + sorted[middle]) / 2;
+
+  const agreementCount = distances.filter(
+    value =>
+      value <= FRONT_COMPARISON_CONFIG.agreementThresholdKm
+  ).length;
+
+  return {
+    averageKm:
+      distances.reduce((sum,value) => sum + value,0) /
+      distances.length,
+    medianKm:median,
+    maximumKm:Math.max(...distances),
+    agreementPercent:
+      (agreementCount / distances.length) * 100,
+    sampleCount:distances.length
+  };
+}
+
+function lineComparisonNarrative(metrics){
+  let level;
+
+  if(metrics.agreementPercent >= 85){
+    level = 'magas';
+  }else if(metrics.agreementPercent >= 60){
+    level = 'közepes';
+  }else{
+    level = 'alacsony';
+  }
+
+  return (
+    `A két forrás aktuális frontvonalának egyezése ${level}. ` +
+    `A Suriyak vonalán öt kilométerenként elhelyezett mintapontok ` +
+    `${metrics.agreementPercent.toFixed(1).replace('.',',')}%-a ` +
+    `${FRONT_COMPARISON_CONFIG.agreementThresholdKm} km-en belül található ` +
+    `a DeepState ellenőrzési poligonjainak határához képest. ` +
+    `Az átlagos eltérés ${formatDistance(metrics.averageKm)}, ` +
+    `a medián ${formatDistance(metrics.medianKm)}, míg a legnagyobb ` +
+    `mért különbség ${formatDistance(metrics.maximumKm)}. ` +
+    `A mutató nem azt dönti el, melyik forrás pontosabb. Azt jelzi, ` +
+    `hogy a két nyílt forrású elemző mennyire hasonló helyre teszi ` +
+    `az aktuális érintkezési vonalat.`
+  );
+}
+
+function renderLineComparison(metrics){
   const host = document.getElementById('frontComparison');
   const badge = document.getElementById('comparisonStatusBadge');
 
@@ -1525,88 +1799,66 @@ function renderComparison(metrics){
 
   if(badge){
     badge.textContent =
-      metrics.agreementPercent >= 75 ? 'magas egyezés' :
-      metrics.agreementPercent >= 55 ? 'közepes egyezés' :
-      'jelentős eltérés';
+      metrics.agreementPercent >= 85
+        ? 'magas egyezés'
+        : metrics.agreementPercent >= 60
+          ? 'közepes egyezés'
+          : 'jelentős eltérés';
   }
 
   host.innerHTML = `
-    <div class="comparison-kpis">
-      <div class="comparison-kpi">
+    <div class="line-comparison-grid">
+      <div class="line-comparison-kpi">
         <strong>${metrics.agreementPercent.toFixed(1).replace('.',',')}%</strong>
-        <span>Térbeli egyezés</span>
+        <span>2 km-en belüli egyezés</span>
       </div>
 
-      <div class="comparison-kpi">
-        <strong>${formatKm2(metrics.disagreementAreaKm2)}</strong>
-        <span>Eltérés a frontközeli sávban</span>
+      <div class="line-comparison-kpi">
+        <strong>${formatDistance(metrics.averageKm)}</strong>
+        <span>Átlagos vonaleltérés</span>
       </div>
 
-      <div class="comparison-kpi">
-        <strong>±${FRONT_COMPARISON_CONFIG.corridorBufferKm} km</strong>
-        <span>Vizsgált műveleti sáv</span>
+      <div class="line-comparison-kpi">
+        <strong>${formatDistance(metrics.medianKm)}</strong>
+        <span>Medián vonaleltérés</span>
       </div>
 
-      <div class="comparison-kpi">
-        <strong>${metrics.deepDate}</strong>
-        <span>DeepState állapot dátuma</span>
+      <div class="line-comparison-kpi">
+        <strong>${formatDistance(metrics.maximumKm)}</strong>
+        <span>Legnagyobb eltérés</span>
       </div>
     </div>
 
-    <div class="comparison-columns">
-      <article class="comparison-source deepstate">
-        <div class="comparison-source-head">
-          <div class="comparison-source-title">DeepState</div>
-          <div class="comparison-source-badge">elsődleges területi alap</div>
+    <div class="line-comparison-detail">
+      <article class="line-source-card deepstate">
+        <div class="line-source-title">DeepState</div>
+        <div class="line-fact">
+          <span>Felhasznált ellenőrzési poligon</span>
+          <strong>${formatInteger(metrics.deepPolygonCount)}</strong>
         </div>
-
-        <div class="comparison-facts">
-          <div class="comparison-fact">
-            <span>Orosz ellenőrzésű poligonok</span>
-            <strong>${formatInteger(metrics.deepPolygonCount)}</strong>
-          </div>
-          <div class="comparison-fact">
-            <span>Jelölt terület a vizsgált sávban</span>
-            <strong>${formatKm2(metrics.deepAreaKm2)}</strong>
-          </div>
-          <div class="comparison-fact">
-            <span>Csak DeepState által jelölt</span>
-            <strong>${formatKm2(metrics.deepOnlyAreaKm2)}</strong>
-          </div>
-          <div class="comparison-fact">
-            <span>Elemzői szerep</span>
-            <strong>területi változás és történeti delta</strong>
-          </div>
+        <div class="line-fact">
+          <span>Képzett határvonalszakasz</span>
+          <strong>${formatInteger(metrics.deepLineCount)}</strong>
+        </div>
+        <div class="line-fact">
+          <span>Állapot dátuma</span>
+          <strong>${metrics.deepDate}</strong>
         </div>
       </article>
 
-      <article class="comparison-source suriyak">
-        <div class="comparison-source-head">
-          <div class="comparison-source-title">Suriyak</div>
-          <div class="comparison-source-badge">összehasonlító értelmezés</div>
+      <article class="line-source-card suriyak">
+        <div class="line-source-title">Suriyak</div>
+        <div class="line-fact">
+          <span>Aktuális frontvonalszakasz</span>
+          <strong>${formatInteger(metrics.suriyakLineCount)}</strong>
         </div>
-
-        <div class="comparison-facts">
-          <div class="comparison-fact">
-            <span>Orosz kontrollpoligonok</span>
-            <strong>${formatInteger(metrics.suriyakPolygonCount)}</strong>
-          </div>
-          <div class="comparison-fact">
-            <span>Jelölt terület a vizsgált sávban</span>
-            <strong>${formatKm2(metrics.suriyakAreaKm2)}</strong>
-          </div>
-          <div class="comparison-fact">
-            <span>Csak Suriyak által jelölt</span>
-            <strong>${formatKm2(metrics.suriyakOnlyAreaKm2)}</strong>
-          </div>
-          <div class="comparison-fact">
-            <span>Ukrán kontrollobjektumok</span>
-            <strong>${formatInteger(metrics.suriyakUkrainianCount)}</strong>
-          </div>
-          <div class="comparison-fact">
-            <span>Orosz védelmi vonalak</span>
-            <strong>${formatInteger(metrics.suriyakDefenseCount)}</strong>
-          </div>
+        <div class="line-fact">
+          <span>Vizsgált mintapont</span>
+          <strong>${formatInteger(metrics.sampleCount)}</strong>
+        </div>
+        <div class="line-fact">
+          <span>Mintavételi távolság</span>
+          <strong>${FRONT_COMPARISON_CONFIG.comparisonSampleKm} km</strong>
         </div>
       </article>
     </div>
@@ -1615,33 +1867,288 @@ function renderComparison(metrics){
       <div class="comparison-assessment-title">
         Automatikus értelmezési összevetés
       </div>
-      <p>${comparisonNarrative(metrics)}</p>
+      <p>${lineComparisonNarrative(metrics)}</p>
     </div>
 
     <div class="comparison-method">
-      Módszertan: a Suriyak <code>current_frontline</code> vonalai köré
-      ±${FRONT_COMPARISON_CONFIG.corridorBufferKm} km-es vizsgálati sáv készül.
-      A rendszer ezen belül hasonlítja össze a DeepState aktuális orosz
-      ellenőrzésű geometriáját a Suriyak <code>russian_control</code>
-      poligonjaival. A számítás böngészőoldali, közelítő térbeli mintavétel;
-      nem állapítja meg, melyik forrás helyesebb, és nem helyettesíti az
-      egyedi frontszakaszok vizuális ellenőrzését.
+      Módszertan: a Suriyak aktuális frontvonalán
+      ${FRONT_COMPARISON_CONFIG.comparisonSampleKm} kilométerenként mintapont
+      készül. A rendszer minden pontnál megkeresi a DeepState orosz ellenőrzésű
+      poligonjának legközelebbi határát. Az egyezési arány azt mutatja, hogy a
+      mintapontok mekkora része van
+      ${FRONT_COMPARISON_CONFIG.agreementThresholdKm} kilométeren belül.
+      A nagy eltéréseket egyedi térképi ellenőrzéssel kell értelmezni.
     </div>
   `;
 }
 
-async function loadFrontComparison(){
-  const host = document.getElementById('frontComparison');
-  const badge = document.getElementById('comparisonStatusBadge');
+function normalizeFirmsPoints(data){
+  const output = [];
 
-  if(!host || typeof turf === 'undefined') return;
+  function addPoint(lng,lat,properties = {}){
+    lng = Number(lng);
+    lat = Number(lat);
+
+    if(
+      Number.isFinite(lng) &&
+      Number.isFinite(lat) &&
+      lng >= -180 && lng <= 180 &&
+      lat >= -90 && lat <= 90
+    ){
+      output.push({
+        point:turf.point([lng,lat]),
+        properties
+      });
+    }
+  }
+
+  if(data?.type === 'FeatureCollection'){
+    for(const feature of data.features || []){
+      if(feature?.geometry?.type === 'Point'){
+        addPoint(
+          feature.geometry.coordinates?.[0],
+          feature.geometry.coordinates?.[1],
+          feature.properties || {}
+        );
+      }
+    }
+
+    return output;
+  }
+
+  const rows =
+    Array.isArray(data) ? data :
+    Array.isArray(data?.data) ? data.data :
+    Array.isArray(data?.features) ? data.features :
+    Array.isArray(data?.hotspots) ? data.hotspots :
+    [];
+
+  for(const row of rows){
+    if(row?.geometry?.type === 'Point'){
+      addPoint(
+        row.geometry.coordinates?.[0],
+        row.geometry.coordinates?.[1],
+        row.properties || row
+      );
+      continue;
+    }
+
+    addPoint(
+      row.longitude ?? row.lon ?? row.lng ?? row.x,
+      row.latitude ?? row.lat ?? row.y,
+      row
+    );
+  }
+
+  return output;
+}
+
+function firmsStats(cityPoint,firmsPoints){
+  const distances = firmsPoints
+    .map(item => {
+      try{
+        return turf.distance(
+          cityPoint,
+          item.point,
+          {units:'kilometers'}
+        );
+      }catch(error){
+        return Infinity;
+      }
+    })
+    .filter(Number.isFinite);
+
+  const nearby = distances.filter(
+    value => value <= FRONT_COMPARISON_CONFIG.firmsRadiusKm
+  );
+
+  return {
+    count:nearby.length,
+    nearestKm:distances.length ? Math.min(...distances) : NaN
+  };
+}
+
+function classifyDeepState(point,deepRussian,deepLines){
+  const occupied = pointInAnyPolygon(point,deepRussian);
+  const distance = nearestDistanceToLines(point,deepLines);
+
+  return {
+    control:occupied ? 'Orosz ellenőrzés' : 'Ukrán ellenőrzés',
+    nearFront:
+      Number.isFinite(distance) &&
+      distance <= FRONT_COMPARISON_CONFIG.frontNearThresholdKm,
+    distanceKm:distance
+  };
+}
+
+function classifySuriyak(
+  point,
+  suriyakRussian,
+  suriyakUkrainian,
+  suriyakLines
+){
+  const russian = pointInAnyPolygon(point,suriyakRussian);
+  const ukrainian = pointInAnyPolygon(point,suriyakUkrainian);
+  const distance = nearestDistanceToLines(point,suriyakLines);
+
+  let control = 'Nem egyértelmű';
+
+  if(russian){
+    control = 'Orosz ellenőrzés';
+  }else if(ukrainian){
+    control = 'Ukrán ellenőrzés';
+  }
+
+  return {
+    control,
+    nearFront:
+      Number.isFinite(distance) &&
+      distance <= FRONT_COMPARISON_CONFIG.frontNearThresholdKm,
+    distanceKm:distance
+  };
+}
+
+function statusText(status){
+  if(!status) return 'n/a';
+
+  if(status.nearFront){
+    return `${status.control} · frontközeli`;
+  }
+
+  return status.control;
+}
+
+function fortressRisk(city){
+  const activity = city.firms30.count;
+  const distance = Math.min(
+    city.deepState.distanceKm,
+    city.suriyak.distanceKm
+  );
+
+  if(activity >= 30 || distance <= 10){
+    return {
+      label:'magas',
+      className:'alert',
+      badgeClass:'high'
+    };
+  }
+
+  if(activity >= 12 || distance <= 25){
+    return {
+      label:'emelkedett',
+      className:'elevated',
+      badgeClass:'medium'
+    };
+  }
+
+  return {
+    label:'mérsékelt',
+    className:'',
+    badgeClass:''
+  };
+}
+
+function renderFortressCities(cities){
+  const host = document.getElementById('fortressCities');
+  if(!host) return;
+
+  host.innerHTML = `
+    <div class="fortress-grid">
+      ${cities.map(city => {
+        const risk = fortressRisk(city);
+
+        const agreement =
+          city.deepState.control === city.suriyak.control
+            ? 'Egyező besorolás'
+            : 'Eltérő besorolás';
+
+        return `
+          <article class="fortress-card ${risk.className}">
+            <div class="fortress-head">
+              <div>
+                <div class="fortress-name">${city.name}</div>
+                <div class="fortress-role">${city.role}</div>
+              </div>
+              <div class="fortress-risk ${risk.badgeClass}">
+                ${risk.label}
+              </div>
+            </div>
+
+            <div class="fortress-statuses">
+              <div class="fortress-status-row">
+                <span>DeepState</span>
+                <strong>${statusText(city.deepState)}</strong>
+              </div>
+
+              <div class="fortress-status-row">
+                <span>Suriyak</span>
+                <strong>${statusText(city.suriyak)}</strong>
+              </div>
+
+              <div class="fortress-status-row">
+                <span>Forrásviszony</span>
+                <strong>${agreement}</strong>
+              </div>
+
+              <div class="fortress-status-row">
+                <span>Fronttávolság</span>
+                <strong>
+                  DS ${formatDistance(city.deepState.distanceKm)} ·
+                  SY ${formatDistance(city.suriyak.distanceKm)}
+                </strong>
+              </div>
+            </div>
+
+            <div class="fortress-firms">
+              <div class="fortress-stat">
+                <strong>${city.firms1.count}</strong>
+                <span>FIRMS 24 óra</span>
+              </div>
+
+              <div class="fortress-stat">
+                <strong>${city.firms30.count}</strong>
+                <span>FIRMS 30 nap</span>
+              </div>
+
+              <div class="fortress-stat">
+                <strong>${formatDistance(city.firms30.nearestKm)}</strong>
+                <span>Legközelebbi hőpont</span>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
+async function loadFrontComparisonAndFortressCities(){
+  const comparisonHost = document.getElementById('frontComparison');
+  const fortressHost = document.getElementById('fortressCities');
+  const badge = document.getElementById('comparisonStatusBadge');
 
   try{
     if(badge) badge.textContent = 'betöltés';
 
-    const [deepState,suriyakResponse] = await Promise.all([
+    const [
+      deepState,
+      suriyakResponse,
+      firms1Response,
+      firms30Response
+    ] = await Promise.all([
       fetchLatestDeepState(),
-      fetch(FRONT_COMPARISON_CONFIG.suriyakUrl,{cache:'no-store'})
+      fetch(
+        FRONT_COMPARISON_CONFIG.suriyakUrl,
+        {cache:'no-store'}
+      ),
+      fetch(
+        FRONT_COMPARISON_CONFIG.firms1Url,
+        {cache:'no-store'}
+      ),
+      fetch(
+        FRONT_COMPARISON_CONFIG.firms30Url,
+        {cache:'no-store'}
+      )
     ]);
 
     if(!suriyakResponse.ok){
@@ -1650,81 +2157,105 @@ async function loadFrontComparison(){
 
     const suriyakData = await suriyakResponse.json();
 
-    const deepPolygons = extractPolygonFeatures(deepState.data);
+    const firms1Data =
+      firms1Response.ok ? await firms1Response.json() : [];
+
+    const firms30Data =
+      firms30Response.ok ? await firms30Response.json() : [];
+
+    const deepRussian = extractPolygonFeatures(deepState.data);
+
+    const deepLines = polygonsToBoundaryLines(deepRussian);
+
     const suriyakRussian = extractPolygonFeatures(
       suriyakData,
       isSuriyakRussianControl
     );
 
-    if(!deepPolygons.length){
-      throw new Error('A DeepState fájlban nem található poligon.');
-    }
+    const suriyakUkrainian = extractPolygonFeatures(
+      suriyakData,
+      isSuriyakUkrainianControl
+    );
 
-    if(!suriyakRussian.length){
-      throw new Error(
-        'A Suriyak fájlban nem található russian_control poligon.'
-      );
-    }
-
-    const suriyakFrontLines = extractLineFeatures(
+    const suriyakLines = extractLineFeatures(
       suriyakData,
       isSuriyakCurrentFrontline
     );
 
-    if(!suriyakFrontLines.length){
-      throw new Error(
-        'A Suriyak fájlban nem található current_frontline vonal.'
-      );
+    if(!deepRussian.length || !deepLines.length){
+      throw new Error('A DeepState frontgeometria nem dolgozható fel.');
     }
 
-    const corridor = buildFrontCorridor(
-      suriyakFrontLines,
-      FRONT_COMPARISON_CONFIG.corridorBufferKm
-    );
-
-    if(!corridor){
-      throw new Error(
-        'A frontközeli vizsgálati sáv nem hozható létre.'
-      );
+    if(!suriyakLines.length){
+      throw new Error('A Suriyak aktuális frontvonala nem található.');
     }
 
-    const sampled = approximateSpatialAgreement(
-      deepPolygons,
-      suriyakRussian,
-      corridor,
-      FRONT_COMPARISON_CONFIG.sampleStepDegrees
+    const comparison = compareFrontLines(
+      deepLines,
+      suriyakLines
     );
 
-    renderComparison({
-      ...sampled,
+    renderLineComparison({
+      ...comparison,
       deepDate:deepState.date,
-      deepPolygonCount:deepPolygons.length,
-      suriyakPolygonCount:suriyakRussian.length,
-      suriyakFrontlineCount:suriyakFrontLines.length,
-      suriyakUkrainianCount:
-        (suriyakData.features || []).filter(
-          isSuriyakUkrainianControl
-        ).length,
-      suriyakDefenseCount:
-        (suriyakData.features || []).filter(
-          isSuriyakDefenseLine
-        ).length
+      deepPolygonCount:deepRussian.length,
+      deepLineCount:deepLines.length,
+      suriyakLineCount:suriyakLines.length
     });
+
+    const firms1 = normalizeFirmsPoints(firms1Data);
+    const firms30 = normalizeFirmsPoints(firms30Data);
+
+    const cities = FORTRESS_CITIES.map(city => {
+      const point = turf.point(city.coordinates);
+
+      return {
+        ...city,
+        deepState:classifyDeepState(
+          point,
+          deepRussian,
+          deepLines
+        ),
+        suriyak:classifySuriyak(
+          point,
+          suriyakRussian,
+          suriyakUkrainian,
+          suriyakLines
+        ),
+        firms1:firmsStats(point,firms1),
+        firms30:firmsStats(point,firms30)
+      };
+    });
+
+    renderFortressCities(cities);
   }catch(error){
-    console.error('Front comparison:',error);
+    console.error(
+      'Front comparison / fortress cities:',
+      error
+    );
 
     if(badge) badge.textContent = 'adat hiba';
 
-    if(host){
-      host.innerHTML = `
+    if(comparisonHost){
+      comparisonHost.innerHTML = `
         <div class="comparison-error">
-          A DeepState–Suriyak összehasonlítás jelenleg nem tölthető be:
+          A frontvonal-összehasonlítás jelenleg nem tölthető be:
+          ${String(error.message || error)}
+        </div>
+      `;
+    }
+
+    if(fortressHost){
+      fortressHost.innerHTML = `
+        <div class="comparison-error">
+          Az erődváros-modul jelenleg nem tölthető be:
           ${String(error.message || error)}
         </div>
       `;
     }
   }
 }
+
 
 
 Chart.defaults.color='#6f8294';
@@ -1816,8 +2347,9 @@ document.getElementById('periodSelect').addEventListener('change',e=>render(Numb
 
 renderEvents();
 render(30);
-loadFrontComparison();
+loadFrontComparisonAndFortressCities();
 </script>
 
 </body>
 </html>
+
