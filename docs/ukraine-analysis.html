@@ -1146,7 +1146,8 @@ const FRONT_COMPARISON_CONFIG = {
     'https://cdn.jsdelivr.net/gh/cyterat/deepstate-map-data@main/data/',
   suriyakUrl:
     '../data/suriyak_overlay.geojson',
-  sampleStepDegrees: 0.075
+  corridorBufferKm: 30,
+  sampleStepDegrees: 0.025
 };
 
 function fc(features){
@@ -1184,6 +1185,66 @@ function extractPolygonFeatures(data, predicate = () => true){
       feature?.properties || {}
     );
   });
+}
+
+function lineFeaturesFromGeometry(geometry,properties = {}){
+  if(!geometry) return [];
+
+  if(geometry.type === 'LineString' || geometry.type === 'MultiLineString'){
+    return [{
+      type:'Feature',
+      properties:{...properties},
+      geometry
+    }];
+  }
+
+  if(geometry.type === 'GeometryCollection'){
+    return (geometry.geometries || []).flatMap(item =>
+      lineFeaturesFromGeometry(item,properties)
+    );
+  }
+
+  return [];
+}
+
+function extractLineFeatures(data,predicate = () => true){
+  return (data?.features || []).flatMap(feature => {
+    if(!predicate(feature)) return [];
+    return lineFeaturesFromGeometry(
+      feature?.geometry,
+      feature?.properties || {}
+    );
+  });
+}
+
+function buildFrontCorridor(frontLines,bufferKm){
+  if(!frontLines.length) return null;
+
+  try{
+    const buffered = frontLines.map(line =>
+      turf.buffer(line,bufferKm,{units:'kilometers'})
+    );
+
+    if(buffered.length === 1){
+      return buffered[0];
+    }
+
+    let merged = buffered[0];
+
+    for(let index = 1; index < buffered.length; index += 1){
+      try{
+        const unioned = turf.union(
+          turf.featureCollection([merged,buffered[index]])
+        );
+        if(unioned) merged = unioned;
+      }catch(error){}
+    }
+
+    return merged;
+  }catch(error){
+    console.error('Front corridor:',error);
+    return null;
+  }
 }
 
 function safeAreaKm2(features){
@@ -1233,67 +1294,103 @@ function combinedBbox(featureGroups){
   }
 }
 
-function approximateSpatialAgreement(deepFeatures, suriyakFeatures, step){
-  const bbox = combinedBbox([deepFeatures, suriyakFeatures]);
-
-  if(!bbox){
+function approximateSpatialAgreement(
+  deepFeatures,
+  suriyakFeatures,
+  corridorFeature,
+  step
+){
+  if(!corridorFeature){
     return {
       agreementPercent:0,
       disagreementAreaKm2:0,
-      deepOnlyCells:0,
-      suriyakOnlyCells:0,
-      commonCells:0,
-      unionCells:0
+      deepOnlyAreaKm2:0,
+      suriyakOnlyAreaKm2:0,
+      commonAreaKm2:0,
+      deepAreaKm2:0,
+      suriyakAreaKm2:0,
+      sampledCells:0
+    };
+  }
+
+  let bbox;
+  try{
+    bbox = turf.bbox(corridorFeature);
+  }catch(error){
+    return {
+      agreementPercent:0,
+      disagreementAreaKm2:0,
+      deepOnlyAreaKm2:0,
+      suriyakOnlyAreaKm2:0,
+      commonAreaKm2:0,
+      deepAreaKm2:0,
+      suriyakAreaKm2:0,
+      sampledCells:0
     };
   }
 
   const [minX,minY,maxX,maxY] = bbox;
-  let deepOnlyCells = 0;
-  let suriyakOnlyCells = 0;
-  let commonCells = 0;
-  let unionCells = 0;
-  let disagreementAreaKm2 = 0;
+  let deepOnlyAreaKm2 = 0;
+  let suriyakOnlyAreaKm2 = 0;
+  let commonAreaKm2 = 0;
+  let deepAreaKm2 = 0;
+  let suriyakAreaKm2 = 0;
+  let unionAreaKm2 = 0;
+  let sampledCells = 0;
 
   for(let lat = minY + step / 2; lat <= maxY; lat += step){
     for(let lng = minX + step / 2; lng <= maxX; lng += step){
       const point = turf.point([lng,lat]);
-      const inDeep = pointInAnyPolygon(point, deepFeatures);
-      const inSuriyak = pointInAnyPolygon(point, suriyakFeatures);
+      let inCorridor = false;
+
+      try{
+        inCorridor = turf.booleanPointInPolygon(point,corridorFeature);
+      }catch(error){
+        inCorridor = false;
+      }
+
+      if(!inCorridor) continue;
+      sampledCells += 1;
+
+      const inDeep = pointInAnyPolygon(point,deepFeatures);
+      const inSuriyak = pointInAnyPolygon(point,suriyakFeatures);
 
       if(!inDeep && !inSuriyak) continue;
 
-      unionCells += 1;
+      const cell = turf.polygon([[
+        [lng-step/2,lat-step/2],
+        [lng+step/2,lat-step/2],
+        [lng+step/2,lat+step/2],
+        [lng-step/2,lat+step/2],
+        [lng-step/2,lat-step/2]
+      ]]);
+
+      const cellAreaKm2 = turf.area(cell) / 1e6;
+      unionAreaKm2 += cellAreaKm2;
+
+      if(inDeep) deepAreaKm2 += cellAreaKm2;
+      if(inSuriyak) suriyakAreaKm2 += cellAreaKm2;
 
       if(inDeep && inSuriyak){
-        commonCells += 1;
+        commonAreaKm2 += cellAreaKm2;
       }else if(inDeep){
-        deepOnlyCells += 1;
+        deepOnlyAreaKm2 += cellAreaKm2;
       }else{
-        suriyakOnlyCells += 1;
-      }
-
-      if(inDeep !== inSuriyak){
-        const cell = turf.polygon([[
-          [lng-step/2,lat-step/2],
-          [lng+step/2,lat-step/2],
-          [lng+step/2,lat+step/2],
-          [lng-step/2,lat+step/2],
-          [lng-step/2,lat-step/2]
-        ]]);
-
-        disagreementAreaKm2 += turf.area(cell) / 1e6;
+        suriyakOnlyAreaKm2 += cellAreaKm2;
       }
     }
   }
 
   return {
     agreementPercent:
-      unionCells > 0 ? (commonCells / unionCells) * 100 : 0,
-    disagreementAreaKm2,
-    deepOnlyCells,
-    suriyakOnlyCells,
-    commonCells,
-    unionCells
+      unionAreaKm2 > 0 ? (commonAreaKm2 / unionAreaKm2) * 100 : 0,
+    disagreementAreaKm2:deepOnlyAreaKm2 + suriyakOnlyAreaKm2,
+    deepOnlyAreaKm2,
+    suriyakOnlyAreaKm2,
+    commonAreaKm2,
+    deepAreaKm2,
+    suriyakAreaKm2,
+    sampledCells
   };
 }
 
@@ -1376,9 +1473,6 @@ function isSuriyakDefenseLine(feature){
 }
 
 function comparisonNarrative(metrics){
-  const areaDifference =
-    metrics.suriyakAreaKm2 - metrics.deepAreaKm2;
-
   const agreement = metrics.agreementPercent;
 
   let agreementText;
@@ -1392,24 +1486,34 @@ function comparisonNarrative(metrics){
     agreementText = 'alacsony';
   }
 
-  let areaText;
-  if(Math.abs(areaDifference) < 25){
-    areaText =
-      'A két forrás által jelölt orosz ellenőrzésű terület összesített kiterjedése közel azonos.';
-  }else if(areaDifference > 0){
-    areaText =
-      `A Suriyak körülbelül ${formatKm2(Math.abs(areaDifference))} nagyobb orosz ellenőrzésű területet jelöl, mint a DeepState.`;
+  let directionText;
+
+  if(Math.abs(metrics.suriyakOnlyAreaKm2 - metrics.deepOnlyAreaKm2) < 25){
+    directionText =
+      'A kizárólag az egyik forrás által jelölt területek nagysága közel azonos.';
+  }else if(metrics.suriyakOnlyAreaKm2 > metrics.deepOnlyAreaKm2){
+    directionText =
+      `A Suriyak a frontközeli sávban körülbelül ` +
+      `${formatKm2(metrics.suriyakOnlyAreaKm2)} olyan területet jelöl ` +
+      `orosz ellenőrzésűként, amelyet a DeepState nem.`;
   }else{
-    areaText =
-      `A DeepState körülbelül ${formatKm2(Math.abs(areaDifference))} nagyobb orosz ellenőrzésű területet jelöl, mint a Suriyak.`;
+    directionText =
+      `A DeepState a frontközeli sávban körülbelül ` +
+      `${formatKm2(metrics.deepOnlyAreaKm2)} olyan területet jelöl ` +
+      `orosz ellenőrzésűként, amelyet a Suriyak nem.`;
   }
 
   return (
-    `A két aktuális helyzetértelmezés térbeli egyezése ${agreementText} ` +
-    `(${agreement.toFixed(1).replace('.',',')}%). ${areaText} ` +
-    `A becsült eltérési terület ${formatKm2(metrics.disagreementAreaKm2)}. ` +
-    `Ez nem napi frontváltozást mér, hanem azt mutatja meg, hogy a két elemző ` +
-    `az aktuális ellenőrzési határokat mennyire hasonlóan értelmezi.`
+    `Az összehasonlítás nem a teljes megszállt területet vizsgálja, ` +
+    `hanem kizárólag a Suriyak jelenlegi frontvonala körüli ` +
+    `±${FRONT_COMPARISON_CONFIG.corridorBufferKm} km-es műveleti sávot. ` +
+    `Ebben a közös vizsgálati térben a két forrás térbeli egyezése ` +
+    `${agreementText} (${agreement.toFixed(1).replace('.',',')}%). ` +
+    `${directionText} A teljes becsült eltérési terület ` +
+    `${formatKm2(metrics.disagreementAreaKm2)}. ` +
+    `A mutató nem a napi frontváltozást ismétli meg, hanem azt jelzi, ` +
+    `hogy a két elemző az aktív front közvetlen környezetében mennyire ` +
+    `hasonlóan értelmezi az ellenőrzési határokat.`
   );
 }
 
@@ -1435,12 +1539,12 @@ function renderComparison(metrics){
 
       <div class="comparison-kpi">
         <strong>${formatKm2(metrics.disagreementAreaKm2)}</strong>
-        <span>Becsült eltérési terület</span>
+        <span>Eltérés a frontközeli sávban</span>
       </div>
 
       <div class="comparison-kpi">
-        <strong>${formatInteger(metrics.suriyakFrontlineCount)}</strong>
-        <span>Suriyak aktuális frontvonal</span>
+        <strong>±${FRONT_COMPARISON_CONFIG.corridorBufferKm} km</strong>
+        <span>Vizsgált műveleti sáv</span>
       </div>
 
       <div class="comparison-kpi">
@@ -1462,8 +1566,12 @@ function renderComparison(metrics){
             <strong>${formatInteger(metrics.deepPolygonCount)}</strong>
           </div>
           <div class="comparison-fact">
-            <span>Jelölt terület</span>
+            <span>Jelölt terület a vizsgált sávban</span>
             <strong>${formatKm2(metrics.deepAreaKm2)}</strong>
+          </div>
+          <div class="comparison-fact">
+            <span>Csak DeepState által jelölt</span>
+            <strong>${formatKm2(metrics.deepOnlyAreaKm2)}</strong>
           </div>
           <div class="comparison-fact">
             <span>Elemzői szerep</span>
@@ -1484,8 +1592,12 @@ function renderComparison(metrics){
             <strong>${formatInteger(metrics.suriyakPolygonCount)}</strong>
           </div>
           <div class="comparison-fact">
-            <span>Jelölt terület</span>
+            <span>Jelölt terület a vizsgált sávban</span>
             <strong>${formatKm2(metrics.suriyakAreaKm2)}</strong>
+          </div>
+          <div class="comparison-fact">
+            <span>Csak Suriyak által jelölt</span>
+            <strong>${formatKm2(metrics.suriyakOnlyAreaKm2)}</strong>
           </div>
           <div class="comparison-fact">
             <span>Ukrán kontrollobjektumok</span>
@@ -1507,10 +1619,13 @@ function renderComparison(metrics){
     </div>
 
     <div class="comparison-method">
-      Módszertan: a legfrissebb DeepState állapot és a Suriyak
-      <code>russian_control</code> kategóriájának térbeli mintavételezése.
-      A mutató nem állapítja meg, melyik forrás helyesebb, és nem helyettesíti
-      az egyedi frontszakaszok vizuális ellenőrzését.
+      Módszertan: a Suriyak <code>current_frontline</code> vonalai köré
+      ±${FRONT_COMPARISON_CONFIG.corridorBufferKm} km-es vizsgálati sáv készül.
+      A rendszer ezen belül hasonlítja össze a DeepState aktuális orosz
+      ellenőrzésű geometriáját a Suriyak <code>russian_control</code>
+      poligonjaival. A számítás böngészőoldali, közelítő térbeli mintavétel;
+      nem állapítja meg, melyik forrás helyesebb, és nem helyettesíti az
+      egyedi frontszakaszok vizuális ellenőrzését.
     </div>
   `;
 }
@@ -1551,9 +1666,32 @@ async function loadFrontComparison(){
       );
     }
 
+    const suriyakFrontLines = extractLineFeatures(
+      suriyakData,
+      isSuriyakCurrentFrontline
+    );
+
+    if(!suriyakFrontLines.length){
+      throw new Error(
+        'A Suriyak fájlban nem található current_frontline vonal.'
+      );
+    }
+
+    const corridor = buildFrontCorridor(
+      suriyakFrontLines,
+      FRONT_COMPARISON_CONFIG.corridorBufferKm
+    );
+
+    if(!corridor){
+      throw new Error(
+        'A frontközeli vizsgálati sáv nem hozható létre.'
+      );
+    }
+
     const sampled = approximateSpatialAgreement(
       deepPolygons,
       suriyakRussian,
+      corridor,
       FRONT_COMPARISON_CONFIG.sampleStepDegrees
     );
 
@@ -1561,13 +1699,8 @@ async function loadFrontComparison(){
       ...sampled,
       deepDate:deepState.date,
       deepPolygonCount:deepPolygons.length,
-      deepAreaKm2:safeAreaKm2(deepPolygons),
       suriyakPolygonCount:suriyakRussian.length,
-      suriyakAreaKm2:safeAreaKm2(suriyakRussian),
-      suriyakFrontlineCount:
-        (suriyakData.features || []).filter(
-          isSuriyakCurrentFrontline
-        ).length,
+      suriyakFrontlineCount:suriyakFrontLines.length,
       suriyakUkrainianCount:
         (suriyakData.features || []).filter(
           isSuriyakUkrainianControl
