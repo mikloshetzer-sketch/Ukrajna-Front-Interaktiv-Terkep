@@ -952,6 +952,39 @@
       .line-comparison-grid,.fortress-grid{grid-template-columns:1fr}
     }
 
+
+    .fixed-period-note{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin:0 0 10px;
+      padding:9px 11px;
+      border:1px solid var(--line);
+      border-left:4px solid var(--blue);
+      border-radius:9px;
+      background:var(--blue-soft);
+      color:var(--body);
+      font-size:10px;
+    }
+
+    .fixed-period-note strong{color:var(--text)}
+
+    .chart-empty{
+      height:100%;
+      display:grid;
+      place-items:center;
+      padding:20px;
+      color:var(--muted);
+      font-size:11px;
+      text-align:center;
+    }
+
+    .strategic-chart-wrap{
+      height:330px;
+      padding:10px 12px 12px;
+    }
+
   </style>
 </head>
 
@@ -1116,33 +1149,46 @@
   <section class="panel">
     <div class="panel-head">
       <div>
-        <h2 class="panel-title">Data visualisation</h2>
-        <div class="panel-subtitle">Területi, tűzaktivitási és konfliktusdinamikai trendek</div>
+        <h2 class="panel-title">Tactical Trends – Last 30 Days</h2>
+        <div class="panel-subtitle">
+          Fix 30 napos napi bontás. Ez a rész nem változik a felső időszakválasztóval.
+        </div>
       </div>
+      <div class="panel-badge">30 days</div>
     </div>
 
     <div class="panel-body">
+      <div class="fixed-period-note">
+        <span>
+          <strong>Vizsgált időszak:</strong>
+          <span id="tacticalPeriodText">betöltés…</span>
+        </span>
+        <span>A felső 24 h / 7 / 30 / 90 nap választó a KPI-ket és a szektorkártyákat vezérli.</span>
+      </div>
+
       <div class="charts-grid">
         <article class="chart-card">
           <div class="chart-card-head">
-            <div class="chart-title">Területi változás</div>
-            <div class="chart-subtitle">Orosz nyereség és ukrán visszafoglalás – km² / nap</div>
+            <div class="chart-title">Területi változás – napi bontás</div>
+            <div class="chart-subtitle">Orosz nyereség és ukrán visszafoglalás – elmúlt 30 nap</div>
           </div>
           <div class="chart-wrap"><canvas id="territorialChart"></canvas></div>
         </article>
 
         <article class="chart-card">
           <div class="chart-card-head">
-            <div class="chart-title">FIRMS-aktivitás</div>
-            <div class="chart-subtitle">Frontközeli, hátországi és krími azonosítások</div>
+            <div class="chart-title">FIRMS-aktivitás – napi bontás</div>
+            <div class="chart-subtitle">
+              Frontközeli, ukrán hátországi, orosz hátországi és krími azonosítások – elmúlt 30 nap
+            </div>
           </div>
           <div class="chart-wrap"><canvas id="firmsChart"></canvas></div>
         </article>
 
         <article class="chart-card">
           <div class="chart-card-head">
-            <div class="chart-title">Konfliktusindex</div>
-            <div class="chart-subtitle">Negatív érték: eszkalációs irány</div>
+            <div class="chart-title">Konfliktusindex – napi értékek</div>
+            <div class="chart-subtitle">Negatív érték: eszkalációs irány – elmúlt 30 nap</div>
           </div>
           <div class="chart-wrap"><canvas id="conflictChart"></canvas></div>
         </article>
@@ -1150,10 +1196,58 @@
         <article class="chart-card">
           <div class="chart-card-head">
             <div class="chart-title">FIRMS területi megoszlás</div>
-            <div class="chart-subtitle">Az azonosított hőpontok fő földrajzi kategóriái</div>
+            <div class="chart-subtitle">
+              Frontközeli, ukrán hátország, orosz hátország, Krím és egyéb – elmúlt 30 nap
+            </div>
           </div>
           <div class="chart-wrap"><canvas id="firmsShareChart"></canvas></div>
         </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <h2 class="panel-title">Strategic Territorial Dynamics</h2>
+        <div class="panel-subtitle">
+          DeepState-alapú hosszú távú területi összesítés havi és éves bontásban
+        </div>
+      </div>
+      <div class="panel-badge" id="historySummaryBadge">history</div>
+    </div>
+
+    <div class="panel-body">
+      <div class="charts-grid">
+        <article class="chart-card">
+          <div class="chart-card-head">
+            <div class="chart-title">Havi területi változás</div>
+            <div class="chart-subtitle">
+              Orosz nyereség, ukrán visszafoglalás és nettó mérleg – hónapról hónapra
+            </div>
+          </div>
+          <div class="strategic-chart-wrap">
+            <canvas id="monthlyTerritorialChart"></canvas>
+          </div>
+        </article>
+
+        <article class="chart-card">
+          <div class="chart-card-head">
+            <div class="chart-title">Éves területi változás</div>
+            <div class="chart-subtitle">
+              DeepState történeti delta összesítve – évről évre
+            </div>
+          </div>
+          <div class="strategic-chart-wrap">
+            <canvas id="yearlyTerritorialChart"></canvas>
+          </div>
+        </article>
+      </div>
+
+      <div class="comparison-method" id="historyMethodNote">
+        A hosszú távú diagramok a <code>data/dashboard_long_term_summary.json</code>
+        fájlból töltődnek. Az összesítőt a mellékelt Python-szkript készíti a
+        rendelkezésre álló DeepState területi delta rekordokból.
       </div>
     </div>
   </section>
@@ -2262,12 +2356,33 @@ Chart.defaults.color='#6f8294';
 Chart.defaults.borderColor='rgba(111,130,148,.18)';
 Chart.defaults.font.family='Inter, Arial, sans-serif';
 
-const labels=['1.','3.','5.','7.','9.','11.','13.','15.','17.','19.','21.','23.','25.','27.','29.'];
+const DASHBOARD_SUMMARY_URL='../data/dashboard_long_term_summary.json';
 
-new Chart(document.getElementById('territorialChart'),{
+function huDate(date){
+  return new Intl.DateTimeFormat('hu-HU',{
+    year:'numeric',
+    month:'long',
+    day:'numeric'
+  }).format(date);
+}
+
+function setTacticalPeriod(){
+  const end=new Date();
+  const start=new Date(end);
+  start.setDate(start.getDate()-29);
+
+  const target=document.getElementById('tacticalPeriodText');
+  if(target){
+    target.textContent=`${huDate(start)} – ${huDate(end)}`;
+  }
+}
+
+const fallbackLabels=['1.','3.','5.','7.','9.','11.','13.','15.','17.','19.','21.','23.','25.','27.','29.'];
+
+let territorialChart=new Chart(document.getElementById('territorialChart'),{
   type:'bar',
   data:{
-    labels,
+    labels:fallbackLabels,
     datasets:[
       {
         label:'Orosz nyereség',
@@ -2295,14 +2410,31 @@ new Chart(document.getElementById('territorialChart'),{
   }
 });
 
-new Chart(document.getElementById('firmsChart'),{
+let firmsChart=new Chart(document.getElementById('firmsChart'),{
   type:'bar',
   data:{
-    labels,
+    labels:fallbackLabels,
     datasets:[
-      {label:'Frontközeli',data:[34,42,38,51,47,59,55,63,58,69,72,67,76,81,74],backgroundColor:'rgba(216,70,63,.72)'},
-      {label:'Hátország',data:[18,24,22,31,28,35,33,40,44,48,52,57,61,68,64],backgroundColor:'rgba(47,131,189,.72)'},
-      {label:'Krím',data:[7,9,8,10,11,13,12,16,14,18,20,22,19,24,21],backgroundColor:'rgba(108,77,197,.65)'}
+      {
+        label:'Frontközeli',
+        data:[34,42,38,51,47,59,55,63,58,69,72,67,76,81,74],
+        backgroundColor:'rgba(216,70,63,.72)'
+      },
+      {
+        label:'Ukrán hátország',
+        data:[18,24,22,31,28,35,33,40,44,48,52,57,61,68,64],
+        backgroundColor:'rgba(47,131,189,.72)'
+      },
+      {
+        label:'Orosz hátország',
+        data:[4,7,5,8,6,9,11,10,13,12,15,17,16,19,18],
+        backgroundColor:'rgba(197,140,37,.72)'
+      },
+      {
+        label:'Krím',
+        data:[7,9,8,10,11,13,12,16,14,18,20,22,19,24,21],
+        backgroundColor:'rgba(108,77,197,.65)'
+      }
     ]
   },
   options:{
@@ -2313,10 +2445,10 @@ new Chart(document.getElementById('firmsChart'),{
   }
 });
 
-new Chart(document.getElementById('conflictChart'),{
+let conflictChart=new Chart(document.getElementById('conflictChart'),{
   type:'line',
   data:{
-    labels,
+    labels:fallbackLabels,
     datasets:[{
       label:'Konfliktusindex',
       data:[-4,-5,-3,-7,-6,-8,-7,-9,-11,-10,-12,-13,-11,-14,-12],
@@ -2326,22 +2458,233 @@ new Chart(document.getElementById('conflictChart'),{
       tension:.32
     }]
   },
-  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}}}
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{legend:{position:'bottom'}}
+  }
 });
 
-new Chart(document.getElementById('firmsShareChart'),{
+let firmsShareChart=new Chart(document.getElementById('firmsShareChart'),{
   type:'doughnut',
   data:{
-    labels:['Frontközeli','Hátország','Krím','Egyéb'],
+    labels:[
+      'Frontközeli',
+      'Ukrán hátország',
+      'Orosz hátország',
+      'Krím',
+      'Egyéb'
+    ],
     datasets:[{
-      data:[51,31,12,6],
-      backgroundColor:['#d8463f','#2f83bd','#6c4dc5','#9aa8b5'],
+      data:[45,25,12,12,6],
+      backgroundColor:[
+        '#d8463f',
+        '#2f83bd',
+        '#c58c25',
+        '#6c4dc5',
+        '#9aa8b5'
+      ],
       borderColor:'#fff',
       borderWidth:3
     }]
   },
-  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}}}
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{legend:{position:'bottom'}}
+  }
 });
+
+let monthlyTerritorialChart=new Chart(
+  document.getElementById('monthlyTerritorialChart'),
+  {
+    type:'bar',
+    data:{
+      labels:[],
+      datasets:[
+        {
+          label:'Orosz nyereség',
+          data:[],
+          backgroundColor:'rgba(216,70,63,.78)',
+          borderRadius:4
+        },
+        {
+          label:'Ukrán visszafoglalás',
+          data:[],
+          backgroundColor:'rgba(47,138,97,.72)',
+          borderRadius:4
+        },
+        {
+          type:'line',
+          label:'Nettó változás',
+          data:[],
+          borderColor:'#1d5f8f',
+          backgroundColor:'rgba(29,95,143,.10)',
+          tension:.25,
+          pointRadius:3
+        }
+      ]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{legend:{position:'bottom'}},
+      scales:{y:{beginAtZero:true,title:{display:true,text:'km²'}}}
+    }
+  }
+);
+
+let yearlyTerritorialChart=new Chart(
+  document.getElementById('yearlyTerritorialChart'),
+  {
+    type:'bar',
+    data:{
+      labels:[],
+      datasets:[
+        {
+          label:'Orosz nyereség',
+          data:[],
+          backgroundColor:'rgba(216,70,63,.78)',
+          borderRadius:5
+        },
+        {
+          label:'Ukrán visszafoglalás',
+          data:[],
+          backgroundColor:'rgba(47,138,97,.72)',
+          borderRadius:5
+        },
+        {
+          type:'line',
+          label:'Nettó változás',
+          data:[],
+          borderColor:'#1d5f8f',
+          backgroundColor:'rgba(29,95,143,.10)',
+          tension:.2,
+          pointRadius:4
+        }
+      ]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{legend:{position:'bottom'}},
+      scales:{y:{beginAtZero:true,title:{display:true,text:'km²'}}}
+    }
+  }
+);
+
+function updateChart(chart,labels,datasets){
+  chart.data.labels=labels;
+  datasets.forEach((values,index)=>{
+    if(chart.data.datasets[index]){
+      chart.data.datasets[index].data=values;
+    }
+  });
+  chart.update();
+}
+
+function updateLongTermCharts(summary){
+  const monthly=Array.isArray(summary?.territorial?.monthly)
+    ? summary.territorial.monthly
+    : [];
+
+  const yearly=Array.isArray(summary?.territorial?.yearly)
+    ? summary.territorial.yearly
+    : [];
+
+  updateChart(
+    monthlyTerritorialChart,
+    monthly.map(item=>item.month),
+    [
+      monthly.map(item=>Number(item.russian_gain_km2||0)),
+      monthly.map(item=>Number(item.ukrainian_recapture_km2||0)),
+      monthly.map(item=>Number(item.net_change_km2||0))
+    ]
+  );
+
+  updateChart(
+    yearlyTerritorialChart,
+    yearly.map(item=>String(item.year)),
+    [
+      yearly.map(item=>Number(item.russian_gain_km2||0)),
+      yearly.map(item=>Number(item.ukrainian_recapture_km2||0)),
+      yearly.map(item=>Number(item.net_change_km2||0))
+    ]
+  );
+
+  const badge=document.getElementById('historySummaryBadge');
+  if(badge){
+    badge.textContent=summary?.generated_at
+      ? `frissítve: ${String(summary.generated_at).slice(0,10)}`
+      : 'nincs adat';
+  }
+}
+
+function updateFirmsCharts(summary){
+  const daily=Array.isArray(summary?.firms?.daily)
+    ? summary.firms.daily
+    : [];
+
+  if(daily.length){
+    updateChart(
+      firmsChart,
+      daily.map(item=>item.date?.slice(5) || ''),
+      [
+        daily.map(item=>Number(item.frontline||0)),
+        daily.map(item=>Number(item.ukrainian_rear||0)),
+        daily.map(item=>Number(item.russian_rear||0)),
+        daily.map(item=>Number(item.crimea||0))
+      ]
+    );
+  }
+
+  const shares=summary?.firms?.shares || null;
+
+  if(shares){
+    firmsShareChart.data.datasets[0].data=[
+      Number(shares.frontline||0),
+      Number(shares.ukrainian_rear||0),
+      Number(shares.russian_rear||0),
+      Number(shares.crimea||0),
+      Number(shares.other||0)
+    ];
+    firmsShareChart.update();
+  }
+}
+
+async function loadDashboardLongTermSummary(){
+  try{
+    const response=await fetch(
+      DASHBOARD_SUMMARY_URL,
+      {cache:'no-store'}
+    );
+
+    if(!response.ok){
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const summary=await response.json();
+    updateLongTermCharts(summary);
+    updateFirmsCharts(summary);
+
+    const note=document.getElementById('historyMethodNote');
+    if(note && summary?.methodology){
+      note.textContent=summary.methodology;
+    }
+  }catch(error){
+    console.warn('Dashboard long-term summary:',error);
+
+    const badge=document.getElementById('historySummaryBadge');
+    if(badge) badge.textContent='összesítő hiányzik';
+  }
+}
+
+setTacticalPeriod();
+loadDashboardLongTermSummary();
+
+
 
 document.getElementById('periodSelect').addEventListener('change',e=>render(Number(e.target.value)));
 
@@ -2352,4 +2695,5 @@ loadFrontComparisonAndFortressCities();
 
 </body>
 </html>
+
 
