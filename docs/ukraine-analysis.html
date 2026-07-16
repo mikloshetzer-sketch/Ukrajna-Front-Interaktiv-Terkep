@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Ukrajna fronthelyzet – OSINT-alapú elemző dashboard">
   <title>Ukraine Conflict Intelligence Dashboard</title>
-
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 
   <style>
@@ -30,14 +29,16 @@
       --green-soft:#edf7f2;
       --yellow:#c58c25;
       --yellow-soft:#fff7e4;
+      --orange:#d97832;
+      --orange-soft:#fff1e6;
       --purple:#6c4dc5;
+      --purple-soft:#f1edff;
       --shadow:0 10px 25px rgba(30,55,80,.10);
       --radius:15px;
       --max:1510px;
     }
 
     *{box-sizing:border-box}
-
     html{scroll-behavior:smooth}
 
     body{
@@ -85,7 +86,6 @@
       border-radius:11px;
       background:rgba(255,255,255,.08);
       font-weight:900;
-      letter-spacing:.04em;
     }
 
     .brand-kicker{
@@ -103,7 +103,6 @@
       font-size:clamp(32px,4.2vw,58px);
       line-height:1.02;
       letter-spacing:-.025em;
-      text-shadow:0 1px 0 rgba(0,0,0,.15);
     }
 
     .page-subtitle{
@@ -249,175 +248,6 @@
       text-transform:uppercase;
     }
 
-    .assessment-box{
-      padding:14px 15px;
-      border:1px solid var(--line);
-      border-left:5px solid var(--blue);
-      border-radius:11px;
-      background:var(--soft);
-    }
-
-    .assessment-box p{
-      margin:0 0 10px;
-      color:var(--body);
-      font-size:13px;
-      line-height:1.7;
-    }
-
-    .assessment-box p:last-child{margin-bottom:0}
-
-    .window-banner{
-      display:flex;
-      gap:12px;
-      align-items:center;
-      padding:11px 13px;
-      border:1px solid #f0c1bf;
-      border-left:5px solid var(--red);
-      border-radius:10px;
-      background:var(--red-soft);
-    }
-
-    .window-date{
-      flex:0 0 auto;
-      padding:7px 10px;
-      border-radius:7px;
-      background:var(--red);
-      color:#fff;
-      font-size:10px;
-      font-weight:900;
-    }
-
-    .window-banner strong{
-      display:block;
-      color:var(--text);
-      font-size:12px;
-    }
-
-    .window-banner span{
-      display:block;
-      margin-top:2px;
-      color:var(--muted);
-      font-size:10px;
-    }
-
-    .window-grid{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:9px;
-      margin-top:10px;
-    }
-
-    .window-card{
-      border:1px solid var(--line);
-      border-radius:11px;
-      background:var(--soft);
-      overflow:hidden;
-    }
-
-    .window-card-head{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      padding:11px 12px;
-      border-bottom:1px solid var(--line);
-    }
-
-    .window-title{
-      color:var(--text);
-      font-family:Georgia,"Times New Roman",serif;
-      font-size:18px;
-      font-weight:800;
-    }
-
-    .window-risk{
-      padding:4px 7px;
-      border-radius:999px;
-      background:var(--red-soft);
-      color:var(--red);
-      font-size:8px;
-      font-weight:900;
-      text-transform:uppercase;
-    }
-
-    .window-stats{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:7px;
-      padding:11px;
-    }
-
-    .window-stat{
-      padding:9px 6px;
-      border:1px solid var(--line);
-      border-radius:8px;
-      background:#fff;
-      text-align:center;
-    }
-
-    .window-stat strong{
-      display:block;
-      color:var(--text);
-      font-size:16px;
-    }
-
-    .window-stat span{
-      display:block;
-      margin-top:5px;
-      color:var(--muted);
-      font-size:8px;
-      font-weight:850;
-      text-transform:uppercase;
-    }
-
-    .window-net{
-      margin:0 11px 11px;
-      padding:8px 10px;
-      border-radius:8px;
-      background:#fff;
-      color:#7b3230;
-      font-size:10px;
-      font-weight:750;
-      text-align:center;
-    }
-
-    .charts-grid{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:10px;
-    }
-
-    .chart-card{
-      border:1px solid var(--line);
-      border-radius:11px;
-      background:var(--soft);
-    }
-
-    .chart-card-head{
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      padding:12px 13px 0;
-    }
-
-    .chart-title{
-      color:var(--text);
-      font-family:Georgia,"Times New Roman",serif;
-      font-size:16px;
-      font-weight:800;
-    }
-
-    .chart-subtitle{
-      margin-top:3px;
-      color:var(--muted);
-      font-size:10px;
-    }
-
-    .chart-wrap{
-      height:300px;
-      padding:10px 12px 12px;
-    }
-
     .sector-grid{
       display:grid;
       grid-template-columns:repeat(4,minmax(0,1fr));
@@ -458,7 +288,7 @@
     }
 
     .critical{background:var(--red-soft);color:var(--red)}
-    .high{background:#fff0e4;color:#a55b21}
+    .high{background:var(--orange-soft);color:#a55b21}
     .elevated{background:var(--yellow-soft);color:#8b671c}
     .moderate{background:var(--blue-soft);color:var(--blue-dark)}
 
@@ -495,6 +325,186 @@
       display:block;
       margin-top:4px;
       font-size:13px;
+    }
+
+    .assessment-box{
+      padding:14px 15px;
+      border:1px solid var(--line);
+      border-left:5px solid var(--blue);
+      border-radius:11px;
+      background:var(--soft);
+    }
+
+    .assessment-box p{
+      margin:0 0 10px;
+      color:var(--body);
+      font-size:13px;
+      line-height:1.7;
+    }
+
+    .assessment-box p:last-child{margin-bottom:0}
+
+    .event-grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:10px;
+    }
+
+    .event-column{
+      border:1px solid var(--line);
+      border-radius:11px;
+      background:var(--soft);
+      overflow:hidden;
+    }
+
+    .event-column-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      padding:12px 13px;
+      border-bottom:1px solid var(--line);
+      background:#fff;
+    }
+
+    .event-window{
+      color:var(--text);
+      font-family:Georgia,"Times New Roman",serif;
+      font-size:18px;
+      font-weight:800;
+    }
+
+    .event-count{
+      padding:4px 7px;
+      border-radius:999px;
+      background:var(--blue-soft);
+      color:var(--blue-dark);
+      font-size:8px;
+      font-weight:900;
+      text-transform:uppercase;
+    }
+
+    .event-list{
+      display:grid;
+      gap:8px;
+      padding:10px;
+    }
+
+    .event-card{
+      padding:11px;
+      border:1px solid var(--line);
+      border-left:5px solid var(--red);
+      border-radius:9px;
+      background:#fff;
+    }
+
+    .event-card.recapture{border-left-color:var(--green)}
+    .event-card.strike{border-left-color:var(--purple)}
+    .event-card.firms{border-left-color:var(--orange)}
+
+    .event-top{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:flex-start;
+    }
+
+    .event-type{
+      color:var(--muted);
+      font-size:8px;
+      font-weight:900;
+      letter-spacing:.07em;
+      text-transform:uppercase;
+    }
+
+    .event-time{
+      color:var(--muted);
+      font-size:8px;
+      white-space:nowrap;
+    }
+
+    .event-title{
+      margin-top:4px;
+      color:var(--text);
+      font-size:13px;
+      font-weight:900;
+    }
+
+    .event-value{
+      margin-top:6px;
+      color:#0f456e;
+      font-size:21px;
+      font-weight:950;
+    }
+
+    .event-meta{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:6px;
+      margin-top:8px;
+    }
+
+    .event-meta-box{
+      padding:7px;
+      border-radius:7px;
+      background:var(--soft);
+      border:1px solid var(--line);
+    }
+
+    .event-meta-box span{
+      display:block;
+      color:var(--muted);
+      font-size:7px;
+      font-weight:850;
+      text-transform:uppercase;
+    }
+
+    .event-meta-box strong{
+      display:block;
+      margin-top:3px;
+      color:var(--body);
+      font-size:10px;
+    }
+
+    .event-note{
+      margin-top:8px;
+      color:var(--muted);
+      font-size:10px;
+      line-height:1.5;
+    }
+
+    .charts-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+    }
+
+    .chart-card{
+      border:1px solid var(--line);
+      border-radius:11px;
+      background:var(--soft);
+    }
+
+    .chart-card-head{
+      padding:12px 13px 0;
+    }
+
+    .chart-title{
+      color:var(--text);
+      font-family:Georgia,"Times New Roman",serif;
+      font-size:16px;
+      font-weight:800;
+    }
+
+    .chart-subtitle{
+      margin-top:3px;
+      color:var(--muted);
+      font-size:10px;
+    }
+
+    .chart-wrap{
+      height:300px;
+      padding:10px 12px 12px;
     }
 
     .summary-grid{
@@ -542,7 +552,7 @@
     @media(max-width:900px){
       .hero-header-inner{align-items:flex-start;flex-direction:column}
       .header-actions{justify-content:flex-start}
-      .charts-grid,.window-grid,.summary-grid{grid-template-columns:1fr}
+      .charts-grid,.event-grid,.summary-grid{grid-template-columns:1fr}
     }
 
     @media(max-width:620px){
@@ -550,7 +560,6 @@
       .page-title{font-size:34px}
       .kpi-grid,.sector-grid{grid-template-columns:1fr}
       .control-strip{align-items:flex-start;flex-direction:column}
-      .window-stats{grid-template-columns:1fr}
     }
   </style>
 </head>
@@ -618,8 +627,20 @@
   <section class="panel">
     <div class="panel-head">
       <div>
-        <h2 class="panel-title">Operational Assessment</h2>
+        <h2 class="panel-title" id="sectorPanelTitle">Front sectors – 30 napos mérleg</h2>
+        <div class="panel-subtitle">A területi mérleg és a kockázati pontszám mindig a fent kiválasztott időszakhoz igazodik</div>
       </div>
+      <div class="panel-badge" id="sectorPeriodBadge">30 nap</div>
+    </div>
+
+    <div class="panel-body">
+      <div class="sector-grid" id="sectorGrid"></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div><h2 class="panel-title">Operational Assessment</h2></div>
     </div>
 
     <div class="panel-body">
@@ -635,22 +656,14 @@
   <section class="panel">
     <div class="panel-head">
       <div>
-        <h2 class="panel-title">Territorial change – 24 / 48 / 72 hours</h2>
-        <div class="panel-subtitle">Különálló, később a blogon is használható gyorsjelentési blokk</div>
+        <h2 class="panel-title">Extraordinary Operational Events – 24 / 48 / 72 hours</h2>
+        <div class="panel-subtitle">Jelentős területi változások, rendkívüli csapások, FIRMS-klaszterek és kiemelt OSINT-események</div>
       </div>
-      <div class="panel-badge">rapid update</div>
+      <div class="panel-badge">rapid warning</div>
     </div>
 
     <div class="panel-body">
-      <div class="window-banner">
-        <div class="window-date">LATEST</div>
-        <div>
-          <strong>Gyors területi helyzetkép</strong>
-          <span>A blokk a rövid távú területi mérleget, FIRMS-aktivitást és nettó változást emeli ki.</span>
-        </div>
-      </div>
-
-      <div class="window-grid" id="windowGrid"></div>
+      <div class="event-grid" id="eventGrid"></div>
     </div>
   </section>
 
@@ -666,40 +679,32 @@
       <div class="charts-grid">
         <article class="chart-card">
           <div class="chart-card-head">
-            <div>
-              <div class="chart-title">Területi változás</div>
-              <div class="chart-subtitle">Orosz nyereség és ukrán visszafoglalás – km² / nap</div>
-            </div>
+            <div class="chart-title">Területi változás</div>
+            <div class="chart-subtitle">Orosz nyereség és ukrán visszafoglalás – km² / nap</div>
           </div>
           <div class="chart-wrap"><canvas id="territorialChart"></canvas></div>
         </article>
 
         <article class="chart-card">
           <div class="chart-card-head">
-            <div>
-              <div class="chart-title">FIRMS-aktivitás</div>
-              <div class="chart-subtitle">Frontközeli, hátországi és krími azonosítások</div>
-            </div>
+            <div class="chart-title">FIRMS-aktivitás</div>
+            <div class="chart-subtitle">Frontközeli, hátországi és krími azonosítások</div>
           </div>
           <div class="chart-wrap"><canvas id="firmsChart"></canvas></div>
         </article>
 
         <article class="chart-card">
           <div class="chart-card-head">
-            <div>
-              <div class="chart-title">Konfliktusindex</div>
-              <div class="chart-subtitle">Negatív érték: eszkalációs irány</div>
-            </div>
+            <div class="chart-title">Konfliktusindex</div>
+            <div class="chart-subtitle">Negatív érték: eszkalációs irány</div>
           </div>
           <div class="chart-wrap"><canvas id="conflictChart"></canvas></div>
         </article>
 
         <article class="chart-card">
           <div class="chart-card-head">
-            <div>
-              <div class="chart-title">FIRMS területi megoszlás</div>
-              <div class="chart-subtitle">Az azonosított hőpontok fő földrajzi kategóriái</div>
-            </div>
+            <div class="chart-title">FIRMS területi megoszlás</div>
+            <div class="chart-subtitle">Az azonosított hőpontok fő földrajzi kategóriái</div>
           </div>
           <div class="chart-wrap"><canvas id="firmsShareChart"></canvas></div>
         </article>
@@ -709,23 +714,7 @@
 
   <section class="panel">
     <div class="panel-head">
-      <div>
-        <h2 class="panel-title">Front sectors</h2>
-        <div class="panel-subtitle">Kockázati pontszám és területi mérleg frontszektoronként</div>
-      </div>
-      <div class="panel-badge">0–100</div>
-    </div>
-
-    <div class="panel-body">
-      <div class="sector-grid" id="sectorGrid"></div>
-    </div>
-  </section>
-
-  <section class="panel">
-    <div class="panel-head">
-      <div>
-        <h2 class="panel-title">Strategic Assessment</h2>
-      </div>
+      <div><h2 class="panel-title">Strategic Assessment</h2></div>
     </div>
 
     <div class="panel-body">
@@ -763,61 +752,187 @@ const DATA={
   90:{ru:389.4,ua:41.2,firms:6210,index:-338,osint:3288}
 };
 
-const windows=[
-  {title:'24 óra',ru:3.8,ua:.4,firms:87,status:'magas aktivitás'},
-  {title:'48 óra',ru:7.1,ua:.9,firms:161,status:'növekvő nyomás'},
-  {title:'72 óra',ru:10.9,ua:1.3,firms:238,status:'tartós eszkaláció'}
-];
+const SECTOR_DATA={
+  1:[
+    {name:'Ukrán hátország',sub:'mélységi csapások és infrastruktúra',score:94,risk:'CRITICAL',ru:0,ua:0},
+    {name:'Pokrovsk',sub:'folyamatos szárazföldi nyomás',score:89,risk:'CRITICAL',ru:1.2,ua:.1},
+    {name:'Kostiantynivka–Csasziv Jar',sub:'védelmi csomópontok térsége',score:82,risk:'HIGH',ru:.7,ua:.1},
+    {name:'Kupjanszk–Liman',sub:'északi hadműveleti nyomás',score:75,risk:'HIGH',ru:.5,ua:0},
+    {name:'Dél-Donyeck',sub:'szakaszos területi mozgás',score:68,risk:'ELEVATED',ru:.8,ua:.1},
+    {name:'Zaporizzsja',sub:'korlátozott, de növekvő aktivitás',score:59,risk:'ELEVATED',ru:.4,ua:.1},
+    {name:'Krím',sub:'csapások és légvédelmi aktivitás',score:54,risk:'MODERATE',ru:0,ua:0},
+    {name:'Herszon',sub:'alacsonyabb területi dinamika',score:42,risk:'MODERATE',ru:.2,ua:0}
+  ],
+  7:[
+    {name:'Ukrán hátország',sub:'mélységi csapások és infrastruktúra',score:94,risk:'CRITICAL',ru:0,ua:0},
+    {name:'Pokrovsk',sub:'folyamatos szárazföldi nyomás',score:89,risk:'CRITICAL',ru:5.6,ua:.2},
+    {name:'Kostiantynivka–Csasziv Jar',sub:'védelmi csomópontok térsége',score:82,risk:'HIGH',ru:3.1,ua:.4},
+    {name:'Kupjanszk–Liman',sub:'északi hadműveleti nyomás',score:75,risk:'HIGH',ru:1.8,ua:.1},
+    {name:'Dél-Donyeck',sub:'szakaszos területi mozgás',score:68,risk:'ELEVATED',ru:2.2,ua:.3},
+    {name:'Zaporizzsja',sub:'korlátozott, de növekvő aktivitás',score:59,risk:'ELEVATED',ru:1.1,ua:.2},
+    {name:'Krím',sub:'csapások és légvédelmi aktivitás',score:54,risk:'MODERATE',ru:0,ua:0},
+    {name:'Herszon',sub:'alacsonyabb területi dinamika',score:42,risk:'MODERATE',ru:.3,ua:.1}
+  ],
+  30:[
+    {name:'Ukrán hátország',sub:'mélységi csapások és infrastruktúra',score:94,risk:'CRITICAL',ru:0,ua:0},
+    {name:'Pokrovsk',sub:'folyamatos szárazföldi nyomás',score:91,risk:'CRITICAL',ru:31.4,ua:2.2},
+    {name:'Kostiantynivka–Csasziv Jar',sub:'védelmi csomópontok térsége',score:85,risk:'HIGH',ru:21.7,ua:3.8},
+    {name:'Kupjanszk–Liman',sub:'északi hadműveleti nyomás',score:78,risk:'HIGH',ru:14.9,ua:1.7},
+    {name:'Dél-Donyeck',sub:'szakaszos területi mozgás',score:72,risk:'HIGH',ru:18.6,ua:4.1},
+    {name:'Zaporizzsja',sub:'korlátozott, de növekvő aktivitás',score:64,risk:'ELEVATED',ru:9.8,ua:1.9},
+    {name:'Krím',sub:'csapások és légvédelmi aktivitás',score:57,risk:'MODERATE',ru:0,ua:0},
+    {name:'Herszon',sub:'alacsonyabb területi dinamika',score:45,risk:'MODERATE',ru:3.2,ua:1.1}
+  ],
+  90:[
+    {name:'Ukrán hátország',sub:'mélységi csapások és infrastruktúra',score:96,risk:'CRITICAL',ru:0,ua:0},
+    {name:'Pokrovsk',sub:'folyamatos szárazföldi nyomás',score:94,risk:'CRITICAL',ru:96.7,ua:8.4},
+    {name:'Kostiantynivka–Csasziv Jar',sub:'védelmi csomópontok térsége',score:89,risk:'CRITICAL',ru:74.3,ua:10.2},
+    {name:'Kupjanszk–Liman',sub:'északi hadműveleti nyomás',score:83,risk:'HIGH',ru:52.8,ua:5.1},
+    {name:'Dél-Donyeck',sub:'szakaszos területi mozgás',score:79,risk:'HIGH',ru:61.4,ua:9.7},
+    {name:'Zaporizzsja',sub:'korlátozott, de növekvő aktivitás',score:70,risk:'HIGH',ru:33.8,ua:4.3},
+    {name:'Krím',sub:'csapások és légvédelmi aktivitás',score:61,risk:'ELEVATED',ru:0,ua:0},
+    {name:'Herszon',sub:'alacsonyabb területi dinamika',score:50,risk:'MODERATE',ru:11.9,ua:3.5}
+  ]
+};
 
-const sectors=[
-  {name:'Ukrán hátország',sub:'mélységi csapások és infrastruktúra',score:94,risk:'CRITICAL',ru:0,ua:0},
-  {name:'Pokrovsk',sub:'folyamatos szárazföldi nyomás',score:89,risk:'CRITICAL',ru:5.6,ua:.2},
-  {name:'Kostiantynivka–Csasziv Jar',sub:'védelmi csomópontok térsége',score:82,risk:'HIGH',ru:3.1,ua:.4},
-  {name:'Kupjanszk–Liman',sub:'északi hadműveleti nyomás',score:75,risk:'HIGH',ru:1.8,ua:.1},
-  {name:'Dél-Donyeck',sub:'szakaszos területi mozgás',score:68,risk:'ELEVATED',ru:2.2,ua:.3},
-  {name:'Zaporizzsja',sub:'korlátozott, de növekvő aktivitás',score:59,risk:'ELEVATED',ru:1.1,ua:.2},
-  {name:'Krím',sub:'csapások és légvédelmi aktivitás',score:54,risk:'MODERATE',ru:0,ua:0},
-  {name:'Herszon',sub:'alacsonyabb területi dinamika',score:42,risk:'MODERATE',ru:.3,ua:.1}
-];
+const EVENTS={
+  24:[
+    {
+      type:'Jelentős ukrán visszafoglalás',
+      title:'Velyka Novosilka',
+      value:'42,88 km²',
+      time:'2026-07-15',
+      className:'recapture',
+      confidence:'Magas',
+      source:'Területi delta',
+      note:'A rendszer a napi frontgeometriában kiugró méretű ukrán területi visszafoglalást azonosított.'
+    },
+    {
+      type:'Rendkívüli FIRMS-klaszter',
+      title:'Pokrovsk térsége',
+      value:'81 hőpont',
+      time:'utolsó 24 óra',
+      className:'firms',
+      confidence:'Közepes',
+      source:'NASA FIRMS',
+      note:'A frontközeli hőpontok koncentrációja a szokásos napi háttérszint fölé emelkedett.'
+    }
+  ],
+  48:[
+    {
+      type:'Orosz területi nyereség',
+      title:'Pokrovsk keleti szektor',
+      value:'6,2 km²',
+      time:'utolsó 48 óra',
+      className:'',
+      confidence:'Magas',
+      source:'Területi delta',
+      note:'A változás több egymást követő napi poligonból áll össze, ezért tartós nyomásra utal.'
+    },
+    {
+      type:'Mélységi csapás',
+      title:'Ukrán hátország',
+      value:'3 célterület',
+      time:'utolsó 48 óra',
+      className:'strike',
+      confidence:'Közepes',
+      source:'OSINT feed',
+      note:'Logisztikai és energetikai célpontokra utaló események kerültek azonosításra.'
+    }
+  ],
+  72:[
+    {
+      type:'Legnagyobb műveleti változás',
+      title:'Velyka Novosilka',
+      value:'42,88 km²',
+      time:'utolsó 72 óra',
+      className:'recapture',
+      confidence:'Magas',
+      source:'Területi delta',
+      note:'A háromnapos időablak legjelentősebb azonosított területi eseménye.'
+    },
+    {
+      type:'Tartós eszkaláció',
+      title:'Pokrovsk–Kostiantynivka',
+      value:'2 aktív szektor',
+      time:'utolsó 72 óra',
+      className:'strike',
+      confidence:'Magas',
+      source:'Összesített modell',
+      note:'A területi változás, FIRMS-aktivitás és OSINT-jelzések együttesen emelkedett nyomást mutatnak.'
+    }
+  ]
+};
 
 const fmt=n=>n.toLocaleString('hu-HU',{minimumFractionDigits:1,maximumFractionDigits:1});
 const riskClass=r=>r==='CRITICAL'?'critical':r==='HIGH'?'high':r==='ELEVATED'?'elevated':'moderate';
 
-document.getElementById('windowGrid').innerHTML=windows.map(w=>{
-  const net=w.ru-w.ua;
-  return `<article class="window-card">
-    <div class="window-card-head">
-      <div class="window-title">${w.title}</div>
-      <div class="window-risk">${w.status}</div>
-    </div>
-    <div class="window-stats">
-      <div class="window-stat"><strong style="color:var(--red)">+${fmt(w.ru)}</strong><span>orosz nyereség km²</span></div>
-      <div class="window-stat"><strong style="color:var(--green)">+${fmt(w.ua)}</strong><span>ukrán visszafoglalás km²</span></div>
-      <div class="window-stat"><strong>${w.firms}</strong><span>FIRMS</span></div>
-    </div>
-    <div class="window-net">Nettó területi egyenleg: +${fmt(net)} km² orosz irányú változás.</div>
-  </article>`;
-}).join('');
+function renderSectors(period){
+  const periodLabel=period===1?'24 órás':`${period} napos`;
+  document.getElementById('sectorPanelTitle').textContent=`Front sectors – ${periodLabel} mérleg`;
+  document.getElementById('sectorPeriodBadge').textContent=period===1?'24 óra':`${period} nap`;
 
-document.getElementById('sectorGrid').innerHTML=sectors.map(s=>`
-  <article class="sector-card">
-    <div class="sector-head">
-      <div>
-        <div class="sector-name">${s.name}</div>
-        <div class="sector-sub">${s.sub}</div>
+  document.getElementById('sectorGrid').innerHTML=SECTOR_DATA[period].map(s=>`
+    <article class="sector-card">
+      <div class="sector-head">
+        <div>
+          <div class="sector-name">${s.name}</div>
+          <div class="sector-sub">${s.sub}</div>
+        </div>
+        <div class="risk-tag ${riskClass(s.risk)}">${s.risk}</div>
       </div>
-      <div class="risk-tag ${riskClass(s.risk)}">${s.risk}</div>
-    </div>
-    <div class="sector-score">${s.score}/100</div>
-    <div class="sector-delta">
-      <div class="sector-delta-box"><span>Orosz nyereség</span><strong style="color:var(--red)">+${fmt(s.ru)} km²</strong></div>
-      <div class="sector-delta-box"><span>Ukrán visszafoglalás</span><strong style="color:var(--green)">+${fmt(s.ua)} km²</strong></div>
-    </div>
-  </article>
-`).join('');
+      <div class="sector-score">${s.score}/100</div>
+      <div class="sector-delta">
+        <div class="sector-delta-box">
+          <span>Orosz nyereség</span>
+          <strong style="color:var(--red)">+${fmt(s.ru)} km²</strong>
+        </div>
+        <div class="sector-delta-box">
+          <span>Ukrán visszafoglalás</span>
+          <strong style="color:var(--green)">+${fmt(s.ua)} km²</strong>
+        </div>
+      </div>
+    </article>
+  `).join('');
+}
+
+function renderEvents(){
+  const columns=[
+    {window:'24 óra',events:EVENTS[24]},
+    {window:'48 óra',events:EVENTS[48]},
+    {window:'72 óra',events:EVENTS[72]}
+  ];
+
+  document.getElementById('eventGrid').innerHTML=columns.map(col=>`
+    <section class="event-column">
+      <div class="event-column-head">
+        <div class="event-window">${col.window}</div>
+        <div class="event-count">${col.events.length} kiemelt esemény</div>
+      </div>
+      <div class="event-list">
+        ${col.events.map(e=>`
+          <article class="event-card ${e.className}">
+            <div class="event-top">
+              <div class="event-type">${e.type}</div>
+              <div class="event-time">${e.time}</div>
+            </div>
+            <div class="event-title">${e.title}</div>
+            <div class="event-value">${e.value}</div>
+            <div class="event-meta">
+              <div class="event-meta-box"><span>Megbízhatóság</span><strong>${e.confidence}</strong></div>
+              <div class="event-meta-box"><span>Forrás</span><strong>${e.source}</strong></div>
+            </div>
+            <div class="event-note">${e.note}</div>
+          </article>
+        `).join('')}
+      </div>
+    </section>
+  `).join('');
+}
 
 function render(period){
-  const d=DATA[period],net=d.ru-d.ua;
+  const d=DATA[period];
+  const net=d.ru-d.ua;
 
   document.getElementById('lastUpdated').textContent=new Date().toLocaleString('hu-HU');
   document.getElementById('ruGain').textContent=fmt(d.ru)+' km²';
@@ -831,10 +946,12 @@ function render(period){
     `A kiválasztott időszakban az orosz erők becsült területi nyeresége ${fmt(d.ru)} km², míg az ukrán visszafoglalás ${fmt(d.ua)} km² volt. A nettó változás +${fmt(net)} km² orosz irányú elmozdulást jelez.`;
 
   document.getElementById('assessmentP2').textContent=
-    `A vezető nyomási térség az ukrán hátország, miközben Pokrovsk és Kostiantynivka térségében tartós szárazföldi nyomás látható.`;
+    `A szektorkártyák ugyanehhez az időablakhoz igazodnak. A vezető nyomási térség az ukrán hátország, miközben Pokrovsk és Kostiantynivka térségében tartós szárazföldi nyomás látható.`;
 
   document.getElementById('assessmentP3').textContent=
     `A kiválasztott időszak ${d.firms.toLocaleString('hu-HU')} FIRMS-hőpontot és ${d.osint.toLocaleString('hu-HU')} feldolgozott OSINT-eseményt tartalmaz. A konfliktusindex ${d.index}, ami eszkalációs tartományt jelez.`;
+
+  renderSectors(period);
 }
 
 Chart.defaults.color='#6f8294';
@@ -923,9 +1040,10 @@ new Chart(document.getElementById('firmsShareChart'),{
 });
 
 document.getElementById('periodSelect').addEventListener('change',e=>render(Number(e.target.value)));
+
+renderEvents();
 render(30);
 </script>
 
 </body>
 </html>
-
