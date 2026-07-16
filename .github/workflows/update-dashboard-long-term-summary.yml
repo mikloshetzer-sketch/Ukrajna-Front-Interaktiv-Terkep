@@ -2,8 +2,10 @@ name: Update dashboard long-term summary
 
 on:
   workflow_dispatch:
+
   schedule:
     - cron: "25 7 * * *"
+
   push:
     paths:
       - "data/**"
@@ -25,18 +27,39 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Build long-term dashboard summary
-        run: python scripts/build_dashboard_long_term_summary.py
+      - name: Build dashboard long-term summary
+        run: |
+          python scripts/build_dashboard_long_term_summary.py
+
+      - name: Verify generated file
+        run: |
+          echo "Repository tree:"
+          ls -R
+
+          echo ""
+          echo "Data folder:"
+          ls -la data || true
+
+          if [ ! -f data/dashboard_long_term_summary.json ]; then
+            echo "ERROR: dashboard_long_term_summary.json was not generated."
+            exit 1
+          fi
+
+          echo ""
+          echo "Generated file:"
+          cat data/dashboard_long_term_summary.json
 
       - name: Commit updated summary
         run: |
-          if git diff --quiet -- data/dashboard_long_term_summary.json; then
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add -A data/dashboard_long_term_summary.json
+
+          if git diff --cached --quiet; then
             echo "No summary changes."
             exit 0
           fi
 
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/dashboard_long_term_summary.json
           git commit -m "Update dashboard long-term summary"
           git push
