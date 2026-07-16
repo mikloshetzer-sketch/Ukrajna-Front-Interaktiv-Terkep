@@ -6,6 +6,7 @@
   <meta name="description" content="Ukrajna fronthelyzet – OSINT-alapú elemző dashboard">
   <title>Ukraine Conflict Intelligence Dashboard</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
 
   <style>
     :root{
@@ -561,6 +562,168 @@
       .kpi-grid,.sector-grid{grid-template-columns:1fr}
       .control-strip{align-items:flex-start;flex-direction:column}
     }
+
+    /* DeepState–Suriyak interpretation comparison */
+    .comparison-loading,
+    .comparison-error{
+      padding:18px;
+      border:1px solid var(--line);
+      border-radius:10px;
+      background:var(--soft);
+      color:var(--muted);
+      font-size:11px;
+      text-align:center;
+    }
+
+    .comparison-error{
+      border-color:#efc5c2;
+      background:var(--red-soft);
+      color:#963b36;
+    }
+
+    .comparison-kpis{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:8px;
+      margin-bottom:10px;
+    }
+
+    .comparison-kpi{
+      padding:12px 9px;
+      border:1px solid var(--line);
+      border-radius:10px;
+      background:var(--soft);
+      text-align:center;
+    }
+
+    .comparison-kpi strong{
+      display:block;
+      color:#0f456e;
+      font-size:22px;
+      line-height:1;
+    }
+
+    .comparison-kpi span{
+      display:block;
+      margin-top:7px;
+      color:var(--muted);
+      font-size:8px;
+      font-weight:900;
+      letter-spacing:.05em;
+      text-transform:uppercase;
+    }
+
+    .comparison-columns{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:9px;
+    }
+
+    .comparison-source{
+      padding:12px;
+      border:1px solid var(--line);
+      border-radius:10px;
+      background:var(--soft);
+    }
+
+    .comparison-source.deepstate{
+      border-left:4px solid var(--red);
+    }
+
+    .comparison-source.suriyak{
+      border-left:4px solid var(--blue);
+    }
+
+    .comparison-source-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:8px;
+    }
+
+    .comparison-source-title{
+      color:var(--text);
+      font-family:Georgia,"Times New Roman",serif;
+      font-size:17px;
+      font-weight:800;
+    }
+
+    .comparison-source-badge{
+      padding:4px 7px;
+      border-radius:999px;
+      background:#fff;
+      color:var(--muted);
+      font-size:8px;
+      font-weight:900;
+      text-transform:uppercase;
+    }
+
+    .comparison-facts{
+      display:grid;
+      gap:6px;
+    }
+
+    .comparison-fact{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      padding:7px 8px;
+      border:1px solid var(--line);
+      border-radius:8px;
+      background:#fff;
+      font-size:10px;
+    }
+
+    .comparison-fact span{
+      color:var(--muted);
+    }
+
+    .comparison-fact strong{
+      color:var(--body);
+      text-align:right;
+    }
+
+    .comparison-assessment{
+      margin-top:10px;
+      padding:12px 13px;
+      border:1px solid var(--line);
+      border-left:5px solid var(--purple);
+      border-radius:10px;
+      background:var(--soft);
+    }
+
+    .comparison-assessment-title{
+      margin-bottom:5px;
+      color:var(--text);
+      font-family:Georgia,"Times New Roman",serif;
+      font-size:16px;
+      font-weight:800;
+    }
+
+    .comparison-assessment p{
+      margin:0;
+      color:var(--body);
+      font-size:11px;
+      line-height:1.65;
+    }
+
+    .comparison-method{
+      margin-top:8px;
+      color:var(--muted);
+      font-size:9px;
+      line-height:1.45;
+    }
+
+    @media(max-width:900px){
+      .comparison-kpis{grid-template-columns:repeat(2,1fr)}
+      .comparison-columns{grid-template-columns:1fr}
+    }
+
+    @media(max-width:620px){
+      .comparison-kpis{grid-template-columns:1fr}
+    }
+
   </style>
 </head>
 
@@ -635,6 +798,27 @@
 
     <div class="panel-body">
       <div class="sector-grid" id="sectorGrid"></div>
+    </div>
+  </section>
+
+
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <h2 class="panel-title">DeepState–Suriyak Front Interpretation</h2>
+        <div class="panel-subtitle">
+          Két aktuális frontértelmezés térbeli összevetése – nem újabb területi trendkimutatás
+        </div>
+      </div>
+      <div class="panel-badge" id="comparisonStatusBadge">betöltés</div>
+    </div>
+
+    <div class="panel-body">
+      <div id="frontComparison">
+        <div class="comparison-loading">
+          A DeepState és a Suriyak legfrissebb adatainak összehasonlítása folyamatban…
+        </div>
+      </div>
     </div>
   </section>
 
@@ -954,6 +1138,462 @@ function render(period){
   renderSectors(period);
 }
 
+
+const FRONT_COMPARISON_CONFIG = {
+  deepStateApi:
+    'https://api.github.com/repos/cyterat/deepstate-map-data/contents/data',
+  deepStateRaw:
+    'https://cdn.jsdelivr.net/gh/cyterat/deepstate-map-data@main/data/',
+  suriyakUrl:
+    '../data/suriyak_overlay.geojson',
+  sampleStepDegrees: 0.075
+};
+
+function fc(features){
+  return {
+    type:'FeatureCollection',
+    features:Array.isArray(features) ? features : []
+  };
+}
+
+function polygonFeaturesFromGeometry(geometry, properties = {}){
+  if(!geometry) return [];
+
+  if(geometry.type === 'Polygon' || geometry.type === 'MultiPolygon'){
+    return [{
+      type:'Feature',
+      properties:{...properties},
+      geometry
+    }];
+  }
+
+  if(geometry.type === 'GeometryCollection'){
+    return (geometry.geometries || []).flatMap(item =>
+      polygonFeaturesFromGeometry(item, properties)
+    );
+  }
+
+  return [];
+}
+
+function extractPolygonFeatures(data, predicate = () => true){
+  return (data?.features || []).flatMap(feature => {
+    if(!predicate(feature)) return [];
+    return polygonFeaturesFromGeometry(
+      feature?.geometry,
+      feature?.properties || {}
+    );
+  });
+}
+
+function safeAreaKm2(features){
+  return features.reduce((sum, feature) => {
+    try{
+      return sum + turf.area(feature) / 1e6;
+    }catch(error){
+      return sum;
+    }
+  },0);
+}
+
+function formatKm2(value){
+  return Number(value || 0).toLocaleString('hu-HU',{
+    minimumFractionDigits:1,
+    maximumFractionDigits:1
+  }) + ' km²';
+}
+
+function formatInteger(value){
+  return Number(value || 0).toLocaleString('hu-HU',{
+    maximumFractionDigits:0
+  });
+}
+
+function pointInAnyPolygon(point, features){
+  for(const feature of features){
+    try{
+      if(turf.booleanPointInPolygon(point, feature)){
+        return true;
+      }
+    }catch(error){
+      // Invalid individual geometry is skipped.
+    }
+  }
+  return false;
+}
+
+function combinedBbox(featureGroups){
+  const all = featureGroups.flat();
+  if(!all.length) return null;
+
+  try{
+    return turf.bbox(fc(all));
+  }catch(error){
+    return null;
+  }
+}
+
+function approximateSpatialAgreement(deepFeatures, suriyakFeatures, step){
+  const bbox = combinedBbox([deepFeatures, suriyakFeatures]);
+
+  if(!bbox){
+    return {
+      agreementPercent:0,
+      disagreementAreaKm2:0,
+      deepOnlyCells:0,
+      suriyakOnlyCells:0,
+      commonCells:0,
+      unionCells:0
+    };
+  }
+
+  const [minX,minY,maxX,maxY] = bbox;
+  let deepOnlyCells = 0;
+  let suriyakOnlyCells = 0;
+  let commonCells = 0;
+  let unionCells = 0;
+  let disagreementAreaKm2 = 0;
+
+  for(let lat = minY + step / 2; lat <= maxY; lat += step){
+    for(let lng = minX + step / 2; lng <= maxX; lng += step){
+      const point = turf.point([lng,lat]);
+      const inDeep = pointInAnyPolygon(point, deepFeatures);
+      const inSuriyak = pointInAnyPolygon(point, suriyakFeatures);
+
+      if(!inDeep && !inSuriyak) continue;
+
+      unionCells += 1;
+
+      if(inDeep && inSuriyak){
+        commonCells += 1;
+      }else if(inDeep){
+        deepOnlyCells += 1;
+      }else{
+        suriyakOnlyCells += 1;
+      }
+
+      if(inDeep !== inSuriyak){
+        const cell = turf.polygon([[
+          [lng-step/2,lat-step/2],
+          [lng+step/2,lat-step/2],
+          [lng+step/2,lat+step/2],
+          [lng-step/2,lat+step/2],
+          [lng-step/2,lat-step/2]
+        ]]);
+
+        disagreementAreaKm2 += turf.area(cell) / 1e6;
+      }
+    }
+  }
+
+  return {
+    agreementPercent:
+      unionCells > 0 ? (commonCells / unionCells) * 100 : 0,
+    disagreementAreaKm2,
+    deepOnlyCells,
+    suriyakOnlyCells,
+    commonCells,
+    unionCells
+  };
+}
+
+function parseDeepStateDate(filename){
+  const match = String(filename || '').match(/(\d{4})(\d{2})(\d{2})/);
+  return match ? `${match[1]}-${match[2]}-${match[3]}` : 'n/a';
+}
+
+async function fetchLatestDeepState(){
+  const response = await fetch(FRONT_COMPARISON_CONFIG.deepStateApi,{
+    cache:'no-store'
+  });
+
+  if(!response.ok){
+    throw new Error(`DeepState index HTTP ${response.status}`);
+  }
+
+  const files = await response.json();
+  const candidates = files
+    .filter(item =>
+      /^deepstatemap_data_\d{8}\.geojson$/i.test(item.name)
+    )
+    .sort((a,b) => a.name.localeCompare(b.name));
+
+  const latest = candidates[candidates.length - 1];
+
+  if(!latest){
+    throw new Error('Nem található DeepState napi GeoJSON.');
+  }
+
+  const dataResponse = await fetch(
+    FRONT_COMPARISON_CONFIG.deepStateRaw + latest.name,
+    {cache:'no-store'}
+  );
+
+  if(!dataResponse.ok){
+    throw new Error(`DeepState daily HTTP ${dataResponse.status}`);
+  }
+
+  return {
+    filename:latest.name,
+    date:parseDeepStateDate(latest.name),
+    data:await dataResponse.json()
+  };
+}
+
+function isSuriyakRussianControl(feature){
+  const category = String(
+    feature?.properties?.suriyak_category || ''
+  ).toLowerCase();
+
+  const name = String(
+    feature?.properties?.name || ''
+  ).toLowerCase();
+
+  return (
+    category === 'russian_control' ||
+    name.includes('russian armed forces') ||
+    name.includes('russian-controlled') ||
+    name.includes('russian controlled')
+  );
+}
+
+function isSuriyakCurrentFrontline(feature){
+  return String(
+    feature?.properties?.suriyak_category || ''
+  ).toLowerCase() === 'current_frontline';
+}
+
+function isSuriyakUkrainianControl(feature){
+  return String(
+    feature?.properties?.suriyak_category || ''
+  ).toLowerCase() === 'ukrainian_control';
+}
+
+function isSuriyakDefenseLine(feature){
+  return String(
+    feature?.properties?.suriyak_category || ''
+  ).toLowerCase() === 'russian_defense_line';
+}
+
+function comparisonNarrative(metrics){
+  const areaDifference =
+    metrics.suriyakAreaKm2 - metrics.deepAreaKm2;
+
+  const agreement = metrics.agreementPercent;
+
+  let agreementText;
+  if(agreement >= 90){
+    agreementText = 'nagyon magas';
+  }else if(agreement >= 75){
+    agreementText = 'magas';
+  }else if(agreement >= 55){
+    agreementText = 'közepes';
+  }else{
+    agreementText = 'alacsony';
+  }
+
+  let areaText;
+  if(Math.abs(areaDifference) < 25){
+    areaText =
+      'A két forrás által jelölt orosz ellenőrzésű terület összesített kiterjedése közel azonos.';
+  }else if(areaDifference > 0){
+    areaText =
+      `A Suriyak körülbelül ${formatKm2(Math.abs(areaDifference))} nagyobb orosz ellenőrzésű területet jelöl, mint a DeepState.`;
+  }else{
+    areaText =
+      `A DeepState körülbelül ${formatKm2(Math.abs(areaDifference))} nagyobb orosz ellenőrzésű területet jelöl, mint a Suriyak.`;
+  }
+
+  return (
+    `A két aktuális helyzetértelmezés térbeli egyezése ${agreementText} ` +
+    `(${agreement.toFixed(1).replace('.',',')}%). ${areaText} ` +
+    `A becsült eltérési terület ${formatKm2(metrics.disagreementAreaKm2)}. ` +
+    `Ez nem napi frontváltozást mér, hanem azt mutatja meg, hogy a két elemző ` +
+    `az aktuális ellenőrzési határokat mennyire hasonlóan értelmezi.`
+  );
+}
+
+function renderComparison(metrics){
+  const host = document.getElementById('frontComparison');
+  const badge = document.getElementById('comparisonStatusBadge');
+
+  if(!host) return;
+
+  if(badge){
+    badge.textContent =
+      metrics.agreementPercent >= 75 ? 'magas egyezés' :
+      metrics.agreementPercent >= 55 ? 'közepes egyezés' :
+      'jelentős eltérés';
+  }
+
+  host.innerHTML = `
+    <div class="comparison-kpis">
+      <div class="comparison-kpi">
+        <strong>${metrics.agreementPercent.toFixed(1).replace('.',',')}%</strong>
+        <span>Térbeli egyezés</span>
+      </div>
+
+      <div class="comparison-kpi">
+        <strong>${formatKm2(metrics.disagreementAreaKm2)}</strong>
+        <span>Becsült eltérési terület</span>
+      </div>
+
+      <div class="comparison-kpi">
+        <strong>${formatInteger(metrics.suriyakFrontlineCount)}</strong>
+        <span>Suriyak aktuális frontvonal</span>
+      </div>
+
+      <div class="comparison-kpi">
+        <strong>${metrics.deepDate}</strong>
+        <span>DeepState állapot dátuma</span>
+      </div>
+    </div>
+
+    <div class="comparison-columns">
+      <article class="comparison-source deepstate">
+        <div class="comparison-source-head">
+          <div class="comparison-source-title">DeepState</div>
+          <div class="comparison-source-badge">elsődleges területi alap</div>
+        </div>
+
+        <div class="comparison-facts">
+          <div class="comparison-fact">
+            <span>Orosz ellenőrzésű poligonok</span>
+            <strong>${formatInteger(metrics.deepPolygonCount)}</strong>
+          </div>
+          <div class="comparison-fact">
+            <span>Jelölt terület</span>
+            <strong>${formatKm2(metrics.deepAreaKm2)}</strong>
+          </div>
+          <div class="comparison-fact">
+            <span>Elemzői szerep</span>
+            <strong>területi változás és történeti delta</strong>
+          </div>
+        </div>
+      </article>
+
+      <article class="comparison-source suriyak">
+        <div class="comparison-source-head">
+          <div class="comparison-source-title">Suriyak</div>
+          <div class="comparison-source-badge">összehasonlító értelmezés</div>
+        </div>
+
+        <div class="comparison-facts">
+          <div class="comparison-fact">
+            <span>Orosz kontrollpoligonok</span>
+            <strong>${formatInteger(metrics.suriyakPolygonCount)}</strong>
+          </div>
+          <div class="comparison-fact">
+            <span>Jelölt terület</span>
+            <strong>${formatKm2(metrics.suriyakAreaKm2)}</strong>
+          </div>
+          <div class="comparison-fact">
+            <span>Ukrán kontrollobjektumok</span>
+            <strong>${formatInteger(metrics.suriyakUkrainianCount)}</strong>
+          </div>
+          <div class="comparison-fact">
+            <span>Orosz védelmi vonalak</span>
+            <strong>${formatInteger(metrics.suriyakDefenseCount)}</strong>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <div class="comparison-assessment">
+      <div class="comparison-assessment-title">
+        Automatikus értelmezési összevetés
+      </div>
+      <p>${comparisonNarrative(metrics)}</p>
+    </div>
+
+    <div class="comparison-method">
+      Módszertan: a legfrissebb DeepState állapot és a Suriyak
+      <code>russian_control</code> kategóriájának térbeli mintavételezése.
+      A mutató nem állapítja meg, melyik forrás helyesebb, és nem helyettesíti
+      az egyedi frontszakaszok vizuális ellenőrzését.
+    </div>
+  `;
+}
+
+async function loadFrontComparison(){
+  const host = document.getElementById('frontComparison');
+  const badge = document.getElementById('comparisonStatusBadge');
+
+  if(!host || typeof turf === 'undefined') return;
+
+  try{
+    if(badge) badge.textContent = 'betöltés';
+
+    const [deepState,suriyakResponse] = await Promise.all([
+      fetchLatestDeepState(),
+      fetch(FRONT_COMPARISON_CONFIG.suriyakUrl,{cache:'no-store'})
+    ]);
+
+    if(!suriyakResponse.ok){
+      throw new Error(`Suriyak HTTP ${suriyakResponse.status}`);
+    }
+
+    const suriyakData = await suriyakResponse.json();
+
+    const deepPolygons = extractPolygonFeatures(deepState.data);
+    const suriyakRussian = extractPolygonFeatures(
+      suriyakData,
+      isSuriyakRussianControl
+    );
+
+    if(!deepPolygons.length){
+      throw new Error('A DeepState fájlban nem található poligon.');
+    }
+
+    if(!suriyakRussian.length){
+      throw new Error(
+        'A Suriyak fájlban nem található russian_control poligon.'
+      );
+    }
+
+    const sampled = approximateSpatialAgreement(
+      deepPolygons,
+      suriyakRussian,
+      FRONT_COMPARISON_CONFIG.sampleStepDegrees
+    );
+
+    renderComparison({
+      ...sampled,
+      deepDate:deepState.date,
+      deepPolygonCount:deepPolygons.length,
+      deepAreaKm2:safeAreaKm2(deepPolygons),
+      suriyakPolygonCount:suriyakRussian.length,
+      suriyakAreaKm2:safeAreaKm2(suriyakRussian),
+      suriyakFrontlineCount:
+        (suriyakData.features || []).filter(
+          isSuriyakCurrentFrontline
+        ).length,
+      suriyakUkrainianCount:
+        (suriyakData.features || []).filter(
+          isSuriyakUkrainianControl
+        ).length,
+      suriyakDefenseCount:
+        (suriyakData.features || []).filter(
+          isSuriyakDefenseLine
+        ).length
+    });
+  }catch(error){
+    console.error('Front comparison:',error);
+
+    if(badge) badge.textContent = 'adat hiba';
+
+    if(host){
+      host.innerHTML = `
+        <div class="comparison-error">
+          A DeepState–Suriyak összehasonlítás jelenleg nem tölthető be:
+          ${String(error.message || error)}
+        </div>
+      `;
+    }
+  }
+}
+
+
 Chart.defaults.color='#6f8294';
 Chart.defaults.borderColor='rgba(111,130,148,.18)';
 Chart.defaults.font.family='Inter, Arial, sans-serif';
@@ -1043,6 +1683,7 @@ document.getElementById('periodSelect').addEventListener('change',e=>render(Numb
 
 renderEvents();
 render(30);
+loadFrontComparison();
 </script>
 
 </body>
