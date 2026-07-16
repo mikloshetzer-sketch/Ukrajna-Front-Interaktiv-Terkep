@@ -985,6 +985,23 @@
       padding:10px 12px 12px;
     }
 
+
+    .territorial-interpretation{
+      margin-top:10px;
+      padding:12px 14px;
+      border:1px solid var(--line);
+      border-left:5px solid var(--blue);
+      border-radius:10px;
+      background:var(--blue-soft);
+      color:var(--body);
+      font-size:10px;
+      line-height:1.65;
+    }
+
+    .territorial-interpretation strong{
+      color:var(--text);
+    }
+
   </style>
 </head>
 
@@ -1197,10 +1214,12 @@
           <div class="chart-card-head">
             <div class="chart-title">FIRMS területi megoszlás</div>
             <div class="chart-subtitle">
-              Csak a besorolt hőpontok: frontközeli, ukrán hátország, orosz hátország és Krím – elmúlt 30 nap
+              A fenti napi FIRMS-oszlopdiagram négy kategóriájának 30 napos összesítése
             </div>
           </div>
-          <div class="chart-wrap"><canvas id="firmsShareChart"></canvas></div>
+          <div class="chart-wrap">
+            <canvas id="firmsShareChart"></canvas>
+          </div>
         </article>
       </div>
     </div>
@@ -1233,35 +1252,27 @@
 
         <article class="chart-card">
           <div class="chart-card-head">
-            <div class="chart-title">Éves orosz területi nyereség és nettó mérleg</div>
+            <div class="chart-title">Éves területi változás</div>
             <div class="chart-subtitle">
-              Az éves orosz előrenyomulás és a visszafoglalásokkal korrigált nettó változás
+              Orosz nyereség, ukrán visszafoglalás és nettó mérleg – külön oszlopokon
             </div>
           </div>
           <div class="strategic-chart-wrap">
             <canvas id="yearlyTerritorialChart"></canvas>
           </div>
         </article>
-
-        <article class="chart-card">
-          <div class="chart-card-head">
-            <div class="chart-title">Éves ukrán visszafoglalás</div>
-            <div class="chart-subtitle">
-              Az orosz ellenőrzésből kikerült területek éves összesítése
-            </div>
-          </div>
-          <div class="strategic-chart-wrap">
-            <canvas id="yearlyRecaptureChart"></canvas>
-          </div>
-        </article>
       </div>
 
-      <div class="comparison-method" id="historyMethodNote">
-        A hosszú távú diagramok a <code>data/dashboard_long_term_summary.json</code>
-        fájlból töltődnek. Fontos: az orosz területi nyereség csökkenése önmagában
-        nem jelent ukrán visszafoglalást. A két adatsor külön folyamatot mér:
-        az egyik az újonnan orosz ellenőrzés alá került, a másik az orosz
-        ellenőrzésből kikerült területet mutatja.
+      <div class="territorial-interpretation" id="historyMethodNote">
+        <strong>Hogyan kell értelmezni?</strong>
+        Az „orosz nyereség” az adott időszakban újonnan orosz ellenőrzés alá
+        került területet mutatja. Az „ukrán visszafoglalás” az orosz
+        ellenőrzésből kikerült területet jelzi. A „nettó változás” a kettő
+        különbsége. Ezért az orosz nyereség csökkenése nem jelent automatikusan
+        ukrán visszafoglalást: jelentheti egyszerűen az előrenyomulás lassulását
+        vagy a front átmeneti stabilizálódását is. A 2024-es adat csak
+        2024. július 8-tól, a 2026-os adat pedig az aktuális frissítés napjáig
+        tartó részidőszak.
       </div>
     </div>
   </section>
@@ -2489,7 +2500,7 @@ let firmsShareChart=new Chart(document.getElementById('firmsShareChart'),{
       'Krím'
     ],
     datasets:[{
-      data:[45,25,12,12],
+      data:[0,0,0,0],
       backgroundColor:[
         '#d8463f',
         '#2f83bd',
@@ -2503,9 +2514,36 @@ let firmsShareChart=new Chart(document.getElementById('firmsShareChart'),{
   options:{
     responsive:true,
     maintainAspectRatio:false,
-    plugins:{legend:{position:'bottom'}}
+    plugins:{
+      legend:{position:'bottom'},
+      tooltip:{
+        callbacks:{
+          label(context){
+            const values=context.dataset.data.map(value=>Number(value||0));
+            const total=values.reduce((sum,value)=>sum+value,0);
+            const value=Number(context.raw||0);
+            const share=total>0 ? (value/total)*100 : 0;
+
+            return `${context.label}: ${value.toLocaleString('hu-HU')} hőpont ` +
+              `(${share.toFixed(1).replace('.',',')}%)`;
+          }
+        }
+      }
+    }
   }
 });
+
+function syncFirmsShareFromDailyChart(){
+  const totals=firmsChart.data.datasets.map(dataset =>
+    (dataset.data || []).reduce(
+      (sum,value)=>sum+Number(value||0),
+      0
+    )
+  );
+
+  firmsShareChart.data.datasets[0].data=totals;
+  firmsShareChart.update();
+}
 
 let monthlyTerritorialChart=new Chart(
   document.getElementById('monthlyTerritorialChart'),
@@ -2558,41 +2596,23 @@ let yearlyTerritorialChart=new Chart(
           label:'Orosz nyereség',
           data:[],
           backgroundColor:'rgba(216,70,63,.78)',
+          borderColor:'#d8463f',
+          borderWidth:1,
           borderRadius:5
         },
         {
-          type:'line',
-          label:'Nettó változás',
-          data:[],
-          borderColor:'#1d5f8f',
-          backgroundColor:'rgba(29,95,143,.10)',
-          tension:.2,
-          pointRadius:4
-        }
-      ]
-    },
-    options:{
-      responsive:true,
-      maintainAspectRatio:false,
-      interaction:{mode:'index',intersect:false},
-      plugins:{legend:{position:'bottom'}},
-      scales:{y:{beginAtZero:true,title:{display:true,text:'km²'}}}
-    }
-  }
-);
-
-let yearlyRecaptureChart=new Chart(
-  document.getElementById('yearlyRecaptureChart'),
-  {
-    type:'bar',
-    data:{
-      labels:[],
-      datasets:[
-        {
           label:'Ukrán visszafoglalás',
           data:[],
-          backgroundColor:'rgba(47,138,97,.76)',
+          backgroundColor:'rgba(47,138,97,.74)',
           borderColor:'#2f8a61',
+          borderWidth:1,
+          borderRadius:5
+        },
+        {
+          label:'Nettó változás',
+          data:[],
+          backgroundColor:'rgba(29,95,143,.76)',
+          borderColor:'#1d5f8f',
           borderWidth:1,
           borderRadius:5
         }
@@ -2601,8 +2621,28 @@ let yearlyRecaptureChart=new Chart(
     options:{
       responsive:true,
       maintainAspectRatio:false,
-      plugins:{legend:{position:'bottom'}},
-      scales:{y:{beginAtZero:true,title:{display:true,text:'km²'}}}
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{position:'bottom'},
+        tooltip:{
+          callbacks:{
+            label(context){
+              const value=Number(context.raw||0).toLocaleString(
+                'hu-HU',
+                {minimumFractionDigits:1,maximumFractionDigits:1}
+              );
+              return `${context.dataset.label}: ${value} km²`;
+            }
+          }
+        }
+      },
+      scales:{
+        x:{stacked:false},
+        y:{
+          beginAtZero:true,
+          title:{display:true,text:'km²'}
+        }
+      }
     }
   }
 );
@@ -2641,15 +2681,8 @@ function updateLongTermCharts(summary){
     yearly.map(item=>String(item.year)),
     [
       yearly.map(item=>Number(item.russian_gain_km2||0)),
+      yearly.map(item=>Number(item.ukrainian_recapture_km2||0)),
       yearly.map(item=>Number(item.net_change_km2||0))
-    ]
-  );
-
-  updateChart(
-    yearlyRecaptureChart,
-    yearly.map(item=>String(item.year)),
-    [
-      yearly.map(item=>Number(item.ukrainian_recapture_km2||0))
     ]
   );
 
@@ -2679,17 +2712,7 @@ function updateFirmsCharts(summary){
     );
   }
 
-  const shares=summary?.firms?.shares || null;
-
-  if(shares){
-    firmsShareChart.data.datasets[0].data=[
-      Number(shares.frontline||0),
-      Number(shares.ukrainian_rear||0),
-      Number(shares.russian_rear||0),
-      Number(shares.crimea||0)
-    ];
-    firmsShareChart.update();
-  }
+  syncFirmsShareFromDailyChart();
 }
 
 async function loadDashboardLongTermSummary(){
@@ -2708,8 +2731,8 @@ async function loadDashboardLongTermSummary(){
     updateFirmsCharts(summary);
 
     const note=document.getElementById('historyMethodNote');
-    if(note && summary?.methodology){
-      note.textContent=summary.methodology;
+    if(note && summary?.territorial?.latest_date){
+      note.dataset.latestDate=summary.territorial.latest_date;
     }
   }catch(error){
     console.warn('Dashboard long-term summary:',error);
@@ -2720,6 +2743,7 @@ async function loadDashboardLongTermSummary(){
 }
 
 setTacticalPeriod();
+syncFirmsShareFromDailyChart();
 loadDashboardLongTermSummary();
 
 
@@ -2733,4 +2757,3 @@ loadFrontComparisonAndFortressCities();
 
 </body>
 </html>
-
