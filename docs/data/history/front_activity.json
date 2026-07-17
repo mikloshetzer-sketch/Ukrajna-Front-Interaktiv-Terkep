@@ -6272,5 +6272,137 @@
       "deepstate": "cyterat/deepstate-map-data via GitHub API"
     },
     "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
+  },
+  {
+    "date": "2026-07-17",
+    "updated_utc": "2026-07-17T07:10:14.475778+00:00",
+    "front_activity_index": 85,
+    "status": "CRITICAL",
+    "components": {
+      "osint_density": 25,
+      "firms_activity": 20,
+      "territorial_change": 21.9,
+      "active_sectors": 10,
+      "critical_events": 8
+    },
+    "counts": {
+      "osint": 23,
+      "firms_3d": 1361,
+      "firms_10d": 5301,
+      "firms_30d": 31610,
+      "critical_events": 4,
+      "active_sectors": 10
+    },
+    "territorial": {
+      "available": true,
+      "error": null,
+      "previous_file": "deepstatemap_data_20260716.geojson",
+      "current_file": "deepstatemap_data_20260717.geojson",
+      "previous_total_km2": 116663.71,
+      "current_total_km2": 116671.0,
+      "russian_gain_km2": 7.29,
+      "ukrainian_recapture_km2": 0,
+      "net_change_km2": 7.29,
+      "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    },
+    "territorial_hotspot": {
+      "sector": "Pokrovsk",
+      "lat": 48.28,
+      "lon": 37.18,
+      "zoom": 9,
+      "score": 100,
+      "change_km2": 7.29,
+      "method": "Top classified sector based on OSINT + FIRMS density"
+    },
+    "top_sectors": [
+      {
+        "sector": "Pokrovsk",
+        "osint": 14,
+        "firms": 47,
+        "score": 100
+      },
+      {
+        "sector": "Velyka Novosilka",
+        "osint": 0,
+        "firms": 161,
+        "score": 100
+      },
+      {
+        "sector": "Zaporizhzhia",
+        "osint": 1,
+        "firms": 99,
+        "score": 100
+      },
+      {
+        "sector": "Kherson-Dnipro",
+        "osint": 0,
+        "firms": 120,
+        "score": 100
+      },
+      {
+        "sector": "Other / Unclassified",
+        "osint": 7,
+        "firms": 781,
+        "score": 100
+      },
+      {
+        "sector": "Kurakhove",
+        "osint": 0,
+        "firms": 60,
+        "score": 54
+      },
+      {
+        "sector": "Bakhmut-Toretsk",
+        "osint": 0,
+        "firms": 45,
+        "score": 40
+      },
+      {
+        "sector": "Kharkiv",
+        "osint": 1,
+        "firms": 12,
+        "score": 23
+      }
+    ],
+    "top_events": [
+      {
+        "title": "Ukrainian Defense Companies to Gain Access to EU Programs and €300 Million in Grant Funding",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Ukraine is finalizing the development of an anti-ballistic missile for the FREYJA system",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Ukrainian Troops March in Paris for the First Time, Ukrainian Pilots Fly Mirage Fighters During Bastille Day Parade",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Ukraine Must Move to Practical Implementation of Patriot Production, Zelenskyy Says",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "France Approves SCALP and ASTER Missile Production Licenses for Ukraine",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Ukraine’s 47th Brigade Shoots Down Rare $7 Million Russian Orion Combat Drone",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      }
+    ],
+    "data_sources": {
+      "osint": "data/osint_feed.json",
+      "firms_3d": "data/firms_3.json",
+      "firms_10d": "data/firms_10.json",
+      "firms_30d": "data/firms_30.json",
+      "deepstate": "cyterat/deepstate-map-data via GitHub API"
+    },
+    "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
   }
 ]

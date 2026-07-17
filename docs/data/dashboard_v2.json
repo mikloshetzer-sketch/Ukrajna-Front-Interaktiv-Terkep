@@ -1,13 +1,13 @@
 {
-  "updated_utc": "2026-07-16T19:41:10.525333+00:00",
-  "date": "2026-07-16",
+  "updated_utc": "2026-07-17T07:10:15.329000+00:00",
+  "date": "2026-07-17",
   "territorial_sector": {
-    "sector": "Pokrovsk",
-    "lat": 48.418480307692306,
-    "lon": 37.24117898461539,
-    "distance_km": 16.0,
+    "sector": "Bakhmut-Toretsk",
+    "lat": 48.463579089999996,
+    "lon": 37.75558987,
+    "distance_km": 19.3,
     "change_type": "russian_gain",
-    "area_km2": 0.83,
+    "area_km2": 7.3,
     "label": "Russian territorial gain"
   },
   "priority_osint_events": [
@@ -159,14 +159,14 @@
   "front_pressure_points": [
     {
       "sector": "Pokrovsk",
-      "title": "Pokrovsk territorial gain axis",
+      "title": "Pokrovsk OSINT activity cluster",
       "lat": 48.28,
       "lon": 37.18,
-      "score": 130,
+      "score": 100,
       "osint": 14,
-      "firms": 58,
-      "pressure_type": "territorial_gain_axis",
-      "icon": "▲"
+      "firms": 47,
+      "pressure_type": "osint_activity_cluster",
+      "icon": "⚔"
     },
     {
       "sector": "Velyka Novosilka",
@@ -175,7 +175,7 @@
       "lon": 36.84,
       "score": 100,
       "osint": 0,
-      "firms": 212,
+      "firms": 161,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -186,7 +186,7 @@
       "lon": 35.14,
       "score": 100,
       "osint": 1,
-      "firms": 120,
+      "firms": 99,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -197,40 +197,40 @@
       "lon": 32.61,
       "score": 100,
       "osint": 0,
-      "firms": 154,
+      "firms": 120,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
+    },
+    {
+      "sector": "Bakhmut-Toretsk",
+      "title": "Bakhmut-Toretsk territorial gain axis",
+      "lat": 48.58,
+      "lon": 37.95,
+      "score": 70,
+      "osint": 0,
+      "firms": 45,
+      "pressure_type": "territorial_gain_axis",
+      "icon": "▲"
     },
     {
       "sector": "Kurakhove",
       "title": "Kurakhove FIRMS thermal cluster",
       "lat": 47.99,
       "lon": 37.28,
-      "score": 77,
+      "score": 54,
       "osint": 0,
-      "firms": 86,
+      "firms": 60,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
     {
-      "sector": "Bakhmut-Toretsk",
-      "title": "Bakhmut-Toretsk FIRMS thermal cluster",
-      "lat": 48.58,
-      "lon": 37.95,
-      "score": 56,
-      "osint": 0,
-      "firms": 62,
-      "pressure_type": "thermal_activity_cluster",
-      "icon": "🔥"
-    },
-    {
-      "sector": "Lyman",
-      "title": "Lyman FIRMS thermal cluster",
-      "lat": 48.99,
-      "lon": 37.8,
-      "score": 32,
-      "osint": 0,
-      "firms": 35,
+      "sector": "Kharkiv",
+      "title": "Kharkiv FIRMS thermal cluster",
+      "lat": 49.99,
+      "lon": 36.23,
+      "score": 23,
+      "osint": 1,
+      "firms": 12,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     }
@@ -257,12 +257,12 @@
       "count": 1
     }
   ],
-  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 65. Russian forces gained approximately 0.83 km², closest to the Pokrovsk sector. The main pressure focus is Pokrovsk. The strongest event category is Drone / UAV activity. The system processed 23 OSINT events, 1819 short-term FIRMS hotspots and 10 active sectors.",
+  "ai_summary": "Front activity is assessed as CRITICAL with an FAI value of 85. Russian forces gained approximately 7.29 km², closest to the Bakhmut-Toretsk sector. The main pressure focus is Pokrovsk. The strongest event category is Drone / UAV activity. The system processed 23 OSINT events, 1361 short-term FIRMS hotspots and 10 active sectors.",
   "counts": {
     "priority_osint": 12,
     "pressure_points": 7,
-    "firms_3d": 1819,
-    "firms_10d": 6350,
+    "firms_3d": 1361,
+    "firms_10d": 5301,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."
