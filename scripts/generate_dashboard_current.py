@@ -543,84 +543,208 @@ def sector_id_for_record(record: Mapping[str, Any]) -> str:
 
 def load_territorial(now: datetime) -> tuple[list[dict[str, Any]], SourceStatus]:
     """
-    Load the freshest rolling territorial dataset.
+    Load and merge the territorial data sources.
 
-    Priority:
-      1. territorial_delta_30days.geojson
-      2. territorial_delta_windows.geojson
-      3. territorial_delta.geojson
+    Source roles:
+      - territorial_delta_30days.geojson: authoritative 1/7/30-day summaries
+        plus polygon geometry for sector and rapid-event localisation.
+      - territorial_delta_windows.geojson: optional pre-aggregated windows,
+        especially the 90-day value.
+      - territorial_delta.geojson: daily fallback when the rolling file is absent.
 
-    The 30-day file contains:
-      - metadata.daily_summaries for exact rolling totals
-      - features for sector and event localisation
+    A window summary is accepted only when its latest date is close to the
+    freshest territorial observation. This prevents an old 90-day value from
+    being presented as current.
     """
-    path = find_existing(
+    rolling_path = find_existing(
         "data/territorial_delta_30days.geojson",
         "docs/data/territorial_delta_30days.geojson",
         "data/territorial_delta_30d.geojson",
         "docs/data/territorial_delta_30d.geojson",
+    )
+    windows_path = find_existing(
         "data/territorial_delta_windows.geojson",
         "docs/data/territorial_delta_windows.geojson",
+    )
+    daily_path = find_existing(
         "data/territorial_delta.geojson",
         "docs/data/territorial_delta.geojson",
     )
-    if not path:
+
+    primary_path = rolling_path or daily_path or windows_path
+    if not primary_path:
         return [], status_from_age("territorial", None, None, None, 0, now)
 
-    try:
-        payload = read_json(path)
-    except (OSError, json.JSONDecodeError) as exc:
+    records: list[dict[str, Any]] = []
+    payloads: list[tuple[Path, Any, str]] = []
+    errors: list[str] = []
+
+    for path, source_kind in (
+        (rolling_path, "rolling_30d"),
+        (windows_path, "windows"),
+        (daily_path, "daily"),
+    ):
+        if not path:
+            continue
+        # Do not read the same physical file twice through duplicate aliases.
+        if any(existing.resolve() == path.resolve() for existing, _, _ in payloads):
+            continue
+        try:
+            payloads.append((path, read_json(path), source_kind))
+        except (OSError, json.JSONDecodeError) as exc:
+            errors.append(f"{path.name}: {exc}")
+
+    if not payloads:
         return [], status_from_age(
-            "territorial", path, file_mtime(path), None, 0, now,
-            f"A területi fájl nem olvasható: {exc}",
+            "territorial",
+            primary_path,
+            file_mtime(primary_path),
+            None,
+            0,
+            now,
+            "A területi fájlok nem olvashatók: " + "; ".join(errors),
         )
 
-    records: list[dict[str, Any]] = []
+    source_latest_dates: dict[str, datetime | None] = {}
+    source_updated_dates: list[datetime] = []
 
-    if isinstance(payload, Mapping):
+    def metadata_latest(payload: Any) -> datetime | None:
+        if not isinstance(payload, Mapping):
+            return None
         metadata = payload.get("metadata")
-        if isinstance(metadata, Mapping):
+        if not isinstance(metadata, Mapping):
+            metadata = payload
+        return parse_datetime(
+            metadata.get("latest_date")
+            or metadata.get("current_date")
+            or metadata.get("end_date")
+            or metadata.get("updated_utc")
+        )
+
+    def append_window_summary(
+        item: Mapping[str, Any],
+        source_kind: str,
+        fallback_days: int | None = None,
+        source_latest: datetime | None = None,
+    ) -> None:
+        record = dict(item)
+        if fallback_days and record_window_days(record) is None:
+            record["window_days"] = fallback_days
+        record["_record_kind"] = "window_summary"
+        record["_source_kind"] = source_kind
+        if source_latest:
+            record["_source_latest_date"] = iso(source_latest)
+        records.append(record)
+
+    for path, payload, source_kind in payloads:
+        source_latest = metadata_latest(payload)
+        source_latest_dates[source_kind] = source_latest
+        updated = extract_updated_at(payload, path)
+        if updated:
+            source_updated_dates.append(updated)
+
+        if not isinstance(payload, Mapping):
+            continue
+
+        metadata = payload.get("metadata")
+        if not isinstance(metadata, Mapping):
+            metadata = {}
+
+        if source_kind == "rolling_30d":
             daily_summaries = metadata.get("daily_summaries")
             if isinstance(daily_summaries, list):
                 for item in daily_summaries:
-                    if isinstance(item, Mapping):
-                        record = dict(item)
-                        record["_record_kind"] = "daily_summary"
-                        records.append(record)
+                    if not isinstance(item, Mapping):
+                        continue
+                    record = dict(item)
+                    record["_record_kind"] = "daily_summary"
+                    record["_source_kind"] = source_kind
+                    records.append(record)
 
-        features = payload.get("features")
-        if isinstance(features, list):
-            for feature in features:
-                if not isinstance(feature, Mapping):
-                    continue
-                properties = dict(feature.get("properties") or {})
-                properties["_geometry"] = feature.get("geometry")
-                properties["_record_kind"] = "feature"
-                records.append(properties)
+            features = payload.get("features")
+            if isinstance(features, list):
+                for feature in features:
+                    if not isinstance(feature, Mapping):
+                        continue
+                    properties = dict(feature.get("properties") or {})
+                    properties["_geometry"] = feature.get("geometry")
+                    properties["_record_kind"] = "feature"
+                    properties["_source_kind"] = source_kind
+                    records.append(properties)
+
+        elif source_kind == "windows":
+            window_summaries = metadata.get("window_summaries")
+            if window_summaries is None:
+                window_summaries = payload.get("window_summaries")
+
+            if isinstance(window_summaries, list):
+                for item in window_summaries:
+                    if isinstance(item, Mapping):
+                        append_window_summary(item, source_kind, source_latest=source_latest)
+            elif isinstance(window_summaries, Mapping):
+                for key, item in window_summaries.items():
+                    if not isinstance(item, Mapping):
+                        continue
+                    digits = "".join(character for character in str(key) if character.isdigit())
+                    fallback_days = safe_int(digits, 0) if digits else None
+                    append_window_summary(
+                        item,
+                        source_kind,
+                        fallback_days=fallback_days or None,
+                        source_latest=source_latest,
+                    )
+
+            # Some generators place pre-aggregated rows in features or records.
+            for item in extract_records(payload, ("records", "items", "data")):
+                if record_window_days(item):
+                    append_window_summary(item, source_kind, source_latest=source_latest)
+
+        elif source_kind == "daily" and rolling_path is None:
+            features = payload.get("features")
+            if isinstance(features, list):
+                for feature in features:
+                    if not isinstance(feature, Mapping):
+                        continue
+                    properties = dict(feature.get("properties") or {})
+                    properties["_geometry"] = feature.get("geometry")
+                    properties["_record_kind"] = "feature"
+                    properties["_source_kind"] = source_kind
+                    records.append(properties)
 
     if not records:
-        records = extract_records(payload, ("items", "records", "data"))
+        # Last-resort generic extraction from the primary payload.
+        primary_payload = next(
+            payload for path, payload, _ in payloads if path.resolve() == primary_path.resolve()
+        )
+        records = extract_records(primary_payload, ("features", "items", "records", "data"))
         for record in records:
             record["_record_kind"] = "generic"
 
-    updated_at = extract_updated_at(payload, path)
-
-    latest_record: datetime | None = None
-    if isinstance(payload, Mapping):
-        metadata = payload.get("metadata")
-        if isinstance(metadata, Mapping):
-            latest_record = parse_datetime(
-                metadata.get("latest_date")
-                or metadata.get("current_date")
-                or metadata.get("updated_utc")
-            )
-
+    latest_record = max(
+        (value for value in source_latest_dates.values() if value),
+        default=None,
+    )
     if latest_record is None:
         dates = [record_datetime(record) for record in records]
         latest_record = max((item for item in dates if item), default=None)
 
+    updated_at = max(source_updated_dates, default=file_mtime(primary_path))
+    note_parts: list[str] = []
+    if windows_path:
+        note_parts.append("A 90 napos ablakhoz a windows összesítő is elérhető.")
+    else:
+        note_parts.append("Nincs külön windows összesítő; a 90 napos területi érték nem áll rendelkezésre.")
+    if errors:
+        note_parts.append("Olvasási figyelmeztetés: " + "; ".join(errors))
+
     status = status_from_age(
-        "territorial", path, updated_at, latest_record, len(records), now
+        "territorial",
+        primary_path,
+        updated_at,
+        latest_record,
+        len(records),
+        now,
+        " ".join(note_parts),
     )
     return records, status
 
@@ -686,21 +810,29 @@ def territorial_totals(
     days: int,
 ) -> tuple[float, float, list[Mapping[str, Any]]]:
     """
-    Calculate rolling territorial totals without double counting.
-    Daily summaries are preferred; polygons are fallback data only.
+    Calculate territorial totals without double counting.
+
+    Rules:
+      - 1/7/30 days: sum the newest daily summaries from the rolling file.
+      - 90 days: use an exact, current window summary when available.
+      - polygon features are fallback data only.
     """
     summaries = [
         record for record in records
         if record.get("_record_kind") == "daily_summary"
     ]
+    window_summaries = [
+        record for record in records
+        if record.get("_record_kind") == "window_summary"
+    ]
     features = [
         record for record in records
-        if record.get("_record_kind") != "daily_summary"
+        if record.get("_record_kind") not in {"daily_summary", "window_summary"}
     ]
 
     selected: list[Mapping[str, Any]] = []
 
-    if summaries:
+    if days <= 30 and summaries:
         dated_summaries = [
             record for record in summaries if record_datetime(record)
         ]
@@ -708,22 +840,57 @@ def territorial_totals(
             key=lambda record: record_datetime(record)
             or datetime.min.replace(tzinfo=UTC)
         )
-
-        if days <= 30:
-            selected = dated_summaries[-days:]
-        else:
-            selected = []
+        selected = dated_summaries[-days:]
 
     if not selected:
-        exact_window = [
+        exact_windows = [
+            record for record in window_summaries
+            if record_window_days(record) == days
+        ]
+
+        # Compare the window's closing date with the freshest territorial date.
+        freshest_date = max(
+            (
+                record_datetime(record)
+                for record in summaries + features
+                if record_datetime(record)
+            ),
+            default=None,
+        )
+
+        current_windows: list[Mapping[str, Any]] = []
+        for record in exact_windows:
+            window_latest = parse_datetime(record.get("_source_latest_date"))
+            if window_latest is None:
+                window_latest = record_datetime(record)
+            if freshest_date is None or window_latest is None:
+                current_windows.append(record)
+                continue
+            lag_days = abs((freshest_date.date() - window_latest.date()).days)
+            if lag_days <= 3:
+                current_windows.append(record)
+
+        if current_windows:
+            # There should normally be one row. If duplicates exist, prefer the
+            # row with the newest source date and do not sum duplicate windows.
+            current_windows.sort(
+                key=lambda record: parse_datetime(record.get("_source_latest_date"))
+                or record_datetime(record)
+                or datetime.min.replace(tzinfo=UTC),
+                reverse=True,
+            )
+            selected = [current_windows[0]]
+
+    if not selected:
+        exact_feature_window = [
             record for record in features if record_window_days(record) == days
         ]
         dated_features = [
             record for record in features if record_datetime(record)
         ]
 
-        if exact_window:
-            selected = exact_window
+        if exact_feature_window:
+            selected = exact_feature_window
         elif dated_features and days <= 30:
             latest_date = max(
                 record_datetime(record)
@@ -1225,7 +1392,7 @@ def build_payload(now: datetime) -> dict[str, Any]:
     ]
 
     return {
-        "schema_version": "1.1.0",
+        "schema_version": "1.2.0",
         "dataset": "ukraine_conflict_dashboard_current",
         "generated_at": iso(now),
         "latest_data_at": iso(latest_data_at),
@@ -1252,6 +1419,7 @@ def build_payload(now: datetime) -> dict[str, Any]:
             },
             "notes_hu": [
                 "A területi 1/7/30 napos értékek a territorial_delta_30days.geojson napi összesítéseiből készülnek.",
+                "A 90 napos érték csak friss territorial_delta_windows.geojson összesítésből jelenik meg.",
                 "A gördülő időablakok UTC-idő alapján készülnek.",
                 "Elavult forrásból nem készül 24/48/72 órás riasztás.",
                 "A FIRMS-hőpont ipari, mezőgazdasági vagy katonai eredetű is lehet.",
