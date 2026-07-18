@@ -1055,7 +1055,7 @@
         <h2 class="panel-title">Front Situation Assessment</h2>
         <div class="panel-subtitle">A kiválasztott időszak összesített műveleti helyzetképe</div>
       </div>
-      <div class="panel-badge" id="frontStatusBadge">betöltés</div>
+      <div class="panel-badge">növekvő</div>
     </div>
 
     <div class="panel-body">
@@ -1306,323 +1306,246 @@
 </main>
 
 <footer>
-  <div class="shell">OSINT-alapú elemző dashboard. Az aktuális KPI-, szektor- és eseményadatok automatikusan frissülnek.</div>
+  <div class="shell">Demóverzió. Következő lépés: a repo valós JSON- és GeoJSON-adatainak bekötése.</div>
 </footer>
 
 <script>
-const DASHBOARD_CURRENT_URL='../data/dashboard_current.json';
-
-let dashboardCurrent=null;
-
-const fmt=n=>Number(n||0).toLocaleString('hu-HU',{
-  minimumFractionDigits:1,
-  maximumFractionDigits:1
-});
-
-const riskClass=r=>{
-  const value=String(r||'MODERATE').toUpperCase();
-  return value==='CRITICAL'
-    ? 'critical'
-    : value==='HIGH'
-      ? 'high'
-      : value==='ELEVATED'
-        ? 'elevated'
-        : 'moderate';
+let DATA={};
+let SECTOR_DATA={};
+let EVENTS={24:[],48:[],72:[]};
+let DASHBOARD_CURRENT_META={
+  generatedAt:null,
+  latestDataAt:null,
+  freshness:null,
+  warnings:[]
 };
 
-function formatSignedKm2(value){
-  const number=Number(value||0);
-  const sign=number>0?'+':number<0?'−':'';
-  return `${sign}${fmt(Math.abs(number))} km²`;
+const DASHBOARD_CURRENT_URLS=[
+  './data/dashboard_current.json',
+  'data/dashboard_current.json',
+  '../data/dashboard_current.json'
+];
+
+async function fetchFirstAvailableJson(urls){
+  let lastError=null;
+
+  for(const url of urls){
+    try{
+      const response=await fetch(url,{cache:'no-store'});
+      if(!response.ok){
+        throw new Error(`${url}: HTTP ${response.status}`);
+      }
+      return await response.json();
+    }catch(error){
+      lastError=error;
+      console.warn('Dashboard current data source failed:',url,error);
+    }
+  }
+
+  throw lastError || new Error('A dashboard_current.json nem tölthető be.');
 }
 
-function formatDateTime(value){
-  if(!value) return 'n/a';
+function normalizeDashboardCurrent(payload){
+  const periods=payload?.periods || {};
+  const sectors=payload?.sectors || {};
+  const events=payload?.events || {};
 
-  const date=new Date(value);
-  if(Number.isNaN(date.getTime())) return String(value);
+  DATA={};
+  SECTOR_DATA={};
 
-  return date.toLocaleString('hu-HU',{
-    year:'numeric',
-    month:'2-digit',
-    day:'2-digit',
-    hour:'2-digit',
-    minute:'2-digit'
+  [1,7,30,90].forEach(period=>{
+    const row=periods[String(period)] || {};
+    DATA[period]={
+      ru:Number(row.ru_gain_km2 || 0),
+      ua:Number(row.ua_recapture_km2 || 0),
+      firms:Number(row.firms_count || 0),
+      index:Number(row.conflict_index || 0),
+      osint:Number(row.osint_events || 0)
+    };
+
+    const sectorRows=Array.isArray(sectors[String(period)])
+      ? sectors[String(period)]
+      : [];
+
+    SECTOR_DATA[period]=sectorRows.map(item=>({
+      name:item.name || item.id || 'Ismeretlen szektor',
+      sub:item.sub || '',
+      score:Number(item.score || 0),
+      risk:item.risk || 'MODERATE',
+      ru:Number(item.ru_gain_km2 || 0),
+      ua:Number(item.ua_recapture_km2 || 0),
+      firms:Number(item.firms_count || 0),
+      osint:Number(item.osint_events || 0)
+    }));
   });
+
+  EVENTS={24:[],48:[],72:[]};
+  [24,48,72].forEach(hours=>{
+    const rows=Array.isArray(events[String(hours)])
+      ? events[String(hours)]
+      : [];
+
+    EVENTS[hours]=rows.map(item=>({
+      type:item.type || 'Kiemelt esemény',
+      title:item.title || 'Nincs megnevezés',
+      value:item.value || '',
+      time:item.time || '',
+      className:item.class_name || item.className || '',
+      confidence:item.confidence || 'Nincs adat',
+      source:item.source || 'Automatikus adatforrás',
+      note:item.note || '',
+      url:item.url || null
+    }));
+  });
+
+  DASHBOARD_CURRENT_META={
+    generatedAt:payload?.generated_at || null,
+    latestDataAt:payload?.latest_data_at || null,
+    freshness:payload?.freshness || null,
+    warnings:Array.isArray(payload?.warnings) ? payload.warnings : []
+  };
 }
 
-function periodLabel(period){
-  return Number(period)===1?'24 órás':`${period} napos`;
-}
+function showDashboardCurrentError(error){
+  console.error('Dashboard current data:',error);
 
-function getPeriodData(period){
-  return dashboardCurrent?.periods?.[String(period)]
-    || dashboardCurrent?.periods?.[period]
-    || null;
-}
+  const updated=document.getElementById('lastUpdated');
+  if(updated) updated.textContent='adatbetöltési hiba';
 
-function getSectorData(period){
-  const sectors=dashboardCurrent?.sectors?.[String(period)]
-    || dashboardCurrent?.sectors?.[period]
-    || [];
+  const badge=document.querySelector('#sectorPanelTitle')
+    ?.closest('.panel')
+    ?.querySelector('.panel-badge');
+  if(badge) badge.textContent='hiba';
 
-  return Array.isArray(sectors)?sectors:[];
-}
-
-function getEventData(windowHours){
-  const events=dashboardCurrent?.events?.[String(windowHours)]
-    || dashboardCurrent?.events?.[windowHours]
-    || [];
-
-  return Array.isArray(events)?events:[];
-}
-
-function renderSectors(period){
-  const title=document.getElementById('sectorPanelTitle');
-  const badge=document.getElementById('sectorPeriodBadge');
-  const host=document.getElementById('sectorGrid');
-  const sectors=getSectorData(period);
-
-  if(title){
-    title.textContent=`Front sectors – ${periodLabel(period)} mérleg`;
-  }
-
-  if(badge){
-    badge.textContent=Number(period)===1?'24 óra':`${period} nap`;
-  }
-
-  if(!host) return;
-
-  if(!sectors.length){
-    host.innerHTML=`
-      <div class="comparison-loading">
-        Ehhez az időszakhoz jelenleg nincs szektorszintű adat.
+  const grid=document.getElementById('sectorGrid');
+  if(grid){
+    grid.innerHTML=`
+      <div class="comparison-error">
+        A <strong>dashboard_current.json</strong> nem tölthető be.
+        Ellenőrizd, hogy a fájl a <strong>docs/data/dashboard_current.json</strong>
+        útvonalon megtalálható-e.
       </div>
     `;
-    return;
   }
 
-  host.innerHTML=sectors.map(s=>`
+  const eventGrid=document.getElementById('eventGrid');
+  if(eventGrid){
+    eventGrid.innerHTML=`
+      <div class="comparison-error">
+        Az aktuális 24 / 48 / 72 órás eseményadatok nem tölthetők be.
+      </div>
+    `;
+  }
+}
+
+async function loadDashboardCurrent(){
+  try{
+    const payload=await fetchFirstAvailableJson(DASHBOARD_CURRENT_URLS);
+    normalizeDashboardCurrent(payload);
+    renderEvents();
+    render(Number(document.getElementById('periodSelect').value || 30));
+  }catch(error){
+    showDashboardCurrentError(error);
+  }
+}
+
+const fmt=n=>n.toLocaleString('hu-HU',{minimumFractionDigits:1,maximumFractionDigits:1});
+const riskClass=r=>r==='CRITICAL'?'critical':r==='HIGH'?'high':r==='ELEVATED'?'elevated':'moderate';
+
+function renderSectors(period){
+  const periodLabel=period===1?'24 órás':`${period} napos`;
+  document.getElementById('sectorPanelTitle').textContent=`Front sectors – ${periodLabel} mérleg`;
+  document.getElementById('sectorPeriodBadge').textContent=period===1?'24 óra':`${period} nap`;
+
+  const rows=Array.isArray(SECTOR_DATA[period]) ? SECTOR_DATA[period] : [];
+  document.getElementById('sectorGrid').innerHTML=rows.map(s=>`
     <article class="sector-card">
       <div class="sector-head">
         <div>
-          <div class="sector-name">${s.name||s.id||'Ismeretlen szektor'}</div>
-          <div class="sector-sub">${s.sub||''}</div>
+          <div class="sector-name">${s.name}</div>
+          <div class="sector-sub">${s.sub}</div>
         </div>
-        <div class="risk-tag ${riskClass(s.risk)}">${s.risk||'MODERATE'}</div>
+        <div class="risk-tag ${riskClass(s.risk)}">${s.risk}</div>
       </div>
-
-      <div class="sector-score">${Number(s.score||0)}/100</div>
-
+      <div class="sector-score">${s.score}/100</div>
       <div class="sector-delta">
         <div class="sector-delta-box">
           <span>Orosz nyereség</span>
-          <strong style="color:var(--red)">
-            ${formatSignedKm2(Number(s.ru_gain_km2||0))}
-          </strong>
+          <strong style="color:var(--red)">+${fmt(s.ru)} km²</strong>
         </div>
-
         <div class="sector-delta-box">
           <span>Ukrán visszafoglalás</span>
-          <strong style="color:var(--green)">
-            ${formatSignedKm2(Number(s.ua_recapture_km2||0))}
-          </strong>
+          <strong style="color:var(--green)">+${fmt(s.ua)} km²</strong>
         </div>
       </div>
     </article>
   `).join('');
 }
 
-function eventCardClass(event){
-  if(event?.class_name) return event.class_name;
-  if(event?.kind==='firms') return 'firms';
-
-  const type=String(event?.type||'').toLowerCase();
-  if(type.includes('visszafoglal')) return 'recapture';
-  if(type.includes('csapás')) return 'strike';
-
-  return '';
-}
-
 function renderEvents(){
-  const host=document.getElementById('eventGrid');
-  if(!host) return;
+  const columns=[
+    {window:'24 óra',events:EVENTS[24]},
+    {window:'48 óra',events:EVENTS[48]},
+    {window:'72 óra',events:EVENTS[72]}
+  ];
 
-  const columns=[24,48,72].map(windowHours=>({
-    window:`${windowHours} óra`,
-    events:getEventData(windowHours)
-  }));
-
-  host.innerHTML=columns.map(col=>`
+  document.getElementById('eventGrid').innerHTML=columns.map(col=>`
     <section class="event-column">
       <div class="event-column-head">
         <div class="event-window">${col.window}</div>
         <div class="event-count">${col.events.length} kiemelt esemény</div>
       </div>
-
       <div class="event-list">
-        ${
-          col.events.length
-            ? col.events.map(e=>`
-              <article class="event-card ${eventCardClass(e)}">
-                <div class="event-top">
-                  <div class="event-type">${e.type||e.kind||'Esemény'}</div>
-                  <div class="event-time">${formatDateTime(e.time)}</div>
-                </div>
-
-                <div class="event-title">${e.title||'Ismeretlen helyszín'}</div>
-                <div class="event-value">${e.value||''}</div>
-
-                <div class="event-meta">
-                  <div class="event-meta-box">
-                    <span>Megbízhatóság</span>
-                    <strong>${e.confidence||'n/a'}</strong>
-                  </div>
-
-                  <div class="event-meta-box">
-                    <span>Forrás</span>
-                    <strong>${e.source||'n/a'}</strong>
-                  </div>
-                </div>
-
-                <div class="event-note">${e.note||''}</div>
-              </article>
-            `).join('')
-            : `
-              <div class="comparison-loading">
-                Nincs automatikusan kiemelt esemény ebben az időablakban.
-              </div>
-            `
-        }
+        ${col.events.map(e=>`
+          <article class="event-card ${e.className}">
+            <div class="event-top">
+              <div class="event-type">${e.type}</div>
+              <div class="event-time">${e.time}</div>
+            </div>
+            <div class="event-title">${e.title}</div>
+            <div class="event-value">${e.value}</div>
+            <div class="event-meta">
+              <div class="event-meta-box"><span>Megbízhatóság</span><strong>${e.confidence}</strong></div>
+              <div class="event-meta-box"><span>Forrás</span><strong>${e.source}</strong></div>
+            </div>
+            <div class="event-note">${e.note}</div>
+          </article>
+        `).join('')}
       </div>
     </section>
   `).join('');
 }
 
-function conflictInterpretation(value){
-  const score=Number(value||0);
-
-  if(score<=-40) return 'erős eszkalációs tartományt';
-  if(score<=-10) return 'eszkalációs tartományt';
-  if(score<10) return 'kiegyensúlyozott vagy bizonytalan tartományt';
-  if(score<40) return 'mérsékelt deeszkalációs tartományt';
-
-  return 'erős deeszkalációs tartományt';
-}
-
-function renderAssessment(period,data,sectors){
-  const net=Number(data.net_change_km2||0);
-  const direction=net>0
-    ? 'orosz irányú'
-    : net<0
-      ? 'ukrán irányú'
-      : 'kiegyensúlyozott';
-
-  const leadingSector=sectors.length?sectors[0]:null;
-
-  const p1=document.getElementById('assessmentP1');
-  const p2=document.getElementById('assessmentP2');
-  const p3=document.getElementById('assessmentP3');
-
-  if(p1){
-    p1.textContent=
-      `A kiválasztott időszakban az orosz erők területi nyeresége `+
-      `${fmt(data.ru_gain_km2)} km², az ukrán visszafoglalás pedig `+
-      `${fmt(data.ua_recapture_km2)} km² volt. A nettó változás `+
-      `${formatSignedKm2(net)} ${direction} elmozdulást jelez.`;
-  }
-
-  if(p2){
-    p2.textContent=leadingSector
-      ? `A szektorszintű rangsorban jelenleg ${leadingSector.name} áll az első helyen `+
-        `${Number(leadingSector.score||0)}/100 ponttal és `+
-        `${String(leadingSector.risk||'MODERATE').toUpperCase()} kockázati besorolással. `+
-        `A szektorok ugyanahhoz a ${periodLabel(period)} időablakhoz igazodnak.`
-      : 'A kiválasztott időszakhoz jelenleg nem áll rendelkezésre szektorszintű rangsor.';
-  }
-
-  if(p3){
-    p3.textContent=
-      `A kiválasztott időszak ${Number(data.firms_count||0).toLocaleString('hu-HU')} `+
-      `FIRMS-hőpontot és ${Number(data.osint_events||0).toLocaleString('hu-HU')} `+
-      `feldolgozott OSINT-eseményt tartalmaz. A konfliktusindex `+
-      `${Number(data.conflict_index||0)}, ami ${conflictInterpretation(data.conflict_index)} jelez.`;
-  }
-}
-
 function render(period){
-  const data=getPeriodData(period);
-  if(!data) return;
+  const d=DATA[period] || {ru:0,ua:0,firms:0,index:0,osint:0};
+  const net=d.ru-d.ua;
 
-  const sectors=getSectorData(period);
-  const net=Number(data.net_change_km2||0);
+  document.getElementById('lastUpdated').textContent=DASHBOARD_CURRENT_META.generatedAt
+    ? new Date(DASHBOARD_CURRENT_META.generatedAt).toLocaleString('hu-HU')
+    : 'nincs időbélyeg';
+  document.getElementById('ruGain').textContent=fmt(d.ru)+' km²';
+  document.getElementById('uaGain').textContent=fmt(d.ua)+' km²';
+  document.getElementById('netChange').textContent='+'+fmt(net)+' km²';
+  document.getElementById('firmsCount').textContent=d.firms.toLocaleString('hu-HU');
+  document.getElementById('conflictIndex').textContent=d.index;
+  document.getElementById('osintEvents').textContent=d.osint.toLocaleString('hu-HU');
 
-  const generatedAt=dashboardCurrent?.generated_at
-    || dashboardCurrent?.latest_data_at;
+  document.getElementById('assessmentP1').textContent=
+    `A kiválasztott időszakban az orosz erők becsült területi nyeresége ${fmt(d.ru)} km², míg az ukrán visszafoglalás ${fmt(d.ua)} km² volt. A nettó változás +${fmt(net)} km² orosz irányú elmozdulást jelez.`;
 
-  document.getElementById('lastUpdated').textContent=formatDateTime(generatedAt);
-  document.getElementById('ruGain').textContent=`${fmt(data.ru_gain_km2)} km²`;
-  document.getElementById('uaGain').textContent=`${fmt(data.ua_recapture_km2)} km²`;
-  document.getElementById('netChange').textContent=formatSignedKm2(net);
-  document.getElementById('firmsCount').textContent=
-    Number(data.firms_count||0).toLocaleString('hu-HU');
-  document.getElementById('conflictIndex').textContent=
-    Number(data.conflict_index||0);
-  document.getElementById('osintEvents').textContent=
-    Number(data.osint_events||0).toLocaleString('hu-HU');
+  const rankedSectors=Array.isArray(SECTOR_DATA[period]) ? SECTOR_DATA[period] : [];
+  const leadingNames=rankedSectors.slice(0,3).map(item=>item.name).filter(Boolean);
+  document.getElementById('assessmentP2').textContent=leadingNames.length
+    ? `A szektorkártyák ugyanehhez az időablakhoz igazodnak. A legmagasabb összesített aktivitási és kockázati pontszám jelenleg a következő térségekhez kapcsolódik: ${leadingNames.join(', ')}.`
+    : 'A kiválasztott időszakhoz jelenleg nem áll rendelkezésre szektorszintű adat.';
+
+  document.getElementById('assessmentP3').textContent=
+    `A kiválasztott időszak ${d.firms.toLocaleString('hu-HU')} FIRMS-hőpontot és ${d.osint.toLocaleString('hu-HU')} feldolgozott OSINT-eseményt tartalmaz. A konfliktusindex ${d.index}, ami eszkalációs tartományt jelez.`;
 
   renderSectors(period);
-  renderAssessment(period,data,sectors);
 }
 
-async function loadDashboardCurrent(){
-  try{
-    const response=await fetch(
-      DASHBOARD_CURRENT_URL,
-      {cache:'no-store'}
-    );
 
-    if(!response.ok){
-      throw new Error(`HTTP ${response.status}`);
-    }
-
-    dashboardCurrent=await response.json();
-
-    renderEvents();
-    render(Number(document.getElementById('periodSelect').value||30));
-
-    const statusBadge=document.getElementById('frontStatusBadge');
-
-    if(statusBadge && dashboardCurrent?.freshness?.overall){
-      statusBadge.textContent=
-        dashboardCurrent.freshness.overall==='fresh'
-          ? 'friss adatok'
-          : dashboardCurrent.freshness.overall;
-    }
-  }catch(error){
-    console.error('Dashboard current:',error);
-
-    document.getElementById('lastUpdated').textContent='adatbetöltési hiba';
-
-    const sectorHost=document.getElementById('sectorGrid');
-    if(sectorHost){
-      sectorHost.innerHTML=`
-        <div class="comparison-error">
-          A dashboard_current.json nem tölthető be.
-        </div>
-      `;
-    }
-
-    const eventHost=document.getElementById('eventGrid');
-    if(eventHost){
-      eventHost.innerHTML=`
-        <div class="comparison-error">
-          Az aktuális eseményadatok nem tölthetők be.
-        </div>
-      `;
-    }
-  }
-}
 
 const FRONT_COMPARISON_CONFIG = {
   deepStateApi:
@@ -2851,8 +2774,9 @@ loadDashboardLongTermSummary();
 
 
 
-document.getElementById('periodSelect').addEventListener('change',event=>{
-  render(Number(event.target.value));
+document.getElementById('periodSelect').addEventListener('change',e=>{
+  const period=Number(e.target.value);
+  if(DATA[period]) render(period);
 });
 
 loadDashboardCurrent();
