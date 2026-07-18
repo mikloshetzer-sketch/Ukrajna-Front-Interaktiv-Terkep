@@ -412,6 +412,52 @@ def geometry_centroid(geometry: Mapping[str, Any] | None) -> tuple[float, float]
     )
 
 
+
+
+def dominant_sector_for_geometry(
+    geometry: Mapping[str, Any] | None,
+    fallback_text: str = "",
+) -> str:
+    """Assign a polygon to exactly one dominant analytical sector.
+
+    Dominance is estimated from the share of geometry vertices falling inside
+    each sector bounding box. Specific frontline sectors are evaluated before
+    the broad Ukrainian-rear catch-all. If no vertex falls inside a sector, the
+    geometry centroid and finally the textual location are used as fallbacks.
+    """
+    points = list(flatten_coordinates(geometry))
+    if points:
+        counts: Counter[str] = Counter()
+        for lon, lat in points:
+            for sector in SECTORS[1:]:
+                west, south, east, north = sector["bbox"]
+                if west <= lon <= east and south <= lat <= north:
+                    counts[str(sector["id"])] += 1
+                    break
+            else:
+                rear = SECTORS[0]
+                west, south, east, north = rear["bbox"]
+                if (
+                    west <= lon <= east
+                    and south <= lat <= north
+                    and lon < rear["exclude_front_lon_min"]
+                ):
+                    counts["ukrainian_rear"] += 1
+
+        if counts:
+            # Counter.most_common is deterministic here because SECTORS has a
+            # fixed order and points are traversed in source order.
+            return counts.most_common(1)[0][0]
+
+        centroid = geometry_centroid(geometry)
+        if centroid:
+            sector_id = sector_for_point(centroid[0], centroid[1])
+            if sector_id != "unassigned":
+                return sector_id
+
+    return sector_for_point(None, None, fallback_text)
+
+
 def extract_records(payload: Any, preferred_keys: Sequence[str]) -> list[dict[str, Any]]:
     if isinstance(payload, list):
         return [dict(item) for item in payload if isinstance(item, Mapping)]
@@ -533,6 +579,10 @@ def record_location(record: Mapping[str, Any]) -> tuple[float | None, float | No
 
 def sector_id_for_record(record: Mapping[str, Any]) -> str:
     explicit = str(first_value(record, ALIASES["sector"]) or "")
+    geometry = record.get("_geometry")
+    if isinstance(geometry, Mapping):
+        return dominant_sector_for_geometry(geometry, explicit)
+
     lon, lat = record_location(record)
     if lon is not None and math.isnan(lon):
         lon = None
@@ -1046,6 +1096,19 @@ def sector_cards(
         aggregates[sector_id]["ru"] += ru
         aggregates[sector_id]["ua"] += ua
 
+    # Polygon-derived sector areas can differ slightly from the authoritative
+    # daily summaries because of geometry simplification, overlap or clipping.
+    # Reconcile each side proportionally so sector totals equal the official
+    # national total while preserving the observed spatial distribution.
+    official_ru, official_ua, _ = territorial_totals(territorial_records, now, days)
+    raw_ru = sum(values["ru"] for values in aggregates.values())
+    raw_ua = sum(values["ua"] for values in aggregates.values())
+    ru_factor = official_ru / raw_ru if raw_ru > 0 else 0.0
+    ua_factor = official_ua / raw_ua if raw_ua > 0 else 0.0
+    for values in aggregates.values():
+        values["ru"] *= ru_factor
+        values["ua"] *= ua_factor
+
     for point in firms_selected:
         sector_id = sector_id_for_record(point)
         if sector_id == "unassigned":
@@ -1407,7 +1470,7 @@ def build_payload(now: datetime) -> dict[str, Any]:
     ]
 
     return {
-        "schema_version": "1.2.1",
+        "schema_version": "1.3.0",
         "dataset": "ukraine_conflict_dashboard_current",
         "generated_at": iso(now),
         "latest_data_at": iso(latest_data_at),
@@ -1439,7 +1502,10 @@ def build_payload(now: datetime) -> dict[str, Any]:
                 "Elavult forrásból nem készül 24/48/72 órás riasztás.",
                 "A FIRMS-hőpont ipari, mezőgazdasági vagy katonai eredetű is lehet.",
                 "A szektorbontás kizárólag a gördülő napi területi poligonokat használja, így az összesített ablakok nem duplázódnak.",
-                "A szektorbontás elemzési célú közelítés, nem frontellenőrzési térkép.",
+                "Minden területi poligon pontosan egyetlen domináns elemzési szektorhoz kerül; a domináns szektort a geometria szektoron belüli pontjainak aránya határozza meg.",
+                "A szektorszintű területi értékeket a rendszer arányosan az országos napi összesítéshez igazítja, ezért a szektorok összege megegyezik az országos értékkel.",
+                "A szektorhatárok elemzési célú közelítések. A határterületeken kisebb eltérés előfordulhat a valós földrajzi megoszláshoz képest.",
+                "A szektorbontás nem hivatalos frontellenőrzési térkép.",
                 "A konfliktusindex az OSINT-kategória és fontosság alapján képzett modellérték.",
             ],
         },
@@ -1511,4 +1577,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
 
