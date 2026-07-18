@@ -4,7 +4,6 @@ on:
   workflow_dispatch:
 
   schedule:
-    # Biztonsági újragenerálás háromóránként, UTC szerint.
     - cron: "17 */3 * * *"
 
   push:
@@ -38,7 +37,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-          cache: "pip"
 
       - name: Validate generator file
         run: |
@@ -65,15 +63,14 @@ jobs:
           required_periods = {"1", "7", "30", "90"}
           required_events = {"24", "48", "72"}
 
-          if set(data.get("periods", {})) != required_periods:
-              raise SystemExit(
-                  f"Invalid periods: {sorted(data.get('periods', {}))}"
-              )
+          periods = set(data.get("periods", {}))
+          events = set(data.get("events", {}))
 
-          if set(data.get("events", {})) != required_events:
-              raise SystemExit(
-                  f"Invalid event windows: {sorted(data.get('events', {}))}"
-              )
+          if periods != required_periods:
+              raise SystemExit(f"Invalid periods: {sorted(periods)}")
+
+          if events != required_events:
+              raise SystemExit(f"Invalid event windows: {sorted(events)}")
 
           if not data.get("generated_at"):
               raise SystemExit("Missing generated_at")
@@ -145,3 +142,4 @@ jobs:
           else
             echo "Dashboard data regenerated; repository content was unchanged."
           fi
+
