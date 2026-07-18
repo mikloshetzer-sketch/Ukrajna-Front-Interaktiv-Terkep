@@ -142,7 +142,7 @@ ALIASES = {
     "date": (
         "date", "event_date", "observation_date", "acq_date", "timestamp",
         "datetime", "time", "created_at", "published_at", "updated_at",
-        "to_date", "end_date", "latest_date",
+        "to_date", "end_date", "latest_date", "current_date", "previous_date",
     ),
     "window_days": (
         "window_days", "days", "period_days", "rolling_days", "window",
@@ -542,11 +542,25 @@ def sector_id_for_record(record: Mapping[str, Any]) -> str:
 
 
 def load_territorial(now: datetime) -> tuple[list[dict[str, Any]], SourceStatus]:
+    """
+    Load the freshest rolling territorial dataset.
+
+    Priority:
+      1. territorial_delta_30days.geojson
+      2. territorial_delta_windows.geojson
+      3. territorial_delta.geojson
+
+    The 30-day file contains:
+      - metadata.daily_summaries for exact rolling totals
+      - features for sector and event localisation
+    """
     path = find_existing(
-        "data/territorial_delta_windows.geojson",
-        "docs/data/territorial_delta_windows.geojson",
         "data/territorial_delta_30days.geojson",
         "docs/data/territorial_delta_30days.geojson",
+        "data/territorial_delta_30d.geojson",
+        "docs/data/territorial_delta_30d.geojson",
+        "data/territorial_delta_windows.geojson",
+        "docs/data/territorial_delta_windows.geojson",
         "data/territorial_delta.geojson",
         "docs/data/territorial_delta.geojson",
     )
@@ -555,21 +569,60 @@ def load_territorial(now: datetime) -> tuple[list[dict[str, Any]], SourceStatus]
 
     try:
         payload = read_json(path)
-        records = extract_records(payload, ("features", "items", "records", "data"))
     except (OSError, json.JSONDecodeError) as exc:
         return [], status_from_age(
             "territorial", path, file_mtime(path), None, 0, now,
             f"A területi fájl nem olvasható: {exc}",
         )
 
+    records: list[dict[str, Any]] = []
+
+    if isinstance(payload, Mapping):
+        metadata = payload.get("metadata")
+        if isinstance(metadata, Mapping):
+            daily_summaries = metadata.get("daily_summaries")
+            if isinstance(daily_summaries, list):
+                for item in daily_summaries:
+                    if isinstance(item, Mapping):
+                        record = dict(item)
+                        record["_record_kind"] = "daily_summary"
+                        records.append(record)
+
+        features = payload.get("features")
+        if isinstance(features, list):
+            for feature in features:
+                if not isinstance(feature, Mapping):
+                    continue
+                properties = dict(feature.get("properties") or {})
+                properties["_geometry"] = feature.get("geometry")
+                properties["_record_kind"] = "feature"
+                records.append(properties)
+
+    if not records:
+        records = extract_records(payload, ("items", "records", "data"))
+        for record in records:
+            record["_record_kind"] = "generic"
+
     updated_at = extract_updated_at(payload, path)
-    dates = [record_datetime(record) for record in records]
-    latest_record = max((item for item in dates if item), default=None)
+
+    latest_record: datetime | None = None
+    if isinstance(payload, Mapping):
+        metadata = payload.get("metadata")
+        if isinstance(metadata, Mapping):
+            latest_record = parse_datetime(
+                metadata.get("latest_date")
+                or metadata.get("current_date")
+                or metadata.get("updated_utc")
+            )
+
+    if latest_record is None:
+        dates = [record_datetime(record) for record in records]
+        latest_record = max((item for item in dates if item), default=None)
+
     status = status_from_age(
         "territorial", path, updated_at, latest_record, len(records), now
     )
     return records, status
-
 
 def load_firms(now: datetime) -> tuple[list[dict[str, Any]], SourceStatus, dict[str, Any]]:
     candidates = [
@@ -632,24 +685,58 @@ def territorial_totals(
     now: datetime,
     days: int,
 ) -> tuple[float, float, list[Mapping[str, Any]]]:
-    dated_records = [record for record in records if record_datetime(record)]
-
-    # A pre-aggregated record with an exact rolling-window marker takes precedence.
-    exact_window = [
-        record for record in records if record_window_days(record) == days
+    """
+    Calculate rolling territorial totals without double counting.
+    Daily summaries are preferred; polygons are fallback data only.
+    """
+    summaries = [
+        record for record in records
+        if record.get("_record_kind") == "daily_summary"
     ]
-    selected: list[Mapping[str, Any]]
-    if exact_window:
-        selected = exact_window
-    elif dated_records:
-        selected = [
-            record for record in dated_records
-            if in_rolling_window(record_datetime(record), now, days)
+    features = [
+        record for record in records
+        if record.get("_record_kind") != "daily_summary"
+    ]
+
+    selected: list[Mapping[str, Any]] = []
+
+    if summaries:
+        dated_summaries = [
+            record for record in summaries if record_datetime(record)
         ]
-    elif days == 30:
-        selected = list(records)
-    else:
-        selected = []
+        dated_summaries.sort(
+            key=lambda record: record_datetime(record)
+            or datetime.min.replace(tzinfo=UTC)
+        )
+
+        if days <= 30:
+            selected = dated_summaries[-days:]
+        else:
+            selected = []
+
+    if not selected:
+        exact_window = [
+            record for record in features if record_window_days(record) == days
+        ]
+        dated_features = [
+            record for record in features if record_datetime(record)
+        ]
+
+        if exact_window:
+            selected = exact_window
+        elif dated_features and days <= 30:
+            latest_date = max(
+                record_datetime(record)
+                for record in dated_features
+                if record_datetime(record)
+            )
+            cutoff = latest_date - timedelta(days=days - 1)
+            selected = [
+                record for record in dated_features
+                if cutoff <= record_datetime(record) <= latest_date
+            ]
+        elif days == 30 and features:
+            selected = list(features)
 
     ru_total = 0.0
     ua_total = 0.0
@@ -657,8 +744,8 @@ def territorial_totals(
         ru, ua = classify_delta(record)
         ru_total += ru
         ua_total += ua
-    return ru_total, ua_total, selected
 
+    return ru_total, ua_total, selected
 
 def firms_for_window(
     points: Sequence[Mapping[str, Any]], now: datetime, days: int
@@ -729,6 +816,32 @@ def sector_cards(
     days: int,
 ) -> list[dict[str, Any]]:
     _, _, territorial_selected = territorial_totals(territorial_records, now, days)
+
+    territorial_features = [
+        record for record in territorial_records
+        if record.get("_record_kind") != "daily_summary"
+    ]
+    if days <= 30:
+        indexed_features = [
+            record for record in territorial_features
+            if first_value(record, ("day_index_from_latest",)) is not None
+        ]
+        if indexed_features:
+            territorial_selected = [
+                record for record in indexed_features
+                if safe_int(
+                    first_value(record, ("day_index_from_latest",)),
+                    10_000,
+                ) <= days - 1
+            ]
+        else:
+            territorial_selected = [
+                record for record in territorial_selected
+                if record.get("_geometry")
+            ]
+    else:
+        territorial_selected = []
+
     firms_selected = firms_for_window(firms_points, now, days)
     osint_selected = osint_for_window(osint_items, now, days)
 
@@ -997,7 +1110,11 @@ def rapid_events(
     for hours in EVENT_WINDOWS_HOURS:
         candidates: list[dict[str, Any]] = []
         if source_statuses["territorial"].status not in {"missing", "empty", "stale"}:
-            candidates.extend(territorial_events(territorial_records, now, hours))
+            event_records = [
+                record for record in territorial_records
+                if record.get("_record_kind") != "daily_summary"
+            ]
+            candidates.extend(territorial_events(event_records, now, hours))
         if source_statuses["firms"].status not in {"missing", "empty", "stale"}:
             candidates.extend(firms_events(firms_points, now, hours))
         if source_statuses["osint"].status not in {"missing", "empty", "stale"}:
@@ -1108,7 +1225,7 @@ def build_payload(now: datetime) -> dict[str, Any]:
     ]
 
     return {
-        "schema_version": "1.0.0",
+        "schema_version": "1.1.0",
         "dataset": "ukraine_conflict_dashboard_current",
         "generated_at": iso(now),
         "latest_data_at": iso(latest_data_at),
@@ -1134,6 +1251,7 @@ def build_payload(now: datetime) -> dict[str, Any]:
                 "activity_baseline": 0.15,
             },
             "notes_hu": [
+                "A területi 1/7/30 napos értékek a territorial_delta_30days.geojson napi összesítéseiből készülnek.",
                 "A gördülő időablakok UTC-idő alapján készülnek.",
                 "Elavult forrásból nem készül 24/48/72 órás riasztás.",
                 "A FIRMS-hőpont ipari, mezőgazdasági vagy katonai eredetű is lehet.",
