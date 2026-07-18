@@ -694,8 +694,18 @@ def load_territorial(now: datetime) -> tuple[list[dict[str, Any]], SourceStatus]
                         source_latest=source_latest,
                     )
 
-            # Some generators place pre-aggregated rows in features or records.
-            for item in extract_records(payload, ("records", "items", "data")):
+            # Some generators place pre-aggregated rows in records/items/data.
+            # Do not use the generic FeatureCollection fallback here: polygon
+            # features may also contain window_days and would then be counted as
+            # duplicate window summaries.
+            extra_rows: list[dict[str, Any]] = []
+            for key in ("records", "items", "data"):
+                value = payload.get(key)
+                if isinstance(value, list):
+                    extra_rows.extend(
+                        dict(item) for item in value if isinstance(item, Mapping)
+                    )
+            for item in extra_rows:
                 if record_window_days(item):
                     append_window_summary(item, source_kind, source_latest=source_latest)
 
@@ -984,9 +994,14 @@ def sector_cards(
 ) -> list[dict[str, Any]]:
     _, _, territorial_selected = territorial_totals(territorial_records, now, days)
 
+    # Sector allocation must use only the daily polygon features from the
+    # rolling 30-day source. Window summaries have no independent geometry and
+    # including them would count the same territorial movement several times.
     territorial_features = [
         record for record in territorial_records
-        if record.get("_record_kind") != "daily_summary"
+        if record.get("_record_kind") == "feature"
+        and record.get("_source_kind") in {"rolling_30d", "daily"}
+        and record.get("_geometry")
     ]
     if days <= 30:
         indexed_features = [
@@ -1392,7 +1407,7 @@ def build_payload(now: datetime) -> dict[str, Any]:
     ]
 
     return {
-        "schema_version": "1.2.0",
+        "schema_version": "1.2.1",
         "dataset": "ukraine_conflict_dashboard_current",
         "generated_at": iso(now),
         "latest_data_at": iso(latest_data_at),
@@ -1423,6 +1438,7 @@ def build_payload(now: datetime) -> dict[str, Any]:
                 "A gördülő időablakok UTC-idő alapján készülnek.",
                 "Elavult forrásból nem készül 24/48/72 órás riasztás.",
                 "A FIRMS-hőpont ipari, mezőgazdasági vagy katonai eredetű is lehet.",
+                "A szektorbontás kizárólag a gördülő napi területi poligonokat használja, így az összesített ablakok nem duplázódnak.",
                 "A szektorbontás elemzési célú közelítés, nem frontellenőrzési térkép.",
                 "A konfliktusindex az OSINT-kategória és fontosság alapján képzett modellérték.",
             ],
