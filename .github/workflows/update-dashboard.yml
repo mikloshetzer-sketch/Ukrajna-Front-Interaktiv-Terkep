@@ -116,22 +116,35 @@ jobs:
               print(f"{window}h: {len(events)} event(s)")
           PY
 
+      - name: Check generated file status
+        run: |
+          echo "=== GIT STATUS ==="
+          git status --short -- docs/data/dashboard_current.json
+
+          echo "=== FILE DETAILS ==="
+          ls -lh docs/data/dashboard_current.json
+
       - name: Commit generated dashboard data
         id: commit
         shell: bash
         run: |
-          if git diff --quiet -- docs/data/dashboard_current.json; then
+          STATUS="$(git status --porcelain -- docs/data/dashboard_current.json)"
+
+          if [ -z "$STATUS" ]; then
             echo "No dashboard data changes to commit."
             echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
+
+          echo "Detected dashboard data change:"
+          echo "$STATUS"
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add docs/data/dashboard_current.json
           git commit -m "Update live dashboard data"
-          git push
+          git push origin HEAD:main
 
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
@@ -142,4 +155,5 @@ jobs:
           else
             echo "Dashboard data regenerated; repository content was unchanged."
           fi
+
 
