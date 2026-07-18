@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Generate the live data package used by the Ukraine–Russia Conflict Intelligence Dashboard.
+Generate the live data package used by the Ukraine Conflict Intelligence Dashboard.
 
 Output:
     docs/data/dashboard_current.json
@@ -84,9 +84,16 @@ ESCALATION_CATEGORIES = {
     "withdrawal": 2,
 }
 
-# Approximate analytical sectors. They are broad analytical zones, not borders.
-# Specific front sectors are evaluated before the wider country-level catch-alls.
+# Approximate analytical sectors. They are intentionally broad and used for
+# aggregation only; they are not front-control polygons.
 SECTORS = (
+    {
+        "id": "ukrainian_rear",
+        "name": "Ukrán hátország",
+        "sub": "mélységi csapások és infrastruktúra",
+        "bbox": (22.0, 43.5, 40.5, 52.5),
+        "exclude_front_lon_min": 35.0,
+    },
     {
         "id": "kupiansk_lyman",
         "name": "Kupjanszk–Liman",
@@ -129,47 +136,7 @@ SECTORS = (
         "sub": "csapások és légvédelmi aktivitás",
         "bbox": (32.2, 44.2, 36.8, 46.4),
     },
-    {
-        "id": "ukrainian_rear",
-        "name": "Ukrán hátország",
-        "sub": "mélységi csapások és infrastruktúra",
-        "country": "Ukraine",
-    },
-    {
-        "id": "russian_border",
-        "name": "Orosz határvidék",
-        "sub": "frontközeli orosz területek",
-        "country": "Russia",
-    },
-    {
-        "id": "russian_rear",
-        "name": "Orosz hátország",
-        "sub": "mélységi csapások, repülőterek és energia-infrastruktúra",
-        "country": "Russia",
-    },
 )
-
-# Simplified polygons are sufficient for analytical classification. They are not
-# intended for legal or cartographic border representation. Coordinates are lon/lat.
-UKRAINE_POLYGON = (
-    (22.1, 48.4), (22.9, 47.8), (24.0, 47.7), (25.2, 47.9),
-    (26.6, 47.7), (28.2, 45.5), (30.8, 45.2), (32.6, 46.0),
-    (34.6, 46.1), (36.8, 46.2), (38.3, 47.1), (40.2, 49.0),
-    (39.8, 50.5), (37.8, 50.7), (35.3, 51.1), (32.0, 52.3),
-    (29.2, 51.6), (27.1, 51.6), (24.1, 51.2), (22.1, 48.4),
-)
-
-CRIMEA_POLYGON = (
-    (32.3, 46.2), (33.0, 45.2), (34.1, 44.4), (35.8, 44.4),
-    (36.7, 45.1), (36.4, 46.1), (34.8, 46.4), (32.3, 46.2),
-)
-
-# The FIRMS source is intentionally limited to Ukraine and the analytically relevant
-# part of European/southern Russia. This includes Orenburg and major strategic depth
-# targets while excluding unrelated global points.
-RUSSIA_ANALYSIS_BBOX = (27.0, 43.0, 65.5, 58.8)
-RUSSIAN_BORDER_BBOX = (30.0, 45.0, 43.5, 54.5)
-
 
 ALIASES = {
     "date": (
@@ -182,7 +149,7 @@ ALIASES = {
     ),
     "ru_gain": (
         "ru_gain_km2", "russian_gain_km2", "russian_gain", "ru_gain",
-        "gain_ru_km2", "area_gain_km2", "russia_gain_km2",
+        "gain_ru_km2", "area_gain_km2", "area_km2", "km2",
     ),
     "ua_gain": (
         "ua_recapture_km2", "ukrainian_recapture_km2", "ua_gain_km2",
@@ -190,10 +157,6 @@ ALIASES = {
     ),
     "net": (
         "net_change_km2", "net_km2", "net_change", "delta_km2",
-    ),
-    "area": (
-        "area_km2", "km2", "delta_area_km2", "change_area_km2",
-        "polygon_area_km2", "geodesic_area_km2", "area",
     ),
     "side": (
         "side", "actor", "controller", "change_type", "delta_type", "type",
@@ -274,57 +237,6 @@ def first_value(data: Mapping[str, Any], names: Sequence[str]) -> Any:
         if name.lower() in lowered:
             return lowered[name.lower()]
     return None
-
-
-def first_value_recursive(data: Mapping[str, Any], names: Sequence[str]) -> Any:
-    """Find a value in a record or in commonly used nested metadata objects."""
-    direct = first_value(data, names)
-    if direct is not None:
-        return direct
-    for key in ("properties", "summary", "stats", "statistics", "metrics", "metadata", "totals"):
-        nested = data.get(key)
-        if isinstance(nested, Mapping):
-            value = first_value_recursive(nested, names)
-            if value is not None:
-                return value
-    return None
-
-
-def point_in_polygon(lon: float, lat: float, polygon: Sequence[tuple[float, float]]) -> bool:
-    inside = False
-    j = len(polygon) - 1
-    for i in range(len(polygon)):
-        xi, yi = polygon[i]
-        xj, yj = polygon[j]
-        intersects = ((yi > lat) != (yj > lat)) and (
-            lon < (xj - xi) * (lat - yi) / ((yj - yi) or 1e-12) + xi
-        )
-        if intersects:
-            inside = not inside
-        j = i
-    return inside
-
-
-def in_bbox(lon: float, lat: float, bbox: Sequence[float]) -> bool:
-    west, south, east, north = bbox
-    return west <= lon <= east and south <= lat <= north
-
-
-def country_for_point(lon: float | None, lat: float | None) -> str:
-    if lon is None or lat is None or math.isnan(lon) or math.isnan(lat):
-        return "Unknown"
-    if point_in_polygon(lon, lat, CRIMEA_POLYGON):
-        return "Crimea"
-    if point_in_polygon(lon, lat, UKRAINE_POLYGON):
-        return "Ukraine"
-    if in_bbox(lon, lat, RUSSIA_ANALYSIS_BBOX):
-        return "Russia"
-    return "Outside"
-
-
-def is_relevant_firms_point(point: Mapping[str, Any]) -> bool:
-    lon, lat = record_location(point)
-    return country_for_point(lon, lat) in {"Ukraine", "Russia", "Crimea"}
 
 
 def parse_datetime(value: Any) -> datetime | None:
@@ -525,33 +437,31 @@ def extract_records(payload: Any, preferred_keys: Sequence[str]) -> list[dict[st
 
 
 def feature_area_km2(record: Mapping[str, Any]) -> float:
-    area = abs(safe_float(first_value_recursive(record, ALIASES["area"])))
-    ru = abs(safe_float(first_value_recursive(record, ALIASES["ru_gain"])))
-    ua = abs(safe_float(first_value_recursive(record, ALIASES["ua_gain"])))
-    net = abs(safe_float(first_value_recursive(record, ALIASES["net"])))
-    return max(area, ru, ua, net)
+    ru = safe_float(first_value(record, ALIASES["ru_gain"]))
+    ua = safe_float(first_value(record, ALIASES["ua_gain"]))
+    net = safe_float(first_value(record, ALIASES["net"]))
+
+    if ru or ua:
+        return max(ru, ua)
+    if net:
+        return abs(net)
+    return 0.0
 
 
 def classify_delta(record: Mapping[str, Any]) -> tuple[float, float]:
-    ru = max(0.0, safe_float(first_value_recursive(record, ALIASES["ru_gain"])))
-    ua = max(0.0, safe_float(first_value_recursive(record, ALIASES["ua_gain"])))
-    net = safe_float(first_value_recursive(record, ALIASES["net"]))
-    area = abs(safe_float(first_value_recursive(record, ALIASES["area"])))
+    ru = max(0.0, safe_float(first_value(record, ALIASES["ru_gain"])))
+    ua = max(0.0, safe_float(first_value(record, ALIASES["ua_gain"])))
+    net = safe_float(first_value(record, ALIASES["net"]))
 
-    side = str(first_value_recursive(record, ALIASES["side"]) or "").lower()
+    side = str(first_value(record, ALIASES["side"]) or "").lower()
     if ru == 0 and ua == 0:
-        ukrainian_terms = (
-            "ukrain", "ua", "recapture", "liberat", "counter", "deoccup",
-            "ukr_gain", "ua_gain", "blue",
-        )
-        russian_terms = (
-            "russian", "ru", "occup", "advance", "gain", "ru_gain",
-            "russia_gain", "red",
-        )
+        area = feature_area_km2(record)
+        ukrainian_terms = ("ukrain", "ua", "recapture", "liberat", "counter")
+        russian_terms = ("russian", "ru", "occup", "advance", "gain")
         if any(term in side for term in ukrainian_terms):
-            ua = area or abs(net)
+            ua = area
         elif any(term in side for term in russian_terms):
-            ru = area or abs(net)
+            ru = area
         elif net < 0:
             ua = abs(net)
         elif net > 0:
@@ -561,11 +471,11 @@ def classify_delta(record: Mapping[str, Any]) -> tuple[float, float]:
 
 
 def record_datetime(record: Mapping[str, Any]) -> datetime | None:
-    return parse_datetime(first_value_recursive(record, ALIASES["date"]))
+    return parse_datetime(first_value(record, ALIASES["date"]))
 
 
 def record_window_days(record: Mapping[str, Any]) -> int | None:
-    value = first_value_recursive(record, ALIASES["window_days"])
+    value = first_value(record, ALIASES["window_days"])
     if value is None:
         return None
     days = safe_int(value, 0)
@@ -591,53 +501,43 @@ def sector_for_point(lon: float | None, lat: float | None, text: str = "") -> st
         "krím": "crimea",
         "donetsk": "south_donetsk",
         "donyeck": "south_donetsk",
-        "belgorod": "russian_border",
-        "kursk": "russian_border",
-        "bryansk": "russian_border",
-        "rosztov": "russian_border",
-        "rostov": "russian_border",
     }
     for keyword, sector_id in keyword_map.items():
         if keyword in normalized:
             return sector_id
 
-    if lon is None or lat is None or math.isnan(lon) or math.isnan(lat):
-        return "unassigned"
+    if lon is not None and lat is not None:
+        # Specific sectors first; the Ukrainian rear is a catch-all.
+        for sector in SECTORS[1:]:
+            west, south, east, north = sector["bbox"]
+            if west <= lon <= east and south <= lat <= north:
+                return str(sector["id"])
+        west, south, east, north = SECTORS[0]["bbox"]
+        if west <= lon <= east and south <= lat <= north and lon < SECTORS[0]["exclude_front_lon_min"]:
+            return "ukrainian_rear"
 
-    # Specific geographic sectors first.
-    for sector in SECTORS:
-        bbox = sector.get("bbox")
-        if bbox and in_bbox(lon, lat, bbox):
-            return str(sector["id"])
-
-    country = country_for_point(lon, lat)
-    if country == "Crimea":
-        return "crimea"
-    if country == "Ukraine":
-        return "ukrainian_rear"
-    if country == "Russia":
-        return "russian_border" if in_bbox(lon, lat, RUSSIAN_BORDER_BBOX) else "russian_rear"
     return "unassigned"
 
 
 def record_location(record: Mapping[str, Any]) -> tuple[float | None, float | None]:
-    lon = first_value_recursive(record, ("lng", "lon", "longitude", "x"))
-    lat = first_value_recursive(record, ("lat", "latitude", "y"))
+    lon = first_value(record, ("lng", "lon", "longitude", "x"))
+    lat = first_value(record, ("lat", "latitude", "y"))
     if lon is not None and lat is not None:
-        lon_value = safe_float(lon, math.nan)
-        lat_value = safe_float(lat, math.nan)
-        return lon_value, lat_value
+        return safe_float(lon, math.nan), safe_float(lat, math.nan)
 
-    geometry = record.get("_geometry") or record.get("geometry")
-    centroid = geometry_centroid(geometry if isinstance(geometry, Mapping) else None)
+    centroid = geometry_centroid(record.get("_geometry"))
     if centroid:
         return centroid
     return None, None
 
 
 def sector_id_for_record(record: Mapping[str, Any]) -> str:
-    explicit = str(first_value_recursive(record, ALIASES["sector"]) or "")
+    explicit = str(first_value(record, ALIASES["sector"]) or "")
     lon, lat = record_location(record)
+    if lon is not None and math.isnan(lon):
+        lon = None
+    if lat is not None and math.isnan(lat):
+        lat = None
     return sector_for_point(lon, lat, explicit)
 
 
@@ -656,51 +556,6 @@ def load_territorial(now: datetime) -> tuple[list[dict[str, Any]], SourceStatus]
     try:
         payload = read_json(path)
         records = extract_records(payload, ("features", "items", "records", "data"))
-        # Some builders store rolling totals at the FeatureCollection root or in
-        # metadata instead of repeating them in every polygon feature.
-        if isinstance(payload, Mapping):
-            for key in ("summary", "summaries", "windows", "rolling_windows", "totals"):
-                value = payload.get(key)
-                if isinstance(value, list):
-                    records.extend(dict(item) for item in value if isinstance(item, Mapping))
-                elif isinstance(value, Mapping):
-                    for window_key, item in value.items():
-                        if isinstance(item, Mapping):
-                            row = dict(item)
-                            row.setdefault("window_days", window_key)
-                            records.append(row)
-            metadata = payload.get("metadata")
-            if isinstance(metadata, Mapping):
-                for key in ("summary", "summaries", "windows", "rolling_windows", "totals"):
-                    value = metadata.get(key)
-                    if isinstance(value, list):
-                        records.extend(dict(item) for item in value if isinstance(item, Mapping))
-                    elif isinstance(value, Mapping):
-                        for window_key, item in value.items():
-                            if isinstance(item, Mapping):
-                                row = dict(item)
-                                row.setdefault("window_days", window_key)
-                                records.append(row)
-
-                # Current territorial_delta_windows.geojson schema.
-                # window_summaries contains ready-made rolling totals, while
-                # daily_summaries contains one aggregate row per day.
-                window_summaries = metadata.get("window_summaries")
-                if isinstance(window_summaries, Mapping):
-                    for window_key, item in window_summaries.items():
-                        if isinstance(item, Mapping):
-                            row = dict(item)
-                            row.setdefault("window_days", window_key)
-                            row["_territorial_record_kind"] = "window_summary"
-                            records.append(row)
-
-                daily_summaries = metadata.get("daily_summaries")
-                if isinstance(daily_summaries, list):
-                    for item in daily_summaries:
-                        if isinstance(item, Mapping):
-                            row = dict(item)
-                            row["_territorial_record_kind"] = "daily_summary"
-                            records.append(row)
     except (OSError, json.JSONDecodeError) as exc:
         return [], status_from_age(
             "territorial", path, file_mtime(path), None, 0, now,
@@ -777,99 +632,20 @@ def territorial_totals(
     now: datetime,
     days: int,
 ) -> tuple[float, float, list[Mapping[str, Any]]]:
-    """Return Russian gains and Ukrainian recaptures for a rolling window.
-
-    The current territorial_delta_windows.geojson stores:
-      * ready-made 5/10/15/30-day totals in metadata.window_summaries;
-      * daily totals in metadata.daily_summaries.
-
-    Dashboard windows 1 and 7 are therefore calculated from the most recent
-    daily summary rows. The 30-day value uses the ready-made aggregate row.
-    A 90-day value is not invented when the source only covers 30 days.
-    """
-
-    daily_rows = [
-        record for record in records
-        if record.get("_territorial_record_kind") == "daily_summary"
-    ]
-    window_rows = [
-        record for record in records
-        if record.get("_territorial_record_kind") == "window_summary"
-    ]
-
-    # 1- and 7-day dashboard windows: sum the newest daily aggregate rows.
-    if days in (1, 7) and daily_rows:
-        selected = [
-            record for record in daily_rows
-            if 0 <= int(safe_float(record.get("day_index_from_latest"), 10**9)) < days
-        ]
-        ru_total = sum(
-            safe_float(first_value_recursive(record, ALIASES["ru_gain"]))
-            for record in selected
-        )
-        ua_total = sum(
-            safe_float(first_value_recursive(record, ALIASES["ua_gain"]))
-            for record in selected
-        )
-        return ru_total, ua_total, selected
-
-    # Prefer an exact ready-made rolling aggregate, especially for 30 days.
-    exact_window = [record for record in window_rows if record_window_days(record) == days]
-    if exact_window:
-        best = max(
-            exact_window,
-            key=lambda record: sum(
-                first_value_recursive(record, aliases) is not None
-                for aliases in (ALIASES["ru_gain"], ALIASES["ua_gain"], ALIASES["net"])
-            ),
-        )
-        ru = safe_float(first_value_recursive(best, ALIASES["ru_gain"]))
-        ua = safe_float(first_value_recursive(best, ALIASES["ua_gain"]))
-        return ru, ua, [best]
-
-    # If a requested short window has no ready-made row, derive it from daily rows.
-    if days <= 30 and daily_rows:
-        selected = [
-            record for record in daily_rows
-            if 0 <= int(safe_float(record.get("day_index_from_latest"), 10**9)) < days
-        ]
-        ru_total = sum(
-            safe_float(first_value_recursive(record, ALIASES["ru_gain"]))
-            for record in selected
-        )
-        ua_total = sum(
-            safe_float(first_value_recursive(record, ALIASES["ua_gain"]))
-            for record in selected
-        )
-        return ru_total, ua_total, selected
-
-    # Legacy fallback for older territorial files.
-    exact_window = [record for record in records if record_window_days(record) == days]
-    aggregate_rows = [
-        record for record in exact_window
-        if first_value_recursive(record, ALIASES["ru_gain"]) is not None
-        or first_value_recursive(record, ALIASES["ua_gain"]) is not None
-        or first_value_recursive(record, ALIASES["net"]) is not None
-    ]
-    if aggregate_rows:
-        best = max(
-            aggregate_rows,
-            key=lambda record: sum(
-                first_value_recursive(record, aliases) is not None
-                for aliases in (ALIASES["ru_gain"], ALIASES["ua_gain"], ALIASES["net"])
-            ),
-        )
-        ru, ua = classify_delta(best)
-        return ru, ua, [best]
-
     dated_records = [record for record in records if record_datetime(record)]
-    if dated_records:
+
+    # A pre-aggregated record with an exact rolling-window marker takes precedence.
+    exact_window = [
+        record for record in records if record_window_days(record) == days
+    ]
+    selected: list[Mapping[str, Any]]
+    if exact_window:
+        selected = exact_window
+    elif dated_records:
         selected = [
             record for record in dated_records
             if in_rolling_window(record_datetime(record), now, days)
         ]
-    elif exact_window:
-        selected = exact_window
     elif days == 30:
         selected = list(records)
     else:
@@ -889,8 +665,7 @@ def firms_for_window(
 ) -> list[Mapping[str, Any]]:
     return [
         point for point in points
-        if is_relevant_firms_point(point)
-        and in_rolling_window(point_datetime(point), now, days)
+        if in_rolling_window(point_datetime(point), now, days)
     ]
 
 
@@ -985,7 +760,7 @@ def sector_cards(
     for item in osint_selected:
         sector_id = sector_id_for_record(item)
         if sector_id == "unassigned":
-            continue
+            sector_id = "ukrainian_rear"
         aggregates[sector_id]["osint"] += 1
         aggregates[sector_id]["importance"] += max(
             1, min(10, safe_int(item.get("importance"), 5))
@@ -1120,8 +895,7 @@ def firms_events(
 ) -> list[dict[str, Any]]:
     selected = [
         point for point in points
-        if is_relevant_firms_point(point)
-        and point_datetime(point)
+        if point_datetime(point)
         and now - timedelta(hours=hours)
         <= point_datetime(point)
         <= now + timedelta(hours=1)
@@ -1130,26 +904,15 @@ def firms_events(
     for _, cluster in cluster_firms(selected):
         if len(cluster) < EVENT_THRESHOLDS["firms_cluster_points"]:
             continue
-        coordinates = [record_location(point) for point in cluster]
-        valid = [(lon, lat) for lon, lat in coordinates if lon is not None and lat is not None]
-        if not valid:
-            continue
-        lon = sum(item[0] for item in valid) / len(valid)
-        lat = sum(item[1] for item in valid) / len(valid)
-        country = country_for_point(lon, lat)
-        if country == "Outside":
-            continue
-
+        lon_values = [record_location(point)[0] for point in cluster]
+        lat_values = [record_location(point)[1] for point in cluster]
+        lon = sum(value for value in lon_values if value is not None) / len(lon_values)
+        lat = sum(value for value in lat_values if value is not None) / len(lat_values)
         sector_id = sector_for_point(lon, lat)
         sector_name = next(
             (sector["name"] for sector in SECTORS if sector["id"] == sector_id),
             f"{lat:.2f}, {lon:.2f}",
         )
-        country_hu = {
-            "Ukraine": "Ukrajna",
-            "Russia": "Oroszország",
-            "Crimea": "Krím",
-        }.get(country, country)
         latest = max(
             (point_datetime(point) for point in cluster if point_datetime(point)),
             default=now,
@@ -1158,25 +921,21 @@ def firms_events(
             "id": f"firms-{hours}-{round(lat, 2)}-{round(lon, 2)}",
             "kind": "firms",
             "type": "Rendkívüli FIRMS-klaszter",
-            "title": f"{country_hu} – {sector_name}",
+            "title": f"{sector_name} térsége",
             "value": f"{len(cluster)} hőpont",
             "value_numeric": len(cluster),
             "time": iso(latest),
             "class_name": "firms",
             "confidence": "Közepes",
             "source": "NASA FIRMS",
-            "country": country,
-            "country_hu": country_hu,
             "sector_id": sector_id,
-            "coordinates": {"lat": round(lat, 3), "lon": round(lon, 3)},
             "note": (
                 "A térben koncentrálódó hőpontok száma meghaladta az automatikus "
-                "riasztási küszöböt. A hőpont ipari, mezőgazdasági vagy katonai "
-                "eredetű is lehet, ezért önmagában nem bizonyít csapást."
+                "riasztási küszöböt. A hőpont önmagában nem bizonyít katonai eseményt."
             ),
             "priority": 60 + len(cluster),
         })
-    return events[:4]
+    return events[:3]
 
 
 def osint_events(
@@ -1279,28 +1038,6 @@ def freshness_summary(statuses: Mapping[str, SourceStatus]) -> dict[str, Any]:
     }
 
 
-def source_coverage_days(records: Sequence[Mapping[str, Any]], date_getter) -> float | None:
-    dates = [date_getter(record) for record in records]
-    valid = [item for item in dates if item]
-    if len(valid) < 2:
-        return None
-    return max(0.0, (max(valid) - min(valid)).total_seconds() / 86400.0)
-
-
-def firms_country_counts(points: Sequence[Mapping[str, Any]]) -> dict[str, int]:
-    counts = Counter()
-    for point in points:
-        lon, lat = record_location(point)
-        country = country_for_point(lon, lat)
-        if country in {"Ukraine", "Russia", "Crimea"}:
-            counts[country] += 1
-    return {
-        "ukraine": counts["Ukraine"],
-        "russia": counts["Russia"],
-        "crimea": counts["Crimea"],
-    }
-
-
 def build_payload(now: datetime) -> dict[str, Any]:
     territorial_records, territorial_status = load_territorial(now)
     firms_points, firms_status, _ = load_firms(now)
@@ -1320,9 +1057,6 @@ def build_payload(now: datetime) -> dict[str, Any]:
         firms_selected = firms_for_window(firms_points, now, days)
         osint_selected = osint_for_window(osint_items, now, days)
         index = conflict_score(osint_selected)
-        country_counts = firms_country_counts(firms_selected)
-        firms_coverage = source_coverage_days(firms_points, point_datetime)
-        osint_coverage = source_coverage_days(osint_items, record_datetime)
 
         periods[str(days)] = {
             "days": days,
@@ -1332,19 +1066,12 @@ def build_payload(now: datetime) -> dict[str, Any]:
             "ua_recapture_km2": round(ua_gain, 2),
             "net_change_km2": round(ru_gain - ua_gain, 2),
             "firms_count": len(firms_selected),
-            "firms_by_country": country_counts,
             "conflict_index": index,
             "osint_events": len(osint_selected),
             "availability": {
                 "territorial": territorial_status.status,
                 "firms": firms_status.status,
                 "osint": osint_status.status,
-            },
-            "coverage": {
-                "firms_available_days": round(firms_coverage, 1) if firms_coverage is not None else None,
-                "firms_complete_for_window": bool(firms_coverage is not None and firms_coverage + 1 >= days),
-                "osint_available_days": round(osint_coverage, 1) if osint_coverage is not None else None,
-                "osint_complete_for_window": bool(osint_coverage is not None and osint_coverage + 1 >= days),
             },
         }
         sectors[str(days)] = sector_cards(
@@ -1381,8 +1108,8 @@ def build_payload(now: datetime) -> dict[str, Any]:
     ]
 
     return {
-        "schema_version": "1.1.0",
-        "dataset": "ukraine_russia_conflict_dashboard_current",
+        "schema_version": "1.0.0",
+        "dataset": "ukraine_conflict_dashboard_current",
         "generated_at": iso(now),
         "latest_data_at": iso(latest_data_at),
         "periods": periods,
@@ -1410,9 +1137,7 @@ def build_payload(now: datetime) -> dict[str, Any]:
                 "A gördülő időablakok UTC-idő alapján készülnek.",
                 "Elavult forrásból nem készül 24/48/72 órás riasztás.",
                 "A FIRMS-hőpont ipari, mezőgazdasági vagy katonai eredetű is lehet.",
-                "A FIRMS-feldolgozás Ukrajna, a Krím és az elemzéshez releváns orosz területek pontjait tartja meg.",
-                "A 90 napos mező a ténylegesen rendelkezésre álló forrásidőszakot mutatja; a coverage mező jelzi, ha az időablak nem teljes.",
-                "A szektorbontás elemzési célú közelítés, nem frontellenőrzési vagy államhatár-térkép.",
+                "A szektorbontás elemzési célú közelítés, nem frontellenőrzési térkép.",
                 "A konfliktusindex az OSINT-kategória és fontosság alapján képzett modellérték.",
             ],
         },
@@ -1429,7 +1154,6 @@ def validate_payload(payload: Mapping[str, Any]) -> None:
             "ua_recapture_km2",
             "net_change_km2",
             "firms_count",
-            "firms_by_country",
             "conflict_index",
             "osint_events",
         ):
@@ -1485,4 +1209,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
 
