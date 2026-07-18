@@ -1055,7 +1055,7 @@
         <h2 class="panel-title">Front Situation Assessment</h2>
         <div class="panel-subtitle">A kiválasztott időszak összesített műveleti helyzetképe</div>
       </div>
-      <div class="panel-badge">növekvő</div>
+      <div class="panel-badge" id="frontStatusBadge">betöltés</div>
     </div>
 
     <div class="panel-body">
@@ -1306,220 +1306,323 @@
 </main>
 
 <footer>
-  <div class="shell">Demóverzió. Következő lépés: a repo valós JSON- és GeoJSON-adatainak bekötése.</div>
+  <div class="shell">OSINT-alapú elemző dashboard. Az aktuális KPI-, szektor- és eseményadatok automatikusan frissülnek.</div>
 </footer>
 
 <script>
-const DATA={
-  1:{ru:3.8,ua:.4,firms:87,index:-7,osint:42},
-  7:{ru:24.6,ua:3.1,firms:486,index:-29,osint:264},
-  30:{ru:121.8,ua:16.7,firms:1984,index:-112,osint:1096},
-  90:{ru:389.4,ua:41.2,firms:6210,index:-338,osint:3288}
+const DASHBOARD_CURRENT_URL='../data/dashboard_current.json';
+
+let dashboardCurrent=null;
+
+const fmt=n=>Number(n||0).toLocaleString('hu-HU',{
+  minimumFractionDigits:1,
+  maximumFractionDigits:1
+});
+
+const riskClass=r=>{
+  const value=String(r||'MODERATE').toUpperCase();
+  return value==='CRITICAL'
+    ? 'critical'
+    : value==='HIGH'
+      ? 'high'
+      : value==='ELEVATED'
+        ? 'elevated'
+        : 'moderate';
 };
 
-const SECTOR_DATA={
-  1:[
-    {name:'Ukrán hátország',sub:'mélységi csapások és infrastruktúra',score:94,risk:'CRITICAL',ru:0,ua:0},
-    {name:'Pokrovsk',sub:'folyamatos szárazföldi nyomás',score:89,risk:'CRITICAL',ru:1.2,ua:.1},
-    {name:'Kostiantynivka–Csasziv Jar',sub:'védelmi csomópontok térsége',score:82,risk:'HIGH',ru:.7,ua:.1},
-    {name:'Kupjanszk–Liman',sub:'északi hadműveleti nyomás',score:75,risk:'HIGH',ru:.5,ua:0},
-    {name:'Dél-Donyeck',sub:'szakaszos területi mozgás',score:68,risk:'ELEVATED',ru:.8,ua:.1},
-    {name:'Zaporizzsja',sub:'korlátozott, de növekvő aktivitás',score:59,risk:'ELEVATED',ru:.4,ua:.1},
-    {name:'Krím',sub:'csapások és légvédelmi aktivitás',score:54,risk:'MODERATE',ru:0,ua:0},
-    {name:'Herszon',sub:'alacsonyabb területi dinamika',score:42,risk:'MODERATE',ru:.2,ua:0}
-  ],
-  7:[
-    {name:'Ukrán hátország',sub:'mélységi csapások és infrastruktúra',score:94,risk:'CRITICAL',ru:0,ua:0},
-    {name:'Pokrovsk',sub:'folyamatos szárazföldi nyomás',score:89,risk:'CRITICAL',ru:5.6,ua:.2},
-    {name:'Kostiantynivka–Csasziv Jar',sub:'védelmi csomópontok térsége',score:82,risk:'HIGH',ru:3.1,ua:.4},
-    {name:'Kupjanszk–Liman',sub:'északi hadműveleti nyomás',score:75,risk:'HIGH',ru:1.8,ua:.1},
-    {name:'Dél-Donyeck',sub:'szakaszos területi mozgás',score:68,risk:'ELEVATED',ru:2.2,ua:.3},
-    {name:'Zaporizzsja',sub:'korlátozott, de növekvő aktivitás',score:59,risk:'ELEVATED',ru:1.1,ua:.2},
-    {name:'Krím',sub:'csapások és légvédelmi aktivitás',score:54,risk:'MODERATE',ru:0,ua:0},
-    {name:'Herszon',sub:'alacsonyabb területi dinamika',score:42,risk:'MODERATE',ru:.3,ua:.1}
-  ],
-  30:[
-    {name:'Ukrán hátország',sub:'mélységi csapások és infrastruktúra',score:94,risk:'CRITICAL',ru:0,ua:0},
-    {name:'Pokrovsk',sub:'folyamatos szárazföldi nyomás',score:91,risk:'CRITICAL',ru:31.4,ua:2.2},
-    {name:'Kostiantynivka–Csasziv Jar',sub:'védelmi csomópontok térsége',score:85,risk:'HIGH',ru:21.7,ua:3.8},
-    {name:'Kupjanszk–Liman',sub:'északi hadműveleti nyomás',score:78,risk:'HIGH',ru:14.9,ua:1.7},
-    {name:'Dél-Donyeck',sub:'szakaszos területi mozgás',score:72,risk:'HIGH',ru:18.6,ua:4.1},
-    {name:'Zaporizzsja',sub:'korlátozott, de növekvő aktivitás',score:64,risk:'ELEVATED',ru:9.8,ua:1.9},
-    {name:'Krím',sub:'csapások és légvédelmi aktivitás',score:57,risk:'MODERATE',ru:0,ua:0},
-    {name:'Herszon',sub:'alacsonyabb területi dinamika',score:45,risk:'MODERATE',ru:3.2,ua:1.1}
-  ],
-  90:[
-    {name:'Ukrán hátország',sub:'mélységi csapások és infrastruktúra',score:96,risk:'CRITICAL',ru:0,ua:0},
-    {name:'Pokrovsk',sub:'folyamatos szárazföldi nyomás',score:94,risk:'CRITICAL',ru:96.7,ua:8.4},
-    {name:'Kostiantynivka–Csasziv Jar',sub:'védelmi csomópontok térsége',score:89,risk:'CRITICAL',ru:74.3,ua:10.2},
-    {name:'Kupjanszk–Liman',sub:'északi hadműveleti nyomás',score:83,risk:'HIGH',ru:52.8,ua:5.1},
-    {name:'Dél-Donyeck',sub:'szakaszos területi mozgás',score:79,risk:'HIGH',ru:61.4,ua:9.7},
-    {name:'Zaporizzsja',sub:'korlátozott, de növekvő aktivitás',score:70,risk:'HIGH',ru:33.8,ua:4.3},
-    {name:'Krím',sub:'csapások és légvédelmi aktivitás',score:61,risk:'ELEVATED',ru:0,ua:0},
-    {name:'Herszon',sub:'alacsonyabb területi dinamika',score:50,risk:'MODERATE',ru:11.9,ua:3.5}
-  ]
-};
+function formatSignedKm2(value){
+  const number=Number(value||0);
+  const sign=number>0?'+':number<0?'−':'';
+  return `${sign}${fmt(Math.abs(number))} km²`;
+}
 
-const EVENTS={
-  24:[
-    {
-      type:'Jelentős ukrán visszafoglalás',
-      title:'Velyka Novosilka',
-      value:'42,88 km²',
-      time:'2026-07-15',
-      className:'recapture',
-      confidence:'Magas',
-      source:'Területi delta',
-      note:'A rendszer a napi frontgeometriában kiugró méretű ukrán területi visszafoglalást azonosított.'
-    },
-    {
-      type:'Rendkívüli FIRMS-klaszter',
-      title:'Pokrovsk térsége',
-      value:'81 hőpont',
-      time:'utolsó 24 óra',
-      className:'firms',
-      confidence:'Közepes',
-      source:'NASA FIRMS',
-      note:'A frontközeli hőpontok koncentrációja a szokásos napi háttérszint fölé emelkedett.'
-    }
-  ],
-  48:[
-    {
-      type:'Orosz területi nyereség',
-      title:'Pokrovsk keleti szektor',
-      value:'6,2 km²',
-      time:'utolsó 48 óra',
-      className:'',
-      confidence:'Magas',
-      source:'Területi delta',
-      note:'A változás több egymást követő napi poligonból áll össze, ezért tartós nyomásra utal.'
-    },
-    {
-      type:'Mélységi csapás',
-      title:'Ukrán hátország',
-      value:'3 célterület',
-      time:'utolsó 48 óra',
-      className:'strike',
-      confidence:'Közepes',
-      source:'OSINT feed',
-      note:'Logisztikai és energetikai célpontokra utaló események kerültek azonosításra.'
-    }
-  ],
-  72:[
-    {
-      type:'Legnagyobb műveleti változás',
-      title:'Velyka Novosilka',
-      value:'42,88 km²',
-      time:'utolsó 72 óra',
-      className:'recapture',
-      confidence:'Magas',
-      source:'Területi delta',
-      note:'A háromnapos időablak legjelentősebb azonosított területi eseménye.'
-    },
-    {
-      type:'Tartós eszkaláció',
-      title:'Pokrovsk–Kostiantynivka',
-      value:'2 aktív szektor',
-      time:'utolsó 72 óra',
-      className:'strike',
-      confidence:'Magas',
-      source:'Összesített modell',
-      note:'A területi változás, FIRMS-aktivitás és OSINT-jelzések együttesen emelkedett nyomást mutatnak.'
-    }
-  ]
-};
+function formatDateTime(value){
+  if(!value) return 'n/a';
 
-const fmt=n=>n.toLocaleString('hu-HU',{minimumFractionDigits:1,maximumFractionDigits:1});
-const riskClass=r=>r==='CRITICAL'?'critical':r==='HIGH'?'high':r==='ELEVATED'?'elevated':'moderate';
+  const date=new Date(value);
+  if(Number.isNaN(date.getTime())) return String(value);
+
+  return date.toLocaleString('hu-HU',{
+    year:'numeric',
+    month:'2-digit',
+    day:'2-digit',
+    hour:'2-digit',
+    minute:'2-digit'
+  });
+}
+
+function periodLabel(period){
+  return Number(period)===1?'24 órás':`${period} napos`;
+}
+
+function getPeriodData(period){
+  return dashboardCurrent?.periods?.[String(period)]
+    || dashboardCurrent?.periods?.[period]
+    || null;
+}
+
+function getSectorData(period){
+  const sectors=dashboardCurrent?.sectors?.[String(period)]
+    || dashboardCurrent?.sectors?.[period]
+    || [];
+
+  return Array.isArray(sectors)?sectors:[];
+}
+
+function getEventData(windowHours){
+  const events=dashboardCurrent?.events?.[String(windowHours)]
+    || dashboardCurrent?.events?.[windowHours]
+    || [];
+
+  return Array.isArray(events)?events:[];
+}
 
 function renderSectors(period){
-  const periodLabel=period===1?'24 órás':`${period} napos`;
-  document.getElementById('sectorPanelTitle').textContent=`Front sectors – ${periodLabel} mérleg`;
-  document.getElementById('sectorPeriodBadge').textContent=period===1?'24 óra':`${period} nap`;
+  const title=document.getElementById('sectorPanelTitle');
+  const badge=document.getElementById('sectorPeriodBadge');
+  const host=document.getElementById('sectorGrid');
+  const sectors=getSectorData(period);
 
-  document.getElementById('sectorGrid').innerHTML=SECTOR_DATA[period].map(s=>`
+  if(title){
+    title.textContent=`Front sectors – ${periodLabel(period)} mérleg`;
+  }
+
+  if(badge){
+    badge.textContent=Number(period)===1?'24 óra':`${period} nap`;
+  }
+
+  if(!host) return;
+
+  if(!sectors.length){
+    host.innerHTML=`
+      <div class="comparison-loading">
+        Ehhez az időszakhoz jelenleg nincs szektorszintű adat.
+      </div>
+    `;
+    return;
+  }
+
+  host.innerHTML=sectors.map(s=>`
     <article class="sector-card">
       <div class="sector-head">
         <div>
-          <div class="sector-name">${s.name}</div>
-          <div class="sector-sub">${s.sub}</div>
+          <div class="sector-name">${s.name||s.id||'Ismeretlen szektor'}</div>
+          <div class="sector-sub">${s.sub||''}</div>
         </div>
-        <div class="risk-tag ${riskClass(s.risk)}">${s.risk}</div>
+        <div class="risk-tag ${riskClass(s.risk)}">${s.risk||'MODERATE'}</div>
       </div>
-      <div class="sector-score">${s.score}/100</div>
+
+      <div class="sector-score">${Number(s.score||0)}/100</div>
+
       <div class="sector-delta">
         <div class="sector-delta-box">
           <span>Orosz nyereség</span>
-          <strong style="color:var(--red)">+${fmt(s.ru)} km²</strong>
+          <strong style="color:var(--red)">
+            ${formatSignedKm2(Number(s.ru_gain_km2||0))}
+          </strong>
         </div>
+
         <div class="sector-delta-box">
           <span>Ukrán visszafoglalás</span>
-          <strong style="color:var(--green)">+${fmt(s.ua)} km²</strong>
+          <strong style="color:var(--green)">
+            ${formatSignedKm2(Number(s.ua_recapture_km2||0))}
+          </strong>
         </div>
       </div>
     </article>
   `).join('');
 }
 
-function renderEvents(){
-  const columns=[
-    {window:'24 óra',events:EVENTS[24]},
-    {window:'48 óra',events:EVENTS[48]},
-    {window:'72 óra',events:EVENTS[72]}
-  ];
+function eventCardClass(event){
+  if(event?.class_name) return event.class_name;
+  if(event?.kind==='firms') return 'firms';
 
-  document.getElementById('eventGrid').innerHTML=columns.map(col=>`
+  const type=String(event?.type||'').toLowerCase();
+  if(type.includes('visszafoglal')) return 'recapture';
+  if(type.includes('csapás')) return 'strike';
+
+  return '';
+}
+
+function renderEvents(){
+  const host=document.getElementById('eventGrid');
+  if(!host) return;
+
+  const columns=[24,48,72].map(windowHours=>({
+    window:`${windowHours} óra`,
+    events:getEventData(windowHours)
+  }));
+
+  host.innerHTML=columns.map(col=>`
     <section class="event-column">
       <div class="event-column-head">
         <div class="event-window">${col.window}</div>
         <div class="event-count">${col.events.length} kiemelt esemény</div>
       </div>
+
       <div class="event-list">
-        ${col.events.map(e=>`
-          <article class="event-card ${e.className}">
-            <div class="event-top">
-              <div class="event-type">${e.type}</div>
-              <div class="event-time">${e.time}</div>
-            </div>
-            <div class="event-title">${e.title}</div>
-            <div class="event-value">${e.value}</div>
-            <div class="event-meta">
-              <div class="event-meta-box"><span>Megbízhatóság</span><strong>${e.confidence}</strong></div>
-              <div class="event-meta-box"><span>Forrás</span><strong>${e.source}</strong></div>
-            </div>
-            <div class="event-note">${e.note}</div>
-          </article>
-        `).join('')}
+        ${
+          col.events.length
+            ? col.events.map(e=>`
+              <article class="event-card ${eventCardClass(e)}">
+                <div class="event-top">
+                  <div class="event-type">${e.type||e.kind||'Esemény'}</div>
+                  <div class="event-time">${formatDateTime(e.time)}</div>
+                </div>
+
+                <div class="event-title">${e.title||'Ismeretlen helyszín'}</div>
+                <div class="event-value">${e.value||''}</div>
+
+                <div class="event-meta">
+                  <div class="event-meta-box">
+                    <span>Megbízhatóság</span>
+                    <strong>${e.confidence||'n/a'}</strong>
+                  </div>
+
+                  <div class="event-meta-box">
+                    <span>Forrás</span>
+                    <strong>${e.source||'n/a'}</strong>
+                  </div>
+                </div>
+
+                <div class="event-note">${e.note||''}</div>
+              </article>
+            `).join('')
+            : `
+              <div class="comparison-loading">
+                Nincs automatikusan kiemelt esemény ebben az időablakban.
+              </div>
+            `
+        }
       </div>
     </section>
   `).join('');
 }
 
-function render(period){
-  const d=DATA[period];
-  const net=d.ru-d.ua;
+function conflictInterpretation(value){
+  const score=Number(value||0);
 
-  document.getElementById('lastUpdated').textContent=new Date().toLocaleString('hu-HU');
-  document.getElementById('ruGain').textContent=fmt(d.ru)+' km²';
-  document.getElementById('uaGain').textContent=fmt(d.ua)+' km²';
-  document.getElementById('netChange').textContent='+'+fmt(net)+' km²';
-  document.getElementById('firmsCount').textContent=d.firms.toLocaleString('hu-HU');
-  document.getElementById('conflictIndex').textContent=d.index;
-  document.getElementById('osintEvents').textContent=d.osint.toLocaleString('hu-HU');
+  if(score<=-40) return 'erős eszkalációs tartományt';
+  if(score<=-10) return 'eszkalációs tartományt';
+  if(score<10) return 'kiegyensúlyozott vagy bizonytalan tartományt';
+  if(score<40) return 'mérsékelt deeszkalációs tartományt';
 
-  document.getElementById('assessmentP1').textContent=
-    `A kiválasztott időszakban az orosz erők becsült területi nyeresége ${fmt(d.ru)} km², míg az ukrán visszafoglalás ${fmt(d.ua)} km² volt. A nettó változás +${fmt(net)} km² orosz irányú elmozdulást jelez.`;
-
-  document.getElementById('assessmentP2').textContent=
-    `A szektorkártyák ugyanehhez az időablakhoz igazodnak. A vezető nyomási térség az ukrán hátország, miközben Pokrovsk és Kostiantynivka térségében tartós szárazföldi nyomás látható.`;
-
-  document.getElementById('assessmentP3').textContent=
-    `A kiválasztott időszak ${d.firms.toLocaleString('hu-HU')} FIRMS-hőpontot és ${d.osint.toLocaleString('hu-HU')} feldolgozott OSINT-eseményt tartalmaz. A konfliktusindex ${d.index}, ami eszkalációs tartományt jelez.`;
-
-  renderSectors(period);
+  return 'erős deeszkalációs tartományt';
 }
 
+function renderAssessment(period,data,sectors){
+  const net=Number(data.net_change_km2||0);
+  const direction=net>0
+    ? 'orosz irányú'
+    : net<0
+      ? 'ukrán irányú'
+      : 'kiegyensúlyozott';
 
+  const leadingSector=sectors.length?sectors[0]:null;
+
+  const p1=document.getElementById('assessmentP1');
+  const p2=document.getElementById('assessmentP2');
+  const p3=document.getElementById('assessmentP3');
+
+  if(p1){
+    p1.textContent=
+      `A kiválasztott időszakban az orosz erők területi nyeresége `+
+      `${fmt(data.ru_gain_km2)} km², az ukrán visszafoglalás pedig `+
+      `${fmt(data.ua_recapture_km2)} km² volt. A nettó változás `+
+      `${formatSignedKm2(net)} ${direction} elmozdulást jelez.`;
+  }
+
+  if(p2){
+    p2.textContent=leadingSector
+      ? `A szektorszintű rangsorban jelenleg ${leadingSector.name} áll az első helyen `+
+        `${Number(leadingSector.score||0)}/100 ponttal és `+
+        `${String(leadingSector.risk||'MODERATE').toUpperCase()} kockázati besorolással. `+
+        `A szektorok ugyanahhoz a ${periodLabel(period)} időablakhoz igazodnak.`
+      : 'A kiválasztott időszakhoz jelenleg nem áll rendelkezésre szektorszintű rangsor.';
+  }
+
+  if(p3){
+    p3.textContent=
+      `A kiválasztott időszak ${Number(data.firms_count||0).toLocaleString('hu-HU')} `+
+      `FIRMS-hőpontot és ${Number(data.osint_events||0).toLocaleString('hu-HU')} `+
+      `feldolgozott OSINT-eseményt tartalmaz. A konfliktusindex `+
+      `${Number(data.conflict_index||0)}, ami ${conflictInterpretation(data.conflict_index)} jelez.`;
+  }
+}
+
+function render(period){
+  const data=getPeriodData(period);
+  if(!data) return;
+
+  const sectors=getSectorData(period);
+  const net=Number(data.net_change_km2||0);
+
+  const generatedAt=dashboardCurrent?.generated_at
+    || dashboardCurrent?.latest_data_at;
+
+  document.getElementById('lastUpdated').textContent=formatDateTime(generatedAt);
+  document.getElementById('ruGain').textContent=`${fmt(data.ru_gain_km2)} km²`;
+  document.getElementById('uaGain').textContent=`${fmt(data.ua_recapture_km2)} km²`;
+  document.getElementById('netChange').textContent=formatSignedKm2(net);
+  document.getElementById('firmsCount').textContent=
+    Number(data.firms_count||0).toLocaleString('hu-HU');
+  document.getElementById('conflictIndex').textContent=
+    Number(data.conflict_index||0);
+  document.getElementById('osintEvents').textContent=
+    Number(data.osint_events||0).toLocaleString('hu-HU');
+
+  renderSectors(period);
+  renderAssessment(period,data,sectors);
+}
+
+async function loadDashboardCurrent(){
+  try{
+    const response=await fetch(
+      DASHBOARD_CURRENT_URL,
+      {cache:'no-store'}
+    );
+
+    if(!response.ok){
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    dashboardCurrent=await response.json();
+
+    renderEvents();
+    render(Number(document.getElementById('periodSelect').value||30));
+
+    const statusBadge=document.getElementById('frontStatusBadge');
+
+    if(statusBadge && dashboardCurrent?.freshness?.overall){
+      statusBadge.textContent=
+        dashboardCurrent.freshness.overall==='fresh'
+          ? 'friss adatok'
+          : dashboardCurrent.freshness.overall;
+    }
+  }catch(error){
+    console.error('Dashboard current:',error);
+
+    document.getElementById('lastUpdated').textContent='adatbetöltési hiba';
+
+    const sectorHost=document.getElementById('sectorGrid');
+    if(sectorHost){
+      sectorHost.innerHTML=`
+        <div class="comparison-error">
+          A dashboard_current.json nem tölthető be.
+        </div>
+      `;
+    }
+
+    const eventHost=document.getElementById('eventGrid');
+    if(eventHost){
+      eventHost.innerHTML=`
+        <div class="comparison-error">
+          Az aktuális eseményadatok nem tölthetők be.
+        </div>
+      `;
+    }
+  }
+}
 
 const FRONT_COMPARISON_CONFIG = {
   deepStateApi:
@@ -2748,10 +2851,11 @@ loadDashboardLongTermSummary();
 
 
 
-document.getElementById('periodSelect').addEventListener('change',e=>render(Number(e.target.value)));
+document.getElementById('periodSelect').addEventListener('change',event=>{
+  render(Number(event.target.value));
+});
 
-renderEvents();
-render(30);
+loadDashboardCurrent();
 loadFrontComparisonAndFortressCities();
 </script>
 
