@@ -1126,8 +1126,8 @@
 
       <div class="fortress-note">
         A DeepState és a Suriyak besorolása a városközpont koordinátáján alapul.
-        A „frontközeli” jelzés és a kártya jobb felső címkéje a város aktuális
-        fronttávolságát jelzi, nem önálló katonai kockázati előrejelzés. A FIRMS-hőpont
+        A „frontközeli” jelzés nem változtatja meg az ellenőrzési státuszt, csak azt
+        mutatja, hogy a város milyen távol van az aktuális frontvonaltól. A FIRMS-hőpont
         ipari, mezőgazdasági vagy katonai eredetű is lehet, ezért önmagában nem bizonyít
         támadást vagy harctevékenységet.
       </div>
@@ -2065,7 +2065,6 @@ function normalizeFirmsPoints(data){
     Array.isArray(data) ? data :
     Array.isArray(data?.data) ? data.data :
     Array.isArray(data?.features) ? data.features :
-    Array.isArray(data?.points) ? data.points :
     Array.isArray(data?.hotspots) ? data.hotspots :
     [];
 
@@ -2173,7 +2172,7 @@ function fortressRisk(city){
 
   if(activity >= 30 || distance <= 10){
     return {
-      label:'magas frontközelség',
+      label:'magas',
       className:'alert',
       badgeClass:'high'
     };
@@ -2181,14 +2180,14 @@ function fortressRisk(city){
 
   if(activity >= 12 || distance <= 25){
     return {
-      label:'emelkedett frontközelség',
+      label:'emelkedett',
       className:'elevated',
       badgeClass:'medium'
     };
   }
 
   return {
-    label:'mérsékelt frontközelség',
+    label:'mérsékelt',
     className:'',
     badgeClass:''
   };
@@ -2303,16 +2302,11 @@ async function loadFrontComparisonAndFortressCities(){
 
     const suriyakData = await suriyakResponse.json();
 
-    if(!firms1Response.ok){
-      throw new Error(`FIRMS 24 óra HTTP ${firms1Response.status}`);
-    }
+    const firms1Data =
+      firms1Response.ok ? await firms1Response.json() : [];
 
-    if(!firms30Response.ok){
-      throw new Error(`FIRMS 30 nap HTTP ${firms30Response.status}`);
-    }
-
-    const firms1Data = await firms1Response.json();
-    const firms30Data = await firms30Response.json();
+    const firms30Data =
+      firms30Response.ok ? await firms30Response.json() : [];
 
     const deepRussian = extractPolygonFeatures(deepState.data);
 
@@ -2791,3 +2785,4 @@ loadFrontComparisonAndFortressCities();
 
 </body>
 </html>
+
