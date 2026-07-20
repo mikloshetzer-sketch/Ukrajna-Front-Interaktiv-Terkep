@@ -1,99 +1,99 @@
 {
-  "date": "2026-07-19",
-  "updated_utc": "2026-07-19T19:40:23.241071+00:00",
-  "front_activity_index": 84,
-  "status": "CRITICAL",
+  "date": "2026-07-20",
+  "updated_utc": "2026-07-20T19:59:09.133707+00:00",
+  "front_activity_index": 63,
+  "status": "HIGH",
   "components": {
-    "osint_density": 25,
+    "osint_density": 22.5,
     "firms_activity": 20,
-    "territorial_change": 18.6,
+    "territorial_change": 8.9,
     "active_sectors": 10,
-    "critical_events": 10
+    "critical_events": 2
   },
   "counts": {
-    "osint": 19,
-    "firms_3d": 4530,
-    "firms_10d": 8616,
-    "firms_30d": 35254,
-    "critical_events": 5,
+    "osint": 9,
+    "firms_3d": 6107,
+    "firms_10d": 10926,
+    "firms_30d": 37446,
+    "critical_events": 1,
     "active_sectors": 10
   },
   "territorial": {
     "available": true,
     "error": null,
-    "previous_file": "deepstatemap_data_20260718.geojson",
-    "current_file": "deepstatemap_data_20260719.geojson",
-    "previous_total_km2": 116671.0,
-    "current_total_km2": 116677.19,
-    "russian_gain_km2": 6.2,
+    "previous_file": "deepstatemap_data_20260719.geojson",
+    "current_file": "deepstatemap_data_20260720.geojson",
+    "previous_total_km2": 116677.19,
+    "current_total_km2": 116680.17,
+    "russian_gain_km2": 2.97,
     "ukrainian_recapture_km2": 0,
-    "net_change_km2": 6.2,
+    "net_change_km2": 2.97,
     "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
-    "sector": "Pokrovsk",
-    "lat": 48.28,
-    "lon": 37.18,
+    "sector": "Lyman",
+    "lat": 48.99,
+    "lon": 37.8,
     "zoom": 9,
     "score": 100,
-    "change_km2": 6.2,
+    "change_km2": 2.97,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
     {
+      "sector": "Lyman",
+      "osint": 0,
+      "firms": 207,
+      "score": 100
+    },
+    {
+      "sector": "Bakhmut-Toretsk",
+      "osint": 0,
+      "firms": 175,
+      "score": 100
+    },
+    {
       "sector": "Pokrovsk",
-      "osint": 13,
-      "firms": 139,
+      "osint": 5,
+      "firms": 267,
+      "score": 100
+    },
+    {
+      "sector": "Kurakhove",
+      "osint": 0,
+      "firms": 283,
       "score": 100
     },
     {
       "sector": "Velyka Novosilka",
       "osint": 0,
-      "firms": 519,
+      "firms": 833,
       "score": 100
     },
     {
       "sector": "Zaporizhzhia",
       "osint": 0,
-      "firms": 438,
+      "firms": 656,
       "score": 100
     },
     {
       "sector": "Kherson-Dnipro",
       "osint": 0,
-      "firms": 683,
+      "firms": 893,
       "score": 100
     },
     {
-      "sector": "Other / Unclassified",
-      "osint": 6,
-      "firms": 2246,
+      "sector": "Crimea",
+      "osint": 0,
+      "firms": 125,
       "score": 100
-    },
-    {
-      "sector": "Kharkiv",
-      "osint": 0,
-      "firms": 101,
-      "score": 91
-    },
-    {
-      "sector": "Kupiansk",
-      "osint": 0,
-      "firms": 93,
-      "score": 84
-    },
-    {
-      "sector": "Kurakhove",
-      "osint": 0,
-      "firms": 84,
-      "score": 76
     }
   ],
   "top_events": [
     {
-      "title": "Reported drone strike near Szaratov",
+      "title": "Russian Offensive Campaign Assessment, July 19, 2026",
       "source": "forrás nélkül",
-      "sector": "Other / Unclassified"
+      "sector": "Pokrovsk"
     },
     {
       "title": "Russian Offensive Campaign Assessment, July 18, 2026",
@@ -112,11 +112,6 @@
     },
     {
       "title": "The United Kingdom will allocate €300 million to supply Ukraine with 16 modern aircraft",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Ukrainian Defense Companies to Gain Access to EU Programs and €300 Million in Grant Funding",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     }

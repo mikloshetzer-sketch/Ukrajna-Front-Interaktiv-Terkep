@@ -6668,5 +6668,132 @@
       "deepstate": "cyterat/deepstate-map-data via GitHub API"
     },
     "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
+  },
+  {
+    "date": "2026-07-20",
+    "updated_utc": "2026-07-20T19:59:09.133707+00:00",
+    "front_activity_index": 63,
+    "status": "HIGH",
+    "components": {
+      "osint_density": 22.5,
+      "firms_activity": 20,
+      "territorial_change": 8.9,
+      "active_sectors": 10,
+      "critical_events": 2
+    },
+    "counts": {
+      "osint": 9,
+      "firms_3d": 6107,
+      "firms_10d": 10926,
+      "firms_30d": 37446,
+      "critical_events": 1,
+      "active_sectors": 10
+    },
+    "territorial": {
+      "available": true,
+      "error": null,
+      "previous_file": "deepstatemap_data_20260719.geojson",
+      "current_file": "deepstatemap_data_20260720.geojson",
+      "previous_total_km2": 116677.19,
+      "current_total_km2": 116680.17,
+      "russian_gain_km2": 2.97,
+      "ukrainian_recapture_km2": 0,
+      "net_change_km2": 2.97,
+      "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    },
+    "territorial_hotspot": {
+      "sector": "Lyman",
+      "lat": 48.99,
+      "lon": 37.8,
+      "zoom": 9,
+      "score": 100,
+      "change_km2": 2.97,
+      "method": "Top classified sector based on OSINT + FIRMS density"
+    },
+    "top_sectors": [
+      {
+        "sector": "Lyman",
+        "osint": 0,
+        "firms": 207,
+        "score": 100
+      },
+      {
+        "sector": "Bakhmut-Toretsk",
+        "osint": 0,
+        "firms": 175,
+        "score": 100
+      },
+      {
+        "sector": "Pokrovsk",
+        "osint": 5,
+        "firms": 267,
+        "score": 100
+      },
+      {
+        "sector": "Kurakhove",
+        "osint": 0,
+        "firms": 283,
+        "score": 100
+      },
+      {
+        "sector": "Velyka Novosilka",
+        "osint": 0,
+        "firms": 833,
+        "score": 100
+      },
+      {
+        "sector": "Zaporizhzhia",
+        "osint": 0,
+        "firms": 656,
+        "score": 100
+      },
+      {
+        "sector": "Kherson-Dnipro",
+        "osint": 0,
+        "firms": 893,
+        "score": 100
+      },
+      {
+        "sector": "Crimea",
+        "osint": 0,
+        "firms": 125,
+        "score": 100
+      }
+    ],
+    "top_events": [
+      {
+        "title": "Russian Offensive Campaign Assessment, July 19, 2026",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Russian Offensive Campaign Assessment, July 18, 2026",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Russian Offensive Campaign Assessment, July 17, 2026",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "USF Strike Another 12 Enemy Vessels in the Black Sea",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "The United Kingdom will allocate €300 million to supply Ukraine with 16 modern aircraft",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      }
+    ],
+    "data_sources": {
+      "osint": "data/osint_feed.json",
+      "firms_3d": "data/firms_3.json",
+      "firms_10d": "data/firms_10.json",
+      "firms_30d": "data/firms_30.json",
+      "deepstate": "cyterat/deepstate-map-data via GitHub API"
+    },
+    "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
   }
 ]
