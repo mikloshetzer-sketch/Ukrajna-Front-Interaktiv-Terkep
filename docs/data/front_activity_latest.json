@@ -1,34 +1,34 @@
 {
-  "date": "2026-07-21",
-  "updated_utc": "2026-07-21T20:00:25.115257+00:00",
-  "front_activity_index": 71,
+  "date": "2026-07-22",
+  "updated_utc": "2026-07-22T19:52:22.125960+00:00",
+  "front_activity_index": 65,
   "status": "HIGH",
   "components": {
     "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 6.2,
+    "territorial_change": 0.0,
     "active_sectors": 10,
     "critical_events": 10
   },
   "counts": {
     "osint": 21,
-    "firms_3d": 6023,
-    "firms_10d": 12130,
-    "firms_30d": 38016,
-    "critical_events": 8,
+    "firms_3d": 4402,
+    "firms_10d": 11940,
+    "firms_30d": 37402,
+    "critical_events": 5,
     "active_sectors": 10
   },
   "territorial": {
-    "available": true,
-    "error": null,
-    "previous_file": "deepstatemap_data_20260720.geojson",
-    "current_file": "deepstatemap_data_20260721.geojson",
-    "previous_total_km2": 116680.17,
-    "current_total_km2": 116682.23,
-    "russian_gain_km2": 2.06,
-    "ukrainian_recapture_km2": 0,
-    "net_change_km2": 2.06,
-    "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    "available": false,
+    "error": "HTTP Error 403: rate limit exceeded",
+    "previous_file": null,
+    "current_file": null,
+    "previous_total_km2": null,
+    "current_total_km2": null,
+    "russian_gain_km2": 0.0,
+    "ukrainian_recapture_km2": 0.0,
+    "net_change_km2": 0.0,
+    "method": "fallback"
   },
   "territorial_hotspot": {
     "sector": "Lyman",
@@ -36,87 +36,87 @@
     "lon": 37.8,
     "zoom": 9,
     "score": 100,
-    "change_km2": 2.06,
+    "change_km2": 0.0,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
     {
       "sector": "Lyman",
       "osint": 0,
-      "firms": 268,
+      "firms": 252,
       "score": 100
     },
     {
       "sector": "Bakhmut-Toretsk",
       "osint": 0,
-      "firms": 262,
+      "firms": 237,
       "score": 100
     },
     {
       "sector": "Pokrovsk",
       "osint": 10,
-      "firms": 300,
+      "firms": 223,
       "score": 100
     },
     {
       "sector": "Kurakhove",
-      "osint": 0,
-      "firms": 282,
+      "osint": 1,
+      "firms": 270,
       "score": 100
     },
     {
       "sector": "Velyka Novosilka",
       "osint": 0,
-      "firms": 976,
+      "firms": 754,
       "score": 100
     },
     {
       "sector": "Zaporizhzhia",
       "osint": 0,
-      "firms": 574,
+      "firms": 378,
       "score": 100
     },
     {
       "sector": "Kherson-Dnipro",
-      "osint": 1,
-      "firms": 702,
+      "osint": 0,
+      "firms": 233,
       "score": 100
     },
     {
-      "sector": "Crimea",
-      "osint": 1,
-      "firms": 107,
+      "sector": "Other / Unclassified",
+      "osint": 8,
+      "firms": 1932,
       "score": 100
     }
   ],
   "top_events": [
     {
+      "title": "Reported military-related update near Krím",
+      "source": "forrás nélkül",
+      "sector": "Crimea"
+    },
+    {
+      "title": "Reported military-related update near Harkiv",
+      "source": "forrás nélkül",
+      "sector": "Kharkiv"
+    },
+    {
+      "title": "Reported military-related update near Donyeck",
+      "source": "forrás nélkül",
+      "sector": "Kurakhove"
+    },
+    {
+      "title": "Reported rear-area strike near Krasznodar",
+      "source": "forrás nélkül",
+      "sector": "Other / Unclassified"
+    },
+    {
+      "title": "Russian Offensive Campaign Assessment, July 21, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk"
+    },
+    {
       "title": "Super Weapon for Special Operations Forces: U.S. Begins Developing a New Hypersonic Assault Rifle",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Zelenskyy Speaks With the UK’s New Prime Minister Andy Burnham",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Bloomberg: Botswana complains that the Russian Federation has intensified the recruitment of its citizens",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Ukrainian strikes hit targets over 400 km inside russia — Zelenskyy",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "“Foreigners should be recruited into the Ukrainian military,” says the commander of the “Charter” Corps",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Where Others Cannot Pass: US Marine Corps to Receive New Batch of Ultra-Light Tactical Vehicles",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     }
