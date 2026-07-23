@@ -1,14 +1,14 @@
 {
-  "updated_utc": "2026-07-22T19:52:22.638363+00:00",
-  "date": "2026-07-22",
+  "updated_utc": "2026-07-23T19:41:07.416222+00:00",
+  "date": "2026-07-23",
   "territorial_sector": {
-    "sector": "No territorial delta",
-    "lat": null,
-    "lon": null,
-    "distance_km": null,
-    "change_type": "none",
-    "area_km2": 0,
-    "label": "No mapped daily territorial change"
+    "sector": "Velyka Novosilka",
+    "lat": 47.626321887500005,
+    "lon": 36.14800725,
+    "distance_km": 56.9,
+    "change_type": "russian_gain",
+    "area_km2": 5.66,
+    "label": "Russian territorial gain"
   },
   "priority_osint_events": [
     {
@@ -60,6 +60,30 @@
       "priority": 103
     },
     {
+      "title": "Reported ground assault or offensive activity near Kyiv",
+      "source": "forrás nélkül",
+      "sector": "Kyiv Area",
+      "lat": 50.45,
+      "lon": 30.523,
+      "distance_to_sector_km": 0,
+      "event_type": "frontline",
+      "event_label": "Frontline pressure",
+      "icon": "⚔",
+      "priority": 98
+    },
+    {
+      "title": "Russian Offensive Campaign Assessment, July 22, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "frontline",
+      "event_label": "Frontline pressure",
+      "icon": "⚔",
+      "priority": 95
+    },
+    {
       "title": "Russian Offensive Campaign Assessment, July 21, 2026",
       "source": "forrás nélkül",
       "sector": "Pokrovsk",
@@ -96,18 +120,6 @@
       "priority": 95
     },
     {
-      "title": "Russian Offensive Campaign Assessment, July 19, 2026",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "frontline",
-      "event_label": "Frontline pressure",
-      "icon": "⚔",
-      "priority": 95
-    },
-    {
       "title": "Reported rear-area strike near Kijev",
       "source": "forrás nélkül",
       "sector": "Kyiv Area",
@@ -120,43 +132,42 @@
       "priority": 94
     },
     {
-      "title": "Ukrainian strikes hit targets over 400 km inside russia — Zelenskyy",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "strike",
-      "event_label": "Strike / attack",
-      "icon": "✹",
-      "priority": 91
-    },
-    {
-      "title": "Reported military-related update near Krím",
+      "title": "Reported rear-area strike near Krím",
       "source": "forrás nélkül",
       "sector": "Crimea",
       "lat": 45.3,
       "lon": 34.4,
       "distance_to_sector_km": 0,
-      "event_type": "naval_rear",
-      "event_label": "Rear-area / Crimea activity",
-      "icon": "⚓",
-      "priority": 88
-    },
-    {
-      "title": "Reported rear-area strike near Krasznodar",
-      "source": "forrás nélkül",
-      "sector": "Rear Area / Strategic Depth",
-      "lat": 45.035,
-      "lon": 38.976,
-      "distance_to_sector_km": 352.2,
       "event_type": "strike",
       "event_label": "Strike / attack",
       "icon": "✹",
-      "priority": 86
+      "priority": 94
+    },
+    {
+      "title": "Reported rear-area strike near Kyiv",
+      "source": "forrás nélkül",
+      "sector": "Kyiv Area",
+      "lat": 50.45,
+      "lon": 30.523,
+      "distance_to_sector_km": 0,
+      "event_type": "strike",
+      "event_label": "Strike / attack",
+      "icon": "✹",
+      "priority": 94
     }
   ],
   "front_pressure_points": [
+    {
+      "sector": "Velyka Novosilka",
+      "title": "Velyka Novosilka territorial gain axis",
+      "lat": 47.84,
+      "lon": 36.84,
+      "score": 130,
+      "osint": 0,
+      "firms": 710,
+      "pressure_type": "territorial_gain_axis",
+      "icon": "▲"
+    },
     {
       "sector": "Lyman",
       "title": "Lyman FIRMS thermal cluster",
@@ -164,7 +175,7 @@
       "lon": 37.8,
       "score": 100,
       "osint": 0,
-      "firms": 252,
+      "firms": 157,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -175,7 +186,7 @@
       "lon": 37.95,
       "score": 100,
       "osint": 0,
-      "firms": 237,
+      "firms": 197,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -185,8 +196,8 @@
       "lat": 48.28,
       "lon": 37.18,
       "score": 100,
-      "osint": 10,
-      "firms": 223,
+      "osint": 11,
+      "firms": 153,
       "pressure_type": "osint_activity_cluster",
       "icon": "⚔"
     },
@@ -197,18 +208,7 @@
       "lon": 37.28,
       "score": 100,
       "osint": 1,
-      "firms": 270,
-      "pressure_type": "thermal_activity_cluster",
-      "icon": "🔥"
-    },
-    {
-      "sector": "Velyka Novosilka",
-      "title": "Velyka Novosilka FIRMS thermal cluster",
-      "lat": 47.84,
-      "lon": 36.84,
-      "score": 100,
-      "osint": 0,
-      "firms": 754,
+      "firms": 137,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -219,46 +219,42 @@
       "lon": 35.14,
       "score": 100,
       "osint": 0,
-      "firms": 378,
+      "firms": 189,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
     {
-      "sector": "Kherson-Dnipro",
-      "title": "Kherson-Dnipro FIRMS thermal cluster",
-      "lat": 46.64,
-      "lon": 32.61,
-      "score": 100,
-      "osint": 0,
-      "firms": 233,
+      "sector": "Crimea",
+      "title": "Crimea FIRMS thermal cluster",
+      "lat": 45.2,
+      "lon": 34.1,
+      "score": 43,
+      "osint": 2,
+      "firms": 21,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     }
   ],
   "event_categories": [
     {
-      "category": "Drone / UAV activity",
-      "count": 4
+      "category": "Frontline pressure",
+      "count": 5
     },
     {
-      "category": "Frontline pressure",
+      "category": "Drone / UAV activity",
       "count": 4
     },
     {
       "category": "Strike / attack",
       "count": 3
-    },
-    {
-      "category": "Rear-area / Crimea activity",
-      "count": 1
     }
   ],
-  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 65. No measurable net territorial change was detected. The main pressure focus is Lyman. The strongest event category is Drone / UAV activity. The system processed 21 OSINT events, 4402 short-term FIRMS hotspots and 10 active sectors.",
+  "ai_summary": "Front activity is assessed as CRITICAL with an FAI value of 84. Russian forces gained approximately 6.31 km², closest to the Velyka Novosilka sector. The main pressure focus is Velyka Novosilka. The strongest event category is Drone / UAV activity. The system processed 26 OSINT events, 3828 short-term FIRMS hotspots and 10 active sectors.",
   "counts": {
     "priority_osint": 12,
     "pressure_points": 7,
-    "firms_3d": 4402,
-    "firms_10d": 11940,
+    "firms_3d": 3828,
+    "firms_10d": 13267,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."

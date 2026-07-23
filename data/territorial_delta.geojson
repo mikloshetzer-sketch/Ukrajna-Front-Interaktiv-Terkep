@@ -1,14 +1,112 @@
 {
   "type": "FeatureCollection",
   "metadata": {
-    "updated_utc": "2026-07-22T19:52:22.572146+00:00",
-    "error": "HTTP Error 403: rate limit exceeded",
-    "previous_file": null,
-    "current_file": null,
-    "russian_gain_km2": 0,
+    "updated_utc": "2026-07-23T19:40:57.007062+00:00",
+    "previous_file": "deepstatemap_data_20260722.geojson",
+    "current_file": "deepstatemap_data_20260723.geojson",
+    "russian_gain_km2": 6.23,
     "ukrainian_recapture_km2": 0,
-    "net_change_km2": 0,
-    "method": "territorial delta build failed"
+    "net_change_km2": 6.23,
+    "method": "Shapely geometric difference between the latest two DeepState GeoJSON files. Area is approximate."
   },
-  "features": []
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "change_type": "russian_gain",
+        "label": "Russian territorial gain",
+        "area_km2": 5.66
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              36.1280863,
+              47.6214132
+            ],
+            [
+              36.1403591,
+              47.6332495
+            ],
+            [
+              36.1625949,
+              47.6413815
+            ],
+            [
+              36.1827927,
+              47.6331433
+            ],
+            [
+              36.1667148,
+              47.6291201
+            ],
+            [
+              36.1514322,
+              47.6195619
+            ],
+            [
+              36.1239917,
+              47.6112924
+            ],
+            [
+              36.1280863,
+              47.6214132
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "change_type": "russian_gain",
+        "label": "Russian territorial gain",
+        "area_km2": 0.57
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              37.2453089,
+              48.411447
+            ],
+            [
+              37.234612,
+              48.4111503
+            ],
+            [
+              37.2374761,
+              48.4150694
+            ],
+            [
+              37.2326469,
+              48.4167544
+            ],
+            [
+              37.2367243,
+              48.4194072
+            ],
+            [
+              37.2408008,
+              48.4164126
+            ],
+            [
+              37.2471113,
+              48.4136119
+            ],
+            [
+              37.2565519,
+              48.4133443
+            ],
+            [
+              37.2453089,
+              48.411447
+            ]
+          ]
+        ]
+      }
+    }
+  ]
 }
