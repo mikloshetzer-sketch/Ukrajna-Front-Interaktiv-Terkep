@@ -1,18 +1,18 @@
 {
-  "updated_utc": "2026-07-23T19:55:38.266297+00:00",
-  "date": "2026-07-23",
+  "updated_utc": "2026-07-24T19:55:02.828849+00:00",
+  "date": "2026-07-24",
   "territorial_sector": {
     "sector": "Velyka Novosilka",
-    "lat": 47.626321887500005,
-    "lon": 36.14800725,
-    "distance_km": 56.9,
-    "change_type": "russian_gain",
-    "area_km2": 5.66,
-    "label": "Russian territorial gain"
+    "lat": 48.07499316428572,
+    "lon": 36.731284300000006,
+    "distance_km": 27.4,
+    "change_type": "ukrainian_recapture",
+    "area_km2": 6.64,
+    "label": "Ukrainian recapture"
   },
   "priority_osint_events": [
     {
-      "title": "Reported drone strike near Kyiv",
+      "title": "Reported drone strike near Kijev",
       "source": "forrás nélkül",
       "sector": "Kyiv Area",
       "lat": 50.45,
@@ -36,16 +36,28 @@
       "priority": 106
     },
     {
-      "title": "Reported drone strike near Kijev",
+      "title": "Reported missile strike near Kijev",
       "source": "forrás nélkül",
       "sector": "Kyiv Area",
       "lat": 50.45,
       "lon": 30.523,
       "distance_to_sector_km": 0,
-      "event_type": "drone",
-      "event_label": "Drone / UAV activity",
-      "icon": "🛩",
-      "priority": 106
+      "event_type": "missile",
+      "event_label": "Missile / rocket strike",
+      "icon": "☄",
+      "priority": 104
+    },
+    {
+      "title": "Reported missile strike near Kyiv",
+      "source": "forrás nélkül",
+      "sector": "Kyiv Area",
+      "lat": 50.45,
+      "lon": 30.523,
+      "distance_to_sector_km": 0,
+      "event_type": "missile",
+      "event_label": "Missile / rocket strike",
+      "icon": "☄",
+      "priority": 104
     },
     {
       "title": "Ukraine and the EU Have Taken the First Step Toward a Drone Deal: The European Commission Will Allocate €1 Billion for Drone Production",
@@ -60,16 +72,28 @@
       "priority": 103
     },
     {
-      "title": "Reported ground assault or offensive activity near Kyiv",
+      "title": "Reported ground assault or offensive activity near Krím",
       "source": "forrás nélkül",
-      "sector": "Kyiv Area",
-      "lat": 50.45,
-      "lon": 30.523,
+      "sector": "Crimea",
+      "lat": 45.3,
+      "lon": 34.4,
       "distance_to_sector_km": 0,
       "event_type": "frontline",
       "event_label": "Frontline pressure",
       "icon": "⚔",
       "priority": 98
+    },
+    {
+      "title": "Russian Offensive Campaign Assessment, July 23, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "frontline",
+      "event_label": "Frontline pressure",
+      "icon": "⚔",
+      "priority": 95
     },
     {
       "title": "Russian Offensive Campaign Assessment, July 22, 2026",
@@ -108,23 +132,11 @@
       "priority": 95
     },
     {
-      "title": "Russian Offensive Campaign Assessment, July 20, 2026",
+      "title": "Reported rear-area strike near Moszkva",
       "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "frontline",
-      "event_label": "Frontline pressure",
-      "icon": "⚔",
-      "priority": 95
-    },
-    {
-      "title": "Reported rear-area strike near Kijev",
-      "source": "forrás nélkül",
-      "sector": "Kyiv Area",
-      "lat": 50.45,
-      "lon": 30.523,
+      "sector": "Moscow / Russia Interior",
+      "lat": 55.755,
+      "lon": 37.617,
       "distance_to_sector_km": 0,
       "event_type": "strike",
       "event_label": "Strike / attack",
@@ -132,28 +144,16 @@
       "priority": 94
     },
     {
-      "title": "Reported rear-area strike near Krím",
+      "title": "Reported rear-area strike near Mikolajiv",
       "source": "forrás nélkül",
-      "sector": "Crimea",
-      "lat": 45.3,
-      "lon": 34.4,
-      "distance_to_sector_km": 0,
+      "sector": "Kherson-Dnipro",
+      "lat": 46.975,
+      "lon": 31.995,
+      "distance_to_sector_km": 59.8,
       "event_type": "strike",
       "event_label": "Strike / attack",
       "icon": "✹",
-      "priority": 94
-    },
-    {
-      "title": "Reported rear-area strike near Kyiv",
-      "source": "forrás nélkül",
-      "sector": "Kyiv Area",
-      "lat": 50.45,
-      "lon": 30.523,
-      "distance_to_sector_km": 0,
-      "event_type": "strike",
-      "event_label": "Strike / attack",
-      "icon": "✹",
-      "priority": 94
+      "priority": 91
     }
   ],
   "front_pressure_points": [
@@ -207,7 +207,7 @@
       "lat": 47.99,
       "lon": 37.28,
       "score": 100,
-      "osint": 1,
+      "osint": 0,
       "firms": 137,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
@@ -224,13 +224,13 @@
       "icon": "🔥"
     },
     {
-      "sector": "Crimea",
-      "title": "Crimea FIRMS thermal cluster",
-      "lat": 45.2,
-      "lon": 34.1,
-      "score": 43,
-      "osint": 2,
-      "firms": 21,
+      "sector": "Kherson-Dnipro",
+      "title": "Kherson-Dnipro FIRMS thermal cluster",
+      "lat": 46.64,
+      "lon": 32.61,
+      "score": 51,
+      "osint": 1,
+      "firms": 43,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     }
@@ -242,14 +242,18 @@
     },
     {
       "category": "Drone / UAV activity",
-      "count": 4
+      "count": 3
+    },
+    {
+      "category": "Missile / rocket strike",
+      "count": 2
     },
     {
       "category": "Strike / attack",
-      "count": 3
+      "count": 2
     }
   ],
-  "ai_summary": "Front activity is assessed as CRITICAL with an FAI value of 84. Russian forces gained approximately 6.31 km², closest to the Velyka Novosilka sector. The main pressure focus is Velyka Novosilka. The strongest event category is Drone / UAV activity. The system processed 26 OSINT events, 3828 short-term FIRMS hotspots and 10 active sectors.",
+  "ai_summary": "Front activity is assessed as CRITICAL with an FAI value of 85. Ukrainian forces recaptured approximately 6.67 km², closest to the Velyka Novosilka sector. The main pressure focus is Velyka Novosilka. The strongest event category is Drone / UAV activity. The system processed 23 OSINT events, 3828 short-term FIRMS hotspots and 10 active sectors.",
   "counts": {
     "priority_osint": 12,
     "pressure_points": 7,

@@ -1,33 +1,33 @@
 {
-  "date": "2026-07-23",
-  "updated_utc": "2026-07-23T19:55:18.703698+00:00",
-  "front_activity_index": 84,
+  "date": "2026-07-24",
+  "updated_utc": "2026-07-24T19:54:57.257684+00:00",
+  "front_activity_index": 85,
   "status": "CRITICAL",
   "components": {
     "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 18.9,
+    "territorial_change": 20.0,
     "active_sectors": 10,
     "critical_events": 10
   },
   "counts": {
-    "osint": 26,
+    "osint": 23,
     "firms_3d": 3828,
     "firms_10d": 13267,
     "firms_30d": 38382,
-    "critical_events": 6,
+    "critical_events": 7,
     "active_sectors": 10
   },
   "territorial": {
     "available": true,
     "error": null,
-    "previous_file": "deepstatemap_data_20260722.geojson",
-    "current_file": "deepstatemap_data_20260723.geojson",
-    "previous_total_km2": 116682.23,
-    "current_total_km2": 116688.53,
-    "russian_gain_km2": 6.31,
-    "ukrainian_recapture_km2": 0,
-    "net_change_km2": 6.31,
+    "previous_file": "deepstatemap_data_20260723.geojson",
+    "current_file": "deepstatemap_data_20260724.geojson",
+    "previous_total_km2": 116688.53,
+    "current_total_km2": 116681.86,
+    "russian_gain_km2": 0,
+    "ukrainian_recapture_km2": 6.67,
+    "net_change_km2": -6.67,
     "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
@@ -36,7 +36,7 @@
     "lon": 37.8,
     "zoom": 9,
     "score": 100,
-    "change_km2": 6.31,
+    "change_km2": -6.67,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
@@ -60,7 +60,7 @@
     },
     {
       "sector": "Kurakhove",
-      "osint": 1,
+      "osint": 0,
       "firms": 137,
       "score": 100
     },
@@ -78,37 +78,27 @@
     },
     {
       "sector": "Other / Unclassified",
-      "osint": 11,
+      "osint": 9,
       "firms": 2194,
       "score": 100
     },
     {
-      "sector": "Crimea",
-      "osint": 2,
-      "firms": 21,
-      "score": 43
+      "sector": "Kherson-Dnipro",
+      "osint": 1,
+      "firms": 43,
+      "score": 51
     }
   ],
   "top_events": [
     {
-      "title": "Reported military-related update near Krím",
+      "title": "Reported ground assault or offensive activity near Krím",
       "source": "forrás nélkül",
       "sector": "Crimea"
     },
     {
-      "title": "Reported rear-area strike near Krím",
-      "source": "forrás nélkül",
-      "sector": "Crimea"
-    },
-    {
-      "title": "Reported military-related update near Pokrovszk",
+      "title": "Grew up under occupation, chose Ukraine and military service — and found the love of her life",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
-    },
-    {
-      "title": "Reported rear-area strike near Voronyezs",
-      "source": "forrás nélkül",
-      "sector": "Other / Unclassified"
     },
     {
       "title": "Reported military-related update near Harkiv",
@@ -116,9 +106,19 @@
       "sector": "Kharkiv"
     },
     {
-      "title": "Reported military-related update near Donyeck",
+      "title": "Reported rear-area strike near Odessza",
       "source": "forrás nélkül",
-      "sector": "Kurakhove"
+      "sector": "Other / Unclassified"
+    },
+    {
+      "title": "Reported rear-area strike near Mikolajiv",
+      "source": "forrás nélkül",
+      "sector": "Kherson-Dnipro"
+    },
+    {
+      "title": "Russian Offensive Campaign Assessment, July 23, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk"
     }
   ],
   "data_sources": {
