@@ -476,6 +476,150 @@
       background:rgba(255,255,255,.90) !important;
     }
 
+
+    .deep-strike-panel{
+      border-left:5px solid #7a8ca0 !important;
+      background:
+        linear-gradient(135deg,#ffffff 0%,#f7fafc 100%) !important;
+    }
+
+    .deep-strike-master{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:8px;
+      padding:8px 9px;
+      border:1px solid var(--ui-line);
+      border-radius:8px;
+      background:var(--ui-soft);
+    }
+
+    .deep-strike-master label{
+      display:flex;
+      align-items:center;
+      gap:7px;
+      margin:0;
+      color:var(--ui-text);
+      font-size:11px;
+      font-weight:850;
+      cursor:pointer;
+    }
+
+    .deep-strike-master input{
+      accent-color:var(--ui-blue);
+    }
+
+    .deep-strike-dot{
+      width:10px;
+      height:10px;
+      flex:0 0 10px;
+      display:inline-block;
+      border-radius:999px;
+      box-shadow:0 0 0 2px rgba(255,255,255,.9);
+    }
+
+    .deep-strike-dot.ua-ru{background:#1565c0}
+    .deep-strike-dot.ru-ua{background:#c1121f}
+
+    .deep-strike-controls{
+      display:grid;
+      gap:7px;
+    }
+
+    .deep-strike-row{
+      display:grid;
+      grid-template-columns:78px minmax(0,1fr);
+      align-items:center;
+      gap:8px;
+    }
+
+    .deep-strike-row > label{
+      color:var(--ui-text);
+      font-size:10px;
+      font-weight:850;
+    }
+
+    .deep-strike-direction-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:6px;
+    }
+
+    .deep-strike-direction{
+      display:flex;
+      align-items:center;
+      gap:6px;
+      min-height:32px;
+      padding:6px 7px;
+      border:1px solid var(--ui-line);
+      border-radius:8px;
+      background:#fff;
+      color:var(--ui-body);
+      font-size:10px;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .deep-strike-direction:hover{
+      background:var(--ui-soft);
+    }
+
+    .deep-strike-direction input{
+      margin:0;
+    }
+
+    .deep-strike-direction.ua-ru input{
+      accent-color:#1565c0;
+    }
+
+    .deep-strike-direction.ru-ua input{
+      accent-color:#c1121f;
+    }
+
+    .deep-strike-label-toggle{
+      display:flex;
+      align-items:center;
+      gap:7px;
+      padding:7px 8px;
+      border:1px solid var(--ui-line);
+      border-radius:8px;
+      background:#fff;
+      color:var(--ui-body);
+      font-size:10px;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .deep-strike-label-toggle input{
+      margin:0;
+      accent-color:var(--ui-blue);
+    }
+
+    .deep-strike-actions{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:6px;
+    }
+
+    .deep-strike-summary{
+      margin-top:8px;
+      padding:8px 9px;
+      border:1px solid var(--ui-line);
+      border-radius:8px;
+      background:var(--ui-soft);
+      color:var(--ui-body);
+      font-size:10px;
+      line-height:1.45;
+    }
+
+    .deep-strike-note{
+      margin-top:7px;
+      color:var(--ui-muted);
+      font-size:9px;
+      line-height:1.45;
+    }
+
     @media(max-width:900px){
       #app{grid-template-columns:292px minmax(0,1fr)}
       #sidebar .sidebar-hero h1{font-size:21px}
@@ -627,6 +771,72 @@
         <label class="toggle"><input id="toggleHeatmap" type="checkbox" /> Front activity heatmap</label>
         <label class="toggle"><input id="toggleUnits" type="checkbox" /> Harcoló alakulatok</label>
         <label class="toggle"><input id="toggleFrontDashboard" type="checkbox" /> Napi front dashboard</label>
+      </section>
+
+      <section class="panel deep-strike-panel" id="deepStrikesPanel">
+        <h2>🎯 Mélységi csapások</h2>
+
+        <div class="deep-strike-master">
+          <label for="toggleDeepStrikes">
+            <input id="toggleDeepStrikes" type="checkbox" checked />
+            Pontok megjelenítése
+          </label>
+          <span class="small">manual Excel → JSON</span>
+        </div>
+
+        <div class="deep-strike-controls">
+          <div class="deep-strike-row">
+            <label for="deepStrikesDate">Dátum</label>
+            <select id="deepStrikesDate">
+              <option value="">Betöltés…</option>
+            </select>
+          </div>
+
+          <div class="deep-strike-row">
+            <label for="deepStrikesWindow">Időablak</label>
+            <select id="deepStrikesWindow">
+              <option value="day">Adott nap</option>
+              <option value="7" selected>Utolsó 7 nap</option>
+              <option value="30">Utolsó 30 nap</option>
+              <option value="90">Utolsó 90 nap</option>
+              <option value="all">Összes</option>
+            </select>
+          </div>
+
+          <div class="deep-strike-direction-grid">
+            <label class="deep-strike-direction ua-ru" for="toggleDeepStrikesUaRu">
+              <input id="toggleDeepStrikesUaRu" type="checkbox" checked />
+              <span class="deep-strike-dot ua-ru"></span>
+              UA → RU
+            </label>
+
+            <label class="deep-strike-direction ru-ua" for="toggleDeepStrikesRuUa">
+              <input id="toggleDeepStrikesRuUa" type="checkbox" checked />
+              <span class="deep-strike-dot ru-ua"></span>
+              RU → UA
+            </label>
+          </div>
+
+          <label class="deep-strike-label-toggle" for="toggleDeepStrikeLabels">
+            <input id="toggleDeepStrikeLabels" type="checkbox" />
+            Kapcsolható eseményleírások
+          </label>
+
+          <div class="deep-strike-actions">
+            <button id="btnResetDeepStrikeLabels" class="secondary" type="button">
+              Leírásblokkok helyzetének visszaállítása
+            </button>
+          </div>
+        </div>
+
+        <div id="deepStrikesSummary" class="deep-strike-summary">
+          Mélységi csapás adatok betöltése…
+        </div>
+
+        <div class="deep-strike-note">
+          Kék: ukrán csapás orosz hátországban. Piros: orosz csapás ukrán hátországban.
+          A leírásblokkok egérrel mozgathatók, HU/EN váltót és lenyitható részletes leírást tartalmaznak.
+        </div>
       </section>
 
       <section class="panel" id="satelliteIntelligencePanel">
