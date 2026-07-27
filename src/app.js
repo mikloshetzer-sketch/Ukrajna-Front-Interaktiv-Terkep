@@ -166,6 +166,7 @@ const appState = {
   analysisDrawings: [],
   analysisDraftPoints: [],
   analysisDrawClickBound: false,
+  analysisDrawNativeHandler: null,
 };
 
 const map = initMap();
@@ -2145,22 +2146,66 @@ function handleAnalysisDrawClick(event) {
 }
 
 function enableAnalysisDrawing() {
+  const mapContainer = map.getContainer();
+
   if (!appState.analysisDrawClickBound) {
-    map.on('click', handleAnalysisDrawClick);
+    appState.analysisDrawNativeHandler = (event) => {
+      if ((dom.toolboxMode?.value || '') !== 'draw') {
+        return;
+      }
+
+      // A Leaflet vezérlőkre, popupokra és térképi kártyákra kattintás
+      // ne hozzon létre rajzpontot.
+      if (
+        event.target.closest?.('.leaflet-control') ||
+        event.target.closest?.('.leaflet-popup') ||
+        event.target.closest?.('.deep-strike-card')
+      ) {
+        return;
+      }
+
+      const latlng = map.mouseEventToLatLng(event);
+
+      if (!latlng) {
+        return;
+      }
+
+      // Capture fázisban is megbízhatóan megkapjuk a térképkattintást,
+      // még akkor is, ha valamely Leaflet overlay leállítja a bubblinget.
+      handleAnalysisDrawClick({ latlng });
+    };
+
+    mapContainer.addEventListener(
+      'click',
+      appState.analysisDrawNativeHandler,
+      true
+    );
+
     appState.analysisDrawClickBound = true;
   }
 
-  map.getContainer().style.cursor = 'crosshair';
+  mapContainer.style.cursor = 'crosshair';
 }
 
 function disableAnalysisDrawing() {
-  if (appState.analysisDrawClickBound) {
-    map.off('click', handleAnalysisDrawClick);
+  const mapContainer = map.getContainer();
+
+  if (
+    appState.analysisDrawClickBound &&
+    appState.analysisDrawNativeHandler
+  ) {
+    mapContainer.removeEventListener(
+      'click',
+      appState.analysisDrawNativeHandler,
+      true
+    );
+
     appState.analysisDrawClickBound = false;
+    appState.analysisDrawNativeHandler = null;
   }
 
   clearAnalysisDraft();
-  map.getContainer().style.cursor = '';
+  mapContainer.style.cursor = '';
 }
 
 function undoAnalysisDrawing() {
@@ -2264,6 +2309,7 @@ function updateToolboxStatus(customText = null) {
       Aktív mód: <strong>${getToolboxModeLabel(mode)}</strong><br>
       Rajzeszköz: <strong>${getAnalysisDrawShapeLabel(shape)}</strong><br>
       Szín: <strong style="color:${color};">${color}</strong><br>
+      Rajzolás aktív: <strong>${appState.analysisDrawClickBound ? 'IGEN' : 'NEM'}</strong><br>
       Kattints a térképen: <strong>${requiredPoints} pont</strong> szükséges ehhez az alakzathoz.<br>
       Aktuális rajz pontjai: <strong>${draftPointCount}/${requiredPoints}</strong><br>
       Mentett elemző rajzok: <strong>${drawingCount}</strong>
