@@ -1,4 +1,4 @@
-import { FRONT_SECTORS } from '../data/frontSectors.js';
+mport { FRONT_SECTORS } from '../data/frontSectors.js';
 
 const DELTA_LABEL_STORAGE_KEY = 'ukraine_front_delta_label_positions_v1';
 const FIRMS_LABEL_STORAGE_KEY = 'ukraine_front_firms_box_positions_v1';
@@ -1336,6 +1336,72 @@ export function renderHeatmapLayer(layerState, points) {
   layerState.heatmapLayer.setLatLngs(normalized);
 }
 
+function escapeDeepStrikeHtml(value) {
+  return String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
+function getDeepStrikeMarkerStyle(direction) {
+  if (direction === 'UA_RU') {
+    return {
+      color: '#1d4ed8',
+      fillColor: '#3b82f6',
+      fillOpacity: 0.88,
+      weight: 2,
+      radius: 7,
+    };
+  }
+
+  return {
+    color: '#991b1b',
+    fillColor: '#dc2626',
+    fillOpacity: 0.88,
+    weight: 2,
+    radius: 7,
+  };
+}
+
+function buildDeepStrikePopup(event) {
+  const directionLabel =
+    event.direction === 'UA_RU'
+      ? 'Ukrajna → Oroszország'
+      : 'Oroszország → Ukrajna';
+
+  const attackerLabel =
+    event.attacker === 'UKRAINE'
+      ? 'Ukrajna'
+      : event.attacker === 'RUSSIA'
+        ? 'Oroszország'
+        : event.attacker || 'Ismeretlen';
+
+  const sourceLink = event.sourceUrl
+    ? `<a href="${escapeDeepStrikeHtml(event.sourceUrl)}" target="_blank" rel="noopener noreferrer">Forrás megnyitása</a>`
+    : 'Nincs forráslink';
+
+  return `
+    <div style="min-width:245px;max-width:330px;line-height:1.4;">
+      <div style="font-weight:800;margin-bottom:5px;">🎯 Mélységi csapás</div>
+      <div><b>Irány:</b> ${escapeDeepStrikeHtml(directionLabel)}</div>
+      <div><b>Dátum:</b> ${escapeDeepStrikeHtml(event.date || 'n/a')}</div>
+      <div><b>Támadó:</b> ${escapeDeepStrikeHtml(attackerLabel)}</div>
+      <div><b>Régió:</b> ${escapeDeepStrikeHtml(event.region || 'n/a')}</div>
+      <div><b>Helyszín:</b> ${escapeDeepStrikeHtml(event.location || 'n/a')}</div>
+      <div><b>Támadás típusa:</b> ${escapeDeepStrikeHtml(event.strikeType || 'n/a')}</div>
+      <div><b>Célpont:</b> ${escapeDeepStrikeHtml(event.targetType || 'n/a')}</div>
+      <div style="margin-top:6px;">${escapeDeepStrikeHtml(event.description || '')}</div>
+      <div style="margin-top:6px;color:#666;font-size:11px;">
+        Koordináta: ${Number(event.lat).toFixed(4)}, ${Number(event.lng).toFixed(4)}<br>
+        Pontosság: ${escapeDeepStrikeHtml(event.coordinateAccuracy || 'n/a')}
+      </div>
+      <div style="margin-top:7px;">${sourceLink}</div>
+    </div>
+  `;
+}
+
 export function createLayers(map) {
   const occupiedLayer = L.geoJSON(null, {
     style: () => getDeepStateOccupiedStyle(layerState)
@@ -1367,6 +1433,7 @@ export function createLayers(map) {
   const firmsHotspotLayer = L.layerGroup();
   const osintLayer = L.layerGroup();
   const osintHighlightLayer = L.layerGroup();
+  const deepStrikesLayer = L.layerGroup();
 
   const heatmapLayer =
     typeof L.heatLayer === 'function'
@@ -1393,6 +1460,7 @@ export function createLayers(map) {
     firmsHotspotLayer,
     osintLayer,
     osintHighlightLayer,
+    deepStrikesLayer,
     heatmapLayer,
     satelliteContrastEnabled: false,
     lastSuriyakData: null,
@@ -1427,6 +1495,28 @@ export function replaceBorderLayer(map, layerState, data) {
 export function renderDeltaLayer(layerState, delta, currentDate, previousDate) {
   layerState.lastDeltaPayload = { delta, currentDate, previousDate };
   rebuildDeltaDynamicLayout(layerState);
+}
+
+export function renderDeepStrikesLayer(layerState, events = []) {
+  if (!layerState?.deepStrikesLayer) return;
+
+  layerState.deepStrikesLayer.clearLayers();
+
+  const safeEvents = Array.isArray(events) ? events : [];
+
+  safeEvents.forEach((event) => {
+    const lat = Number(event?.lat);
+    const lng = Number(event?.lng);
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+
+    const style = getDeepStrikeMarkerStyle(event.direction);
+
+    const marker = L.circleMarker([lat, lng], style)
+      .bindPopup(buildDeepStrikePopup(event));
+
+    marker.addTo(layerState.deepStrikesLayer);
+  });
 }
 
 export function renderFirmsLayer(layerState, points) {
