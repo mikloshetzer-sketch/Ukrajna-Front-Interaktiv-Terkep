@@ -9,6 +9,7 @@ import {
   replaceFrontlineLayer,
   renderDeltaLayer,
   renderHistoricalDeltaLayer,
+  renderDeepStrikesLayer,
   renderFirmsLayer,
   renderOsintLayer,
   renderOsintHighlights,
@@ -25,6 +26,7 @@ import { initCoordinateMarkers } from './map/coordinateMarkers.js';
 import { initMeasureTool } from './map/measureTool.js';
 import { initObjectIdentificationTool } from './map/objectIdentificationTool.js';
 import { fetchDeepStateIndex, fetchDeepStateByFilename } from './data/deepstate.js';
+import { fetchDeepStrikes } from './data/deepStrikes.js';
 import { computeNaiveDailyDelta } from './data/deepstateDelta.js';
 import { enrichDeltaItemsWithPlaceNames } from './data/placeLookup.js';
 import { fetchFirmsLayer } from './data/firms.js';
@@ -138,6 +140,7 @@ const appState = {
   latestHeatmapPoints: [],
   latestAttackAxes: [],
   latestBattleNodes: [],
+  latestDeepStrikes: [],
   coordinateMarkersController: null,
   measureToolController: null,
   objectIdentificationController: null,
@@ -1270,6 +1273,41 @@ function buildBattleNodes() {
   }
 }
 
+async function refreshDeepStrikes() {
+  try {
+    if (!layerState.deepStrikesLayer) {
+      console.warn('Deep strike layer is not available in layerState.');
+      return [];
+    }
+
+    const events = await fetchDeepStrikes();
+    appState.latestDeepStrikes = Array.isArray(events) ? events : [];
+
+    renderDeepStrikesLayer(layerState, appState.latestDeepStrikes);
+
+    if (!map.hasLayer(layerState.deepStrikesLayer)) {
+      layerState.deepStrikesLayer.addTo(map);
+    }
+
+    console.info(`Deep strikes loaded: ${appState.latestDeepStrikes.length}`);
+    return appState.latestDeepStrikes;
+  } catch (error) {
+    console.error('Deep strike layer error:', error);
+    appState.latestDeepStrikes = [];
+
+    if (layerState.deepStrikesLayer) {
+      layerState.deepStrikesLayer.clearLayers();
+
+      if (map.hasLayer(layerState.deepStrikesLayer)) {
+        map.removeLayer(layerState.deepStrikesLayer);
+      }
+    }
+
+    return [];
+  }
+}
+
+
 async function renderAtIndex(index) {
   const item = appState.index[index];
   if (!item) return;
@@ -1849,6 +1887,7 @@ async function init() {
     setTimelineBounds(dom.timeline, appState.index.length - 1);
 
     await loadBorders();
+    await refreshDeepStrikes();
     await renderAtIndex(appState.index.length - 1);
     updateSuriyakSubpanelVisibility(Boolean(dom.toggleSuriyak?.checked));
     await syncSuriyakLegendPanel();
