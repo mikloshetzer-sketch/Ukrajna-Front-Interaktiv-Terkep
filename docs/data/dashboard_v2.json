@@ -1,14 +1,14 @@
 {
-  "updated_utc": "2026-07-26T19:43:38.700964+00:00",
-  "date": "2026-07-26",
+  "updated_utc": "2026-07-27T10:03:38.594859+00:00",
+  "date": "2026-07-27",
   "territorial_sector": {
-    "sector": "Kharkiv",
-    "lat": 50.27569801428571,
-    "lon": 36.38320265714286,
-    "distance_km": 33.6,
-    "change_type": "russian_gain",
-    "area_km2": 3.92,
-    "label": "Russian territorial gain"
+    "sector": "No territorial delta",
+    "lat": null,
+    "lon": null,
+    "distance_km": null,
+    "change_type": "none",
+    "area_km2": 0,
+    "label": "No mapped daily territorial change"
   },
   "priority_osint_events": [
     {
@@ -152,7 +152,7 @@
       "lon": 32.61,
       "score": 100,
       "osint": 0,
-      "firms": 176,
+      "firms": 129,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -161,22 +161,11 @@
       "title": "Zaporizhzhia FIRMS thermal cluster",
       "lat": 47.84,
       "lon": 35.14,
-      "score": 92,
+      "score": 94,
       "osint": 0,
-      "firms": 102,
+      "firms": 104,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
-    },
-    {
-      "sector": "Kharkiv",
-      "title": "Kharkiv territorial gain axis",
-      "lat": 49.99,
-      "lon": 36.23,
-      "score": 61,
-      "osint": 2,
-      "firms": 8,
-      "pressure_type": "territorial_gain_axis",
-      "icon": "▲"
     },
     {
       "sector": "Pokrovsk",
@@ -188,6 +177,17 @@
       "firms": 0,
       "pressure_type": "osint_activity_cluster",
       "icon": "⚔"
+    },
+    {
+      "sector": "Kharkiv",
+      "title": "Kharkiv pressure axis",
+      "lat": 49.99,
+      "lon": 36.23,
+      "score": 24,
+      "osint": 2,
+      "firms": 0,
+      "pressure_type": "pressure_axis",
+      "icon": "⚑"
     },
     {
       "sector": "Kurakhove",
@@ -202,23 +202,23 @@
     },
     {
       "sector": "Crimea",
-      "title": "Crimea FIRMS thermal cluster",
+      "title": "Crimea pressure axis",
       "lat": 45.2,
       "lon": 34.1,
-      "score": 9,
+      "score": 8,
       "osint": 0,
-      "firms": 10,
-      "pressure_type": "thermal_activity_cluster",
-      "icon": "🔥"
+      "firms": 9,
+      "pressure_type": "pressure_axis",
+      "icon": "⚑"
     },
     {
-      "sector": "Lyman",
-      "title": "Lyman pressure axis",
-      "lat": 48.99,
-      "lon": 37.8,
-      "score": 7,
+      "sector": "Velyka Novosilka",
+      "title": "Velyka Novosilka pressure axis",
+      "lat": 47.84,
+      "lon": 36.84,
+      "score": 6,
       "osint": 0,
-      "firms": 8,
+      "firms": 7,
       "pressure_type": "pressure_axis",
       "icon": "⚑"
     }
@@ -241,12 +241,12 @@
       "count": 1
     }
   ],
-  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 75. Russian forces gained approximately 5.45 km², closest to the Kharkiv sector. The main pressure focus is Kherson-Dnipro. The strongest event category is Drone / UAV activity. The system processed 11 OSINT events, 5052 short-term FIRMS hotspots and 10 active sectors.",
+  "ai_summary": "Front activity is assessed as ELEVATED with an FAI value of 59. No measurable net territorial change was detected. The main pressure focus is Kherson-Dnipro. The strongest event category is Drone / UAV activity. The system processed 11 OSINT events, 4898 short-term FIRMS hotspots and 8 active sectors.",
   "counts": {
     "priority_osint": 11,
     "pressure_points": 7,
-    "firms_3d": 5052,
-    "firms_10d": 16476,
+    "firms_3d": 4898,
+    "firms_10d": 15623,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."
