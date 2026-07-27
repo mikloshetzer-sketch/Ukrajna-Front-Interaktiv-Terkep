@@ -1002,6 +1002,183 @@
       color:var(--text);
     }
 
+
+    /* Deep Strike Analysis */
+    .deepstrike-analysis-panel{
+      border-top:4px solid var(--purple);
+    }
+
+    .deepstrike-kpi-grid{
+      display:grid;
+      grid-template-columns:repeat(6,minmax(0,1fr));
+      gap:8px;
+      margin-bottom:10px;
+    }
+
+    .deepstrike-kpi{
+      min-height:92px;
+      padding:13px 9px;
+      border:1px solid var(--line);
+      border-radius:10px;
+      background:var(--soft);
+      text-align:center;
+    }
+
+    .deepstrike-kpi-value{
+      color:#0f456e;
+      font-size:23px;
+      font-weight:950;
+      line-height:1.05;
+      overflow-wrap:anywhere;
+    }
+
+    .deepstrike-kpi.ua .deepstrike-kpi-value{color:#1565c0}
+    .deepstrike-kpi.ru .deepstrike-kpi-value{color:#c1121f}
+    .deepstrike-kpi.purple .deepstrike-kpi-value{color:var(--purple)}
+
+    .deepstrike-kpi-label{
+      margin-top:8px;
+      color:var(--muted);
+      font-size:8px;
+      font-weight:900;
+      letter-spacing:.05em;
+      line-height:1.3;
+      text-transform:uppercase;
+    }
+
+    .deepstrike-analysis-grid{
+      display:grid;
+      grid-template-columns:1.35fr 1fr;
+      gap:10px;
+    }
+
+    .deepstrike-chart-card,
+    .deepstrike-detail-card{
+      border:1px solid var(--line);
+      border-radius:11px;
+      background:var(--soft);
+      overflow:hidden;
+    }
+
+    .deepstrike-card-head{
+      padding:11px 12px 0;
+    }
+
+    .deepstrike-card-title{
+      color:var(--text);
+      font-family:Georgia,"Times New Roman",serif;
+      font-size:16px;
+      font-weight:800;
+    }
+
+    .deepstrike-card-subtitle{
+      margin-top:3px;
+      color:var(--muted);
+      font-size:9px;
+      line-height:1.4;
+    }
+
+    .deepstrike-chart-wrap{
+      height:285px;
+      padding:8px 10px 12px;
+    }
+
+    .deepstrike-secondary-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .deepstrike-event-list{
+      display:grid;
+      gap:7px;
+      max-height:285px;
+      overflow:auto;
+      padding:10px;
+    }
+
+    .deepstrike-event{
+      padding:9px 10px;
+      border:1px solid var(--line);
+      border-left:4px solid #1565c0;
+      border-radius:8px;
+      background:#fff;
+    }
+
+    .deepstrike-event.ru-ua{border-left-color:#c1121f}
+
+    .deepstrike-event-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:8px;
+    }
+
+    .deepstrike-event-direction{
+      font-size:8px;
+      font-weight:950;
+      letter-spacing:.05em;
+      text-transform:uppercase;
+    }
+
+    .deepstrike-event-direction.ua-ru{color:#1565c0}
+    .deepstrike-event-direction.ru-ua{color:#c1121f}
+
+    .deepstrike-event-date{
+      color:var(--muted);
+      font-size:8px;
+      white-space:nowrap;
+    }
+
+    .deepstrike-event-location{
+      margin-top:3px;
+      color:var(--text);
+      font-size:11px;
+      font-weight:900;
+    }
+
+    .deepstrike-event-meta{
+      margin-top:3px;
+      color:var(--muted);
+      font-size:9px;
+      line-height:1.4;
+    }
+
+    .deepstrike-assessment{
+      margin-top:10px;
+      padding:12px 14px;
+      border:1px solid var(--line);
+      border-left:5px solid var(--purple);
+      border-radius:10px;
+      background:var(--purple-soft);
+      color:var(--body);
+      font-size:11px;
+      line-height:1.65;
+    }
+
+    .deepstrike-assessment strong{color:var(--text)}
+
+    .deepstrike-method{
+      margin-top:7px;
+      color:var(--muted);
+      font-size:9px;
+      line-height:1.45;
+    }
+
+    @media(max-width:1200px){
+      .deepstrike-kpi-grid{grid-template-columns:repeat(3,1fr)}
+    }
+
+    @media(max-width:900px){
+      .deepstrike-analysis-grid,
+      .deepstrike-secondary-grid{grid-template-columns:1fr}
+    }
+
+    @media(max-width:620px){
+      .deepstrike-kpi-grid{grid-template-columns:1fr 1fr}
+    }
+
   </style>
 </head>
 
@@ -1145,6 +1322,118 @@
         <p id="assessmentP2"></p>
         <p id="assessmentP3"></p>
         <p>Az értékelés nyílt forrású és automatizált mutatókat tükröz, ezért nem tekinthető a konfliktus minden eseményét lefedő, valós idejű helyzetképnek.</p>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="panel deepstrike-analysis-panel">
+    <div class="panel-head">
+      <div>
+        <h2 class="panel-title">🎯 Deep Strike Analysis</h2>
+        <div class="panel-subtitle">
+          Ukrán csapások az orosz hátországban és orosz csapások az ukrán hátországban.
+          A blokk a felső 24 óra / 7 / 30 / 90 napos időszakválasztót követi.
+        </div>
+      </div>
+      <div class="panel-badge" id="deepStrikePeriodBadge">30 nap</div>
+    </div>
+
+    <div class="panel-body">
+      <div class="deepstrike-kpi-grid">
+        <div class="deepstrike-kpi">
+          <div class="deepstrike-kpi-value" id="deepStrikeTotal">–</div>
+          <div class="deepstrike-kpi-label">Összes mélységi csapás</div>
+        </div>
+
+        <div class="deepstrike-kpi ua">
+          <div class="deepstrike-kpi-value" id="deepStrikeUaRu">–</div>
+          <div class="deepstrike-kpi-label">UA → RU</div>
+        </div>
+
+        <div class="deepstrike-kpi ru">
+          <div class="deepstrike-kpi-value" id="deepStrikeRuUa">–</div>
+          <div class="deepstrike-kpi-label">RU → UA</div>
+        </div>
+
+        <div class="deepstrike-kpi">
+          <div class="deepstrike-kpi-value" id="deepStrikeLocations">–</div>
+          <div class="deepstrike-kpi-label">Érintett helyszínek</div>
+        </div>
+
+        <div class="deepstrike-kpi purple">
+          <div class="deepstrike-kpi-value" id="deepStrikeTopTarget">–</div>
+          <div class="deepstrike-kpi-label">Leggyakoribb célpont</div>
+        </div>
+
+        <div class="deepstrike-kpi">
+          <div class="deepstrike-kpi-value" id="deepStrikeUaShare">–</div>
+          <div class="deepstrike-kpi-label">UA → RU részarány</div>
+        </div>
+      </div>
+
+      <div class="deepstrike-analysis-grid">
+        <article class="deepstrike-chart-card">
+          <div class="deepstrike-card-head">
+            <div class="deepstrike-card-title">Mélységi csapások – napi bontás</div>
+            <div class="deepstrike-card-subtitle">
+              Kék: Ukrajna → Oroszország · Piros: Oroszország → Ukrajna
+            </div>
+          </div>
+          <div class="deepstrike-chart-wrap">
+            <canvas id="deepStrikeTimelineChart"></canvas>
+          </div>
+        </article>
+
+        <article class="deepstrike-detail-card">
+          <div class="deepstrike-card-head">
+            <div class="deepstrike-card-title">Legutóbbi események</div>
+            <div class="deepstrike-card-subtitle">
+              A kiválasztott időszak legfrissebb mélységi csapásai
+            </div>
+          </div>
+          <div id="deepStrikeRecentEvents" class="deepstrike-event-list">
+            <div class="chart-empty">Mélységi csapás adatok betöltése…</div>
+          </div>
+        </article>
+      </div>
+
+      <div class="deepstrike-secondary-grid">
+        <article class="deepstrike-chart-card">
+          <div class="deepstrike-card-head">
+            <div class="deepstrike-card-title">Célponttípusok megoszlása</div>
+            <div class="deepstrike-card-subtitle">
+              A kiválasztott időszakban rögzített célpontkategóriák
+            </div>
+          </div>
+          <div class="deepstrike-chart-wrap">
+            <canvas id="deepStrikeTargetChart"></canvas>
+          </div>
+        </article>
+
+        <article class="deepstrike-chart-card">
+          <div class="deepstrike-card-head">
+            <div class="deepstrike-card-title">Legaktívabb térségek</div>
+            <div class="deepstrike-card-subtitle">
+              A legtöbb rögzített mélységi csapással érintett régiók
+            </div>
+          </div>
+          <div class="deepstrike-chart-wrap">
+            <canvas id="deepStrikeRegionChart"></canvas>
+          </div>
+        </article>
+      </div>
+
+      <div id="deepStrikeAssessment" class="deepstrike-assessment">
+        <strong>Automatikus értékelés:</strong> adatok betöltése…
+      </div>
+
+      <div class="deepstrike-method">
+        Módszertani megjegyzés: a blokk a <code>data/deep_strikes.json</code> manuálisan
+        frissített eseményadatbázisát használja. A jelenlegi adatmodell eseményszámot,
+        irányt, helyszínt, támadástípust és célponttípust támogat. A „strike depth”
+        távolságmutató csak akkor kerül be, amikor minden eseményhez egységes
+        referencia alapján kiszámított távolságmező áll rendelkezésre.
       </div>
     </div>
   </section>
@@ -2780,15 +3069,410 @@ loadDashboardLongTermSummary();
 
 
 
+
+const DEEP_STRIKE_URLS=[
+  '../data/deep_strikes.json',
+  './data/deep_strikes.json',
+  'data/deep_strikes.json'
+];
+
+let DEEP_STRIKE_EVENTS=[];
+let DEEP_STRIKE_META=null;
+let deepStrikeTimelineChart=null;
+let deepStrikeTargetChart=null;
+let deepStrikeRegionChart=null;
+
+function escapeDeepStrikeDashboardHtml(value){
+  return String(value ?? '')
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'",'&#039;');
+}
+
+function deepStrikeDirection(item){
+  return String(item?.direction || '').toUpperCase();
+}
+
+function deepStrikeDate(item){
+  return String(item?.date || '').slice(0,10);
+}
+
+function deepStrikePeriodStart(periodDays,endDate){
+  const end=new Date(`${endDate}T00:00:00Z`);
+  if(Number.isNaN(end.getTime())) return null;
+
+  const start=new Date(end);
+  start.setUTCDate(start.getUTCDate()-(Number(periodDays)-1));
+  return start.toISOString().slice(0,10);
+}
+
+function getDeepStrikeFilteredEvents(period){
+  if(!DEEP_STRIKE_EVENTS.length) return [];
+
+  const allDates=DEEP_STRIKE_EVENTS
+    .map(deepStrikeDate)
+    .filter(Boolean)
+    .sort();
+
+  if(!allDates.length) return [];
+
+  const latestDate=allDates[allDates.length-1];
+
+  if(Number(period)===1){
+    return DEEP_STRIKE_EVENTS.filter(item=>deepStrikeDate(item)===latestDate);
+  }
+
+  const startDate=deepStrikePeriodStart(Number(period),latestDate);
+
+  return DEEP_STRIKE_EVENTS.filter(item=>{
+    const date=deepStrikeDate(item);
+    return date && date>=startDate && date<=latestDate;
+  });
+}
+
+function countDeepStrikeBy(items,keyGetter){
+  const counts=new Map();
+
+  items.forEach(item=>{
+    const key=String(keyGetter(item) || 'Ismeretlen').trim() || 'Ismeretlen';
+    counts.set(key,(counts.get(key) || 0)+1);
+  });
+
+  return [...counts.entries()]
+    .sort((a,b)=>b[1]-a[1] || a[0].localeCompare(b[0],'hu'));
+}
+
+function deepStrikeShortText(item){
+  return (
+    item?.description_short_hu ||
+    item?.description ||
+    item?.description_long_hu ||
+    ''
+  );
+}
+
+function deepStrikeTargetType(item){
+  return item?.target_type_hu || item?.target_type || 'Ismeretlen';
+}
+
+function deepStrikeRegion(item){
+  return item?.region_hu || item?.region || 'Ismeretlen';
+}
+
+function deepStrikeLocation(item){
+  return item?.location_hu || item?.location || 'Ismeretlen helyszín';
+}
+
+function setDeepStrikeText(id,value){
+  const el=document.getElementById(id);
+  if(el) el.textContent=value;
+}
+
+function destroyDeepStrikeChart(chart){
+  if(chart && typeof chart.destroy==='function') chart.destroy();
+}
+
+function renderDeepStrikeTimeline(items){
+  const canvas=document.getElementById('deepStrikeTimelineChart');
+  if(!canvas) return;
+
+  const dates=[...new Set(items.map(deepStrikeDate).filter(Boolean))].sort();
+
+  const uaMap=new Map();
+  const ruMap=new Map();
+
+  items.forEach(item=>{
+    const date=deepStrikeDate(item);
+    const direction=deepStrikeDirection(item);
+    if(!date) return;
+
+    if(direction==='UA_RU'){
+      uaMap.set(date,(uaMap.get(date) || 0)+1);
+    }else if(direction==='RU_UA'){
+      ruMap.set(date,(ruMap.get(date) || 0)+1);
+    }
+  });
+
+  destroyDeepStrikeChart(deepStrikeTimelineChart);
+
+  deepStrikeTimelineChart=new Chart(canvas,{
+    type:'bar',
+    data:{
+      labels:dates,
+      datasets:[
+        {
+          label:'UA → RU',
+          data:dates.map(date=>uaMap.get(date) || 0),
+          backgroundColor:'rgba(21,101,192,.72)',
+          borderColor:'#1565c0',
+          borderWidth:1
+        },
+        {
+          label:'RU → UA',
+          data:dates.map(date=>ruMap.get(date) || 0),
+          backgroundColor:'rgba(193,18,31,.70)',
+          borderColor:'#c1121f',
+          borderWidth:1
+        }
+      ]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      scales:{
+        x:{
+          stacked:true,
+          ticks:{maxRotation:45,minRotation:0,font:{size:9}}
+        },
+        y:{
+          stacked:true,
+          beginAtZero:true,
+          ticks:{precision:0,font:{size:9}}
+        }
+      },
+      plugins:{
+        legend:{
+          position:'bottom',
+          labels:{boxWidth:10,font:{size:9}}
+        },
+        tooltip:{enabled:true}
+      }
+    }
+  });
+}
+
+function renderDeepStrikeTargetChart(items){
+  const canvas=document.getElementById('deepStrikeTargetChart');
+  if(!canvas) return;
+
+  const rows=countDeepStrikeBy(items,deepStrikeTargetType).slice(0,8);
+
+  destroyDeepStrikeChart(deepStrikeTargetChart);
+
+  deepStrikeTargetChart=new Chart(canvas,{
+    type:'doughnut',
+    data:{
+      labels:rows.map(row=>row[0]),
+      datasets:[{
+        data:rows.map(row=>row[1]),
+        backgroundColor:[
+          '#2f83bd','#d8463f','#6c4dc5','#d97832',
+          '#2f8a61','#c58c25','#78909c','#455a64'
+        ],
+        borderColor:'#ffffff',
+        borderWidth:2
+      }]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      plugins:{
+        legend:{
+          position:'bottom',
+          labels:{
+            boxWidth:10,
+            font:{size:8}
+          }
+        }
+      }
+    }
+  });
+}
+
+function renderDeepStrikeRegionChart(items){
+  const canvas=document.getElementById('deepStrikeRegionChart');
+  if(!canvas) return;
+
+  const rows=countDeepStrikeBy(items,deepStrikeRegion).slice(0,8);
+
+  destroyDeepStrikeChart(deepStrikeRegionChart);
+
+  deepStrikeRegionChart=new Chart(canvas,{
+    type:'bar',
+    data:{
+      labels:rows.map(row=>row[0]),
+      datasets:[{
+        label:'Esemény',
+        data:rows.map(row=>row[1]),
+        backgroundColor:'rgba(108,77,197,.72)',
+        borderColor:'#6c4dc5',
+        borderWidth:1
+      }]
+    },
+    options:{
+      indexAxis:'y',
+      responsive:true,
+      maintainAspectRatio:false,
+      scales:{
+        x:{
+          beginAtZero:true,
+          ticks:{precision:0,font:{size:9}}
+        },
+        y:{
+          ticks:{font:{size:9}}
+        }
+      },
+      plugins:{
+        legend:{display:false}
+      }
+    }
+  });
+}
+
+function renderDeepStrikeRecentEvents(items){
+  const container=document.getElementById('deepStrikeRecentEvents');
+  if(!container) return;
+
+  const latest=[...items]
+    .sort((a,b)=>deepStrikeDate(b).localeCompare(deepStrikeDate(a)))
+    .slice(0,8);
+
+  if(!latest.length){
+    container.innerHTML='<div class="chart-empty">A kiválasztott időszakban nincs rögzített mélységi csapás.</div>';
+    return;
+  }
+
+  container.innerHTML=latest.map(item=>{
+    const direction=deepStrikeDirection(item);
+    const isUa=direction==='UA_RU';
+    const directionText=isUa?'UA → RU':'RU → UA';
+    const className=isUa?'ua-ru':'ru-ua';
+
+    return `
+      <article class="deepstrike-event ${className}">
+        <div class="deepstrike-event-top">
+          <div class="deepstrike-event-direction ${className}">${directionText}</div>
+          <div class="deepstrike-event-date">${escapeDeepStrikeDashboardHtml(deepStrikeDate(item))}</div>
+        </div>
+        <div class="deepstrike-event-location">${escapeDeepStrikeDashboardHtml(deepStrikeLocation(item))}</div>
+        <div class="deepstrike-event-meta">
+          <strong>${escapeDeepStrikeDashboardHtml(item?.strike_type_hu || item?.strike_type || 'Támadás')}</strong>
+          → ${escapeDeepStrikeDashboardHtml(deepStrikeTargetType(item))}
+        </div>
+        <div class="deepstrike-event-meta">
+          ${escapeDeepStrikeDashboardHtml(deepStrikeShortText(item))}
+        </div>
+      </article>
+    `;
+  }).join('');
+}
+
+function buildDeepStrikeAssessment(items,period){
+  const box=document.getElementById('deepStrikeAssessment');
+  if(!box) return;
+
+  if(!items.length){
+    box.innerHTML='<strong>Automatikus értékelés:</strong> A kiválasztott időszakban nincs rögzített mélységi csapás.';
+    return;
+  }
+
+  const ua=items.filter(item=>deepStrikeDirection(item)==='UA_RU').length;
+  const ru=items.filter(item=>deepStrikeDirection(item)==='RU_UA').length;
+  const targetRows=countDeepStrikeBy(items,deepStrikeTargetType);
+  const regionRows=countDeepStrikeBy(items,deepStrikeRegion);
+  const topTarget=targetRows[0]?.[0] || 'ismeretlen';
+  const topRegion=regionRows[0]?.[0] || 'ismeretlen';
+  const balance=ua-ru;
+
+  let directionSentence='A két támadási irány eseményszáma kiegyensúlyozott.';
+  if(balance>=2){
+    directionSentence=`Az ukrán → orosz mélységi csapások száma ${Math.abs(balance)} eseménnyel meghaladta az ellenkező irányt.`;
+  }else if(balance<=-2){
+    directionSentence=`Az orosz → ukrán mélységi csapások száma ${Math.abs(balance)} eseménnyel meghaladta az ellenkező irányt.`;
+  }
+
+  box.innerHTML=`
+    <strong>Automatikus értékelés:</strong>
+    A kiválasztott ${Number(period)===1?'24 órás':`${period} napos`} időszakban
+    <strong>${items.length}</strong> mélységi csapás szerepel az adatbázisban:
+    <strong style="color:#1565c0">${ua} UA → RU</strong> és
+    <strong style="color:#c1121f">${ru} RU → UA</strong>.
+    ${directionSentence}
+    A leggyakoribb célpontkategória <strong>${escapeDeepStrikeDashboardHtml(topTarget)}</strong>,
+    míg a legtöbb rögzített esemény a(z)
+    <strong>${escapeDeepStrikeDashboardHtml(topRegion)}</strong> térséghez kapcsolódott.
+  `;
+}
+
+function renderDeepStrikeAnalysis(period){
+  const items=getDeepStrikeFilteredEvents(period);
+
+  const ua=items.filter(item=>deepStrikeDirection(item)==='UA_RU').length;
+  const ru=items.filter(item=>deepStrikeDirection(item)==='RU_UA').length;
+  const locations=new Set(items.map(deepStrikeLocation).filter(Boolean)).size;
+  const topTarget=countDeepStrikeBy(items,deepStrikeTargetType)[0]?.[0] || '–';
+  const uaShare=items.length ? Math.round((ua/items.length)*100) : 0;
+
+  setDeepStrikeText('deepStrikeTotal',items.length.toLocaleString('hu-HU'));
+  setDeepStrikeText('deepStrikeUaRu',ua.toLocaleString('hu-HU'));
+  setDeepStrikeText('deepStrikeRuUa',ru.toLocaleString('hu-HU'));
+  setDeepStrikeText('deepStrikeLocations',locations.toLocaleString('hu-HU'));
+  setDeepStrikeText('deepStrikeTopTarget',topTarget);
+  setDeepStrikeText('deepStrikeUaShare',`${uaShare}%`);
+
+  const badge=document.getElementById('deepStrikePeriodBadge');
+  if(badge) badge.textContent=Number(period)===1?'24 óra':`${period} nap`;
+
+  renderDeepStrikeTimeline(items);
+  renderDeepStrikeTargetChart(items);
+  renderDeepStrikeRegionChart(items);
+  renderDeepStrikeRecentEvents(items);
+  buildDeepStrikeAssessment(items,period);
+}
+
+async function loadDeepStrikeAnalysis(){
+  const badge=document.getElementById('deepStrikePeriodBadge');
+
+  try{
+    const payload=await fetchFirstAvailableJson(DEEP_STRIKE_URLS);
+
+    DEEP_STRIKE_META=payload || {};
+    DEEP_STRIKE_EVENTS=Array.isArray(payload?.events) ? payload.events : [];
+
+    if(badge) badge.textContent='betöltve';
+
+    const period=Number(document.getElementById('periodSelect')?.value || 30);
+    renderDeepStrikeAnalysis(period);
+  }catch(error){
+    console.warn('Deep Strike dashboard:',error);
+
+    if(badge) badge.textContent='adat hiba';
+
+    const recent=document.getElementById('deepStrikeRecentEvents');
+    if(recent){
+      recent.innerHTML=`
+        <div class="comparison-error">
+          A <strong>deep_strikes.json</strong> nem tölthető be.
+        </div>
+      `;
+    }
+
+    const assessment=document.getElementById('deepStrikeAssessment');
+    if(assessment){
+      assessment.innerHTML=`
+        <strong>Deep Strike adatbetöltési hiba:</strong>
+        ${escapeDeepStrikeDashboardHtml(error.message)}
+      `;
+    }
+  }
+}
+
+
 document.getElementById('periodSelect').addEventListener('change',e=>{
   const period=Number(e.target.value);
   if(DATA[period]) render(period);
+  renderDeepStrikeAnalysis(period);
 });
 
 loadDashboardCurrent();
 loadFrontComparisonAndFortressCities();
+loadDeepStrikeAnalysis();
 </script>
 
 </body>
 </html>
+
 
