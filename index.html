@@ -345,6 +345,80 @@
 
     .toolbox-actions button{width:100%}
 
+
+    .toolbox-draw-settings{
+      display:none;
+      margin-top:9px;
+      padding:9px;
+      border:1px solid var(--ui-line);
+      border-left:4px solid var(--ui-blue);
+      border-radius:9px;
+      background:var(--ui-soft);
+    }
+
+    .toolbox-draw-settings.is-open{display:block}
+
+    .toolbox-color-grid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:6px;
+      margin-top:5px;
+    }
+
+    .toolbox-color{
+      position:relative;
+      min-height:32px;
+      padding:0;
+      border:2px solid transparent;
+      border-radius:8px;
+      background:#fff;
+      box-shadow:none;
+    }
+
+    .toolbox-color:hover{
+      transform:none;
+      box-shadow:none;
+      background:#fff;
+    }
+
+    .toolbox-color.is-active{
+      border-color:var(--ui-text);
+      box-shadow:0 0 0 2px rgba(23,50,77,.10);
+    }
+
+    .toolbox-color-swatch{
+      width:17px;
+      height:17px;
+      display:block;
+      border:1px solid rgba(0,0,0,.24);
+      border-radius:999px;
+    }
+
+    .toolbox-color[data-color="#d32f2f"] .toolbox-color-swatch{background:#d32f2f}
+    .toolbox-color[data-color="#1565c0"] .toolbox-color-swatch{background:#1565c0}
+    .toolbox-color[data-color="#f59e0b"] .toolbox-color-swatch{background:#f59e0b}
+    .toolbox-color[data-color="#202124"] .toolbox-color-swatch{background:#202124}
+
+    .toolbox-draw-preview{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin-top:8px;
+      padding:7px 8px;
+      border:1px solid var(--ui-line);
+      border-radius:8px;
+      background:#fff;
+      color:var(--ui-body);
+      font-size:9px;
+      line-height:1.35;
+    }
+
+    .toolbox-preview-line{
+      width:52px;
+      flex:0 0 52px;
+      border-top:3px solid #d32f2f;
+    }
+
     #annotationText{
       width:100%;
       min-height:90px;
@@ -981,11 +1055,12 @@
             <option value="coordinate" selected>📍 Koordináta jelölés</option>
             <option value="distance">📏 Távolságmérés</option>
             <option value="identify">🎯 Objektum azonosítás</option>
+            <option value="draw">✏️ Elemző rajzolás</option>
             <option value="off">Kikapcsolva</option>
           </select>
         </div>
 
-        <div class="toolbox-row">
+        <div class="toolbox-row" id="toolboxObjectTypeRow">
           <label for="toolboxObjectType">Objektumtípus</label>
           <select id="toolboxObjectType">
             <option value="unknown" selected>📍 Ismeretlen / általános pont</option>
@@ -1002,13 +1077,57 @@
           </select>
         </div>
 
+        <div id="toolboxDrawSettings" class="toolbox-draw-settings">
+          <div class="toolbox-row" style="margin-top:0;">
+            <label for="toolboxDrawShape">Rajzeszköz</label>
+            <select id="toolboxDrawShape">
+              <option value="line" selected>━ Vonal</option>
+              <option value="dashed-line">┄ Szaggatott vonal</option>
+              <option value="circle">◯ Kör</option>
+              <option value="dashed-circle">◌ Szaggatott kör</option>
+              <option value="triangle">△ Háromszög</option>
+              <option value="arrow">➜ Nyíl</option>
+              <option value="dashed-arrow">⇢ Szaggatott nyíl</option>
+            </select>
+          </div>
+
+          <div class="toolbox-row">
+            <label>Szín</label>
+            <div id="toolboxColorGrid" class="toolbox-color-grid" role="group" aria-label="Rajz színe">
+              <button class="toolbox-color is-active" type="button" data-color="#d32f2f" title="Piros" aria-label="Piros">
+                <span class="toolbox-color-swatch"></span>
+              </button>
+              <button class="toolbox-color" type="button" data-color="#1565c0" title="Kék" aria-label="Kék">
+                <span class="toolbox-color-swatch"></span>
+              </button>
+              <button class="toolbox-color" type="button" data-color="#f59e0b" title="Narancs" aria-label="Narancs">
+                <span class="toolbox-color-swatch"></span>
+              </button>
+              <button class="toolbox-color" type="button" data-color="#202124" title="Fekete" aria-label="Fekete">
+                <span class="toolbox-color-swatch"></span>
+              </button>
+            </div>
+            <input id="toolboxDrawColor" type="hidden" value="#d32f2f" />
+          </div>
+
+          <div class="toolbox-draw-preview">
+            <span id="toolboxDrawPreview" class="toolbox-preview-line"></span>
+            <span id="toolboxDrawPreviewText">Vonal · piros · folytonos</span>
+          </div>
+
+          <div class="toolbox-actions">
+            <button id="btnToolboxUndoDrawing" class="secondary" type="button">↶ Visszavonás</button>
+            <button id="btnToolboxClearDrawings" class="secondary" type="button">Rajzok törlése</button>
+          </div>
+        </div>
+
         <div class="toolbox-actions">
           <button id="btnToolboxClearMarkers" class="secondary" type="button">Markerek törlése</button>
           <button id="btnToolboxExportGeoJson" class="secondary" type="button">GeoJSON export</button>
         </div>
 
         <div id="toolboxStatus" class="toolbox-note">
-          Jelenleg a koordináta jelölés aktív. Később innen kapcsolható lesz a távolságmérés és az objektumazonosítás.
+          Jelenleg a koordináta jelölés aktív.
         </div>
       </section>
 
@@ -1116,6 +1235,88 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", function () {
+      const mode = document.getElementById("toolboxMode");
+      const objectRow = document.getElementById("toolboxObjectTypeRow");
+      const drawSettings = document.getElementById("toolboxDrawSettings");
+      const shape = document.getElementById("toolboxDrawShape");
+      const colorInput = document.getElementById("toolboxDrawColor");
+      const colorButtons = Array.from(document.querySelectorAll(".toolbox-color"));
+      const preview = document.getElementById("toolboxDrawPreview");
+      const previewText = document.getElementById("toolboxDrawPreviewText");
+
+      const shapeNames = {
+        "line": "Vonal",
+        "dashed-line": "Szaggatott vonal",
+        "circle": "Kör",
+        "dashed-circle": "Szaggatott kör",
+        "triangle": "Háromszög",
+        "arrow": "Nyíl",
+        "dashed-arrow": "Szaggatott nyíl"
+      };
+
+      const colorNames = {
+        "#d32f2f": "piros",
+        "#1565c0": "kék",
+        "#f59e0b": "narancs",
+        "#202124": "fekete"
+      };
+
+      function refreshToolboxUi() {
+        if (!mode) return;
+        const isDraw = mode.value === "draw";
+
+        if (drawSettings) {
+          drawSettings.classList.toggle("is-open", isDraw);
+        }
+
+        if (objectRow) {
+          objectRow.style.display = isDraw ? "none" : "";
+        }
+      }
+
+      function refreshPreview() {
+        if (!shape || !colorInput || !preview || !previewText) return;
+
+        const shapeValue = shape.value;
+        const color = colorInput.value;
+        const dashed = shapeValue === "dashed-line" || shapeValue === "dashed-circle" || shapeValue === "dashed-arrow";
+
+        preview.style.borderTopColor = color;
+        preview.style.borderTopStyle = dashed ? "dashed" : "solid";
+        previewText.textContent =
+          `${shapeNames[shapeValue] || shapeValue} · ${colorNames[color] || color} · ${dashed ? "szaggatott" : "folytonos"}`;
+      }
+
+      if (mode) {
+        mode.addEventListener("change", refreshToolboxUi);
+      }
+
+      if (shape) {
+        shape.addEventListener("change", refreshPreview);
+      }
+
+      colorButtons.forEach((button) => {
+        button.addEventListener("click", function () {
+          const color = button.dataset.color;
+          if (!colorInput || !color) return;
+
+          colorInput.value = color;
+
+          colorButtons.forEach((item) => {
+            item.classList.toggle("is-active", item === button);
+          });
+
+          refreshPreview();
+        });
+      });
+
+      refreshToolboxUi();
+      refreshPreview();
+    });
+  </script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
       const toggle = document.getElementById("toggleFrontDashboard");
       const panel = document.getElementById("frontDashboardPanel");
       const closeButton = document.getElementById("closeFrontDashboard");
@@ -1147,3 +1348,4 @@
   </script>
 </body>
 </html>
+
