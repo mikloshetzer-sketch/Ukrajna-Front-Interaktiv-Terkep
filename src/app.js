@@ -18,7 +18,9 @@ import {
   renderBattleNodes,
   renderSuriyakLayer,
   setSatelliteContrastMode,
-  resetAllSavedDeltaLabels
+  resetAllSavedDeltaLabels,
+  renderDeepStrikesLayer,
+  resetAllSavedDeepStrikeLabels
 } from './map/layers.js';
 import { initAnnotations } from './map/annotations.js';
 import { initCoordinateMarkers } from './map/coordinateMarkers.js';
@@ -30,6 +32,7 @@ import { enrichDeltaItemsWithPlaceNames } from './data/placeLookup.js';
 import { fetchFirmsLayer } from './data/firms.js';
 import { categorizeFirmsPoints, summarizeFirmsHotspots } from './data/firmsSummary.js';
 import { fetchOsintFeed, summarizeOsintFeed, buildDashboardSummary } from './data/osintFeeds.js';
+import { fetchDeepStrikes } from './data/deepStrikes.js';
 import { bindTimeline, setTimelineBounds, setTimelineValue } from './ui/timeline.js';
 import { createPlayer } from './ui/player.js';
 import { clamp } from './utils/date.js';
@@ -106,6 +109,16 @@ const dom = {
   toggleOsint: document.getElementById('toggleOsint'),
   toggleHeatmap: document.getElementById('toggleHeatmap'),
 
+  // Deep strike controls are optional until index.html is extended.
+  toggleDeepStrikes: document.getElementById('toggleDeepStrikes'),
+  deepStrikesDate: document.getElementById('deepStrikesDate'),
+  deepStrikesWindow: document.getElementById('deepStrikesWindow'),
+  toggleDeepStrikesUaRu: document.getElementById('toggleDeepStrikesUaRu'),
+  toggleDeepStrikesRuUa: document.getElementById('toggleDeepStrikesRuUa'),
+  toggleDeepStrikeLabels: document.getElementById('toggleDeepStrikeLabels'),
+  btnResetDeepStrikeLabels: document.getElementById('btnResetDeepStrikeLabels'),
+  deepStrikesSummary: document.getElementById('deepStrikesSummary'),
+
   suriyakSubpanel: document.getElementById('suriyakSubpanel'),
   suriyakLayerMeta: document.getElementById('suriyakLayerMeta'),
   suriyakCategoryList: document.getElementById('suriyakCategoryList'),
@@ -138,6 +151,9 @@ const appState = {
   latestHeatmapPoints: [],
   latestAttackAxes: [],
   latestBattleNodes: [],
+  deepStrikes: [],
+  deepStrikesLoaded: false,
+  deepStrikesSummary: null,
   coordinateMarkersController: null,
   measureToolController: null,
   objectIdentificationController: null,
@@ -1483,6 +1499,298 @@ async function refreshOsint() {
 }
 
 
+
+function getDeepStrikeDateList(events) {
+  return [...new Set(
+    (Array.isArray(events) ? events : [])
+      .map(item => String(item?.date || '').trim())
+      .filter(Boolean)
+  )].sort();
+}
+
+function addDaysToIsoDate(isoDate, days) {
+  const raw = String(isoDate || '').trim();
+  if (!raw) return null;
+
+  const parsed = new Date(`${raw}T00:00:00Z`);
+  if (Number.isNaN(parsed.getTime())) return null;
+
+  parsed.setUTCDate(parsed.getUTCDate() + Number(days || 0));
+  return parsed.toISOString().slice(0, 10);
+}
+
+function prepareDeepStrikeDateControl(events) {
+  const control = dom.deepStrikesDate;
+  if (!control) return;
+
+  const dates = getDeepStrikeDateList(events);
+  if (!dates.length) return;
+
+  const latestDate = dates[dates.length - 1];
+
+  if (control.tagName === 'SELECT') {
+    const currentValue = control.value;
+
+    control.innerHTML = dates
+      .slice()
+      .reverse()
+      .map(date => `<option value="${date}">${date}</option>`)
+      .join('');
+
+    control.value = dates.includes(currentValue)
+      ? currentValue
+      : latestDate;
+
+    return;
+  }
+
+  if (control.type === 'date') {
+    control.min = dates[0];
+    control.max = latestDate;
+
+    if (!control.value) {
+      control.value = latestDate;
+    }
+  }
+}
+
+function getDeepStrikeDateRange(events) {
+  const dates = getDeepStrikeDateList(events);
+  if (!dates.length) {
+    return { startDate: null, endDate: null };
+  }
+
+  const latestDate = dates[dates.length - 1];
+
+  const selectedDate =
+    String(dom.deepStrikesDate?.value || '').trim() ||
+    latestDate;
+
+  const mode =
+    String(dom.deepStrikesWindow?.value || 'all').trim().toLowerCase();
+
+  if (mode === 'day' || mode === '1') {
+    return {
+      startDate: selectedDate,
+      endDate: selectedDate,
+    };
+  }
+
+  if (mode === '7') {
+    return {
+      startDate: addDaysToIsoDate(selectedDate, -6),
+      endDate: selectedDate,
+    };
+  }
+
+  if (mode === '30') {
+    return {
+      startDate: addDaysToIsoDate(selectedDate, -29),
+      endDate: selectedDate,
+    };
+  }
+
+  return {
+    startDate: null,
+    endDate: null,
+  };
+}
+
+function filterDeepStrikeEventsForUi(events) {
+  const { startDate, endDate } = getDeepStrikeDateRange(events);
+
+  const showUaRu =
+    dom.toggleDeepStrikesUaRu
+      ? dom.toggleDeepStrikesUaRu.checked
+      : true;
+
+  const showRuUa =
+    dom.toggleDeepStrikesRuUa
+      ? dom.toggleDeepStrikesRuUa.checked
+      : true;
+
+  return (Array.isArray(events) ? events : []).filter(item => {
+    const direction = String(item?.direction || '').toUpperCase();
+    const date = String(item?.date || '').trim();
+
+    if (direction === 'UA_RU' && !showUaRu) return false;
+    if (direction === 'RU_UA' && !showRuUa) return false;
+
+    if (startDate && date < startDate) return false;
+    if (endDate && date > endDate) return false;
+
+    return true;
+  });
+}
+
+function updateDeepStrikesSummary(visibleEvents) {
+  if (!dom.deepStrikesSummary) return;
+
+  const events = Array.isArray(visibleEvents) ? visibleEvents : [];
+
+  const uaRu = events.filter(
+    item => String(item?.direction || '').toUpperCase() === 'UA_RU'
+  ).length;
+
+  const ruUa = events.filter(
+    item => String(item?.direction || '').toUpperCase() === 'RU_UA'
+  ).length;
+
+  const { startDate, endDate } = getDeepStrikeDateRange(appState.deepStrikes);
+
+  const periodText =
+    startDate && endDate
+      ? startDate === endDate
+        ? startDate
+        : `${startDate} – ${endDate}`
+      : 'összes elérhető dátum';
+
+  dom.deepStrikesSummary.innerHTML = `
+    Megjelenített események: <strong>${events.length}</strong><br>
+    <span style="color:#1565c0;"><b>UA → RU:</b> ${uaRu}</span><br>
+    <span style="color:#c1121f;"><b>RU → UA:</b> ${ruUa}</span><br>
+    Időszak: <strong>${periodText}</strong>
+  `;
+}
+
+function removeDeepStrikeLayersFromMap() {
+  if (layerState.deepStrikesLayer && map.hasLayer(layerState.deepStrikesLayer)) {
+    map.removeLayer(layerState.deepStrikesLayer);
+  }
+
+  if (
+    layerState.deepStrikeLabelsLayer &&
+    map.hasLayer(layerState.deepStrikeLabelsLayer)
+  ) {
+    map.removeLayer(layerState.deepStrikeLabelsLayer);
+  }
+}
+
+function isDeepStrikesEnabled() {
+  // Until the new checkbox exists in index.html, the layer is enabled.
+  // This makes the integration test visible without changing the current UI.
+  return dom.toggleDeepStrikes
+    ? dom.toggleDeepStrikes.checked
+    : true;
+}
+
+function shouldShowDeepStrikeLabels() {
+  // Until the labels checkbox exists, keep cards OFF to avoid clutter.
+  return dom.toggleDeepStrikeLabels
+    ? dom.toggleDeepStrikeLabels.checked
+    : false;
+}
+
+async function loadDeepStrikesOnce() {
+  if (appState.deepStrikesLoaded) {
+    return appState.deepStrikes;
+  }
+
+  const events = await fetchDeepStrikes();
+
+  appState.deepStrikes = Array.isArray(events) ? events : [];
+  appState.deepStrikesLoaded = true;
+
+  prepareDeepStrikeDateControl(appState.deepStrikes);
+
+  return appState.deepStrikes;
+}
+
+async function refreshDeepStrikes() {
+  try {
+    const events = await loadDeepStrikesOnce();
+
+    if (!isDeepStrikesEnabled()) {
+      removeDeepStrikeLayersFromMap();
+      updateDeepStrikesSummary([]);
+      return;
+    }
+
+    const visibleEvents = filterDeepStrikeEventsForUi(events);
+    const { startDate, endDate } = getDeepStrikeDateRange(events);
+
+    renderDeepStrikesLayer(
+      layerState,
+      visibleEvents,
+      {
+        startDate,
+        endDate,
+        showUaRu: true,
+        showRuUa: true,
+        showLabels: shouldShowDeepStrikeLabels(),
+        defaultLanguage: 'hu',
+      }
+    );
+
+    if (
+      layerState.deepStrikesLayer &&
+      !map.hasLayer(layerState.deepStrikesLayer)
+    ) {
+      layerState.deepStrikesLayer.addTo(map);
+    }
+
+    if (shouldShowDeepStrikeLabels()) {
+      if (
+        layerState.deepStrikeLabelsLayer &&
+        !map.hasLayer(layerState.deepStrikeLabelsLayer)
+      ) {
+        layerState.deepStrikeLabelsLayer.addTo(map);
+      }
+    } else if (
+      layerState.deepStrikeLabelsLayer &&
+      map.hasLayer(layerState.deepStrikeLabelsLayer)
+    ) {
+      map.removeLayer(layerState.deepStrikeLabelsLayer);
+    }
+
+    appState.deepStrikesSummary = {
+      total: visibleEvents.length,
+      uaToRussia: visibleEvents.filter(
+        item => String(item?.direction || '').toUpperCase() === 'UA_RU'
+      ).length,
+      russiaToUkraine: visibleEvents.filter(
+        item => String(item?.direction || '').toUpperCase() === 'RU_UA'
+      ).length,
+    };
+
+    updateDeepStrikesSummary(visibleEvents);
+  } catch (error) {
+    // Deep-strike failure must never stop the existing front map.
+    console.error('Deep strike layer hiba:', error);
+
+    appState.deepStrikes = [];
+    appState.deepStrikesLoaded = false;
+    appState.deepStrikesSummary = null;
+
+    removeDeepStrikeLayersFromMap();
+
+    if (dom.deepStrikesSummary) {
+      dom.deepStrikesSummary.textContent =
+        `Mélységi csapás adat hiba: ${error.message}`;
+    }
+  }
+}
+
+function bindDeepStrikeControls() {
+  const controls = [
+    dom.toggleDeepStrikes,
+    dom.deepStrikesDate,
+    dom.deepStrikesWindow,
+    dom.toggleDeepStrikesUaRu,
+    dom.toggleDeepStrikesRuUa,
+    dom.toggleDeepStrikeLabels,
+  ].filter(Boolean);
+
+  controls.forEach(control => {
+    control.addEventListener('change', refreshDeepStrikes);
+  });
+
+  dom.btnResetDeepStrikeLabels?.addEventListener('click', () => {
+    resetAllSavedDeepStrikeLabels(layerState);
+  });
+}
+
+
 function getToolboxModeLabel(mode) {
   if (mode === 'coordinate') return 'Koordináta jelölés';
   if (mode === 'distance') return 'Távolságmérés';
@@ -1850,6 +2158,10 @@ async function init() {
 
     await loadBorders();
     await renderAtIndex(appState.index.length - 1);
+
+    // Deep strike overlay is isolated from the core front-map startup.
+    await refreshDeepStrikes();
+
     updateSuriyakSubpanelVisibility(Boolean(dom.toggleSuriyak?.checked));
     await syncSuriyakLegendPanel();
 
@@ -1901,6 +2213,7 @@ async function init() {
 
     bindToolboxControls();
     bindLayerToggles();
+    bindDeepStrikeControls();
     refreshSatelliteContrastMode();
     bindControls(player);
 
