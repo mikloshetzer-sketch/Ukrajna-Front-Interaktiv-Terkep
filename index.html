@@ -284,6 +284,107 @@
 
     .small,.muted,.toolbox-note,
     .suriyak-legend-note,.suriyak-legend-empty,
+
+    .satellite-marker-box{
+      margin-top:8px;
+      padding:8px 9px;
+      border:1px solid var(--ui-line);
+      border-left:4px solid #202124;
+      border-radius:8px;
+      background:var(--ui-soft);
+    }
+
+    .satellite-marker-box-title{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      margin-bottom:6px;
+      color:var(--ui-text);
+      font-size:10px;
+      font-weight:850;
+    }
+
+    .satellite-marker-box-title span:last-child{
+      color:var(--ui-muted);
+      font-size:9px;
+      font-weight:700;
+    }
+
+    .satellite-marker-list{
+      display:grid;
+      gap:4px;
+      max-height:150px;
+      overflow:auto;
+      padding-right:2px;
+      scrollbar-width:thin;
+      scrollbar-color:#9aa9b7 transparent;
+    }
+
+    .satellite-marker-row{
+      display:flex;
+      align-items:flex-start;
+      gap:7px;
+      padding:5px 6px;
+      border:1px solid transparent;
+      border-radius:7px;
+      background:#fff;
+      color:var(--ui-body);
+      font-size:10px;
+      line-height:1.25;
+      cursor:pointer;
+    }
+
+    .satellite-marker-row:hover{
+      border-color:var(--ui-line);
+      background:#f8fafc;
+    }
+
+    .satellite-marker-row input{
+      margin:1px 0 0;
+      accent-color:#202124;
+    }
+
+    .satellite-marker-name{
+      min-width:0;
+      flex:1 1 auto;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      font-weight:750;
+    }
+
+    .satellite-marker-empty{
+      padding:6px;
+      color:var(--ui-muted);
+      font-size:9px;
+      line-height:1.4;
+      background:#fff;
+      border:1px dashed var(--ui-line);
+      border-radius:7px;
+    }
+
+    .satellite-marker-actions{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:6px;
+      margin-top:7px;
+    }
+
+    .satellite-marker-actions button{
+      width:100%;
+      min-height:30px;
+      padding:6px 7px;
+      font-size:10px;
+    }
+
+    .satellite-marker-note{
+      margin-top:6px;
+      color:var(--ui-muted);
+      font-size:9px;
+      line-height:1.4;
+    }
+
     .satellite-contrast-note{
       color:var(--ui-muted);
       font-size:10px;
@@ -944,6 +1045,33 @@
           <select id="satelliteLocationSelect">
             <option value="">Archívum betöltése…</option>
           </select>
+        </div>
+
+        <div class="satellite-marker-box" id="satelliteMarkerBox">
+          <div class="satellite-marker-box-title">
+            <span>📍 Térképi helyjelölések</span>
+            <span>több hely választható</span>
+          </div>
+
+          <div id="satelliteMarkerList" class="satellite-marker-list">
+            <div class="satellite-marker-empty">
+              A helyszínek az archívum betöltése után jelennek meg.
+            </div>
+          </div>
+
+          <div class="satellite-marker-actions">
+            <button id="btnSatelliteMarkersAll" type="button" class="secondary">
+              Mind kijelöl
+            </button>
+            <button id="btnSatelliteMarkersNone" type="button" class="secondary">
+              Kijelölés törlése
+            </button>
+          </div>
+
+          <div class="satellite-marker-note">
+            A bepipált helyszínekhez később egyszerű fekete pont és név jelenik meg a térképen.
+            A műholdkép-választás ettől független marad.
+          </div>
         </div>
 
         <div class="toolbox-row">
