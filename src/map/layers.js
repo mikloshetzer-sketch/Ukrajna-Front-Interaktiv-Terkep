@@ -4,6 +4,7 @@ const DELTA_LABEL_STORAGE_KEY = 'ukraine_front_delta_label_positions_v1';
 const FIRMS_LABEL_STORAGE_KEY = 'ukraine_front_firms_box_positions_v1';
 const OSINT_LABEL_STORAGE_KEY = 'ukraine_front_osint_box_positions_v1';
 const AXIS_LABEL_STORAGE_KEY = 'ukraine_front_axis_label_positions_v1';
+const DEEP_STRIKE_LABEL_STORAGE_KEY = 'ukraine_front_deep_strike_label_positions_v1';
 
 function popupFromProps(props) {
   return Object.entries(props || {})
@@ -1336,6 +1337,564 @@ export function renderHeatmapLayer(layerState, points) {
   layerState.heatmapLayer.setLatLngs(normalized);
 }
 
+
+function escapeDeepStrikeHtml(value) {
+  return String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
+function getDeepStrikeEventKey(item, index = 0) {
+  if (item?.eventId) return String(item.eventId);
+  if (item?.event_id) return String(item.event_id);
+
+  const date = String(item?.date || 'nodate');
+  const direction = String(item?.direction || 'unknown');
+  const lat = Number(item?.lat ?? item?.latitude ?? 0).toFixed(5);
+  const lng = Number(item?.lng ?? item?.longitude ?? 0).toFixed(5);
+
+  return `${date}_${direction}_${lat}_${lng}_${index}`;
+}
+
+function getDeepStrikeDirectionColor(direction) {
+  return String(direction || '').toUpperCase() === 'UA_RU'
+    ? '#1565c0'
+    : '#c1121f';
+}
+
+function getDeepStrikeDirectionLabel(direction, language = 'hu') {
+  const isUaRu = String(direction || '').toUpperCase() === 'UA_RU';
+
+  if (language === 'en') {
+    return isUaRu ? 'Ukraine → Russia' : 'Russia → Ukraine';
+  }
+
+  return isUaRu ? 'Ukrajna → Oroszország' : 'Oroszország → Ukrajna';
+}
+
+function getDeepStrikeLocalizedValue(item, key, language = 'hu') {
+  const suffix = language === 'en' ? 'En' : 'Hu';
+  const snakeSuffix = language === 'en' ? '_en' : '_hu';
+
+  const camel = item?.[`${key}${suffix}`];
+  if (camel !== undefined && camel !== null && String(camel).trim()) {
+    return String(camel).trim();
+  }
+
+  const snake = item?.[`${key}${snakeSuffix}`];
+  if (snake !== undefined && snake !== null && String(snake).trim()) {
+    return String(snake).trim();
+  }
+
+  const base = item?.[key];
+  if (base !== undefined && base !== null) {
+    return String(base).trim();
+  }
+
+  return '';
+}
+
+function getDeepStrikeLatLng(item) {
+  const lat = Number(item?.lat ?? item?.latitude);
+  const lng = Number(item?.lng ?? item?.longitude);
+
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+    return null;
+  }
+
+  if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+    return null;
+  }
+
+  return L.latLng(lat, lng);
+}
+
+function formatDeepStrikeDate(value, language = 'hu') {
+  const raw = String(value || '').trim();
+  if (!raw) return language === 'en' ? 'Unknown date' : 'Ismeretlen dátum';
+
+  const parsed = new Date(`${raw}T00:00:00Z`);
+  if (Number.isNaN(parsed.getTime())) return raw;
+
+  return new Intl.DateTimeFormat(
+    language === 'en' ? 'en-GB' : 'hu-HU',
+    {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      timeZone: 'UTC'
+    }
+  ).format(parsed);
+}
+
+function ensureDeepStrikeUiState(layerState, eventKey, defaultLanguage = 'hu') {
+  if (!layerState.deepStrikeUiState[eventKey]) {
+    layerState.deepStrikeUiState[eventKey] = {
+      language: defaultLanguage === 'en' ? 'en' : 'hu',
+      expanded: false,
+    };
+  }
+
+  return layerState.deepStrikeUiState[eventKey];
+}
+
+function createDeepStrikeLabelIcon(layerState, item, index, options = {}) {
+  const eventKey = getDeepStrikeEventKey(item, index);
+  const ui = ensureDeepStrikeUiState(
+    layerState,
+    eventKey,
+    options.defaultLanguage || 'hu'
+  );
+
+  const language = ui.language;
+  const color = getDeepStrikeDirectionColor(item.direction);
+  const location =
+    getDeepStrikeLocalizedValue(item, 'location', language) ||
+    (language === 'en' ? 'Unknown location' : 'Ismeretlen helyszín');
+
+  const strikeType =
+    getDeepStrikeLocalizedValue(item, 'strikeType', language) ||
+    getDeepStrikeLocalizedValue(item, 'strike_type', language) ||
+    (language === 'en' ? 'Strike' : 'Támadás');
+
+  const targetType =
+    getDeepStrikeLocalizedValue(item, 'targetType', language) ||
+    getDeepStrikeLocalizedValue(item, 'target_type', language) ||
+    (language === 'en' ? 'Unknown target' : 'Ismeretlen célpont');
+
+  const description =
+    getDeepStrikeLocalizedValue(item, 'description', language) ||
+    (language === 'en'
+      ? 'No detailed description is available.'
+      : 'Nem áll rendelkezésre részletes leírás.');
+
+  const sourceUrl = String(item?.sourceUrl || item?.source_url || '').trim();
+  const sourceText = language === 'en' ? 'Source' : 'Forrás';
+  const detailsText = language === 'en' ? 'Details' : 'Részletek';
+  const compactAction = ui.expanded ? '▲' : '▼';
+
+  return L.divIcon({
+    className: '',
+    html: `
+      <div
+        class="deep-strike-card"
+        data-deep-strike-key="${escapeDeepStrikeHtml(eventKey)}"
+        style="
+          width:220px;
+          background:rgba(255,255,255,0.97);
+          border:2px solid ${color};
+          border-radius:9px;
+          box-shadow:0 2px 9px rgba(0,0,0,0.26);
+          color:#17202a;
+          font-family:Inter,Arial,sans-serif;
+          font-size:11px;
+          line-height:1.32;
+          overflow:hidden;
+        "
+      >
+        <div style="
+          display:flex;
+          align-items:center;
+          justify-content:space-between;
+          gap:7px;
+          padding:6px 7px 5px;
+          background:${color}12;
+          border-bottom:1px solid ${color}33;
+        ">
+          <div style="min-width:0;">
+            <div style="font-weight:800;color:${color};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+              ${escapeDeepStrikeHtml(getDeepStrikeDirectionLabel(item.direction, language))}
+            </div>
+            <div style="font-size:9px;color:#596774;">
+              ${escapeDeepStrikeHtml(formatDeepStrikeDate(item.date, language))}
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:3px;flex:0 0 auto;">
+            <button
+              type="button"
+              data-ds-action="lang-hu"
+              style="
+                border:0;
+                border-radius:4px;
+                padding:2px 4px;
+                background:${language === 'hu' ? color : '#edf1f4'};
+                color:${language === 'hu' ? '#fff' : '#34495e'};
+                font-size:9px;
+                font-weight:800;
+                cursor:pointer;
+              "
+            >HU</button>
+            <button
+              type="button"
+              data-ds-action="lang-en"
+              style="
+                border:0;
+                border-radius:4px;
+                padding:2px 4px;
+                background:${language === 'en' ? color : '#edf1f4'};
+                color:${language === 'en' ? '#fff' : '#34495e'};
+                font-size:9px;
+                font-weight:800;
+                cursor:pointer;
+              "
+            >EN</button>
+          </div>
+        </div>
+
+        <div style="padding:6px 7px;">
+          <div style="font-weight:800;font-size:12px;margin-bottom:3px;">
+            ${escapeDeepStrikeHtml(location)}
+          </div>
+
+          <div style="color:#34495e;">
+            <b>${escapeDeepStrikeHtml(strikeType)}</b>
+            <span style="color:#8996a3;"> → </span>
+            ${escapeDeepStrikeHtml(targetType)}
+          </div>
+
+          ${
+            ui.expanded
+              ? `
+                <div style="
+                  margin-top:6px;
+                  padding-top:6px;
+                  border-top:1px solid #e0e6eb;
+                  color:#3d4a57;
+                ">
+                  ${escapeDeepStrikeHtml(description)}
+                </div>
+
+                ${
+                  sourceUrl
+                    ? `
+                      <div style="margin-top:6px;">
+                        <a
+                          href="${escapeDeepStrikeHtml(sourceUrl)}"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          data-ds-action="source"
+                          style="color:${color};font-weight:800;text-decoration:none;"
+                        >${escapeDeepStrikeHtml(sourceText)} ↗</a>
+                      </div>
+                    `
+                    : ''
+                }
+              `
+              : ''
+          }
+
+          <button
+            type="button"
+            data-ds-action="expand"
+            title="${escapeDeepStrikeHtml(detailsText)}"
+            style="
+              display:block;
+              width:100%;
+              margin-top:5px;
+              padding:1px 4px;
+              border:0;
+              border-radius:4px;
+              background:#f3f6f8;
+              color:#52616f;
+              font-size:10px;
+              line-height:1.4;
+              cursor:pointer;
+            "
+          >${compactAction}</button>
+        </div>
+      </div>
+    `,
+    iconSize: [220, ui.expanded ? 190 : 104],
+    iconAnchor: [0, 52],
+  });
+}
+
+function getDefaultDeepStrikeLabelLatLng(map, baseLatLng, index, direction) {
+  const basePoint = map.latLngToContainerPoint(baseLatLng);
+  const side = String(direction || '').toUpperCase() === 'UA_RU' ? 1 : -1;
+  const row = index % 5;
+  const x = 52 * side;
+  const y = -60 + row * 28;
+  const point = L.point(basePoint.x + x, basePoint.y + y);
+  return map.containerPointToLatLng(point);
+}
+
+function bindDeepStrikeCardControls(layerState, label, item, index, options) {
+  const element = label.getElement();
+  if (!element) return;
+
+  L.DomEvent.disableClickPropagation(element);
+  L.DomEvent.disableScrollPropagation(element);
+
+  const eventKey = getDeepStrikeEventKey(item, index);
+  const ui = ensureDeepStrikeUiState(
+    layerState,
+    eventKey,
+    options.defaultLanguage || 'hu'
+  );
+
+  const rebind = () => {
+    label.setIcon(createDeepStrikeLabelIcon(layerState, item, index, options));
+    window.setTimeout(() => {
+      bindDeepStrikeCardControls(layerState, label, item, index, options);
+    }, 0);
+  };
+
+  element.querySelectorAll('[data-ds-action]').forEach(control => {
+    control.addEventListener('mousedown', event => {
+      event.stopPropagation();
+    });
+
+    control.addEventListener('click', event => {
+      const action = control.dataset.dsAction;
+
+      if (action === 'source') {
+        event.stopPropagation();
+        return;
+      }
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      if (action === 'lang-hu') {
+        ui.language = 'hu';
+        rebind();
+        return;
+      }
+
+      if (action === 'lang-en') {
+        ui.language = 'en';
+        rebind();
+        return;
+      }
+
+      if (action === 'expand') {
+        ui.expanded = !ui.expanded;
+        rebind();
+      }
+    });
+  });
+}
+
+function buildDeepStrikePopup(item, language = 'hu') {
+  const color = getDeepStrikeDirectionColor(item.direction);
+  const location =
+    getDeepStrikeLocalizedValue(item, 'location', language) ||
+    (language === 'en' ? 'Unknown location' : 'Ismeretlen helyszín');
+
+  const region =
+    getDeepStrikeLocalizedValue(item, 'region', language) ||
+    (language === 'en' ? 'Unknown region' : 'Ismeretlen régió');
+
+  const strikeType =
+    getDeepStrikeLocalizedValue(item, 'strikeType', language) ||
+    getDeepStrikeLocalizedValue(item, 'strike_type', language) ||
+    (language === 'en' ? 'Strike' : 'Támadás');
+
+  const targetType =
+    getDeepStrikeLocalizedValue(item, 'targetType', language) ||
+    getDeepStrikeLocalizedValue(item, 'target_type', language) ||
+    (language === 'en' ? 'Unknown target' : 'Ismeretlen célpont');
+
+  const description =
+    getDeepStrikeLocalizedValue(item, 'description', language) || '';
+
+  const sourceUrl = String(item?.sourceUrl || item?.source_url || '').trim();
+
+  return `
+    <div style="min-width:230px;max-width:310px;">
+      <div style="font-weight:800;color:${color};margin-bottom:4px;">
+        ${escapeDeepStrikeHtml(getDeepStrikeDirectionLabel(item.direction, language))}
+      </div>
+      <div><b>${escapeDeepStrikeHtml(location)}</b></div>
+      <div>${escapeDeepStrikeHtml(formatDeepStrikeDate(item.date, language))}</div>
+      <div><b>${language === 'en' ? 'Region' : 'Régió'}:</b> ${escapeDeepStrikeHtml(region)}</div>
+      <div><b>${language === 'en' ? 'Strike' : 'Támadás'}:</b> ${escapeDeepStrikeHtml(strikeType)}</div>
+      <div><b>${language === 'en' ? 'Target' : 'Célpont'}:</b> ${escapeDeepStrikeHtml(targetType)}</div>
+      ${description ? `<div style="margin-top:6px;">${escapeDeepStrikeHtml(description)}</div>` : ''}
+      ${
+        sourceUrl
+          ? `<div style="margin-top:6px;"><a href="${escapeDeepStrikeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">${language === 'en' ? 'Source' : 'Forrás'} ↗</a></div>`
+          : ''
+      }
+    </div>
+  `;
+}
+
+function getSavedDeepStrikeLabelLatLng(layerState, eventKey, fallbackLatLng) {
+  const saved = layerState.savedDeepStrikeLabelPositions[eventKey];
+
+  if (
+    saved &&
+    Number.isFinite(Number(saved.lat)) &&
+    Number.isFinite(Number(saved.lng))
+  ) {
+    return L.latLng(Number(saved.lat), Number(saved.lng));
+  }
+
+  return fallbackLatLng;
+}
+
+function rememberDeepStrikeLabelPosition(layerState, eventKey, latlng) {
+  layerState.savedDeepStrikeLabelPositions[eventKey] = {
+    lat: latlng.lat,
+    lng: latlng.lng,
+  };
+
+  saveSavedJson(
+    DEEP_STRIKE_LABEL_STORAGE_KEY,
+    layerState.savedDeepStrikeLabelPositions
+  );
+}
+
+function clearSavedDeepStrikeLabelPosition(layerState, eventKey) {
+  delete layerState.savedDeepStrikeLabelPositions[eventKey];
+
+  saveSavedJson(
+    DEEP_STRIKE_LABEL_STORAGE_KEY,
+    layerState.savedDeepStrikeLabelPositions
+  );
+}
+
+export function renderDeepStrikesLayer(layerState, events = [], options = {}) {
+  if (!layerState?.deepStrikesLayer || !layerState?.deepStrikeLabelsLayer) {
+    return;
+  }
+
+  layerState.deepStrikesLayer.clearLayers();
+  layerState.deepStrikeLabelsLayer.clearLayers();
+
+  const showLabels = options.showLabels !== false;
+  const defaultLanguage = options.defaultLanguage === 'en' ? 'en' : 'hu';
+
+  const visibleEvents = (Array.isArray(events) ? events : [])
+    .filter(item => {
+      const latlng = getDeepStrikeLatLng(item);
+      if (!latlng) return false;
+
+      const direction = String(item?.direction || '').toUpperCase();
+      if (options.showUaRu === false && direction === 'UA_RU') return false;
+      if (options.showRuUa === false && direction === 'RU_UA') return false;
+
+      const date = String(item?.date || '');
+      if (options.startDate && date < options.startDate) return false;
+      if (options.endDate && date > options.endDate) return false;
+
+      return true;
+    });
+
+  visibleEvents.forEach((item, index) => {
+    const baseLatLng = getDeepStrikeLatLng(item);
+    if (!baseLatLng) return;
+
+    const eventKey = getDeepStrikeEventKey(item, index);
+    const color = getDeepStrikeDirectionColor(item.direction);
+
+    const point = L.circleMarker(baseLatLng, {
+      radius: 7,
+      color: '#ffffff',
+      weight: 2,
+      fillColor: color,
+      fillOpacity: 0.95,
+      opacity: 1,
+      bubblingMouseEvents: false,
+    }).addTo(layerState.deepStrikesLayer);
+
+    point.bindPopup(buildDeepStrikePopup(item, defaultLanguage));
+
+    if (!showLabels) return;
+
+    const defaultLabelLatLng = getDefaultDeepStrikeLabelLatLng(
+      layerState.map,
+      baseLatLng,
+      index,
+      item.direction
+    );
+
+    const labelLatLng = getSavedDeepStrikeLabelLatLng(
+      layerState,
+      eventKey,
+      defaultLabelLatLng
+    );
+
+    const leader = L.polyline([baseLatLng, labelLatLng], {
+      color,
+      weight: 1.5,
+      opacity: 0.62,
+      dashArray: '4,4',
+      interactive: false,
+    }).addTo(layerState.deepStrikeLabelsLayer);
+
+    const label = L.marker(labelLatLng, {
+      draggable: true,
+      interactive: true,
+      keyboard: false,
+      icon: createDeepStrikeLabelIcon(layerState, item, index, {
+        defaultLanguage,
+      }),
+    }).addTo(layerState.deepStrikeLabelsLayer);
+
+    label.on('add', () => {
+      window.setTimeout(() => {
+        bindDeepStrikeCardControls(
+          layerState,
+          label,
+          item,
+          index,
+          { defaultLanguage }
+        );
+      }, 0);
+    });
+
+    label.on('drag', event => {
+      leader.setLatLngs([baseLatLng, event.target.getLatLng()]);
+    });
+
+    label.on('dragend', event => {
+      const newLatLng = event.target.getLatLng();
+      rememberDeepStrikeLabelPosition(layerState, eventKey, newLatLng);
+      leader.setLatLngs([baseLatLng, newLatLng]);
+    });
+
+    label.on('contextmenu', () => {
+      clearSavedDeepStrikeLabelPosition(layerState, eventKey);
+      label.setLatLng(defaultLabelLatLng);
+      leader.setLatLngs([baseLatLng, defaultLabelLatLng]);
+    });
+  });
+
+  layerState.lastDeepStrikePayload = {
+    events: visibleEvents,
+    options: {
+      ...options,
+      defaultLanguage,
+    },
+  };
+}
+
+export function resetAllSavedDeepStrikeLabels(layerState) {
+  if (!layerState) return;
+
+  layerState.savedDeepStrikeLabelPositions = {};
+  saveSavedJson(
+    DEEP_STRIKE_LABEL_STORAGE_KEY,
+    layerState.savedDeepStrikeLabelPositions
+  );
+
+  if (layerState.lastDeepStrikePayload) {
+    renderDeepStrikesLayer(
+      layerState,
+      layerState.lastDeepStrikePayload.events,
+      layerState.lastDeepStrikePayload.options
+    );
+  }
+}
+
+
 export function createLayers(map) {
   const occupiedLayer = L.geoJSON(null, {
     style: () => getDeepStateOccupiedStyle(layerState)
@@ -1367,6 +1926,8 @@ export function createLayers(map) {
   const firmsHotspotLayer = L.layerGroup();
   const osintLayer = L.layerGroup();
   const osintHighlightLayer = L.layerGroup();
+  const deepStrikesLayer = L.layerGroup();
+  const deepStrikeLabelsLayer = L.layerGroup();
 
   const heatmapLayer =
     typeof L.heatLayer === 'function'
@@ -1393,10 +1954,15 @@ export function createLayers(map) {
     firmsHotspotLayer,
     osintLayer,
     osintHighlightLayer,
+    deepStrikesLayer,
+    deepStrikeLabelsLayer,
     heatmapLayer,
     satelliteContrastEnabled: false,
     lastSuriyakData: null,
     lastDeltaPayload: null,
+    lastDeepStrikePayload: null,
+    deepStrikeUiState: {},
+    savedDeepStrikeLabelPositions: loadSavedJson(DEEP_STRIKE_LABEL_STORAGE_KEY),
     savedDeltaLabelPositions: loadSavedJson(DELTA_LABEL_STORAGE_KEY),
     savedFirmsBoxPositions: loadSavedJson(FIRMS_LABEL_STORAGE_KEY),
     savedOsintBoxPositions: loadSavedJson(OSINT_LABEL_STORAGE_KEY),
