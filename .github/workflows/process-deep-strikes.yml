@@ -1,0 +1,53 @@
+name: Process Deep Strikes
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  process-deep-strikes:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install openpyxl
+
+      - name: Process deep strike Excel
+        run: |
+          python scripts/process_deep_strikes.py
+
+      - name: Show generated files
+        run: |
+          echo "Generated files:"
+          ls -lh data/deep_strikes.json
+          ls -lh data/deep_strikes_summary.json
+          ls -lh data/deep_strikes_validation.json
+
+      - name: Commit generated data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add data/deep_strikes.json
+          git add data/deep_strikes_summary.json
+          git add data/deep_strikes_validation.json
+
+          if git diff --cached --quiet; then
+            echo "No changes detected."
+            exit 0
+          fi
+
+          git commit -m "Update deep strike data"
+          git push
