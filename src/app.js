@@ -72,6 +72,10 @@ const dom = {
 
   toolboxMode: document.getElementById('toolboxMode'),
   toolboxObjectType: document.getElementById('toolboxObjectType'),
+  toolboxDrawShape: document.getElementById('toolboxDrawShape'),
+  toolboxDrawColor: document.getElementById('toolboxDrawColor'),
+  btnToolboxUndoDrawing: document.getElementById('btnToolboxUndoDrawing'),
+  btnToolboxClearDrawings: document.getElementById('btnToolboxClearDrawings'),
   btnToolboxClearMarkers: document.getElementById('btnToolboxClearMarkers'),
   btnToolboxExportGeoJson: document.getElementById('btnToolboxExportGeoJson'),
   toolboxStatus: document.getElementById('toolboxStatus'),
@@ -158,6 +162,10 @@ const appState = {
   measureToolController: null,
   objectIdentificationController: null,
   satelliteController: null,
+
+  analysisDrawings: [],
+  analysisDraftPoints: [],
+  analysisDrawClickBound: false,
 };
 
 const map = initMap();
@@ -170,6 +178,10 @@ const satelliteImageLayer = new SatelliteImageLayer(map, {
 const coordinateMarkerLayer = L.layerGroup().addTo(map);
 const measureLayer = L.layerGroup().addTo(map);
 const objectIdentificationLayer = L.layerGroup().addTo(map);
+
+// Elemző rajzolás: teljesen külön rétegek, hogy a meglévő Toolbox eszközöket ne érintse.
+const analysisDrawingLayer = L.layerGroup().addTo(map);
+const analysisDraftLayer = L.layerGroup().addTo(map);
 
 function setStatus(text) {
   dom.statusText.textContent = text;
@@ -1802,6 +1814,7 @@ function getToolboxModeLabel(mode) {
   if (mode === 'coordinate') return 'Koordináta jelölés';
   if (mode === 'distance') return 'Távolságmérés';
   if (mode === 'identify') return 'Objektum azonosítás';
+  if (mode === 'draw') return 'Elemző rajzolás';
   return 'Kikapcsolva';
 }
 
@@ -1812,6 +1825,383 @@ function getToolboxObjectTypeLabel(value) {
   const selectedOption = [...select.options].find(option => option.value === value);
   return selectedOption?.textContent || 'Ismeretlen / általános pont';
 }
+
+
+function getAnalysisDrawShape() {
+  return dom.toolboxDrawShape?.value || 'line';
+}
+
+function getAnalysisDrawColor() {
+  return dom.toolboxDrawColor?.value || '#d32f2f';
+}
+
+function getAnalysisDrawShapeLabel(shape) {
+  const labels = {
+    line: 'Vonal',
+    'dashed-line': 'Szaggatott vonal',
+    circle: 'Kör',
+    'dashed-circle': 'Szaggatott kör',
+    triangle: 'Háromszög',
+    arrow: 'Nyíl',
+    'dashed-arrow': 'Szaggatott nyíl',
+  };
+
+  return labels[shape] || shape;
+}
+
+function getAnalysisRequiredPointCount(shape) {
+  if (shape === 'triangle') return 3;
+  return 2;
+}
+
+function isAnalysisDashedShape(shape) {
+  return (
+    shape === 'dashed-line' ||
+    shape === 'dashed-circle' ||
+    shape === 'dashed-arrow'
+  );
+}
+
+function getAnalysisLineStyle(shape, color) {
+  return {
+    color,
+    weight: 4,
+    opacity: 0.95,
+    dashArray: isAnalysisDashedShape(shape) ? '10,8' : null,
+    lineCap: 'round',
+    lineJoin: 'round',
+    interactive: true,
+  };
+}
+
+function clearAnalysisDraft() {
+  appState.analysisDraftPoints = [];
+  analysisDraftLayer.clearLayers();
+}
+
+function drawAnalysisDraftPoints() {
+  analysisDraftLayer.clearLayers();
+
+  const color = getAnalysisDrawColor();
+
+  appState.analysisDraftPoints.forEach((latlng, index) => {
+    L.circleMarker(latlng, {
+      radius: 5,
+      color: '#ffffff',
+      weight: 2,
+      fillColor: color,
+      fillOpacity: 1,
+      interactive: false,
+    })
+      .bindTooltip(`${index + 1}. pont`, {
+        permanent: false,
+        direction: 'top',
+      })
+      .addTo(analysisDraftLayer);
+  });
+}
+
+function createAnalysisArrowHead(startLatLng, endLatLng, color, dashed = false) {
+  const start = map.latLngToLayerPoint(startLatLng);
+  const end = map.latLngToLayerPoint(endLatLng);
+
+  const dx = end.x - start.x;
+  const dy = end.y - start.y;
+  const length = Math.sqrt(dx * dx + dy * dy);
+
+  if (!Number.isFinite(length) || length < 1) {
+    return null;
+  }
+
+  const ux = dx / length;
+  const uy = dy / length;
+
+  // A nyílhegy képernyő-pixelben marad stabil méretű zoomolástól függetlenül.
+  const headLength = 18;
+  const headWidth = 9;
+
+  const baseX = end.x - ux * headLength;
+  const baseY = end.y - uy * headLength;
+
+  const perpX = -uy;
+  const perpY = ux;
+
+  const left = L.point(
+    baseX + perpX * headWidth,
+    baseY + perpY * headWidth
+  );
+
+  const right = L.point(
+    baseX - perpX * headWidth,
+    baseY - perpY * headWidth
+  );
+
+  const leftLatLng = map.layerPointToLatLng(left);
+  const rightLatLng = map.layerPointToLatLng(right);
+
+  return L.polyline(
+    [leftLatLng, endLatLng, rightLatLng],
+    {
+      color,
+      weight: 4,
+      opacity: 0.95,
+      dashArray: dashed ? '8,6' : null,
+      lineCap: 'round',
+      lineJoin: 'round',
+      interactive: false,
+    }
+  );
+}
+
+function addAnalysisDrawingRecord(record) {
+  appState.analysisDrawings.push(record);
+  updateToolboxStatus();
+}
+
+function buildAnalysisGeoJsonFeature(record) {
+  const baseProperties = {
+    source: 'Törésvonalak OSINT Toolbox',
+    drawing_type: record.shape,
+    color: record.color,
+    dashed: Boolean(record.dashed),
+  };
+
+  if (record.shape === 'circle' || record.shape === 'dashed-circle') {
+    return {
+      type: 'Feature',
+      properties: {
+        ...baseProperties,
+        radius_m: record.radiusMeters,
+      },
+      geometry: {
+        type: 'Point',
+        coordinates: [
+          record.points[0].lng,
+          record.points[0].lat,
+        ],
+      },
+    };
+  }
+
+  if (record.shape === 'triangle') {
+    const coordinates = record.points.map(point => [point.lng, point.lat]);
+    coordinates.push([
+      record.points[0].lng,
+      record.points[0].lat,
+    ]);
+
+    return {
+      type: 'Feature',
+      properties: baseProperties,
+      geometry: {
+        type: 'Polygon',
+        coordinates: [coordinates],
+      },
+    };
+  }
+
+  return {
+    type: 'Feature',
+    properties: baseProperties,
+    geometry: {
+      type: 'LineString',
+      coordinates: record.points.map(point => [point.lng, point.lat]),
+    },
+  };
+}
+
+function exportAnalysisDrawingsGeoJson() {
+  if (!appState.analysisDrawings.length) {
+    updateToolboxStatus('Nincs exportálható elemző rajz.');
+    return;
+  }
+
+  const geojson = {
+    type: 'FeatureCollection',
+    features: appState.analysisDrawings.map(buildAnalysisGeoJsonFeature),
+  };
+
+  const blob = new Blob(
+    [JSON.stringify(geojson, null, 2)],
+    { type: 'application/geo+json;charset=utf-8' }
+  );
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `ukraine-front-analysis-drawings-${new Date().toISOString().slice(0, 10)}.geojson`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+
+  updateToolboxStatus();
+}
+
+function finalizeAnalysisDrawing() {
+  const shape = getAnalysisDrawShape();
+  const color = getAnalysisDrawColor();
+  const points = [...appState.analysisDraftPoints];
+
+  if (points.length < getAnalysisRequiredPointCount(shape)) {
+    return;
+  }
+
+  const group = L.layerGroup();
+  const dashed = isAnalysisDashedShape(shape);
+  let radiusMeters = null;
+
+  if (shape === 'line' || shape === 'dashed-line') {
+    L.polyline(
+      [points[0], points[1]],
+      getAnalysisLineStyle(shape, color)
+    ).addTo(group);
+  }
+
+  if (shape === 'circle' || shape === 'dashed-circle') {
+    radiusMeters = map.distance(points[0], points[1]);
+
+    L.circle(points[0], {
+      radius: radiusMeters,
+      color,
+      weight: 4,
+      opacity: 0.95,
+      fillColor: color,
+      fillOpacity: 0.06,
+      dashArray: dashed ? '10,8' : null,
+      interactive: true,
+    }).addTo(group);
+  }
+
+  if (shape === 'triangle') {
+    L.polygon(
+      [points[0], points[1], points[2]],
+      {
+        color,
+        weight: 4,
+        opacity: 0.95,
+        fillColor: color,
+        fillOpacity: 0.08,
+        lineJoin: 'round',
+        interactive: true,
+      }
+    ).addTo(group);
+  }
+
+  if (shape === 'arrow' || shape === 'dashed-arrow') {
+    L.polyline(
+      [points[0], points[1]],
+      getAnalysisLineStyle(shape, color)
+    ).addTo(group);
+
+    const arrowHead = createAnalysisArrowHead(
+      points[0],
+      points[1],
+      color,
+      dashed
+    );
+
+    if (arrowHead) {
+      arrowHead.addTo(group);
+    }
+  }
+
+  group.addTo(analysisDrawingLayer);
+
+  const record = {
+    id: `analysis-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    shape,
+    color,
+    dashed,
+    points: points.map(point => ({
+      lat: point.lat,
+      lng: point.lng,
+    })),
+    radiusMeters,
+    layer: group,
+  };
+
+  addAnalysisDrawingRecord(record);
+  clearAnalysisDraft();
+}
+
+function handleAnalysisDrawClick(event) {
+  if ((dom.toolboxMode?.value || '') !== 'draw') {
+    return;
+  }
+
+  const shape = getAnalysisDrawShape();
+  const requiredCount = getAnalysisRequiredPointCount(shape);
+
+  appState.analysisDraftPoints.push(event.latlng);
+  drawAnalysisDraftPoints();
+
+  if (appState.analysisDraftPoints.length >= requiredCount) {
+    finalizeAnalysisDrawing();
+    return;
+  }
+
+  updateToolboxStatus();
+}
+
+function enableAnalysisDrawing() {
+  if (!appState.analysisDrawClickBound) {
+    map.on('click', handleAnalysisDrawClick);
+    appState.analysisDrawClickBound = true;
+  }
+
+  map.getContainer().style.cursor = 'crosshair';
+}
+
+function disableAnalysisDrawing() {
+  if (appState.analysisDrawClickBound) {
+    map.off('click', handleAnalysisDrawClick);
+    appState.analysisDrawClickBound = false;
+  }
+
+  clearAnalysisDraft();
+  map.getContainer().style.cursor = '';
+}
+
+function undoAnalysisDrawing() {
+  clearAnalysisDraft();
+
+  const record = appState.analysisDrawings.pop();
+  if (!record) {
+    updateToolboxStatus();
+    return;
+  }
+
+  if (record.layer) {
+    analysisDrawingLayer.removeLayer(record.layer);
+  }
+
+  updateToolboxStatus();
+}
+
+function clearAnalysisDrawings(confirmDelete = true) {
+  const count = appState.analysisDrawings.length;
+
+  if (!count) {
+    clearAnalysisDraft();
+    updateToolboxStatus();
+    return;
+  }
+
+  if (confirmDelete) {
+    const confirmed = window.confirm(
+      `Biztosan törlöd az összes elemző rajzot? (${count} db)`
+    );
+
+    if (!confirmed) return;
+  }
+
+  analysisDrawingLayer.clearLayers();
+  clearAnalysisDraft();
+  appState.analysisDrawings = [];
+  updateToolboxStatus();
+}
+
 
 function updateToolboxStatus(customText = null) {
   if (!dom.toolboxStatus) return;
@@ -1826,6 +2216,8 @@ function updateToolboxStatus(customText = null) {
   const markerCount = appState.coordinateMarkersController?.getMarkers?.().length || 0;
   const measurementCount = appState.measureToolController?.getMeasurements?.().length || 0;
   const objectCount = appState.objectIdentificationController?.getObjects?.().length || 0;
+  const drawingCount = appState.analysisDrawings.length;
+  const draftPointCount = appState.analysisDraftPoints.length;
 
   if (mode === 'coordinate') {
     dom.toolboxStatus.innerHTML = `
@@ -1859,6 +2251,22 @@ function updateToolboxStatus(customText = null) {
       Mentett távolságmérések: <strong>${measurementCount}</strong><br>
       Azonosított objektumok: <strong>${objectCount}</strong><br>
       Azonosított objektumok: <strong>${objectCount}</strong>
+    `;
+    return;
+  }
+
+  if (mode === 'draw') {
+    const shape = getAnalysisDrawShape();
+    const color = getAnalysisDrawColor();
+    const requiredPoints = getAnalysisRequiredPointCount(shape);
+
+    dom.toolboxStatus.innerHTML = `
+      Aktív mód: <strong>${getToolboxModeLabel(mode)}</strong><br>
+      Rajzeszköz: <strong>${getAnalysisDrawShapeLabel(shape)}</strong><br>
+      Szín: <strong style="color:${color};">${color}</strong><br>
+      Kattints a térképen: <strong>${requiredPoints} pont</strong> szükséges ehhez az alakzathoz.<br>
+      Aktuális rajz pontjai: <strong>${draftPointCount}/${requiredPoints}</strong><br>
+      Mentett elemző rajzok: <strong>${drawingCount}</strong>
     `;
     return;
   }
@@ -1900,14 +2308,42 @@ function applyToolboxMode() {
     }
   }
 
+  if (mode === 'draw') {
+    enableAnalysisDrawing();
+  } else {
+    disableAnalysisDrawing();
+  }
+
   updateToolboxStatus();
 }
 function bindToolboxControls() {
   dom.toolboxMode?.addEventListener('change', applyToolboxMode);
   dom.toolboxObjectType?.addEventListener('change', updateToolboxStatus);
 
+  dom.toolboxDrawShape?.addEventListener('change', () => {
+    clearAnalysisDraft();
+    updateToolboxStatus();
+  });
+
+  // A színválasztó hidden inputját az index.html kezeli.
+  // A click esemény után egy tickkel frissítjük a státuszt.
+  document.getElementById('toolboxColorGrid')?.addEventListener('click', () => {
+    window.setTimeout(updateToolboxStatus, 0);
+  });
+
+  dom.btnToolboxUndoDrawing?.addEventListener('click', undoAnalysisDrawing);
+
+  dom.btnToolboxClearDrawings?.addEventListener('click', () => {
+    clearAnalysisDrawings(true);
+  });
+
   dom.btnToolboxClearMarkers?.addEventListener('click', () => {
     const mode = dom.toolboxMode?.value || 'coordinate';
+
+    if (mode === 'draw') {
+      clearAnalysisDrawings(true);
+      return;
+    }
 
     if (mode === 'distance') {
       if (!appState.measureToolController) return;
@@ -1960,6 +2396,11 @@ function bindToolboxControls() {
 
   dom.btnToolboxExportGeoJson?.addEventListener('click', () => {
     const mode = dom.toolboxMode?.value || 'coordinate';
+
+    if (mode === 'draw') {
+      exportAnalysisDrawingsGeoJson();
+      return;
+    }
 
     if (mode === 'identify') {
       if (!appState.objectIdentificationController) return;
