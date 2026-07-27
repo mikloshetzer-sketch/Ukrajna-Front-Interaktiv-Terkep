@@ -5,6 +5,9 @@ function normalizeDom(dom = {}) {
     ...dom,
     baseMapSelect: dom.baseMapSelect || document.getElementById('baseMapSelect'),
     satelliteSourceSelect: dom.satelliteSourceSelect || document.getElementById('satelliteSourceSelect'),
+    satelliteMarkerList: dom.satelliteMarkerList || document.getElementById('satelliteMarkerList'),
+    btnSatelliteMarkersAll: dom.btnSatelliteMarkersAll || document.getElementById('btnSatelliteMarkersAll'),
+    btnSatelliteMarkersNone: dom.btnSatelliteMarkersNone || document.getElementById('btnSatelliteMarkersNone'),
   };
 }
 
@@ -104,7 +107,12 @@ export async function initSatelliteControls({
     selectedRecordId: null,
     currentRecord: null,
     ready: false,
+    visibleLocationSlugs: new Set(),
   };
+
+  // A Satellite helyjelölések külön rétegen élnek, ezért a műholdkép,
+  // Deep Strike, Toolbox és egyéb térképrétegek működését nem módosítják.
+  const locationMarkerLayer = L.layerGroup().addTo(map);
 
   function status(text) {
     if (typeof onStatus === 'function') onStatus(text);
@@ -143,6 +151,170 @@ export async function initSatelliteControls({
     });
 
     state.selectedRecordId = records[0].id;
+  }
+
+
+  function getLocationRepresentativeRecord(locationSlug) {
+    const records = archive.getRecordsByLocation(locationSlug);
+    return records.length ? records[0] : null;
+  }
+
+  function getLocationCoordinates(location) {
+    const record = getLocationRepresentativeRecord(location.slug);
+
+    const lat = Number(
+      record?.target_area?.lat ??
+      record?.lat ??
+      location?.lat
+    );
+
+    const lon = Number(
+      record?.target_area?.lon ??
+      record?.lon ??
+      record?.lng ??
+      location?.lon ??
+      location?.lng
+    );
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
+      return null;
+    }
+
+    return { lat, lon, record };
+  }
+
+  function createLocationNameIcon(name) {
+    const safeName = String(name || 'Helyszín')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+
+    return L.divIcon({
+      className: 'satellite-location-map-label',
+      html: `
+        <div style="
+          position:relative;
+          transform:translate(-50%,-100%);
+          display:flex;
+          flex-direction:column;
+          align-items:center;
+          pointer-events:none;
+          white-space:nowrap;
+        ">
+          <div style="
+            margin-bottom:4px;
+            padding:1px 4px;
+            color:#111;
+            background:rgba(255,255,255,.82);
+            border-radius:3px;
+            font:700 12px/1.2 Arial,sans-serif;
+            text-shadow:0 1px 0 #fff;
+          ">${safeName}</div>
+          <div style="
+            width:10px;
+            height:10px;
+            background:#111;
+            border:2px solid #fff;
+            border-radius:50%;
+            box-shadow:0 1px 3px rgba(0,0,0,.35);
+          "></div>
+        </div>
+      `,
+      iconSize: [1, 1],
+      iconAnchor: [0, 0],
+    });
+  }
+
+  function renderLocationMarkers() {
+    locationMarkerLayer.clearLayers();
+
+    const locations = archive.getLocations();
+
+    locations.forEach((location) => {
+      if (!state.visibleLocationSlugs.has(location.slug)) return;
+
+      const coords = getLocationCoordinates(location);
+      if (!coords) return;
+
+      L.marker([coords.lat, coords.lon], {
+        icon: createLocationNameIcon(location.name),
+        interactive: false,
+        keyboard: false,
+        zIndexOffset: 900,
+      }).addTo(locationMarkerLayer);
+    });
+  }
+
+  function refreshLocationMarkerList() {
+    if (!dom.satelliteMarkerList) return;
+
+    dom.satelliteMarkerList.innerHTML = '';
+
+    const locations = archive.getLocations();
+
+    if (!locations.length) {
+      dom.satelliteMarkerList.innerHTML = `
+        <div class="satellite-marker-empty">
+          Nincs elérhető helyszín.
+        </div>
+      `;
+      return;
+    }
+
+    locations.forEach((location) => {
+      const coords = getLocationCoordinates(location);
+      const row = document.createElement('label');
+      row.className = 'satellite-marker-row';
+
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.value = location.slug;
+      checkbox.checked = state.visibleLocationSlugs.has(location.slug);
+      checkbox.disabled = !coords;
+
+      const name = document.createElement('span');
+      name.className = 'satellite-marker-name';
+      name.textContent = location.name;
+
+      row.appendChild(checkbox);
+      row.appendChild(name);
+
+      if (!coords) {
+        row.title = 'Ehhez a helyszínhez nincs használható koordináta.';
+        row.style.opacity = '0.55';
+      }
+
+      checkbox.addEventListener('change', () => {
+        if (checkbox.checked) {
+          state.visibleLocationSlugs.add(location.slug);
+        } else {
+          state.visibleLocationSlugs.delete(location.slug);
+        }
+
+        renderLocationMarkers();
+      });
+
+      dom.satelliteMarkerList.appendChild(row);
+    });
+  }
+
+  function selectAllLocationMarkers() {
+    archive.getLocations().forEach((location) => {
+      if (getLocationCoordinates(location)) {
+        state.visibleLocationSlugs.add(location.slug);
+      }
+    });
+
+    refreshLocationMarkerList();
+    renderLocationMarkers();
+  }
+
+  function clearAllLocationMarkers() {
+    state.visibleLocationSlugs.clear();
+    refreshLocationMarkerList();
+    renderLocationMarkers();
   }
 
   function refreshLocationSelect() {
@@ -237,6 +409,8 @@ export async function initSatelliteControls({
     updateAvailabilityUi();
     refreshLocationSelect();
     refreshImageSelect();
+    refreshLocationMarkerList();
+    renderLocationMarkers();
     applySelectedRecord({ fitBounds: false });
 
     status(`Sentinel-2 archívum betöltve: ${archive.getRecords().length} kép`);
@@ -246,6 +420,16 @@ export async function initSatelliteControls({
     setHtml(dom.satelliteSummary, `Sentinel-2 archívum hiba: ${error.message}`);
     status(`Sentinel-2 hiba: ${error.message}`);
   }
+
+  dom.btnSatelliteMarkersAll?.addEventListener('click', () => {
+    selectAllLocationMarkers();
+    status(`Térképi helyjelölések bekapcsolva: ${state.visibleLocationSlugs.size} helyszín`);
+  });
+
+  dom.btnSatelliteMarkersNone?.addEventListener('click', () => {
+    clearAllLocationMarkers();
+    status('Térképi helyjelölések kikapcsolva.');
+  });
 
   dom.baseMapSelect?.addEventListener('change', () => {
     const baseMap = getBaseMapMode(dom);
@@ -346,6 +530,16 @@ export async function initSatelliteControls({
       updateAvailabilityUi();
       refreshLocationSelect();
       refreshImageSelect();
+
+      const availableSlugs = new Set(
+        archive.getLocations().map(location => location.slug)
+      );
+      state.visibleLocationSlugs = new Set(
+        [...state.visibleLocationSlugs].filter(slug => availableSlugs.has(slug))
+      );
+
+      refreshLocationMarkerList();
+      renderLocationMarkers();
       applySelectedRecord({ fitBounds: false });
 
       status(`Sentinel-2 archívum frissítve: ${archive.getRecords().length} kép`);
@@ -362,5 +556,10 @@ export async function initSatelliteControls({
     getSelectedRecord,
     applySelectedRecord,
     applyMode,
+    refreshLocationMarkerList,
+    renderLocationMarkers,
+    clearAllLocationMarkers,
+    locationMarkerLayer,
   };
 }
+
