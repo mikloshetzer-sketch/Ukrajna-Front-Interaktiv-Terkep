@@ -1590,6 +1590,13 @@ function getDeepStrikeDateRange(events) {
     };
   }
 
+  if (mode === '90') {
+    return {
+      startDate: addDaysToIsoDate(selectedDate, -89),
+      endDate: selectedDate,
+    };
+  }
+
   return {
     startDate: null,
     endDate: null,
