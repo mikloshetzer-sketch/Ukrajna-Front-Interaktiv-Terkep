@@ -1465,11 +1465,18 @@ function createDeepStrikeLabelIcon(layerState, item, index, options = {}) {
     getDeepStrikeLocalizedValue(item, 'target_type', language) ||
     (language === 'en' ? 'Unknown target' : 'Ismeretlen célpont');
 
-  const description =
+  const descriptionShort =
+    getDeepStrikeLocalizedValue(item, 'descriptionShort', language) ||
+    getDeepStrikeLocalizedValue(item, 'description_short', language) ||
     getDeepStrikeLocalizedValue(item, 'description', language) ||
     (language === 'en'
-      ? 'No detailed description is available.'
-      : 'Nem áll rendelkezésre részletes leírás.');
+      ? 'No short description is available.'
+      : 'Nem áll rendelkezésre rövid leírás.');
+
+  const descriptionLong =
+    getDeepStrikeLocalizedValue(item, 'descriptionLong', language) ||
+    getDeepStrikeLocalizedValue(item, 'description_long', language) ||
+    descriptionShort;
 
   const sourceUrl = String(item?.sourceUrl || item?.source_url || '').trim();
   const sourceText = language === 'en' ? 'Source' : 'Forrás';
@@ -1556,33 +1563,29 @@ function createDeepStrikeLabelIcon(layerState, item, index, options = {}) {
             ${escapeDeepStrikeHtml(targetType)}
           </div>
 
-          ${
-            ui.expanded
-              ? `
-                <div style="
-                  margin-top:6px;
-                  padding-top:6px;
-                  border-top:1px solid #e0e6eb;
-                  color:#3d4a57;
-                ">
-                  ${escapeDeepStrikeHtml(description)}
-                </div>
+          <div style="
+            margin-top:5px;
+            color:#465563;
+            display:-webkit-box;
+            -webkit-line-clamp:${ui.expanded ? 'unset' : '2'};
+            -webkit-box-orient:vertical;
+            overflow:${ui.expanded ? 'visible' : 'hidden'};
+          ">
+            ${escapeDeepStrikeHtml(ui.expanded ? descriptionLong : descriptionShort)}
+          </div>
 
-                ${
-                  sourceUrl
-                    ? `
-                      <div style="margin-top:6px;">
-                        <a
-                          href="${escapeDeepStrikeHtml(sourceUrl)}"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          data-ds-action="source"
-                          style="color:${color};font-weight:800;text-decoration:none;"
-                        >${escapeDeepStrikeHtml(sourceText)} ↗</a>
-                      </div>
-                    `
-                    : ''
-                }
+          ${
+            ui.expanded && sourceUrl
+              ? `
+                <div style="margin-top:6px;">
+                  <a
+                    href="${escapeDeepStrikeHtml(sourceUrl)}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-ds-action="source"
+                    style="color:${color};font-weight:800;text-decoration:none;"
+                  >${escapeDeepStrikeHtml(sourceText)} ↗</a>
+                </div>
               `
               : ''
           }
@@ -1608,8 +1611,8 @@ function createDeepStrikeLabelIcon(layerState, item, index, options = {}) {
         </div>
       </div>
     `,
-    iconSize: [220, ui.expanded ? 190 : 104],
-    iconAnchor: [0, 52],
+    iconSize: [220, ui.expanded ? 210 : 126],
+    iconAnchor: [0, 63],
   });
 }
 
@@ -1701,7 +1704,12 @@ function buildDeepStrikePopup(item, language = 'hu') {
     (language === 'en' ? 'Unknown target' : 'Ismeretlen célpont');
 
   const description =
-    getDeepStrikeLocalizedValue(item, 'description', language) || '';
+    getDeepStrikeLocalizedValue(item, 'descriptionLong', language) ||
+    getDeepStrikeLocalizedValue(item, 'description_long', language) ||
+    getDeepStrikeLocalizedValue(item, 'descriptionShort', language) ||
+    getDeepStrikeLocalizedValue(item, 'description_short', language) ||
+    getDeepStrikeLocalizedValue(item, 'description', language) ||
+    '';
 
   const sourceUrl = String(item?.sourceUrl || item?.source_url || '').trim();
 
