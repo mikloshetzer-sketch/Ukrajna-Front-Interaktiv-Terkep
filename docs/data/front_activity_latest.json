@@ -1,105 +1,95 @@
 {
-  "date": "2026-07-27",
-  "updated_utc": "2026-07-27T20:04:03.883187+00:00",
-  "front_activity_index": 61,
+  "date": "2026-07-28",
+  "updated_utc": "2026-07-28T20:00:43.176945+00:00",
+  "front_activity_index": 67,
   "status": "HIGH",
   "components": {
     "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 0.0,
+    "territorial_change": 7.8,
     "active_sectors": 10,
-    "critical_events": 6
+    "critical_events": 4
   },
   "counts": {
-    "osint": 13,
-    "firms_3d": 4898,
-    "firms_10d": 15623,
-    "firms_30d": 39070,
-    "critical_events": 3,
-    "active_sectors": 7
+    "osint": 10,
+    "firms_3d": 6523,
+    "firms_10d": 16570,
+    "firms_30d": 40311,
+    "critical_events": 2,
+    "active_sectors": 10
   },
   "territorial": {
     "available": true,
     "error": null,
-    "previous_file": "deepstatemap_data_20260726.geojson",
-    "current_file": "deepstatemap_data_20260727.geojson",
+    "previous_file": "deepstatemap_data_20260727.geojson",
+    "current_file": "deepstatemap_data_20260728.geojson",
     "previous_total_km2": 116687.31,
-    "current_total_km2": 116687.31,
-    "russian_gain_km2": 0,
+    "current_total_km2": 116689.91,
+    "russian_gain_km2": 2.61,
     "ukrainian_recapture_km2": 0,
-    "net_change_km2": 0.0,
+    "net_change_km2": 2.61,
     "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
-    "sector": "Kherson-Dnipro",
-    "lat": 46.64,
-    "lon": 32.61,
+    "sector": "Zaporizhzhia",
+    "lat": 47.84,
+    "lon": 35.14,
     "zoom": 8,
     "score": 100,
-    "change_km2": 0.0,
+    "change_km2": 2.61,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
     {
+      "sector": "Zaporizhzhia",
+      "osint": 0,
+      "firms": 233,
+      "score": 100
+    },
+    {
       "sector": "Kherson-Dnipro",
       "osint": 1,
-      "firms": 129,
+      "firms": 251,
       "score": 100
     },
     {
       "sector": "Other / Unclassified",
-      "osint": 6,
-      "firms": 4648,
+      "osint": 5,
+      "firms": 5796,
       "score": 100
     },
     {
-      "sector": "Zaporizhzhia",
-      "osint": 0,
-      "firms": 104,
-      "score": 94
-    },
-    {
       "sector": "Pokrovsk",
-      "osint": 5,
-      "firms": 0,
-      "score": 60
-    },
-    {
-      "sector": "Kurakhove",
-      "osint": 1,
-      "firms": 0,
-      "score": 12
-    },
-    {
-      "sector": "Crimea",
-      "osint": 0,
-      "firms": 9,
-      "score": 8
+      "osint": 3,
+      "firms": 48,
+      "score": 79
     },
     {
       "sector": "Velyka Novosilka",
       "osint": 0,
-      "firms": 7,
-      "score": 6
+      "firms": 78,
+      "score": 70
     },
     {
-      "sector": "Kupiansk",
+      "sector": "Kurakhove",
+      "osint": 1,
+      "firms": 28,
+      "score": 37
+    },
+    {
+      "sector": "Crimea",
       "osint": 0,
-      "firms": 1,
-      "score": 1
+      "firms": 32,
+      "score": 29
+    },
+    {
+      "sector": "Lyman",
+      "osint": 0,
+      "firms": 19,
+      "score": 17
     }
   ],
   "top_events": [
-    {
-      "title": "Sea Breeze Continues: Ukrainian Navy Shows How Ukrainian Sailors Train in Great Britain",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Reported drone strike near Rosztov",
-      "source": "forrás nélkül",
-      "sector": "Other / Unclassified"
-    },
     {
       "title": "Reported military-related update near Donyeck",
       "source": "forrás nélkül",
@@ -109,6 +99,11 @@
       "title": "Reported rear-area strike near Mikolajiv",
       "source": "forrás nélkül",
       "sector": "Kherson-Dnipro"
+    },
+    {
+      "title": "Russian Offensive Campaign Assessment, July 27, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk"
     },
     {
       "title": "Russian Offensive Campaign Assessment, July 26, 2026",
