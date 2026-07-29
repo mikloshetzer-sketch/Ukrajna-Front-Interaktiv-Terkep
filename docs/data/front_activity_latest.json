@@ -1,117 +1,122 @@
 {
-  "date": "2026-07-28",
-  "updated_utc": "2026-07-28T20:00:43.176945+00:00",
-  "front_activity_index": 67,
-  "status": "HIGH",
+  "date": "2026-07-29",
+  "updated_utc": "2026-07-29T19:52:23.428002+00:00",
+  "front_activity_index": 84,
+  "status": "CRITICAL",
   "components": {
     "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 7.8,
+    "territorial_change": 20.8,
     "active_sectors": 10,
-    "critical_events": 4
+    "critical_events": 8
   },
   "counts": {
-    "osint": 10,
-    "firms_3d": 6523,
-    "firms_10d": 16570,
-    "firms_30d": 40311,
-    "critical_events": 2,
+    "osint": 22,
+    "firms_3d": 3775,
+    "firms_10d": 15910,
+    "firms_30d": 40078,
+    "critical_events": 4,
     "active_sectors": 10
   },
   "territorial": {
     "available": true,
     "error": null,
-    "previous_file": "deepstatemap_data_20260727.geojson",
-    "current_file": "deepstatemap_data_20260728.geojson",
-    "previous_total_km2": 116687.31,
-    "current_total_km2": 116689.91,
-    "russian_gain_km2": 2.61,
+    "previous_file": "deepstatemap_data_20260728.geojson",
+    "current_file": "deepstatemap_data_20260729.geojson",
+    "previous_total_km2": 116689.91,
+    "current_total_km2": 116696.83,
+    "russian_gain_km2": 6.92,
     "ukrainian_recapture_km2": 0,
-    "net_change_km2": 2.61,
+    "net_change_km2": 6.92,
     "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
-    "sector": "Zaporizhzhia",
-    "lat": 47.84,
-    "lon": 35.14,
-    "zoom": 8,
+    "sector": "Pokrovsk",
+    "lat": 48.28,
+    "lon": 37.18,
+    "zoom": 9,
     "score": 100,
-    "change_km2": 2.61,
+    "change_km2": 6.92,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
     {
+      "sector": "Pokrovsk",
+      "osint": 17,
+      "firms": 54,
+      "score": 100
+    },
+    {
       "sector": "Zaporizhzhia",
       "osint": 0,
-      "firms": 233,
+      "firms": 218,
       "score": 100
     },
     {
       "sector": "Kherson-Dnipro",
-      "osint": 1,
-      "firms": 251,
+      "osint": 0,
+      "firms": 292,
       "score": 100
     },
     {
       "sector": "Other / Unclassified",
       "osint": 5,
-      "firms": 5796,
+      "firms": 2974,
       "score": 100
-    },
-    {
-      "sector": "Pokrovsk",
-      "osint": 3,
-      "firms": 48,
-      "score": 79
     },
     {
       "sector": "Velyka Novosilka",
       "osint": 0,
-      "firms": 78,
-      "score": 70
+      "firms": 98,
+      "score": 88
     },
     {
       "sector": "Kurakhove",
-      "osint": 1,
-      "firms": 28,
-      "score": 37
+      "osint": 0,
+      "firms": 54,
+      "score": 49
     },
     {
       "sector": "Crimea",
       "osint": 0,
-      "firms": 32,
-      "score": 29
+      "firms": 26,
+      "score": 23
     },
     {
       "sector": "Lyman",
       "osint": 0,
-      "firms": 19,
-      "score": 17
+      "firms": 20,
+      "score": 18
     }
   ],
   "top_events": [
     {
-      "title": "Reported military-related update near Donyeck",
-      "source": "forrás nélkül",
-      "sector": "Kurakhove"
-    },
-    {
-      "title": "Reported rear-area strike near Mikolajiv",
-      "source": "forrás nélkül",
-      "sector": "Kherson-Dnipro"
-    },
-    {
-      "title": "Russian Offensive Campaign Assessment, July 27, 2026",
+      "title": "Mykhailo Drapatyi outlined his “vision of victory” to NATO’s Supreme Allied Commander Europe.",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     },
     {
-      "title": "Russian Offensive Campaign Assessment, July 26, 2026",
+      "title": "Joint Production and Technology Sharing: Zelenskyy Meets with Lockheed Martin Executives",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     },
     {
-      "title": "Russian Offensive Campaign Assessment, July 25, 2026",
+      "title": "U.S. Senate Advances Russia Sanctions Bill as Zelenskyy Meets with More Than 60 Senators",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk"
+    },
+    {
+      "title": "«Grateful to the United States for Its Strong Support»: Zelenskyy Meets with Trump",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk"
+    },
+    {
+      "title": "Zelenskyy, UK PM Andy Burnham Hold First Meeting at Portsmouth Naval Base",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk"
+    },
+    {
+      "title": "“Priority No. 1 Is Anti-Ballistic Defense”: Zelenskyy Arrives in U.S. for Meeting with Trump",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     }
