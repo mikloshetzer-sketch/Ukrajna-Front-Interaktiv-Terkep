@@ -1179,6 +1179,310 @@
       .deepstrike-kpi-grid{grid-template-columns:1fr 1fr}
     }
 
+
+    /* PDF reports and archive */
+    .pdf-report-panel{
+      border-top:4px solid var(--purple);
+    }
+
+    .pdf-report-intro{
+      margin:0 0 12px;
+      padding:12px 14px;
+      border:1px solid var(--line);
+      border-left:5px solid var(--purple);
+      border-radius:10px;
+      background:var(--purple-soft);
+      color:var(--body);
+      font-size:11px;
+      line-height:1.65;
+    }
+
+    .pdf-latest-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+      margin-bottom:12px;
+    }
+
+    .pdf-latest-card{
+      display:flex;
+      flex-direction:column;
+      min-height:210px;
+      padding:14px;
+      border:1px solid var(--line);
+      border-left:5px solid var(--blue);
+      border-radius:11px;
+      background:var(--soft);
+    }
+
+    .pdf-latest-card.en{
+      border-left-color:var(--purple);
+    }
+
+    .pdf-card-head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+    }
+
+    .pdf-language{
+      color:var(--text);
+      font-family:Georgia,"Times New Roman",serif;
+      font-size:18px;
+      font-weight:800;
+    }
+
+    .pdf-status{
+      padding:4px 7px;
+      border-radius:999px;
+      background:var(--blue-soft);
+      color:var(--blue-dark);
+      font-size:8px;
+      font-weight:900;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+
+    .pdf-latest-card.en .pdf-status{
+      background:var(--purple-soft);
+      color:var(--purple);
+    }
+
+    .pdf-report-title{
+      margin-top:12px;
+      color:var(--text);
+      font-size:13px;
+      font-weight:900;
+      line-height:1.4;
+    }
+
+    .pdf-meta-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:7px;
+      margin-top:11px;
+    }
+
+    .pdf-meta-box{
+      padding:8px 9px;
+      border:1px solid var(--line);
+      border-radius:8px;
+      background:#fff;
+    }
+
+    .pdf-meta-box span{
+      display:block;
+      color:var(--muted);
+      font-size:7px;
+      font-weight:900;
+      letter-spacing:.05em;
+      text-transform:uppercase;
+    }
+
+    .pdf-meta-box strong{
+      display:block;
+      margin-top:3px;
+      color:var(--body);
+      font-size:10px;
+      overflow-wrap:anywhere;
+    }
+
+    .pdf-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:auto;
+      padding-top:13px;
+    }
+
+    .pdf-button{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:36px;
+      padding:8px 12px;
+      border:1px solid var(--line-strong);
+      border-radius:8px;
+      background:#fff;
+      color:var(--blue-dark) !important;
+      font-size:10px;
+      font-weight:900;
+      text-decoration:none !important;
+      transition:.18s ease;
+    }
+
+    .pdf-button:hover{
+      transform:translateY(-1px);
+      filter:brightness(.98);
+    }
+
+    .pdf-button.primary{
+      border-color:var(--blue);
+      background:var(--blue);
+      color:#fff !important;
+    }
+
+    .pdf-latest-card.en .pdf-button.primary{
+      border-color:var(--purple);
+      background:var(--purple);
+    }
+
+    .pdf-archive-wrap{
+      margin-top:11px;
+      border:1px solid var(--line);
+      border-radius:11px;
+      overflow:hidden;
+      background:#fff;
+    }
+
+    .pdf-archive-toolbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:11px 12px;
+      border-bottom:1px solid var(--line);
+      background:var(--soft);
+    }
+
+    .pdf-filter-group{
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+    }
+
+    .pdf-filter-button{
+      min-height:32px;
+      padding:6px 10px;
+      border:1px solid var(--line-strong);
+      border-radius:8px;
+      background:#fff;
+      color:var(--muted);
+      font-size:9px;
+      font-weight:900;
+      cursor:pointer;
+    }
+
+    .pdf-filter-button.active{
+      border-color:var(--blue);
+      background:var(--blue);
+      color:#fff;
+    }
+
+    .pdf-archive-count{
+      color:var(--muted);
+      font-size:9px;
+      font-weight:850;
+    }
+
+    .pdf-table-scroll{
+      overflow-x:auto;
+    }
+
+    .pdf-archive-table{
+      width:100%;
+      min-width:680px;
+      border-collapse:collapse;
+    }
+
+    .pdf-archive-table th,
+    .pdf-archive-table td{
+      padding:10px 11px;
+      border-bottom:1px solid var(--line);
+      text-align:left;
+      vertical-align:middle;
+      font-size:10px;
+    }
+
+    .pdf-archive-table th{
+      background:#fff;
+      color:var(--muted);
+      font-size:8px;
+      font-weight:900;
+      letter-spacing:.05em;
+      text-transform:uppercase;
+    }
+
+    .pdf-archive-table tr:last-child td{
+      border-bottom:0;
+    }
+
+    .pdf-archive-table tbody tr:nth-child(even){
+      background:var(--soft);
+    }
+
+    .pdf-language-tag{
+      display:inline-flex;
+      min-width:30px;
+      justify-content:center;
+      padding:3px 6px;
+      border-radius:999px;
+      background:var(--blue-soft);
+      color:var(--blue-dark);
+      font-size:8px;
+      font-weight:900;
+      text-transform:uppercase;
+    }
+
+    .pdf-language-tag.en{
+      background:var(--purple-soft);
+      color:var(--purple);
+    }
+
+    .pdf-table-actions{
+      display:flex;
+      gap:6px;
+      white-space:nowrap;
+    }
+
+    .pdf-mini-link{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:29px;
+      padding:5px 8px;
+      border:1px solid var(--line-strong);
+      border-radius:7px;
+      background:#fff;
+      color:var(--blue-dark) !important;
+      font-size:8px;
+      font-weight:900;
+      text-decoration:none !important;
+    }
+
+    .pdf-mini-link.download{
+      border-color:var(--blue);
+      background:var(--blue);
+      color:#fff !important;
+    }
+
+    .pdf-loading,
+    .pdf-error,
+    .pdf-empty{
+      padding:18px;
+      color:var(--muted);
+      background:var(--soft);
+      font-size:10px;
+      text-align:center;
+    }
+
+    .pdf-error{
+      color:#963b36;
+      background:var(--red-soft);
+    }
+
+    @media(max-width:900px){
+      .pdf-latest-grid{grid-template-columns:1fr}
+    }
+
+    @media(max-width:620px){
+      .pdf-meta-grid{grid-template-columns:1fr}
+      .pdf-archive-toolbar{align-items:flex-start;flex-direction:column}
+      .pdf-actions{flex-direction:column}
+      .pdf-button{width:100%}
+    }
+
   </style>
 </head>
 
@@ -1205,6 +1509,12 @@
         href="https://mikloshetzer-sketch.github.io/Ukrajna-Front-Interaktiv-Terkep/"
       >
         ← Interaktív térkép
+      </a>
+      <a
+        class="header-pill header-link"
+        href="#pdfReports"
+      >
+        PDF jelentések
       </a>
     </div>
   </div>
@@ -1587,6 +1897,146 @@
           <h3>Stratégiai kitekintés</h3>
           <p>A mélységi csapások és a front menti lassú előrenyomulás kombinációja lehet a következő időszak meghatározó mintázata.</p>
         </article>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="panel pdf-report-panel" id="pdfReports">
+    <div class="panel-head">
+      <div>
+        <h2 class="panel-title">Strategic Intelligence PDF Reports</h2>
+        <div class="panel-subtitle">
+          A legfrissebb magyar és angol napi jelentések, valamint a korábbi kiadások archívuma
+        </div>
+      </div>
+      <div class="panel-badge" id="pdfPanelBadge">betöltés</div>
+    </div>
+
+    <div class="panel-body">
+      <div class="pdf-report-intro">
+        A PDF-jelentés a dashboard napi mutatóit kibővített szöveges értékeléssel,
+        adatfrissességi jelzésekkel, területi helyzetképpel, OSINT-eseményekkel,
+        FIRMS-adatokkal és a legutóbbi elérhető heti mélységi csapások összegzésével
+        kapcsolja össze. A heti adatokat a rendszer nem jeleníti meg automatikusan
+        az adott nap kizárólagos eseményeiként.
+      </div>
+
+      <div class="pdf-latest-grid">
+        <article class="pdf-latest-card">
+          <div class="pdf-card-head">
+            <div class="pdf-language">Magyar jelentés</div>
+            <div class="pdf-status" id="pdfHuStatus">legfrissebb</div>
+          </div>
+
+          <div class="pdf-report-title">
+            Ukrajnai Fronthelyzet – Napi Stratégiai Hírszerzési Jelentés
+          </div>
+
+          <div class="pdf-meta-grid">
+            <div class="pdf-meta-box">
+              <span>Jelentés dátuma</span>
+              <strong id="pdfHuDate">–</strong>
+            </div>
+            <div class="pdf-meta-box">
+              <span>Fájlméret</span>
+              <strong id="pdfHuSize">–</strong>
+            </div>
+            <div class="pdf-meta-box">
+              <span>Nyelv</span>
+              <strong>Magyar</strong>
+            </div>
+            <div class="pdf-meta-box">
+              <span>Formátum</span>
+              <strong>PDF</strong>
+            </div>
+          </div>
+
+          <div class="pdf-actions">
+            <a
+              id="pdfHuOpen"
+              class="pdf-button"
+              href="./reports/latest-hu.pdf"
+              target="_blank"
+              rel="noopener"
+            >
+              Megnyitás
+            </a>
+            <a
+              id="pdfHuDownload"
+              class="pdf-button primary"
+              href="./reports/latest-hu.pdf"
+              download
+            >
+              PDF letöltése
+            </a>
+          </div>
+        </article>
+
+        <article class="pdf-latest-card en">
+          <div class="pdf-card-head">
+            <div class="pdf-language">English report</div>
+            <div class="pdf-status" id="pdfEnStatus">latest</div>
+          </div>
+
+          <div class="pdf-report-title">
+            Ukraine Frontline – Daily Strategic Intelligence Report
+          </div>
+
+          <div class="pdf-meta-grid">
+            <div class="pdf-meta-box">
+              <span>Report date</span>
+              <strong id="pdfEnDate">–</strong>
+            </div>
+            <div class="pdf-meta-box">
+              <span>File size</span>
+              <strong id="pdfEnSize">–</strong>
+            </div>
+            <div class="pdf-meta-box">
+              <span>Language</span>
+              <strong>English</strong>
+            </div>
+            <div class="pdf-meta-box">
+              <span>Format</span>
+              <strong>PDF</strong>
+            </div>
+          </div>
+
+          <div class="pdf-actions">
+            <a
+              id="pdfEnOpen"
+              class="pdf-button"
+              href="./reports/latest-en.pdf"
+              target="_blank"
+              rel="noopener"
+            >
+              Open report
+            </a>
+            <a
+              id="pdfEnDownload"
+              class="pdf-button primary"
+              href="./reports/latest-en.pdf"
+              download
+            >
+              Download PDF
+            </a>
+          </div>
+        </article>
+      </div>
+
+      <div class="pdf-archive-wrap">
+        <div class="pdf-archive-toolbar">
+          <div class="pdf-filter-group" aria-label="PDF archívum nyelvi szűrő">
+            <button class="pdf-filter-button active" type="button" data-pdf-filter="all">Összes</button>
+            <button class="pdf-filter-button" type="button" data-pdf-filter="hu">Magyar</button>
+            <button class="pdf-filter-button" type="button" data-pdf-filter="en">English</button>
+          </div>
+          <div class="pdf-archive-count" id="pdfArchiveCount">Archívum betöltése…</div>
+        </div>
+
+        <div id="pdfArchiveContainer">
+          <div class="pdf-loading">A PDF-archívum adatainak betöltése folyamatban…</div>
+        </div>
       </div>
     </div>
   </section>
@@ -3467,12 +3917,230 @@ document.getElementById('periodSelect').addEventListener('change',e=>{
   renderDeepStrikeAnalysis(period);
 });
 
+
+const PDF_REPORT_INDEX_URLS=[
+  './reports/reports_index.json',
+  'reports/reports_index.json',
+  '../reports/reports_index.json'
+];
+
+let PDF_REPORTS=[];
+let PDF_ACTIVE_FILTER='all';
+
+function pdfEscapeHtml(value){
+  return String(value ?? '')
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'",'&#039;');
+}
+
+function pdfFormatBytes(bytes){
+  const value=Number(bytes || 0);
+  if(!Number.isFinite(value) || value<=0) return '–';
+  if(value<1024) return `${value} B`;
+  if(value<1024*1024) return `${(value/1024).toFixed(1)} KB`;
+  return `${(value/(1024*1024)).toFixed(2)} MB`;
+}
+
+function pdfFormatDate(value){
+  if(!value) return '–';
+  const date=new Date(`${String(value).slice(0,10)}T12:00:00Z`);
+  if(Number.isNaN(date.getTime())) return String(value);
+  return new Intl.DateTimeFormat('hu-HU',{
+    year:'numeric',
+    month:'long',
+    day:'numeric'
+  }).format(date);
+}
+
+function pdfReportUrl(item){
+  const file=String(item?.file || '').replace(/^\.?\//,'');
+  return `./reports/${file}`;
+}
+
+function updateLatestPdfCard(language,item){
+  const prefix=language==='hu'?'pdfHu':'pdfEn';
+  const dateElement=document.getElementById(`${prefix}Date`);
+  const sizeElement=document.getElementById(`${prefix}Size`);
+  const openLink=document.getElementById(`${prefix}Open`);
+  const downloadLink=document.getElementById(`${prefix}Download`);
+  const statusElement=document.getElementById(`${prefix}Status`);
+
+  if(!item){
+    if(dateElement) dateElement.textContent='Nincs elérhető jelentés';
+    if(sizeElement) sizeElement.textContent='–';
+    if(statusElement) statusElement.textContent=language==='hu'?'nem elérhető':'unavailable';
+    return;
+  }
+
+  const archiveUrl=pdfReportUrl(item);
+  const latestUrl=language==='hu'
+    ? './reports/latest-hu.pdf'
+    : './reports/latest-en.pdf';
+
+  if(dateElement) dateElement.textContent=pdfFormatDate(item.date);
+  if(sizeElement) sizeElement.textContent=pdfFormatBytes(item.size_bytes);
+  if(openLink) openLink.href=latestUrl;
+  if(downloadLink){
+    downloadLink.href=latestUrl;
+    downloadLink.setAttribute(
+      'download',
+      language==='hu'
+        ? `ukrajnai-fronthelyzet-${item.date}-hu.pdf`
+        : `ukraine-frontline-${item.date}-en.pdf`
+    );
+  }
+  if(statusElement) statusElement.textContent=language==='hu'?'legfrissebb':'latest';
+
+  // Az archív fájl URL-jét adatként megőrizzük hibakereséshez.
+  if(openLink) openLink.dataset.archiveUrl=archiveUrl;
+}
+
+function renderPdfArchive(){
+  const container=document.getElementById('pdfArchiveContainer');
+  const count=document.getElementById('pdfArchiveCount');
+  if(!container) return;
+
+  const filtered=PDF_ACTIVE_FILTER==='all'
+    ? PDF_REPORTS
+    : PDF_REPORTS.filter(item=>item.language===PDF_ACTIVE_FILTER);
+
+  if(count){
+    count.textContent=`${filtered.length} jelentés`;
+  }
+
+  if(!filtered.length){
+    container.innerHTML='<div class="pdf-empty">A kiválasztott nyelven még nincs archivált PDF-jelentés.</div>';
+    return;
+  }
+
+  const rows=filtered.map(item=>{
+    const language=String(item.language || '').toLowerCase();
+    const languageText=language==='hu'?'Magyar':'English';
+    const url=pdfReportUrl(item);
+    const downloadName=language==='hu'
+      ? `ukrajnai-fronthelyzet-${item.date}-hu.pdf`
+      : `ukraine-frontline-${item.date}-en.pdf`;
+
+    return `
+      <tr>
+        <td>${pdfEscapeHtml(pdfFormatDate(item.date))}</td>
+        <td>
+          <span class="pdf-language-tag ${language==='en'?'en':''}">
+            ${pdfEscapeHtml(languageText)}
+          </span>
+        </td>
+        <td>${pdfEscapeHtml(pdfFormatBytes(item.size_bytes))}</td>
+        <td>${pdfEscapeHtml(item.updated_at ? pdfFormatDate(item.updated_at) : '–')}</td>
+        <td>
+          <div class="pdf-table-actions">
+            <a
+              class="pdf-mini-link"
+              href="${pdfEscapeHtml(url)}"
+              target="_blank"
+              rel="noopener"
+            >
+              Megnyitás
+            </a>
+            <a
+              class="pdf-mini-link download"
+              href="${pdfEscapeHtml(url)}"
+              download="${pdfEscapeHtml(downloadName)}"
+            >
+              Letöltés
+            </a>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+
+  container.innerHTML=`
+    <div class="pdf-table-scroll">
+      <table class="pdf-archive-table">
+        <thead>
+          <tr>
+            <th>Jelentés dátuma</th>
+            <th>Nyelv</th>
+            <th>Fájlméret</th>
+            <th>Archívum frissítése</th>
+            <th>Művelet</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+  `;
+}
+
+function activatePdfFilter(filter){
+  PDF_ACTIVE_FILTER=filter;
+  document.querySelectorAll('[data-pdf-filter]').forEach(button=>{
+    button.classList.toggle('active',button.dataset.pdfFilter===filter);
+  });
+  renderPdfArchive();
+}
+
+async function loadPdfReports(){
+  const badge=document.getElementById('pdfPanelBadge');
+  const container=document.getElementById('pdfArchiveContainer');
+
+  try{
+    const payload=await fetchFirstAvailableJson(PDF_REPORT_INDEX_URLS);
+    PDF_REPORTS=Array.isArray(payload?.reports)
+      ? [...payload.reports].sort((a,b)=>{
+          const dateCompare=String(b.date || '').localeCompare(String(a.date || ''));
+          if(dateCompare!==0) return dateCompare;
+          return String(a.language || '').localeCompare(String(b.language || ''));
+        })
+      : [];
+
+    const latestHu=PDF_REPORTS.find(item=>item.language==='hu') || null;
+    const latestEn=PDF_REPORTS.find(item=>item.language==='en') || null;
+
+    updateLatestPdfCard('hu',latestHu);
+    updateLatestPdfCard('en',latestEn);
+    renderPdfArchive();
+
+    if(badge){
+      badge.textContent=PDF_REPORTS.length
+        ? `${PDF_REPORTS.length} archív jelentés`
+        : 'nincs archívum';
+    }
+  }catch(error){
+    console.warn('PDF report archive:',error);
+
+    if(badge) badge.textContent='adat hiba';
+    if(container){
+      container.innerHTML=`
+        <div class="pdf-error">
+          A <strong>reports/reports_index.json</strong> nem tölthető be.
+          A legfrissebb PDF-ek közvetlen letöltési gombjai ettől még működhetnek.
+        </div>
+      `;
+    }
+  }
+}
+
+document.querySelectorAll('[data-pdf-filter]').forEach(button=>{
+  button.addEventListener('click',()=>{
+    activatePdfFilter(button.dataset.pdfFilter || 'all');
+  });
+});
+
+
 loadDashboardCurrent();
 loadFrontComparisonAndFortressCities();
 loadDeepStrikeAnalysis();
+loadPdfReports();
 </script>
 
 </body>
 </html>
+
+
+
 
 
