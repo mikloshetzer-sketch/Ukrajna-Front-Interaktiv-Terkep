@@ -12,6 +12,7 @@ on:
           - all
           - hu
           - en
+
       report_date:
         description: "Opcionális dátum YYYY-MM-DD formában; üresen automatikus"
         required: false
@@ -19,8 +20,6 @@ on:
         type: string
 
   schedule:
-    # Magyar idő szerint nyáron 07:20, télen 06:20.
-    # A napi adatfrissítések után futtatandó.
     - cron: "20 5 * * *"
 
 permissions:
@@ -46,17 +45,17 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-          cache: "pip"
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install reportlab openpyxl pillow
 
-      - name: Validate required generator
+      - name: Validate generator
         shell: bash
         run: |
           set -euo pipefail
+
           test -f src/generate_daily_front_report_pdf.py
           python -m py_compile src/generate_daily_front_report_pdf.py
 
@@ -68,7 +67,12 @@ jobs:
         run: |
           set -euo pipefail
 
-          CMD=(python src/generate_daily_front_report_pdf.py --lang "$INPUT_LANGUAGE")
+          CMD=(
+            python
+            src/generate_daily_front_report_pdf.py
+            --lang
+            "$INPUT_LANGUAGE"
+          )
 
           if [[ -n "$INPUT_REPORT_DATE" ]]; then
             CMD+=(--report-date "$INPUT_REPORT_DATE")
@@ -93,7 +97,11 @@ jobs:
           fi
 
           echo "Generated report files:"
-          find docs/reports -maxdepth 2 -type f -printf "%p (%s bytes)\n" | sort
+          find docs/reports \
+            -maxdepth 2 \
+            -type f \
+            -printf "%p (%s bytes)\n" \
+            | sort
 
       - name: Commit and push reports
         shell: bash
@@ -101,7 +109,8 @@ jobs:
           set -euo pipefail
 
           git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add docs/reports
 
@@ -114,16 +123,21 @@ jobs:
           import json
           from pathlib import Path
 
-          index_path = Path("docs/reports/reports_index.json")
-          payload = json.loads(index_path.read_text(encoding="utf-8"))
+          path = Path("docs/reports/reports_index.json")
+          payload = json.loads(path.read_text(encoding="utf-8"))
           reports = payload.get("reports", [])
-          print(reports[0]["date"] if reports else "unknown-date")
+
+          print(
+              reports[0]["date"]
+              if reports
+              else "unknown-date"
+          )
           PY
           )"
 
-          git commit -m "Update Ukraine frontline PDF reports for ${REPORT_DATE}"
+          git commit \
+            -m "Update Ukraine frontline PDF reports for ${REPORT_DATE}"
 
-          # A futás közben létrejött esetleges távoli módosítások biztonságos kezelése.
           git pull --rebase origin main
           git push origin HEAD:main
 
