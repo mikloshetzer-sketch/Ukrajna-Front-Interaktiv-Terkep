@@ -1,90 +1,30 @@
 {
-  "generated_at": "2026-07-29T19:17:20Z",
+  "generated_at": "2026-07-30T07:44:29Z",
   "module": "satellite",
-  "status": "ok",
+  "status": "ready",
   "default_provider": "sentinel2",
   "provider": {
     "key": "sentinel2",
     "name": "Sentinel-2",
     "type": "optical",
     "enabled": true,
-    "source": "Sentinel Hub / Copernicus Data Space Ecosystem",
+    "source": "Copernicus Data Space Ecosystem",
     "resolution_m": 10,
     "auth_required": true
   },
-  "latest_record": {
-    "id": "Novij_Donbas_2026-07-29T191720Z",
-    "generated_at": "2026-07-29T19:17:20Z",
-    "timestamp": "2026-07-29T191720Z",
-    "provider": "sentinel2",
-    "source": "Sentinel Hub / Copernicus Data Space Ecosystem",
-    "product": "Sentinel-2 L2A True Color",
-    "location_name": "Novij Donbas",
-    "location_slug": "Novij_Donbas",
-    "target_area": {
-      "mode": "coordinate_radius",
-      "lat": 48.44934,
-      "lon": 37.18211,
-      "radius_km": 10.0,
-      "bbox": [
-        37.046676,
-        48.359509,
-        37.317544,
-        48.539171
-      ]
-    },
-    "imagery": {
-      "image_available": true,
-      "latest_image": "data/satellite/sentinel2/latest.png",
-      "history_image": "data/satellite/sentinel2/history/Novij_Donbas/2026-07-29T191720Z.png",
-      "requested_time_range": {
-        "from": "2026-06-29",
-        "to": "2026-07-29"
-      },
-      "acquisition_date": null,
-      "cloud_cover_percent": null,
-      "max_cloud_coverage_requested": 80,
-      "width": 1024,
-      "height": 1024,
-      "bounds": {
-        "west": 37.046676,
-        "south": 48.359509,
-        "east": 37.317544,
-        "north": 48.539171
-      }
-    }
+  "ui": {
+    "layer_label_hu": "Sentinel-2 műholdkép",
+    "layer_label_en": "Sentinel-2 satellite imagery",
+    "default_visible": false
   },
   "imagery": {
     "image_available": true,
     "latest_image": "data/satellite/sentinel2/latest.png",
-    "history_image": "data/satellite/sentinel2/history/Novij_Donbas/2026-07-29T191720Z.png",
-    "requested_time_range": {
-      "from": "2026-06-29",
-      "to": "2026-07-29"
-    },
-    "acquisition_date": null,
+    "history_dir": "data/satellite/sentinel2/history/",
     "cloud_cover_percent": null,
-    "max_cloud_coverage_requested": 80,
-    "width": 1024,
-    "height": 1024,
-    "bounds": {
-      "west": 37.046676,
-      "south": 48.359509,
-      "east": 37.317544,
-      "north": 48.539171
-    }
-  },
-  "target_area": {
-    "mode": "coordinate_radius",
-    "lat": 48.44934,
-    "lon": 37.18211,
-    "radius_km": 10.0,
-    "bbox": [
-      37.046676,
-      48.359509,
-      37.317544,
-      48.539171
-    ]
+    "acquisition_date": null,
+    "bbox": null,
+    "bounds": null
   },
   "capabilities": {
     "true_color": true,
@@ -95,11 +35,5 @@
     "sentinel1_radar": false,
     "maxar_ready": false
   },
-  "data_paths": {
-    "latest_image": "data/satellite/sentinel2/latest.png",
-    "latest_json": "data/satellite/sentinel2/latest.json",
-    "index_json": "data/satellite/sentinel2/index.json",
-    "history_dir": "data/satellite/sentinel2/history/"
-  },
-  "next_step": "Add Sentinel-2 image archive and latest image overlay to the Leaflet map."
+  "next_step": "Add Sentinel-2 image download and static map overlay generation."
 }
