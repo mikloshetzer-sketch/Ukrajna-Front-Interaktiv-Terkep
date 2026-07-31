@@ -1,13 +1,53 @@
 {
   "type": "FeatureCollection",
   "metadata": {
-    "updated_utc": "2026-07-30T20:02:06.351191+00:00",
-    "previous_file": "deepstatemap_data_20260729.geojson",
-    "current_file": "deepstatemap_data_20260730.geojson",
-    "russian_gain_km2": 0,
+    "updated_utc": "2026-07-31T20:01:58.824516+00:00",
+    "previous_file": "deepstatemap_data_20260730.geojson",
+    "current_file": "deepstatemap_data_20260731.geojson",
+    "russian_gain_km2": 1.52,
     "ukrainian_recapture_km2": 0,
-    "net_change_km2": 0,
+    "net_change_km2": 1.52,
     "method": "Shapely geometric difference between the latest two DeepState GeoJSON files. Area is approximate."
   },
-  "features": []
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "change_type": "russian_gain",
+        "label": "Russian territorial gain",
+        "area_km2": 1.52
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              37.7966281,
+              48.6794159
+            ],
+            [
+              37.7865928,
+              48.6907628
+            ],
+            [
+              37.8033456,
+              48.6927169
+            ],
+            [
+              37.8077071,
+              48.6889497
+            ],
+            [
+              37.8054599,
+              48.6800818
+            ],
+            [
+              37.7966281,
+              48.6794159
+            ]
+          ]
+        ]
+      }
+    }
+  ]
 }
