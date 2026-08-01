@@ -1,40 +1,16 @@
 {
-  "updated_utc": "2026-07-31T20:01:59.371733+00:00",
-  "date": "2026-07-31",
+  "updated_utc": "2026-08-01T19:43:02.304670+00:00",
+  "date": "2026-08-01",
   "territorial_sector": {
-    "sector": "Bakhmut-Toretsk",
-    "lat": 48.68522383333333,
-    "lon": 37.799393599999995,
-    "distance_km": 16.1,
+    "sector": "Lyman",
+    "lat": 48.82851185454545,
+    "lon": 37.87064298181818,
+    "distance_km": 18.7,
     "change_type": "russian_gain",
-    "area_km2": 1.52,
+    "area_km2": 2.39,
     "label": "Russian territorial gain"
   },
   "priority_osint_events": [
-    {
-      "title": "Reported drone strike near Krím",
-      "source": "forrás nélkül",
-      "sector": "Crimea",
-      "lat": 45.3,
-      "lon": 34.4,
-      "distance_to_sector_km": 0,
-      "event_type": "drone",
-      "event_label": "Drone / UAV activity",
-      "icon": "🛩",
-      "priority": 106
-    },
-    {
-      "title": "Reported drone strike near Kijev",
-      "source": "forrás nélkül",
-      "sector": "Kyiv Area",
-      "lat": 50.45,
-      "lon": 30.523,
-      "distance_to_sector_km": 0,
-      "event_type": "drone",
-      "event_label": "Drone / UAV activity",
-      "icon": "🛩",
-      "priority": 106
-    },
     {
       "title": "London and Kyiv Build a Long-Term Defence Alliance: Air Defence and Drones Top the Agenda",
       "source": "forrás nélkül",
@@ -48,7 +24,7 @@
       "priority": 106
     },
     {
-      "title": "Reported missile strike near Kyiv",
+      "title": "Reported missile strike near Kijev",
       "source": "forrás nélkül",
       "sector": "Kyiv Area",
       "lat": 50.45,
@@ -72,40 +48,16 @@
       "priority": 103
     },
     {
-      "title": "Patriot License and Drone Deal: Volodymyr Zelensky Discusses New Defense Agreements with the U.S. and NATO",
+      "title": "Russian Offensive Campaign Assessment, July 31, 2026",
       "source": "forrás nélkül",
       "sector": "Pokrovsk",
       "lat": 48.5,
       "lon": 36.5,
       "distance_to_sector_km": 55.9,
-      "event_type": "drone",
-      "event_label": "Drone / UAV activity",
-      "icon": "🛩",
-      "priority": 103
-    },
-    {
-      "title": "Reported missile strike near Szlovjanszk",
-      "source": "forrás nélkül",
-      "sector": "Lyman",
-      "lat": 48.866,
-      "lon": 37.616,
-      "distance_to_sector_km": 19.3,
-      "event_type": "missile",
-      "event_label": "Missile / rocket strike",
-      "icon": "☄",
-      "priority": 101
-    },
-    {
-      "title": "Reported ground assault or offensive activity near Volgográd",
-      "source": "forrás nélkül",
-      "sector": "Moscow / Russia Interior",
-      "lat": 48.708,
-      "lon": 44.513,
-      "distance_to_sector_km": 0,
       "event_type": "frontline",
       "event_label": "Frontline pressure",
       "icon": "⚔",
-      "priority": 98
+      "priority": 95
     },
     {
       "title": "Russian Offensive Campaign Assessment, July 30, 2026",
@@ -144,16 +96,64 @@
       "priority": 95
     },
     {
-      "title": "Russian Offensive Campaign Assessment, July 28, 2026",
+      "title": "Reported military-related update near Kijev",
+      "source": "forrás nélkül",
+      "sector": "Kyiv Area",
+      "lat": 50.45,
+      "lon": 30.523,
+      "distance_to_sector_km": 0,
+      "event_type": "military_update",
+      "event_label": "Military update",
+      "icon": "●",
+      "priority": 66
+    },
+    {
+      "title": "Reported military-related update near Moszkva",
+      "source": "forrás nélkül",
+      "sector": "Moscow / Russia Interior",
+      "lat": 55.755,
+      "lon": 37.617,
+      "distance_to_sector_km": 0,
+      "event_type": "military_update",
+      "event_label": "Military update",
+      "icon": "●",
+      "priority": 66
+    },
+    {
+      "title": "Reported military-related update near Szlovjanszk",
+      "source": "forrás nélkül",
+      "sector": "Lyman",
+      "lat": 48.866,
+      "lon": 37.616,
+      "distance_to_sector_km": 19.3,
+      "event_type": "military_update",
+      "event_label": "Military update",
+      "icon": "●",
+      "priority": 63
+    },
+    {
+      "title": "Mykhailo Drapatyi outlined his “vision of victory” to NATO’s Supreme Allied Commander Europe.",
       "source": "forrás nélkül",
       "sector": "Pokrovsk",
       "lat": 48.5,
       "lon": 36.5,
       "distance_to_sector_km": 55.9,
-      "event_type": "frontline",
-      "event_label": "Frontline pressure",
-      "icon": "⚔",
-      "priority": 95
+      "event_type": "military_update",
+      "event_label": "Military update",
+      "icon": "●",
+      "priority": 63
+    },
+    {
+      "title": "Joint Production and Technology Sharing: Zelenskyy Meets with Lockheed Martin Executives",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "military_update",
+      "event_label": "Military update",
+      "icon": "●",
+      "priority": 63
     }
   ],
   "front_pressure_points": [
@@ -163,10 +163,21 @@
       "lat": 48.28,
       "lon": 37.18,
       "score": 100,
-      "osint": 16,
-      "firms": 87,
+      "osint": 12,
+      "firms": 185,
       "pressure_type": "osint_activity_cluster",
       "icon": "⚔"
+    },
+    {
+      "sector": "Kurakhove",
+      "title": "Kurakhove FIRMS thermal cluster",
+      "lat": 47.99,
+      "lon": 37.28,
+      "score": 100,
+      "osint": 0,
+      "firms": 147,
+      "pressure_type": "thermal_activity_cluster",
+      "icon": "🔥"
     },
     {
       "sector": "Velyka Novosilka",
@@ -175,7 +186,7 @@
       "lon": 36.84,
       "score": 100,
       "osint": 0,
-      "firms": 279,
+      "firms": 511,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -186,7 +197,7 @@
       "lon": 35.14,
       "score": 100,
       "osint": 0,
-      "firms": 661,
+      "firms": 952,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -197,7 +208,7 @@
       "lon": 32.61,
       "score": 100,
       "osint": 0,
-      "firms": 765,
+      "firms": 929,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -206,55 +217,48 @@
       "title": "Crimea FIRMS thermal cluster",
       "lat": 45.2,
       "lon": 34.1,
-      "score": 84,
-      "osint": 1,
-      "firms": 80,
-      "pressure_type": "thermal_activity_cluster",
-      "icon": "🔥"
-    },
-    {
-      "sector": "Kurakhove",
-      "title": "Kurakhove FIRMS thermal cluster",
-      "lat": 47.99,
-      "lon": 37.28,
-      "score": 83,
-      "osint": 1,
-      "firms": 79,
+      "score": 100,
+      "osint": 0,
+      "firms": 173,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
     {
       "sector": "Bakhmut-Toretsk",
-      "title": "Bakhmut-Toretsk territorial gain axis",
+      "title": "Bakhmut-Toretsk FIRMS thermal cluster",
       "lat": 48.58,
       "lon": 37.95,
-      "score": 58,
+      "score": 64,
       "osint": 0,
-      "firms": 31,
-      "pressure_type": "territorial_gain_axis",
-      "icon": "▲"
+      "firms": 71,
+      "pressure_type": "thermal_activity_cluster",
+      "icon": "🔥"
     }
   ],
   "event_categories": [
     {
-      "category": "Drone / UAV activity",
+      "category": "Military update",
       "count": 5
     },
     {
       "category": "Frontline pressure",
-      "count": 5
+      "count": 4
+    },
+    {
+      "category": "Drone / UAV activity",
+      "count": 2
     },
     {
       "category": "Missile / rocket strike",
-      "count": 2
+      "count": 1
     }
   ],
-  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 70. Russian forces gained approximately 1.51 km², closest to the Bakhmut-Toretsk sector. The main pressure focus is Pokrovsk. The strongest event category is Drone / UAV activity. The system processed 30 OSINT events, 7368 short-term FIRMS hotspots and 10 active sectors.",
+  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 70. Russian forces gained approximately 2.37 km², closest to the Lyman sector. The main pressure focus is Pokrovsk. The strongest event category is Drone / UAV activity. The system processed 17 OSINT events, 9398 short-term FIRMS hotspots and 10 active sectors.",
   "counts": {
     "priority_osint": 12,
     "pressure_points": 7,
-    "firms_3d": 7368,
-    "firms_10d": 17812,
+    "firms_3d": 9398,
+    "firms_10d": 19315,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."
