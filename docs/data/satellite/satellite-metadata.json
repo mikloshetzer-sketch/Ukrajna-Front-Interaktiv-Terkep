@@ -1,30 +1,90 @@
 {
-  "generated_at": "2026-08-02T07:42:50Z",
+  "generated_at": "2026-08-02T07:53:08Z",
   "module": "satellite",
-  "status": "ready",
+  "status": "ok",
   "default_provider": "sentinel2",
   "provider": {
     "key": "sentinel2",
     "name": "Sentinel-2",
     "type": "optical",
     "enabled": true,
-    "source": "Copernicus Data Space Ecosystem",
+    "source": "Sentinel Hub / Copernicus Data Space Ecosystem",
     "resolution_m": 10,
     "auth_required": true
   },
-  "ui": {
-    "layer_label_hu": "Sentinel-2 műholdkép",
-    "layer_label_en": "Sentinel-2 satellite imagery",
-    "default_visible": false
+  "latest_record": {
+    "id": "Konstantynivka_2026-08-02T075308Z",
+    "generated_at": "2026-08-02T07:53:08Z",
+    "timestamp": "2026-08-02T075308Z",
+    "provider": "sentinel2",
+    "source": "Sentinel Hub / Copernicus Data Space Ecosystem",
+    "product": "Sentinel-2 L2A True Color",
+    "location_name": "Konstantynivka",
+    "location_slug": "Konstantynivka",
+    "target_area": {
+      "mode": "coordinate_radius",
+      "lat": 48.527,
+      "lon": 37.706,
+      "radius_km": 10.0,
+      "bbox": [
+        37.570358,
+        48.437169,
+        37.841642,
+        48.616831
+      ]
+    },
+    "imagery": {
+      "image_available": true,
+      "latest_image": "data/satellite/sentinel2/latest.png",
+      "history_image": "data/satellite/sentinel2/history/Konstantynivka/2026-08-02T075308Z.png",
+      "requested_time_range": {
+        "from": "2026-07-03",
+        "to": "2026-08-02"
+      },
+      "acquisition_date": null,
+      "cloud_cover_percent": null,
+      "max_cloud_coverage_requested": 80,
+      "width": 1024,
+      "height": 1024,
+      "bounds": {
+        "west": 37.570358,
+        "south": 48.437169,
+        "east": 37.841642,
+        "north": 48.616831
+      }
+    }
   },
   "imagery": {
     "image_available": true,
     "latest_image": "data/satellite/sentinel2/latest.png",
-    "history_dir": "data/satellite/sentinel2/history/",
-    "cloud_cover_percent": null,
+    "history_image": "data/satellite/sentinel2/history/Konstantynivka/2026-08-02T075308Z.png",
+    "requested_time_range": {
+      "from": "2026-07-03",
+      "to": "2026-08-02"
+    },
     "acquisition_date": null,
-    "bbox": null,
-    "bounds": null
+    "cloud_cover_percent": null,
+    "max_cloud_coverage_requested": 80,
+    "width": 1024,
+    "height": 1024,
+    "bounds": {
+      "west": 37.570358,
+      "south": 48.437169,
+      "east": 37.841642,
+      "north": 48.616831
+    }
+  },
+  "target_area": {
+    "mode": "coordinate_radius",
+    "lat": 48.527,
+    "lon": 37.706,
+    "radius_km": 10.0,
+    "bbox": [
+      37.570358,
+      48.437169,
+      37.841642,
+      48.616831
+    ]
   },
   "capabilities": {
     "true_color": true,
@@ -35,5 +95,11 @@
     "sentinel1_radar": false,
     "maxar_ready": false
   },
-  "next_step": "Add Sentinel-2 image download and static map overlay generation."
+  "data_paths": {
+    "latest_image": "data/satellite/sentinel2/latest.png",
+    "latest_json": "data/satellite/sentinel2/latest.json",
+    "index_json": "data/satellite/sentinel2/index.json",
+    "history_dir": "data/satellite/sentinel2/history/"
+  },
+  "next_step": "Add Sentinel-2 image archive and latest image overlay to the Leaflet map."
 }
