@@ -1,28 +1,16 @@
 {
-  "updated_utc": "2026-08-05T20:08:14.408221+00:00",
-  "date": "2026-08-05",
+  "updated_utc": "2026-08-07T00:23:53.518740+00:00",
+  "date": "2026-08-07",
   "territorial_sector": {
     "sector": "Pokrovsk",
-    "lat": 48.46989115000002,
-    "lon": 37.33918634166667,
-    "distance_km": 24.2,
+    "lat": 48.44774868095239,
+    "lon": 37.26503450476191,
+    "distance_km": 19.7,
     "change_type": "russian_gain",
-    "area_km2": 5.11,
+    "area_km2": 5.53,
     "label": "Russian territorial gain"
   },
   "priority_osint_events": [
-    {
-      "title": "Reported drone strike near Kijev",
-      "source": "forrás nélkül",
-      "sector": "Kyiv Area",
-      "lat": 50.45,
-      "lon": 30.523,
-      "distance_to_sector_km": 0,
-      "event_type": "drone",
-      "event_label": "Drone / UAV activity",
-      "icon": "🛩",
-      "priority": 106
-    },
     {
       "title": "Reported missile strike near Kijev",
       "source": "forrás nélkül",
@@ -36,24 +24,36 @@
       "priority": 104
     },
     {
-      "title": "Reported ground assault or offensive activity near Kijev",
+      "title": "Reported drone strike near Harkiv",
       "source": "forrás nélkül",
-      "sector": "Kyiv Area",
-      "lat": 50.45,
-      "lon": 30.523,
-      "distance_to_sector_km": 0,
-      "event_type": "frontline",
-      "event_label": "Frontline pressure",
-      "icon": "⚔",
-      "priority": 98
+      "sector": "Kharkiv",
+      "lat": 49.993,
+      "lon": 36.23,
+      "distance_to_sector_km": 0.3,
+      "event_type": "drone",
+      "event_label": "Drone / UAV activity",
+      "icon": "🛩",
+      "priority": 103
     },
     {
-      "title": "Reported ground assault or offensive activity near Donyeck",
+      "title": "Reported missile strike near Odessza",
       "source": "forrás nélkül",
-      "sector": "Kurakhove",
-      "lat": 48.015,
-      "lon": 37.802,
-      "distance_to_sector_km": 38.9,
+      "sector": "Rear Area / Strategic Depth",
+      "lat": 46.482,
+      "lon": 30.723,
+      "distance_to_sector_km": 145.3,
+      "event_type": "missile",
+      "event_label": "Missile / rocket strike",
+      "icon": "☄",
+      "priority": 96
+    },
+    {
+      "title": "Russian Offensive Campaign Assessment, August 5, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
       "event_type": "frontline",
       "event_label": "Frontline pressure",
       "icon": "⚔",
@@ -84,19 +84,19 @@
       "priority": 95
     },
     {
-      "title": "Russian Offensive Campaign Assessment, August 2, 2026",
+      "title": "Reported rear-area strike near Moszkva",
       "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "frontline",
-      "event_label": "Frontline pressure",
-      "icon": "⚔",
-      "priority": 95
+      "sector": "Moscow / Russia Interior",
+      "lat": 55.755,
+      "lon": 37.617,
+      "distance_to_sector_km": 0,
+      "event_type": "strike",
+      "event_label": "Strike / attack",
+      "icon": "✹",
+      "priority": 94
     },
     {
-      "title": "Reported rear-area strike near Kijev",
+      "title": "Reported rear-area strike near Kyiv",
       "source": "forrás nélkül",
       "sector": "Kyiv Area",
       "lat": 50.45,
@@ -144,16 +144,16 @@
       "priority": 66
     },
     {
-      "title": "Reported military-related update near Szumi",
+      "title": "Reported aviation-related military activity near Kyiv",
       "source": "forrás nélkül",
-      "sector": "Rear Area / Strategic Depth",
-      "lat": 50.907,
-      "lon": 34.799,
-      "distance_to_sector_km": 143.7,
+      "sector": "Kyiv Area",
+      "lat": 50.45,
+      "lon": 30.523,
+      "distance_to_sector_km": 0,
       "event_type": "military_update",
       "event_label": "Military update",
       "icon": "●",
-      "priority": 58
+      "priority": 66
     }
   ],
   "front_pressure_points": [
@@ -164,7 +164,7 @@
       "lon": 37.18,
       "score": 130,
       "osint": 3,
-      "firms": 112,
+      "firms": 354,
       "pressure_type": "territorial_gain_axis",
       "icon": "▲"
     },
@@ -175,7 +175,40 @@
       "lon": 37.61,
       "score": 100,
       "osint": 0,
-      "firms": 122,
+      "firms": 219,
+      "pressure_type": "thermal_activity_cluster",
+      "icon": "🔥"
+    },
+    {
+      "sector": "Lyman",
+      "title": "Lyman FIRMS thermal cluster",
+      "lat": 48.99,
+      "lon": 37.8,
+      "score": 100,
+      "osint": 0,
+      "firms": 153,
+      "pressure_type": "thermal_activity_cluster",
+      "icon": "🔥"
+    },
+    {
+      "sector": "Bakhmut-Toretsk",
+      "title": "Bakhmut-Toretsk FIRMS thermal cluster",
+      "lat": 48.58,
+      "lon": 37.95,
+      "score": 100,
+      "osint": 0,
+      "firms": 139,
+      "pressure_type": "thermal_activity_cluster",
+      "icon": "🔥"
+    },
+    {
+      "sector": "Kurakhove",
+      "title": "Kurakhove FIRMS thermal cluster",
+      "lat": 47.99,
+      "lon": 37.28,
+      "score": 100,
+      "osint": 0,
+      "firms": 188,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -186,7 +219,7 @@
       "lon": 36.84,
       "score": 100,
       "osint": 0,
-      "firms": 424,
+      "firms": 1039,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -197,7 +230,7 @@
       "lon": 35.14,
       "score": 100,
       "osint": 0,
-      "firms": 973,
+      "firms": 1484,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -208,61 +241,39 @@
       "lon": 32.61,
       "score": 100,
       "osint": 0,
-      "firms": 727,
-      "pressure_type": "thermal_activity_cluster",
-      "icon": "🔥"
-    },
-    {
-      "sector": "Crimea",
-      "title": "Crimea FIRMS thermal cluster",
-      "lat": 45.2,
-      "lon": 34.1,
-      "score": 100,
-      "osint": 0,
-      "firms": 111,
-      "pressure_type": "thermal_activity_cluster",
-      "icon": "🔥"
-    },
-    {
-      "sector": "Kurakhove",
-      "title": "Kurakhove FIRMS thermal cluster",
-      "lat": 47.99,
-      "lon": 37.28,
-      "score": 78,
-      "osint": 1,
-      "firms": 73,
+      "firms": 811,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     }
   ],
   "event_categories": [
     {
-      "category": "Frontline pressure",
-      "count": 5
-    },
-    {
       "category": "Military update",
       "count": 4
     },
     {
-      "category": "Drone / UAV activity",
-      "count": 1
+      "category": "Frontline pressure",
+      "count": 3
     },
     {
       "category": "Missile / rocket strike",
-      "count": 1
+      "count": 2
     },
     {
       "category": "Strike / attack",
+      "count": 2
+    },
+    {
+      "category": "Drone / UAV activity",
       "count": 1
     }
   ],
-  "ai_summary": "Front activity is assessed as CRITICAL with an FAI value of 88. Russian forces gained approximately 8.24 km², closest to the Pokrovsk sector. The main pressure focus is Pokrovsk. The strongest event category is Drone / UAV activity. The system processed 12 OSINT events, 7587 short-term FIRMS hotspots and 10 active sectors.",
+  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 78. Russian forces gained approximately 5.52 km², closest to the Pokrovsk sector. The main pressure focus is Pokrovsk. The strongest event category is Missile / rocket strike. The system processed 12 OSINT events, 9495 short-term FIRMS hotspots and 10 active sectors.",
   "counts": {
     "priority_osint": 12,
-    "pressure_points": 7,
-    "firms_3d": 7587,
-    "firms_10d": 24793,
+    "pressure_points": 8,
+    "firms_3d": 9495,
+    "firms_10d": 27851,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."
