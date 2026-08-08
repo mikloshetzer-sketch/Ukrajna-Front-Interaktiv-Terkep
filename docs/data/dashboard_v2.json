@@ -1,39 +1,27 @@
 {
-  "updated_utc": "2026-08-07T19:29:08.209830+00:00",
-  "date": "2026-08-07",
+  "updated_utc": "2026-08-08T19:08:05.789707+00:00",
+  "date": "2026-08-08",
   "territorial_sector": {
-    "sector": "No territorial delta",
-    "lat": null,
-    "lon": null,
-    "distance_km": null,
-    "change_type": "none",
-    "area_km2": 0,
-    "label": "No mapped daily territorial change"
+    "sector": "Bakhmut-Toretsk",
+    "lat": 48.47737872,
+    "lon": 37.74150254999999,
+    "distance_km": 19.1,
+    "change_type": "russian_gain",
+    "area_km2": 3.08,
+    "label": "Russian territorial gain"
   },
   "priority_osint_events": [
     {
-      "title": "Reported drone strike near Belgorod",
+      "title": "Reported drone strike near Herszon",
       "source": "forrás nélkül",
-      "sector": "Moscow / Russia Interior",
-      "lat": 50.595,
-      "lon": 36.587,
-      "distance_to_sector_km": 0,
+      "sector": "Kherson-Dnipro",
+      "lat": 46.635,
+      "lon": 32.616,
+      "distance_to_sector_km": 0.7,
       "event_type": "drone",
       "event_label": "Drone / UAV activity",
       "icon": "🛩",
-      "priority": 106
-    },
-    {
-      "title": "Reported missile strike near Kijev",
-      "source": "forrás nélkül",
-      "sector": "Kyiv Area",
-      "lat": 50.45,
-      "lon": 30.523,
-      "distance_to_sector_km": 0,
-      "event_type": "missile",
-      "event_label": "Missile / rocket strike",
-      "icon": "☄",
-      "priority": 104
+      "priority": 103
     },
     {
       "title": "Reported ground assault or offensive activity near Moszkva",
@@ -48,36 +36,12 @@
       "priority": 98
     },
     {
-      "title": "Reported drone strike near Odesa",
+      "title": "Russian Offensive Campaign Assessment, August 7, 2026",
       "source": "forrás nélkül",
-      "sector": "Rear Area / Strategic Depth",
-      "lat": 46.482,
-      "lon": 30.723,
-      "distance_to_sector_km": 145.3,
-      "event_type": "drone",
-      "event_label": "Drone / UAV activity",
-      "icon": "🛩",
-      "priority": 98
-    },
-    {
-      "title": "Reported drone strike near Odessza",
-      "source": "forrás nélkül",
-      "sector": "Rear Area / Strategic Depth",
-      "lat": 46.482,
-      "lon": 30.723,
-      "distance_to_sector_km": 145.3,
-      "event_type": "drone",
-      "event_label": "Drone / UAV activity",
-      "icon": "🛩",
-      "priority": 98
-    },
-    {
-      "title": "Reported ground assault or offensive activity near Harkiv",
-      "source": "forrás nélkül",
-      "sector": "Kharkiv",
-      "lat": 49.993,
-      "lon": 36.23,
-      "distance_to_sector_km": 0.3,
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
       "event_type": "frontline",
       "event_label": "Frontline pressure",
       "icon": "⚔",
@@ -108,16 +72,16 @@
       "priority": 95
     },
     {
-      "title": "Russian Offensive Campaign Assessment, August 4, 2026",
+      "title": "Reported rear-area strike near Kyiv",
       "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "frontline",
-      "event_label": "Frontline pressure",
-      "icon": "⚔",
-      "priority": 95
+      "sector": "Kyiv Area",
+      "lat": 50.45,
+      "lon": 30.523,
+      "distance_to_sector_km": 0,
+      "event_type": "strike",
+      "event_label": "Strike / attack",
+      "icon": "✹",
+      "priority": 94
     },
     {
       "title": "Reported rear-area strike near Kijev",
@@ -132,16 +96,16 @@
       "priority": 94
     },
     {
-      "title": "Reported rear-area strike near Dnipro",
+      "title": "Reported military-related update near Kijev",
       "source": "forrás nélkül",
-      "sector": "Zaporizhzhia",
-      "lat": 48.464,
-      "lon": 35.046,
-      "distance_to_sector_km": 69.7,
-      "event_type": "strike",
-      "event_label": "Strike / attack",
-      "icon": "✹",
-      "priority": 91
+      "sector": "Kyiv Area",
+      "lat": 50.45,
+      "lon": 30.523,
+      "distance_to_sector_km": 0,
+      "event_type": "military_update",
+      "event_label": "Military update",
+      "icon": "●",
+      "priority": 66
     },
     {
       "title": "Reported military-related update near Moszkva",
@@ -158,13 +122,24 @@
   ],
   "front_pressure_points": [
     {
+      "sector": "Bakhmut-Toretsk",
+      "title": "Bakhmut-Toretsk territorial gain axis",
+      "lat": 48.58,
+      "lon": 37.95,
+      "score": 130,
+      "osint": 0,
+      "firms": 396,
+      "pressure_type": "territorial_gain_axis",
+      "icon": "▲"
+    },
+    {
       "sector": "Kupiansk",
       "title": "Kupiansk FIRMS thermal cluster",
       "lat": 49.71,
       "lon": 37.61,
       "score": 100,
       "osint": 0,
-      "firms": 438,
+      "firms": 454,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -174,19 +149,8 @@
       "lat": 48.99,
       "lon": 37.8,
       "score": 100,
-      "osint": 1,
-      "firms": 290,
-      "pressure_type": "thermal_activity_cluster",
-      "icon": "🔥"
-    },
-    {
-      "sector": "Bakhmut-Toretsk",
-      "title": "Bakhmut-Toretsk FIRMS thermal cluster",
-      "lat": 48.58,
-      "lon": 37.95,
-      "score": 100,
       "osint": 0,
-      "firms": 346,
+      "firms": 339,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -197,7 +161,7 @@
       "lon": 37.18,
       "score": 100,
       "osint": 3,
-      "firms": 672,
+      "firms": 778,
       "pressure_type": "osint_activity_cluster",
       "icon": "⚔"
     },
@@ -208,7 +172,7 @@
       "lon": 37.28,
       "score": 100,
       "osint": 0,
-      "firms": 428,
+      "firms": 765,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -219,7 +183,7 @@
       "lon": 36.84,
       "score": 100,
       "osint": 0,
-      "firms": 1607,
+      "firms": 1740,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -230,7 +194,7 @@
       "lon": 35.14,
       "score": 100,
       "osint": 0,
-      "firms": 2377,
+      "firms": 2102,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -241,7 +205,7 @@
       "lon": 32.61,
       "score": 100,
       "osint": 1,
-      "firms": 1242,
+      "firms": 1038,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     }
@@ -249,31 +213,27 @@
   "event_categories": [
     {
       "category": "Frontline pressure",
-      "count": 5
-    },
-    {
-      "category": "Drone / UAV activity",
-      "count": 3
+      "count": 4
     },
     {
       "category": "Strike / attack",
       "count": 2
     },
     {
-      "category": "Missile / rocket strike",
-      "count": 1
+      "category": "Military update",
+      "count": 2
     },
     {
-      "category": "Military update",
+      "category": "Drone / UAV activity",
       "count": 1
     }
   ],
-  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 65. No measurable net territorial change was detected. The main pressure focus is Kupiansk. The strongest event category is Drone / UAV activity. The system processed 15 OSINT events, 15972 short-term FIRMS hotspots and 10 active sectors.",
+  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 66. Russian forces gained approximately 3.07 km², closest to the Bakhmut-Toretsk sector. The main pressure focus is Bakhmut-Toretsk. The strongest event category is Drone / UAV activity. The system processed 9 OSINT events, 17361 short-term FIRMS hotspots and 10 active sectors.",
   "counts": {
-    "priority_osint": 12,
+    "priority_osint": 9,
     "pressure_points": 8,
-    "firms_3d": 15972,
-    "firms_10d": 34328,
+    "firms_3d": 17361,
+    "firms_10d": 38545,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."
