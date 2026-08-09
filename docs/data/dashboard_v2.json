@@ -1,14 +1,14 @@
 {
-  "updated_utc": "2026-08-09T18:39:19.733675+00:00",
+  "updated_utc": "2026-08-09T18:57:43.391070+00:00",
   "date": "2026-08-09",
   "territorial_sector": {
-    "sector": "No territorial delta",
-    "lat": null,
-    "lon": null,
-    "distance_km": null,
-    "change_type": "none",
-    "area_km2": 0,
-    "label": "No mapped daily territorial change"
+    "sector": "Lyman",
+    "lat": 48.82183239411764,
+    "lon": 37.94194617058823,
+    "distance_km": 21.4,
+    "change_type": "russian_gain",
+    "area_km2": 6.33,
+    "label": "Russian territorial gain"
   },
   "priority_osint_events": [
     {
@@ -98,24 +98,24 @@
   ],
   "front_pressure_points": [
     {
+      "sector": "Lyman",
+      "title": "Lyman territorial gain axis",
+      "lat": 48.99,
+      "lon": 37.8,
+      "score": 130,
+      "osint": 0,
+      "firms": 237,
+      "pressure_type": "territorial_gain_axis",
+      "icon": "▲"
+    },
+    {
       "sector": "Kupiansk",
       "title": "Kupiansk FIRMS thermal cluster",
       "lat": 49.71,
       "lon": 37.61,
       "score": 100,
       "osint": 0,
-      "firms": 310,
-      "pressure_type": "thermal_activity_cluster",
-      "icon": "🔥"
-    },
-    {
-      "sector": "Lyman",
-      "title": "Lyman FIRMS thermal cluster",
-      "lat": 48.99,
-      "lon": 37.8,
-      "score": 100,
-      "osint": 0,
-      "firms": 213,
+      "firms": 326,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -126,7 +126,7 @@
       "lon": 37.95,
       "score": 100,
       "osint": 0,
-      "firms": 268,
+      "firms": 347,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -137,7 +137,7 @@
       "lon": 37.18,
       "score": 100,
       "osint": 3,
-      "firms": 457,
+      "firms": 514,
       "pressure_type": "osint_activity_cluster",
       "icon": "⚔"
     },
@@ -148,7 +148,7 @@
       "lon": 37.28,
       "score": 100,
       "osint": 0,
-      "firms": 659,
+      "firms": 810,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -159,7 +159,7 @@
       "lon": 36.84,
       "score": 100,
       "osint": 0,
-      "firms": 1000,
+      "firms": 1500,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -170,7 +170,7 @@
       "lon": 35.14,
       "score": 100,
       "osint": 0,
-      "firms": 1213,
+      "firms": 1519,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -181,7 +181,7 @@
       "lon": 32.61,
       "score": 100,
       "osint": 0,
-      "firms": 625,
+      "firms": 770,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     }
@@ -200,12 +200,12 @@
       "count": 2
     }
   ],
-  "ai_summary": "Front activity is assessed as ELEVATED with an FAI value of 48. No measurable net territorial change was detected. The main pressure focus is Kupiansk. The strongest event category is Frontline pressure. The system processed 7 OSINT events, 12130 short-term FIRMS hotspots and 10 active sectors.",
+  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 66. Russian forces gained approximately 6.27 km², closest to the Lyman sector. The main pressure focus is Lyman. The strongest event category is Frontline pressure. The system processed 7 OSINT events, 15252 short-term FIRMS hotspots and 10 active sectors.",
   "counts": {
     "priority_osint": 7,
     "pressure_points": 8,
-    "firms_3d": 12130,
-    "firms_10d": 35841,
+    "firms_3d": 15252,
+    "firms_10d": 38963,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."
