@@ -1,17 +1,17 @@
 {
   "schema_version": "1.3.0",
   "dataset": "ukraine_conflict_dashboard_current",
-  "generated_at": "2026-08-10T19:17:58.327945Z",
-  "latest_data_at": "2026-08-10T12:40:00Z",
+  "generated_at": "2026-08-10T21:59:33.170014Z",
+  "latest_data_at": "2026-08-10T19:30:37.918846Z",
   "periods": {
     "1": {
       "days": 1,
-      "start_at": "2026-08-09T19:17:58.327945Z",
-      "end_at": "2026-08-10T19:17:58.327945Z",
+      "start_at": "2026-08-09T21:59:33.170014Z",
+      "end_at": "2026-08-10T21:59:33.170014Z",
       "ru_gain_km2": 2.35,
       "ua_recapture_km2": 0.0,
       "net_change_km2": 2.35,
-      "firms_count": 3402,
+      "firms_count": 3364,
       "conflict_index": -22,
       "osint_events": 11,
       "availability": {
@@ -22,12 +22,12 @@
     },
     "7": {
       "days": 7,
-      "start_at": "2026-08-03T19:17:58.327945Z",
-      "end_at": "2026-08-10T19:17:58.327945Z",
+      "start_at": "2026-08-03T21:59:33.170014Z",
+      "end_at": "2026-08-10T21:59:33.170014Z",
       "ru_gain_km2": 26.69,
       "ua_recapture_km2": 0.0,
       "net_change_km2": 26.69,
-      "firms_count": 30357,
+      "firms_count": 30325,
       "conflict_index": -35,
       "osint_events": 14,
       "availability": {
@@ -38,8 +38,8 @@
     },
     "30": {
       "days": 30,
-      "start_at": "2026-07-11T19:17:58.327945Z",
-      "end_at": "2026-08-10T19:17:58.327945Z",
+      "start_at": "2026-07-11T21:59:33.170014Z",
+      "end_at": "2026-08-10T21:59:33.170014Z",
       "ru_gain_km2": 93.4,
       "ua_recapture_km2": 49.52,
       "net_change_km2": 43.88,
@@ -54,8 +54,8 @@
     },
     "90": {
       "days": 90,
-      "start_at": "2026-05-12T19:17:58.327945Z",
-      "end_at": "2026-08-10T19:17:58.327945Z",
+      "start_at": "2026-05-12T21:59:33.170014Z",
+      "end_at": "2026-08-10T21:59:33.170014Z",
       "ru_gain_km2": 0.0,
       "ua_recapture_km2": 0.0,
       "net_change_km2": 0.0,
@@ -703,21 +703,6 @@
         "priority": 297
       },
       {
-        "id": "firms-48-51.04-58.24",
-        "kind": "firms",
-        "type": "Rendkívüli FIRMS-klaszter",
-        "title": "51.04, 58.24 térsége",
-        "value": "232 hőpont",
-        "value_numeric": 232,
-        "time": "2026-08-10T09:54:00Z",
-        "class_name": "firms",
-        "confidence": "Közepes",
-        "source": "NASA FIRMS",
-        "sector_id": "unassigned",
-        "note": "A térben koncentrálódó hőpontok száma meghaladta az automatikus riasztási küszöböt. A hőpont önmagában nem bizonyít katonai eseményt.",
-        "priority": 292
-      },
-      {
         "id": "firms-48-47.25-33.6",
         "kind": "firms",
         "type": "Rendkívüli FIRMS-klaszter",
@@ -731,6 +716,21 @@
         "sector_id": "kherson",
         "note": "A térben koncentrálódó hőpontok száma meghaladta az automatikus riasztási küszöböt. A hőpont önmagában nem bizonyít katonai eseményt.",
         "priority": 287
+      },
+      {
+        "id": "firms-48-51.04-58.23",
+        "kind": "firms",
+        "type": "Rendkívüli FIRMS-klaszter",
+        "title": "51.04, 58.23 térsége",
+        "value": "192 hőpont",
+        "value_numeric": 192,
+        "time": "2026-08-10T09:54:00Z",
+        "class_name": "firms",
+        "confidence": "Közepes",
+        "source": "NASA FIRMS",
+        "sector_id": "unassigned",
+        "note": "A térben koncentrálódó hőpontok száma meghaladta az automatikus riasztási küszöböt. A hőpont önmagában nem bizonyít katonai eseményt.",
+        "priority": 252
       },
       {
         "id": "territorial-2026-08-09T00:00:00+00:00-0",
@@ -821,9 +821,9 @@
         "source": "territorial",
         "path": "data/territorial_delta_30days.geojson",
         "exists": true,
-        "updated_at": "2026-08-10T19:17:57.393183Z",
-        "latest_record_at": "2026-08-10T00:00:00Z",
-        "age_hours": 19.3,
+        "updated_at": "2026-08-10T21:59:32.076675Z",
+        "latest_record_at": "2026-08-10T19:30:37.918846Z",
+        "age_hours": 2.5,
         "status": "fresh",
         "record_count": 68,
         "note": "A 90 napos ablakhoz a windows összesítő is elérhető."
@@ -834,7 +834,7 @@
         "exists": true,
         "updated_at": "2026-08-10T19:15:55.541887Z",
         "latest_record_at": "2026-08-10T12:40:00Z",
-        "age_hours": 6.6,
+        "age_hours": 9.3,
         "status": "fresh",
         "record_count": 69674,
         "note": ""
@@ -845,7 +845,7 @@
         "exists": true,
         "updated_at": "2026-08-10T18:00:45.330954Z",
         "latest_record_at": "2026-08-10T00:00:00Z",
-        "age_hours": 19.3,
+        "age_hours": 22.0,
         "status": "fresh",
         "record_count": 14,
         "note": ""
