@@ -1,34 +1,34 @@
 {
-  "date": "2026-08-12",
-  "updated_utc": "2026-08-12T19:36:43.679469+00:00",
-  "front_activity_index": 80,
-  "status": "CRITICAL",
+  "date": "2026-08-13",
+  "updated_utc": "2026-08-13T19:34:21.254233+00:00",
+  "front_activity_index": 65,
+  "status": "HIGH",
   "components": {
     "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 15.0,
+    "territorial_change": 0.0,
     "active_sectors": 10,
     "critical_events": 10
   },
   "counts": {
-    "osint": 26,
-    "firms_3d": 11030,
-    "firms_10d": 40192,
-    "firms_30d": 76201,
-    "critical_events": 7,
+    "osint": 31,
+    "firms_3d": 12033,
+    "firms_10d": 42476,
+    "firms_30d": 80086,
+    "critical_events": 9,
     "active_sectors": 10
   },
   "territorial": {
-    "available": true,
-    "error": null,
-    "previous_file": "deepstatemap_data_20260811.geojson",
-    "current_file": "deepstatemap_data_20260812.geojson",
-    "previous_total_km2": 116740.87,
-    "current_total_km2": 116745.85,
-    "russian_gain_km2": 4.99,
-    "ukrainian_recapture_km2": 0,
-    "net_change_km2": 4.99,
-    "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    "available": false,
+    "error": "HTTP Error 403: rate limit exceeded",
+    "previous_file": null,
+    "current_file": null,
+    "previous_total_km2": null,
+    "current_total_km2": null,
+    "russian_gain_km2": 0.0,
+    "ukrainian_recapture_km2": 0.0,
+    "net_change_km2": 0.0,
+    "method": "fallback"
   },
   "territorial_hotspot": {
     "sector": "Kupiansk",
@@ -36,89 +36,89 @@
     "lon": 37.61,
     "zoom": 9,
     "score": 100,
-    "change_km2": 4.99,
+    "change_km2": 0.0,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
     {
       "sector": "Kupiansk",
       "osint": 0,
-      "firms": 450,
+      "firms": 436,
       "score": 100
     },
     {
       "sector": "Lyman",
       "osint": 0,
-      "firms": 140,
+      "firms": 195,
       "score": 100
     },
     {
       "sector": "Bakhmut-Toretsk",
       "osint": 0,
-      "firms": 192,
+      "firms": 264,
       "score": 100
     },
     {
       "sector": "Pokrovsk",
-      "osint": 15,
-      "firms": 304,
+      "osint": 17,
+      "firms": 299,
       "score": 100
     },
     {
       "sector": "Kurakhove",
-      "osint": 0,
-      "firms": 349,
+      "osint": 1,
+      "firms": 414,
       "score": 100
     },
     {
       "sector": "Velyka Novosilka",
       "osint": 0,
-      "firms": 325,
+      "firms": 619,
       "score": 100
     },
     {
       "sector": "Zaporizhzhia",
-      "osint": 0,
-      "firms": 688,
+      "osint": 1,
+      "firms": 847,
       "score": 100
     },
     {
       "sector": "Kherson-Dnipro",
-      "osint": 1,
-      "firms": 685,
+      "osint": 0,
+      "firms": 1132,
       "score": 100
     }
   ],
   "top_events": [
     {
-      "title": "After Strikes on Wildberries Warehouses, the Occupiers Have Been Forced to Introduce Drone Limits",
+      "title": "Reported military-related update near Krím",
+      "source": "forrás nélkül",
+      "sector": "Crimea"
+    },
+    {
+      "title": "Ukraine Imposes Sanctions on Companies Supplying Components for Russian Ballistic Missiles",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     },
     {
-      "title": "Ukraine Hopes for Meteor Missiles for Its Gripen Jets to Counter Russian Glide Bomb Carriers",
+      "title": "Defence Procurement Will Become More Transparent: Ministry of Defence Signs Memorandum with YouControl",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     },
     {
-      "title": "Machines Instead of People: Ukrainian Robots Have Carried Out More Than 66,000 Dangerous Missions",
+      "title": "Reported military-related update near Zaporizzsja",
       "source": "forrás nélkül",
-      "sector": "Pokrovsk"
+      "sector": "Zaporizhzhia"
     },
     {
-      "title": "Ukraine and European Partners Strengthen Cooperation Within the CORPUS Defence Procurement Coalition",
+      "title": "Reported ground assault or offensive activity near Krím",
       "source": "forrás nélkül",
-      "sector": "Pokrovsk"
+      "sector": "Crimea"
     },
     {
-      "title": "Ukrainian Combat Experience Forms the Basis of a New NATO Wargame",
+      "title": "Reported military-related update near Donyeck",
       "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Occupiers Use a North Korean Ballistic Missile Against Ukraine for the First Time in a Long While",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
+      "sector": "Kurakhove"
     }
   ],
   "data_sources": {
