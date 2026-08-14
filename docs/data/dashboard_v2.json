@@ -1,46 +1,22 @@
 {
-  "updated_utc": "2026-08-13T20:18:38.179468+00:00",
-  "date": "2026-08-13",
+  "updated_utc": "2026-08-14T19:28:37.716078+00:00",
+  "date": "2026-08-14",
   "territorial_sector": {
-    "sector": "Velyka Novosilka",
-    "lat": 48.00478934932064,
-    "lon": 36.69538517329917,
-    "distance_km": 21.3,
-    "change_type": "ukrainian_recapture",
-    "area_km2": 74.75,
-    "label": "Ukrainian recapture"
+    "sector": "Bakhmut-Toretsk",
+    "lat": 48.652864655555554,
+    "lon": 37.79782522222222,
+    "distance_km": 13.8,
+    "change_type": "russian_gain",
+    "area_km2": 2.41,
+    "label": "Russian territorial gain"
   },
   "priority_osint_events": [
     {
-      "title": "Reported drone strike near Belgorod",
+      "title": "Russia Plans to Deploy Six Launchers and 120 North Korean Missiles in Voronezh Region — Defence Intelligence Representative",
       "source": "forrás nélkül",
       "sector": "Moscow / Russia Interior",
-      "lat": 50.595,
-      "lon": 36.587,
-      "distance_to_sector_km": 0,
-      "event_type": "drone",
-      "event_label": "Drone / UAV activity",
-      "icon": "🛩",
-      "priority": 106
-    },
-    {
-      "title": "Reported drone strike near Moszkva",
-      "source": "forrás nélkül",
-      "sector": "Moscow / Russia Interior",
-      "lat": 55.755,
-      "lon": 37.617,
-      "distance_to_sector_km": 0,
-      "event_type": "drone",
-      "event_label": "Drone / UAV activity",
-      "icon": "🛩",
-      "priority": 106
-    },
-    {
-      "title": "Reported missile strike near Moscow",
-      "source": "forrás nélkül",
-      "sector": "Moscow / Russia Interior",
-      "lat": 55.755,
-      "lon": 37.617,
+      "lat": 51.661,
+      "lon": 39.2,
       "distance_to_sector_km": 0,
       "event_type": "missile",
       "event_label": "Missile / rocket strike",
@@ -58,6 +34,18 @@
       "event_label": "Drone / UAV activity",
       "icon": "🛩",
       "priority": 103
+    },
+    {
+      "title": "President Discusses Supplying Ukraine with Interceptor Missiles with NATO Secretary General",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "missile",
+      "event_label": "Missile / rocket strike",
+      "icon": "☄",
+      "priority": 101
     },
     {
       "title": "Ukraine Imposes Sanctions on Companies Supplying Components for Russian Ballistic Missiles",
@@ -96,28 +84,16 @@
       "priority": 101
     },
     {
-      "title": "Reported ground assault or offensive activity near Krím",
+      "title": "Russian Offensive Campaign Assessment, August 13, 2026",
       "source": "forrás nélkül",
-      "sector": "Crimea",
-      "lat": 45.3,
-      "lon": 34.4,
-      "distance_to_sector_km": 0,
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
       "event_type": "frontline",
       "event_label": "Frontline pressure",
       "icon": "⚔",
-      "priority": 98
-    },
-    {
-      "title": "Reported drone strike near Odessza",
-      "source": "forrás nélkül",
-      "sector": "Rear Area / Strategic Depth",
-      "lat": 46.482,
-      "lon": 30.723,
-      "distance_to_sector_km": 145.3,
-      "event_type": "drone",
-      "event_label": "Drone / UAV activity",
-      "icon": "🛩",
-      "priority": 98
+      "priority": 95
     },
     {
       "title": "Russian Offensive Campaign Assessment, August 12, 2026",
@@ -144,27 +120,51 @@
       "priority": 95
     },
     {
-      "title": "Russian Offensive Campaign Assessment, August 10, 2026",
+      "title": "Ukraine Is Strengthening the Defence of Donetsk Region and Preparing New Strikes on the Russian Economy — President",
       "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "frontline",
-      "event_label": "Frontline pressure",
-      "icon": "⚔",
-      "priority": 95
+      "sector": "Kurakhove",
+      "lat": 48.015,
+      "lon": 37.802,
+      "distance_to_sector_km": 38.9,
+      "event_type": "strike",
+      "event_label": "Strike / attack",
+      "icon": "✹",
+      "priority": 91
+    },
+    {
+      "title": "Reported rear-area strike near Herszon",
+      "source": "forrás nélkül",
+      "sector": "Kherson-Dnipro",
+      "lat": 46.635,
+      "lon": 32.616,
+      "distance_to_sector_km": 0.7,
+      "event_type": "strike",
+      "event_label": "Strike / attack",
+      "icon": "✹",
+      "priority": 91
+    },
+    {
+      "title": "Reported military-related update near Kijev",
+      "source": "forrás nélkül",
+      "sector": "Kyiv Area",
+      "lat": 50.45,
+      "lon": 30.523,
+      "distance_to_sector_km": 0,
+      "event_type": "military_update",
+      "event_label": "Military update",
+      "icon": "●",
+      "priority": 66
     }
   ],
   "front_pressure_points": [
     {
-      "sector": "Velyka Novosilka",
-      "title": "Velyka Novosilka territorial gain axis",
-      "lat": 47.84,
-      "lon": 36.84,
+      "sector": "Bakhmut-Toretsk",
+      "title": "Bakhmut-Toretsk territorial gain axis",
+      "lat": 48.58,
+      "lon": 37.95,
       "score": 130,
       "osint": 0,
-      "firms": 619,
+      "firms": 269,
       "pressure_type": "territorial_gain_axis",
       "icon": "▲"
     },
@@ -175,7 +175,7 @@
       "lon": 37.61,
       "score": 100,
       "osint": 0,
-      "firms": 436,
+      "firms": 362,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -186,18 +186,7 @@
       "lon": 37.8,
       "score": 100,
       "osint": 0,
-      "firms": 195,
-      "pressure_type": "thermal_activity_cluster",
-      "icon": "🔥"
-    },
-    {
-      "sector": "Bakhmut-Toretsk",
-      "title": "Bakhmut-Toretsk FIRMS thermal cluster",
-      "lat": 48.58,
-      "lon": 37.95,
-      "score": 100,
-      "osint": 0,
-      "firms": 264,
+      "firms": 257,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -207,8 +196,8 @@
       "lat": 48.28,
       "lon": 37.18,
       "score": 100,
-      "osint": 17,
-      "firms": 299,
+      "osint": 19,
+      "firms": 287,
       "pressure_type": "osint_activity_cluster",
       "icon": "⚔"
     },
@@ -218,8 +207,19 @@
       "lat": 47.99,
       "lon": 37.28,
       "score": 100,
-      "osint": 1,
-      "firms": 414,
+      "osint": 2,
+      "firms": 340,
+      "pressure_type": "thermal_activity_cluster",
+      "icon": "🔥"
+    },
+    {
+      "sector": "Velyka Novosilka",
+      "title": "Velyka Novosilka FIRMS thermal cluster",
+      "lat": 47.84,
+      "lon": 36.84,
+      "score": 100,
+      "osint": 0,
+      "firms": 600,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -229,8 +229,8 @@
       "lat": 47.84,
       "lon": 35.14,
       "score": 100,
-      "osint": 1,
-      "firms": 847,
+      "osint": 0,
+      "firms": 813,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -240,32 +240,40 @@
       "lat": 46.64,
       "lon": 32.61,
       "score": 100,
-      "osint": 0,
-      "firms": 1132,
+      "osint": 1,
+      "firms": 1239,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     }
   ],
   "event_categories": [
     {
-      "category": "Drone / UAV activity",
-      "count": 4
-    },
-    {
       "category": "Missile / rocket strike",
-      "count": 4
+      "count": 5
     },
     {
       "category": "Frontline pressure",
-      "count": 4
+      "count": 3
+    },
+    {
+      "category": "Strike / attack",
+      "count": 2
+    },
+    {
+      "category": "Drone / UAV activity",
+      "count": 1
+    },
+    {
+      "category": "Military update",
+      "count": 1
     }
   ],
-  "ai_summary": "Front activity is assessed as CRITICAL with an FAI value of 100. Ukrainian forces recaptured approximately 115.50 km², closest to the Velyka Novosilka sector. The main pressure focus is Velyka Novosilka. The strongest event category is Drone / UAV activity. The system processed 31 OSINT events, 12033 short-term FIRMS hotspots and 10 active sectors.",
+  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 72. Russian forces gained approximately 2.40 km², closest to the Bakhmut-Toretsk sector. The main pressure focus is Bakhmut-Toretsk. The strongest event category is Missile / rocket strike. The system processed 25 OSINT events, 11261 short-term FIRMS hotspots and 10 active sectors.",
   "counts": {
     "priority_osint": 12,
     "pressure_points": 8,
-    "firms_3d": 12033,
-    "firms_10d": 42476,
+    "firms_3d": 11261,
+    "firms_10d": 43615,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."
