@@ -1,13 +1,13 @@
 {
-  "updated_utc": "2026-08-14T19:28:37.716078+00:00",
-  "date": "2026-08-14",
+  "updated_utc": "2026-08-15T18:56:35.920471+00:00",
+  "date": "2026-08-15",
   "territorial_sector": {
-    "sector": "Bakhmut-Toretsk",
-    "lat": 48.652864655555554,
-    "lon": 37.79782522222222,
-    "distance_km": 13.8,
+    "sector": "Pokrovsk",
+    "lat": 48.39496513076923,
+    "lon": 37.21396999230769,
+    "distance_km": 13.0,
     "change_type": "russian_gain",
-    "area_km2": 2.41,
+    "area_km2": 4.04,
     "label": "Russian territorial gain"
   },
   "priority_osint_events": [
@@ -84,6 +84,18 @@
       "priority": 101
     },
     {
+      "title": "Russian Offensive Campaign Assessment, August 14, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "frontline",
+      "event_label": "Frontline pressure",
+      "icon": "⚔",
+      "priority": 95
+    },
+    {
       "title": "Russian Offensive Campaign Assessment, August 13, 2026",
       "source": "forrás nélkül",
       "sector": "Pokrovsk",
@@ -108,18 +120,6 @@
       "priority": 95
     },
     {
-      "title": "Russian Offensive Campaign Assessment, August 11, 2026",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "frontline",
-      "event_label": "Frontline pressure",
-      "icon": "⚔",
-      "priority": 95
-    },
-    {
       "title": "Ukraine Is Strengthening the Defence of Donetsk Region and Preparing New Strikes on the Russian Economy — President",
       "source": "forrás nélkül",
       "sector": "Kurakhove",
@@ -132,16 +132,16 @@
       "priority": 91
     },
     {
-      "title": "Reported rear-area strike near Herszon",
+      "title": "Reported rear-area strike near Nyizsnyij Novgorod",
       "source": "forrás nélkül",
-      "sector": "Kherson-Dnipro",
-      "lat": 46.635,
-      "lon": 32.616,
-      "distance_to_sector_km": 0.7,
+      "sector": "Rear Area / Strategic Depth",
+      "lat": 56.296,
+      "lon": 43.936,
+      "distance_to_sector_km": 845.1,
       "event_type": "strike",
       "event_label": "Strike / attack",
       "icon": "✹",
-      "priority": 91
+      "priority": 86
     },
     {
       "title": "Reported military-related update near Kijev",
@@ -158,13 +158,13 @@
   ],
   "front_pressure_points": [
     {
-      "sector": "Bakhmut-Toretsk",
-      "title": "Bakhmut-Toretsk territorial gain axis",
-      "lat": 48.58,
-      "lon": 37.95,
+      "sector": "Pokrovsk",
+      "title": "Pokrovsk territorial gain axis",
+      "lat": 48.28,
+      "lon": 37.18,
       "score": 130,
-      "osint": 0,
-      "firms": 269,
+      "osint": 18,
+      "firms": 472,
       "pressure_type": "territorial_gain_axis",
       "icon": "▲"
     },
@@ -175,7 +175,7 @@
       "lon": 37.61,
       "score": 100,
       "osint": 0,
-      "firms": 362,
+      "firms": 497,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -186,20 +186,20 @@
       "lon": 37.8,
       "score": 100,
       "osint": 0,
-      "firms": 257,
+      "firms": 506,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
     {
-      "sector": "Pokrovsk",
-      "title": "Pokrovsk OSINT activity cluster",
-      "lat": 48.28,
-      "lon": 37.18,
+      "sector": "Bakhmut-Toretsk",
+      "title": "Bakhmut-Toretsk FIRMS thermal cluster",
+      "lat": 48.58,
+      "lon": 37.95,
       "score": 100,
-      "osint": 19,
-      "firms": 287,
-      "pressure_type": "osint_activity_cluster",
-      "icon": "⚔"
+      "osint": 0,
+      "firms": 419,
+      "pressure_type": "thermal_activity_cluster",
+      "icon": "🔥"
     },
     {
       "sector": "Kurakhove",
@@ -207,8 +207,8 @@
       "lat": 47.99,
       "lon": 37.28,
       "score": 100,
-      "osint": 2,
-      "firms": 340,
+      "osint": 1,
+      "firms": 368,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -219,7 +219,7 @@
       "lon": 36.84,
       "score": 100,
       "osint": 0,
-      "firms": 600,
+      "firms": 885,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -230,7 +230,7 @@
       "lon": 35.14,
       "score": 100,
       "osint": 0,
-      "firms": 813,
+      "firms": 1093,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -240,8 +240,8 @@
       "lat": 46.64,
       "lon": 32.61,
       "score": 100,
-      "osint": 1,
-      "firms": 1239,
+      "osint": 0,
+      "firms": 1827,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     }
@@ -268,12 +268,12 @@
       "count": 1
     }
   ],
-  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 72. Russian forces gained approximately 2.40 km², closest to the Bakhmut-Toretsk sector. The main pressure focus is Bakhmut-Toretsk. The strongest event category is Missile / rocket strike. The system processed 25 OSINT events, 11261 short-term FIRMS hotspots and 10 active sectors.",
+  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 77. Russian forces gained approximately 4.03 km², closest to the Pokrovsk sector. The main pressure focus is Pokrovsk. The strongest event category is Missile / rocket strike. The system processed 22 OSINT events, 13083 short-term FIRMS hotspots and 10 active sectors.",
   "counts": {
     "priority_osint": 12,
     "pressure_points": 8,
-    "firms_3d": 11261,
-    "firms_10d": 43615,
+    "firms_3d": 13083,
+    "firms_10d": 45744,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."
