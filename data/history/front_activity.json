@@ -10441,5 +10441,137 @@
       "deepstate": "cyterat/deepstate-map-data via GitHub API"
     },
     "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
+  },
+  {
+    "date": "2026-08-19",
+    "updated_utc": "2026-08-19T19:02:39.506465+00:00",
+    "front_activity_index": 84,
+    "status": "CRITICAL",
+    "components": {
+      "osint_density": 25,
+      "firms_activity": 20,
+      "territorial_change": 19.5,
+      "active_sectors": 10,
+      "critical_events": 10
+    },
+    "counts": {
+      "osint": 31,
+      "firms_3d": 13938,
+      "firms_10d": 43899,
+      "firms_30d": 99631,
+      "critical_events": 8,
+      "active_sectors": 10
+    },
+    "territorial": {
+      "available": true,
+      "error": null,
+      "previous_file": "deepstatemap_data_20260818.geojson",
+      "current_file": "deepstatemap_data_20260819.geojson",
+      "previous_total_km2": 116649.54,
+      "current_total_km2": 116656.03,
+      "russian_gain_km2": 6.5,
+      "ukrainian_recapture_km2": 0,
+      "net_change_km2": 6.5,
+      "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    },
+    "territorial_hotspot": {
+      "sector": "Kupiansk",
+      "lat": 49.71,
+      "lon": 37.61,
+      "zoom": 9,
+      "score": 100,
+      "change_km2": 6.5,
+      "method": "Top classified sector based on OSINT + FIRMS density"
+    },
+    "top_sectors": [
+      {
+        "sector": "Kupiansk",
+        "osint": 0,
+        "firms": 960,
+        "score": 100
+      },
+      {
+        "sector": "Lyman",
+        "osint": 0,
+        "firms": 1030,
+        "score": 100
+      },
+      {
+        "sector": "Bakhmut-Toretsk",
+        "osint": 0,
+        "firms": 705,
+        "score": 100
+      },
+      {
+        "sector": "Pokrovsk",
+        "osint": 21,
+        "firms": 781,
+        "score": 100
+      },
+      {
+        "sector": "Kurakhove",
+        "osint": 0,
+        "firms": 804,
+        "score": 100
+      },
+      {
+        "sector": "Velyka Novosilka",
+        "osint": 0,
+        "firms": 980,
+        "score": 100
+      },
+      {
+        "sector": "Zaporizhzhia",
+        "osint": 0,
+        "firms": 1257,
+        "score": 100
+      },
+      {
+        "sector": "Kherson-Dnipro",
+        "osint": 1,
+        "firms": 454,
+        "score": 100
+      }
+    ],
+    "top_events": [
+      {
+        "title": "Ukraine Is Coordinating the Preparation of New Sanctions Packages Against Russia with Its Partners",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Yevhenii Khmara Appointed Minister of Defence of Ukraine",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Struck with Neptunes: Navy Reveals Details of the Strike on a Russian Rocket Fuel Plant",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Volodymyr Zelenskyy Approves the First Personnel Appointments Proposed by Mykhailo Drapatyi",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Reaching as Far as Siberia: Dovbush T40 Drone with a Range of Over 2,000 km Codified",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Almost 2,000 Ukrainian Cultural Heritage Sites Damaged or Destroyed by Russia’s Actions",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      }
+    ],
+    "data_sources": {
+      "osint": "data/osint_feed.json",
+      "firms_3d": "data/firms_3.json",
+      "firms_10d": "data/firms_10.json",
+      "firms_30d": "data/firms_30.json",
+      "deepstate": "cyterat/deepstate-map-data via GitHub API"
+    },
+    "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
   }
 ]
