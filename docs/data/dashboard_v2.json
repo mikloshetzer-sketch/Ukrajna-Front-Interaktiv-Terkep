@@ -1,13 +1,13 @@
 {
-  "updated_utc": "2026-08-19T19:02:41.799834+00:00",
-  "date": "2026-08-19",
+  "updated_utc": "2026-08-20T19:10:09.010995+00:00",
+  "date": "2026-08-20",
   "territorial_sector": {
-    "sector": "Velyka Novosilka",
-    "lat": 47.688371258333326,
-    "lon": 36.17355775,
-    "distance_km": 52.6,
+    "sector": "Lyman",
+    "lat": 48.79832766666666,
+    "lon": 37.93596247222222,
+    "distance_km": 23.5,
     "change_type": "russian_gain",
-    "area_km2": 6.41,
+    "area_km2": 6.94,
     "label": "Russian territorial gain"
   },
   "priority_osint_events": [
@@ -54,18 +54,6 @@
       "lat": 48.5,
       "lon": 36.5,
       "distance_to_sector_km": 55.9,
-      "event_type": "drone",
-      "event_label": "Drone / UAV activity",
-      "icon": "🛩",
-      "priority": 103
-    },
-    {
-      "title": "Reported drone strike near Herszon",
-      "source": "forrás nélkül",
-      "sector": "Kherson-Dnipro",
-      "lat": 46.635,
-      "lon": 32.616,
-      "distance_to_sector_km": 0.7,
       "event_type": "drone",
       "event_label": "Drone / UAV activity",
       "icon": "🛩",
@@ -120,6 +108,18 @@
       "priority": 101
     },
     {
+      "title": "Russian Offensive Campaign Assessment, August 19, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "frontline",
+      "event_label": "Frontline pressure",
+      "icon": "⚔",
+      "priority": 95
+    },
+    {
       "title": "Russian Offensive Campaign Assessment, August 18, 2026",
       "source": "forrás nélkül",
       "sector": "Pokrovsk",
@@ -144,27 +144,27 @@
       "priority": 95
     },
     {
-      "title": "Russian Offensive Campaign Assessment, August 16, 2026",
+      "title": "Reported rear-area strike near Kijev",
       "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "frontline",
-      "event_label": "Frontline pressure",
-      "icon": "⚔",
-      "priority": 95
+      "sector": "Kyiv Area",
+      "lat": 50.45,
+      "lon": 30.523,
+      "distance_to_sector_km": 0,
+      "event_type": "strike",
+      "event_label": "Strike / attack",
+      "icon": "✹",
+      "priority": 94
     }
   ],
   "front_pressure_points": [
     {
-      "sector": "Velyka Novosilka",
-      "title": "Velyka Novosilka territorial gain axis",
-      "lat": 47.84,
-      "lon": 36.84,
+      "sector": "Lyman",
+      "title": "Lyman territorial gain axis",
+      "lat": 48.99,
+      "lon": 37.8,
       "score": 130,
       "osint": 0,
-      "firms": 980,
+      "firms": 640,
       "pressure_type": "territorial_gain_axis",
       "icon": "▲"
     },
@@ -175,18 +175,7 @@
       "lon": 37.61,
       "score": 100,
       "osint": 0,
-      "firms": 960,
-      "pressure_type": "thermal_activity_cluster",
-      "icon": "🔥"
-    },
-    {
-      "sector": "Lyman",
-      "title": "Lyman FIRMS thermal cluster",
-      "lat": 48.99,
-      "lon": 37.8,
-      "score": 100,
-      "osint": 0,
-      "firms": 1030,
+      "firms": 669,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -197,7 +186,7 @@
       "lon": 37.95,
       "score": 100,
       "osint": 0,
-      "firms": 705,
+      "firms": 568,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -208,7 +197,7 @@
       "lon": 37.18,
       "score": 100,
       "osint": 21,
-      "firms": 781,
+      "firms": 610,
       "pressure_type": "osint_activity_cluster",
       "icon": "⚔"
     },
@@ -218,8 +207,19 @@
       "lat": 47.99,
       "lon": 37.28,
       "score": 100,
+      "osint": 1,
+      "firms": 612,
+      "pressure_type": "thermal_activity_cluster",
+      "icon": "🔥"
+    },
+    {
+      "sector": "Velyka Novosilka",
+      "title": "Velyka Novosilka FIRMS thermal cluster",
+      "lat": 47.84,
+      "lon": 36.84,
+      "score": 100,
       "osint": 0,
-      "firms": 804,
+      "firms": 753,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -229,8 +229,8 @@
       "lat": 47.84,
       "lon": 35.14,
       "score": 100,
-      "osint": 0,
-      "firms": 1257,
+      "osint": 1,
+      "firms": 735,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -240,8 +240,8 @@
       "lat": 46.64,
       "lon": 32.61,
       "score": 100,
-      "osint": 1,
-      "firms": 454,
+      "osint": 0,
+      "firms": 343,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     }
@@ -249,7 +249,7 @@
   "event_categories": [
     {
       "category": "Drone / UAV activity",
-      "count": 5
+      "count": 4
     },
     {
       "category": "Missile / rocket strike",
@@ -258,14 +258,18 @@
     {
       "category": "Frontline pressure",
       "count": 3
+    },
+    {
+      "category": "Strike / attack",
+      "count": 1
     }
   ],
-  "ai_summary": "Front activity is assessed as CRITICAL with an FAI value of 84. Russian forces gained approximately 6.50 km², closest to the Velyka Novosilka sector. The main pressure focus is Velyka Novosilka. The strongest event category is Drone / UAV activity. The system processed 31 OSINT events, 13938 short-term FIRMS hotspots and 10 active sectors.",
+  "ai_summary": "Front activity is assessed as CRITICAL with an FAI value of 100. Russian forces gained approximately 12.48 km², closest to the Lyman sector. The main pressure focus is Lyman. The strongest event category is Drone / UAV activity. The system processed 33 OSINT events, 11521 short-term FIRMS hotspots and 10 active sectors.",
   "counts": {
     "priority_osint": 12,
     "pressure_points": 8,
-    "firms_3d": 13938,
-    "firms_10d": 43899,
+    "firms_3d": 11521,
+    "firms_10d": 43799,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."
