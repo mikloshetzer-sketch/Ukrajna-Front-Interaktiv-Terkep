@@ -10705,5 +10705,137 @@
       "deepstate": "cyterat/deepstate-map-data via GitHub API"
     },
     "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
+  },
+  {
+    "date": "2026-08-21",
+    "updated_utc": "2026-08-21T19:06:23.284819+00:00",
+    "front_activity_index": 69,
+    "status": "HIGH",
+    "components": {
+      "osint_density": 25,
+      "firms_activity": 20,
+      "territorial_change": 3.6,
+      "active_sectors": 10,
+      "critical_events": 10
+    },
+    "counts": {
+      "osint": 34,
+      "firms_3d": 11434,
+      "firms_10d": 46779,
+      "firms_30d": 106206,
+      "critical_events": 6,
+      "active_sectors": 10
+    },
+    "territorial": {
+      "available": true,
+      "error": null,
+      "previous_file": "deepstatemap_data_20260820.geojson",
+      "current_file": "deepstatemap_data_20260821.geojson",
+      "previous_total_km2": 116668.52,
+      "current_total_km2": 116669.7,
+      "russian_gain_km2": 1.19,
+      "ukrainian_recapture_km2": 0,
+      "net_change_km2": 1.19,
+      "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    },
+    "territorial_hotspot": {
+      "sector": "Kupiansk",
+      "lat": 49.71,
+      "lon": 37.61,
+      "zoom": 9,
+      "score": 100,
+      "change_km2": 1.19,
+      "method": "Top classified sector based on OSINT + FIRMS density"
+    },
+    "top_sectors": [
+      {
+        "sector": "Kupiansk",
+        "osint": 0,
+        "firms": 559,
+        "score": 100
+      },
+      {
+        "sector": "Lyman",
+        "osint": 0,
+        "firms": 546,
+        "score": 100
+      },
+      {
+        "sector": "Bakhmut-Toretsk",
+        "osint": 0,
+        "firms": 534,
+        "score": 100
+      },
+      {
+        "sector": "Pokrovsk",
+        "osint": 22,
+        "firms": 454,
+        "score": 100
+      },
+      {
+        "sector": "Kurakhove",
+        "osint": 0,
+        "firms": 449,
+        "score": 100
+      },
+      {
+        "sector": "Velyka Novosilka",
+        "osint": 0,
+        "firms": 783,
+        "score": 100
+      },
+      {
+        "sector": "Zaporizhzhia",
+        "osint": 2,
+        "firms": 335,
+        "score": 100
+      },
+      {
+        "sector": "Kherson-Dnipro",
+        "osint": 0,
+        "firms": 357,
+        "score": 100
+      }
+    ],
+    "top_events": [
+      {
+        "title": "Reported rear-area strike near Zaporizzsja",
+        "source": "forrás nélkül",
+        "sector": "Zaporizhzhia"
+      },
+      {
+        "title": "Ukraine’s Defense Intelligence and the Center for Countering Disinformation Publish Data on Six Russian Propagandists",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "«Drones, Drones, and More Drones»: Krisfaka, a Colombian Army Veteran, Talks About His Service in Magura",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Destruction Visible from Space: Satellite Images Show Aftermath of ‘Flamingo’ Strike on Progress Center in Samara",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "12 Incidents in a Month: Russia Increasingly Threatens Security of European Countries",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Ghana and Several African Nations Demand Russia Stop Recruiting Their Citizens for the War",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      }
+    ],
+    "data_sources": {
+      "osint": "data/osint_feed.json",
+      "firms_3d": "data/firms_3.json",
+      "firms_10d": "data/firms_10.json",
+      "firms_30d": "data/firms_30.json",
+      "deepstate": "cyterat/deepstate-map-data via GitHub API"
+    },
+    "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
   }
 ]
