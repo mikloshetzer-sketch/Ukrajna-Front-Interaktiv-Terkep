@@ -1,39 +1,27 @@
 {
-  "updated_utc": "2026-08-25T19:08:33.207775+00:00",
-  "date": "2026-08-25",
+  "updated_utc": "2026-08-26T20:34:22.626241+00:00",
+  "date": "2026-08-26",
   "territorial_sector": {
-    "sector": "No territorial delta",
-    "lat": null,
-    "lon": null,
-    "distance_km": null,
-    "change_type": "none",
-    "area_km2": 0,
-    "label": "No mapped daily territorial change"
+    "sector": "Kupiansk",
+    "lat": 49.83729485882353,
+    "lon": 37.6360942,
+    "distance_km": 14.3,
+    "change_type": "ukrainian_recapture",
+    "area_km2": 6.45,
+    "label": "Ukrainian recapture"
   },
   "priority_osint_events": [
     {
-      "title": "Reported drone strike near Kyiv",
+      "title": "Russian Offensive Campaign Assessment, August 25, 2026",
       "source": "forrás nélkül",
-      "sector": "Kyiv Area",
-      "lat": 50.45,
-      "lon": 30.523,
-      "distance_to_sector_km": 0,
-      "event_type": "drone",
-      "event_label": "Drone / UAV activity",
-      "icon": "🛩",
-      "priority": 106
-    },
-    {
-      "title": "Reported drone strike near Donyeck",
-      "source": "forrás nélkül",
-      "sector": "Kurakhove",
-      "lat": 48.015,
-      "lon": 37.802,
-      "distance_to_sector_km": 38.9,
-      "event_type": "drone",
-      "event_label": "Drone / UAV activity",
-      "icon": "🛩",
-      "priority": 103
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "frontline",
+      "event_label": "Frontline pressure",
+      "icon": "⚔",
+      "priority": 95
     },
     {
       "title": "Russian Offensive Campaign Assessment, August 24, 2026",
@@ -60,54 +48,6 @@
       "priority": 95
     },
     {
-      "title": "Russian Offensive Campaign Assessment, August 22, 2026",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "frontline",
-      "event_label": "Frontline pressure",
-      "icon": "⚔",
-      "priority": 95
-    },
-    {
-      "title": "Reported rear-area strike near Pokrovszk",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.282,
-      "lon": 37.181,
-      "distance_to_sector_km": 0.2,
-      "event_type": "strike",
-      "event_label": "Strike / attack",
-      "icon": "✹",
-      "priority": 91
-    },
-    {
-      "title": "Reported rear-area strike near Krasznodar",
-      "source": "forrás nélkül",
-      "sector": "Rear Area / Strategic Depth",
-      "lat": 45.035,
-      "lon": 38.976,
-      "distance_to_sector_km": 352.2,
-      "event_type": "strike",
-      "event_label": "Strike / attack",
-      "icon": "✹",
-      "priority": 86
-    },
-    {
-      "title": "Reported military-related update near Kijev",
-      "source": "forrás nélkül",
-      "sector": "Kyiv Area",
-      "lat": 50.45,
-      "lon": 30.523,
-      "distance_to_sector_km": 0,
-      "event_type": "military_update",
-      "event_label": "Military update",
-      "icon": "●",
-      "priority": 66
-    },
-    {
       "title": "Reported military-related update near Moszkva",
       "source": "forrás nélkül",
       "sector": "Moscow / Russia Interior",
@@ -130,31 +70,19 @@
       "event_label": "Military update",
       "icon": "●",
       "priority": 63
-    },
-    {
-      "title": "Reported military-related update near Dobropillja",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.461,
-      "lon": 37.085,
-      "distance_to_sector_km": 21.3,
-      "event_type": "military_update",
-      "event_label": "Military update",
-      "icon": "●",
-      "priority": 63
     }
   ],
   "front_pressure_points": [
     {
       "sector": "Kupiansk",
-      "title": "Kupiansk FIRMS thermal cluster",
+      "title": "Kupiansk territorial gain axis",
       "lat": 49.71,
       "lon": 37.61,
-      "score": 100,
+      "score": 130,
       "osint": 0,
-      "firms": 1706,
-      "pressure_type": "thermal_activity_cluster",
-      "icon": "🔥"
+      "firms": 899,
+      "pressure_type": "territorial_gain_axis",
+      "icon": "▲"
     },
     {
       "sector": "Lyman",
@@ -163,7 +91,7 @@
       "lon": 37.8,
       "score": 100,
       "osint": 1,
-      "firms": 1744,
+      "firms": 984,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -174,7 +102,7 @@
       "lon": 37.95,
       "score": 100,
       "osint": 0,
-      "firms": 1280,
+      "firms": 769,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -184,8 +112,8 @@
       "lat": 48.28,
       "lon": 37.18,
       "score": 100,
-      "osint": 5,
-      "firms": 952,
+      "osint": 3,
+      "firms": 506,
       "pressure_type": "osint_activity_cluster",
       "icon": "⚔"
     },
@@ -195,8 +123,8 @@
       "lat": 47.99,
       "lon": 37.28,
       "score": 100,
-      "osint": 1,
-      "firms": 912,
+      "osint": 0,
+      "firms": 637,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -207,7 +135,7 @@
       "lon": 36.84,
       "score": 100,
       "osint": 0,
-      "firms": 1198,
+      "firms": 1106,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -218,7 +146,7 @@
       "lon": 35.14,
       "score": 100,
       "osint": 0,
-      "firms": 1035,
+      "firms": 773,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -229,35 +157,27 @@
       "lon": 32.61,
       "score": 100,
       "osint": 0,
-      "firms": 761,
+      "firms": 592,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     }
   ],
   "event_categories": [
     {
-      "category": "Military update",
-      "count": 4
-    },
-    {
       "category": "Frontline pressure",
       "count": 3
     },
     {
-      "category": "Drone / UAV activity",
-      "count": 2
-    },
-    {
-      "category": "Strike / attack",
+      "category": "Military update",
       "count": 2
     }
   ],
-  "ai_summary": "Front activity is assessed as ELEVATED with an FAI value of 59. No measurable net territorial change was detected. The main pressure focus is Kupiansk. The strongest event category is Drone / UAV activity. The system processed 11 OSINT events, 18735 short-term FIRMS hotspots and 10 active sectors.",
+  "ai_summary": "Front activity is assessed as ELEVATED with an FAI value of 43. Russian forces gained approximately 0.14 km², closest to the Kupiansk sector. The main pressure focus is Kupiansk. The strongest event category is Frontline pressure. The system processed 5 OSINT events, 14001 short-term FIRMS hotspots and 10 active sectors.",
   "counts": {
-    "priority_osint": 11,
+    "priority_osint": 5,
     "pressure_points": 8,
-    "firms_3d": 18735,
-    "firms_10d": 55824,
+    "firms_3d": 14001,
+    "firms_10d": 53435,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."

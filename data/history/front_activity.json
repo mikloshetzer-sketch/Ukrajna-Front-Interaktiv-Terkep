@@ -11365,5 +11365,127 @@
       "deepstate": "cyterat/deepstate-map-data via GitHub API"
     },
     "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
+  },
+  {
+    "date": "2026-08-26",
+    "updated_utc": "2026-08-26T20:34:18.643064+00:00",
+    "front_activity_index": 43,
+    "status": "ELEVATED",
+    "components": {
+      "osint_density": 12.5,
+      "firms_activity": 20,
+      "territorial_change": 0.4,
+      "active_sectors": 10,
+      "critical_events": 0
+    },
+    "counts": {
+      "osint": 5,
+      "firms_3d": 14001,
+      "firms_10d": 53435,
+      "firms_30d": 128503,
+      "critical_events": 0,
+      "active_sectors": 10
+    },
+    "territorial": {
+      "available": true,
+      "error": null,
+      "previous_file": "deepstatemap_data_20260825.geojson",
+      "current_file": "deepstatemap_data_20260826.geojson",
+      "previous_total_km2": 116686.81,
+      "current_total_km2": 116686.95,
+      "russian_gain_km2": 0.14,
+      "ukrainian_recapture_km2": 0,
+      "net_change_km2": 0.14,
+      "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    },
+    "territorial_hotspot": {
+      "sector": "Kupiansk",
+      "lat": 49.71,
+      "lon": 37.61,
+      "zoom": 9,
+      "score": 100,
+      "change_km2": 0.14,
+      "method": "Top classified sector based on OSINT + FIRMS density"
+    },
+    "top_sectors": [
+      {
+        "sector": "Kupiansk",
+        "osint": 0,
+        "firms": 899,
+        "score": 100
+      },
+      {
+        "sector": "Lyman",
+        "osint": 1,
+        "firms": 984,
+        "score": 100
+      },
+      {
+        "sector": "Bakhmut-Toretsk",
+        "osint": 0,
+        "firms": 769,
+        "score": 100
+      },
+      {
+        "sector": "Pokrovsk",
+        "osint": 3,
+        "firms": 506,
+        "score": 100
+      },
+      {
+        "sector": "Kurakhove",
+        "osint": 0,
+        "firms": 637,
+        "score": 100
+      },
+      {
+        "sector": "Velyka Novosilka",
+        "osint": 0,
+        "firms": 1106,
+        "score": 100
+      },
+      {
+        "sector": "Zaporizhzhia",
+        "osint": 0,
+        "firms": 773,
+        "score": 100
+      },
+      {
+        "sector": "Kherson-Dnipro",
+        "osint": 0,
+        "firms": 592,
+        "score": 100
+      }
+    ],
+    "top_events": [
+      {
+        "title": "Reported military-related update near Szlovjanszk",
+        "source": "forrás nélkül",
+        "sector": "Lyman"
+      },
+      {
+        "title": "Russian Offensive Campaign Assessment, August 25, 2026",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Russian Offensive Campaign Assessment, August 24, 2026",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Russian Offensive Campaign Assessment, August 23, 2026",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      }
+    ],
+    "data_sources": {
+      "osint": "data/osint_feed.json",
+      "firms_3d": "data/firms_3.json",
+      "firms_10d": "data/firms_10.json",
+      "firms_30d": "data/firms_30.json",
+      "deepstate": "cyterat/deepstate-map-data via GitHub API"
+    },
+    "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
   }
 ]
