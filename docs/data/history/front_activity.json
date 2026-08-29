@@ -11751,5 +11751,137 @@
       "deepstate": "cyterat/deepstate-map-data via GitHub API"
     },
     "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
+  },
+  {
+    "date": "2026-08-29",
+    "updated_utc": "2026-08-29T01:49:51.917890+00:00",
+    "front_activity_index": 80,
+    "status": "CRITICAL",
+    "components": {
+      "osint_density": 25,
+      "firms_activity": 20,
+      "territorial_change": 14.6,
+      "active_sectors": 10,
+      "critical_events": 10
+    },
+    "counts": {
+      "osint": 32,
+      "firms_3d": 3910,
+      "firms_10d": 42744,
+      "firms_30d": 127599,
+      "critical_events": 9,
+      "active_sectors": 10
+    },
+    "territorial": {
+      "available": true,
+      "error": null,
+      "previous_file": "deepstatemap_data_20260827.geojson",
+      "current_file": "deepstatemap_data_20260828.geojson",
+      "previous_total_km2": 116690.41,
+      "current_total_km2": 116695.3,
+      "russian_gain_km2": 4.88,
+      "ukrainian_recapture_km2": 0,
+      "net_change_km2": 4.88,
+      "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    },
+    "territorial_hotspot": {
+      "sector": "Kupiansk",
+      "lat": 49.71,
+      "lon": 37.61,
+      "zoom": 9,
+      "score": 100,
+      "change_km2": 4.88,
+      "method": "Top classified sector based on OSINT + FIRMS density"
+    },
+    "top_sectors": [
+      {
+        "sector": "Kupiansk",
+        "osint": 1,
+        "firms": 173,
+        "score": 100
+      },
+      {
+        "sector": "Pokrovsk",
+        "osint": 19,
+        "firms": 35,
+        "score": 100
+      },
+      {
+        "sector": "Kurakhove",
+        "osint": 0,
+        "firms": 186,
+        "score": 100
+      },
+      {
+        "sector": "Velyka Novosilka",
+        "osint": 0,
+        "firms": 268,
+        "score": 100
+      },
+      {
+        "sector": "Zaporizhzhia",
+        "osint": 1,
+        "firms": 123,
+        "score": 100
+      },
+      {
+        "sector": "Other / Unclassified",
+        "osint": 10,
+        "firms": 2905,
+        "score": 100
+      },
+      {
+        "sector": "Crimea",
+        "osint": 1,
+        "firms": 74,
+        "score": 79
+      },
+      {
+        "sector": "Kharkiv",
+        "osint": 0,
+        "firms": 68,
+        "score": 61
+      }
+    ],
+    "top_events": [
+      {
+        "title": "One Casualty, Four Robots: How the Most Difficult Medical Evacuations at the Front Are Carried Out",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Ukraine’s Defence Industry Gains New Opportunities: Defence City Now Brings Together 51 Companies",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Reported rear-area strike near Rosztov",
+        "source": "forrás nélkül",
+        "sector": "Other / Unclassified"
+      },
+      {
+        "title": "Reported rear-area strike near Zaporizzsja",
+        "source": "forrás nélkül",
+        "sector": "Zaporizhzhia"
+      },
+      {
+        "title": "Reported drone strike near Krím",
+        "source": "forrás nélkül",
+        "sector": "Crimea"
+      },
+      {
+        "title": "Russian Offensive Campaign Assessment, August 27, 2026",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      }
+    ],
+    "data_sources": {
+      "osint": "data/osint_feed.json",
+      "firms_3d": "data/firms_3.json",
+      "firms_10d": "data/firms_10.json",
+      "firms_30d": "data/firms_30.json",
+      "deepstate": "cyterat/deepstate-map-data via GitHub API"
+    },
+    "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
   }
 ]

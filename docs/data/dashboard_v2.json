@@ -1,6 +1,6 @@
 {
-  "updated_utc": "2026-08-28T19:59:14.435838+00:00",
-  "date": "2026-08-28",
+  "updated_utc": "2026-08-29T01:49:54.784708+00:00",
+  "date": "2026-08-29",
   "territorial_sector": {
     "sector": "Bakhmut-Toretsk",
     "lat": 48.77956521818182,
@@ -158,6 +158,17 @@
   ],
   "front_pressure_points": [
     {
+      "sector": "Kupiansk",
+      "title": "Kupiansk FIRMS thermal cluster",
+      "lat": 49.71,
+      "lon": 37.61,
+      "score": 100,
+      "osint": 1,
+      "firms": 173,
+      "pressure_type": "thermal_activity_cluster",
+      "icon": "🔥"
+    },
+    {
       "sector": "Pokrovsk",
       "title": "Pokrovsk OSINT activity cluster",
       "lat": 48.28,
@@ -197,18 +208,7 @@
       "lon": 35.14,
       "score": 100,
       "osint": 1,
-      "firms": 120,
-      "pressure_type": "thermal_activity_cluster",
-      "icon": "🔥"
-    },
-    {
-      "sector": "Kupiansk",
-      "title": "Kupiansk FIRMS thermal cluster",
-      "lat": 49.71,
-      "lon": 37.61,
-      "score": 80,
-      "osint": 1,
-      "firms": 75,
+      "firms": 123,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -217,9 +217,9 @@
       "title": "Crimea FIRMS thermal cluster",
       "lat": 45.2,
       "lon": 34.1,
-      "score": 77,
+      "score": 79,
       "osint": 1,
-      "firms": 72,
+      "firms": 74,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -228,9 +228,9 @@
       "title": "Kharkiv FIRMS thermal cluster",
       "lat": 49.99,
       "lon": 36.23,
-      "score": 32,
+      "score": 61,
       "osint": 0,
-      "firms": 36,
+      "firms": 68,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     }
@@ -249,12 +249,12 @@
       "count": 3
     }
   ],
-  "ai_summary": "Front activity is assessed as CRITICAL with an FAI value of 80. Russian forces gained approximately 4.88 km², closest to the Bakhmut-Toretsk sector. The main pressure focus is Pokrovsk. The strongest event category is Drone / UAV activity. The system processed 32 OSINT events, 3104 short-term FIRMS hotspots and 10 active sectors.",
+  "ai_summary": "Front activity is assessed as CRITICAL with an FAI value of 80. Russian forces gained approximately 4.88 km², closest to the Bakhmut-Toretsk sector. The main pressure focus is Kupiansk. The strongest event category is Drone / UAV activity. The system processed 32 OSINT events, 3910 short-term FIRMS hotspots and 10 active sectors.",
   "counts": {
     "priority_osint": 12,
     "pressure_points": 7,
-    "firms_3d": 3104,
-    "firms_10d": 41938,
+    "firms_3d": 3910,
+    "firms_10d": 42744,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."

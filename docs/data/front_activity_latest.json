@@ -1,6 +1,6 @@
 {
-  "date": "2026-08-28",
-  "updated_utc": "2026-08-28T19:59:11.755639+00:00",
+  "date": "2026-08-29",
+  "updated_utc": "2026-08-29T01:49:51.917890+00:00",
   "front_activity_index": 80,
   "status": "CRITICAL",
   "components": {
@@ -12,9 +12,9 @@
   },
   "counts": {
     "osint": 32,
-    "firms_3d": 3104,
-    "firms_10d": 41938,
-    "firms_30d": 126793,
+    "firms_3d": 3910,
+    "firms_10d": 42744,
+    "firms_30d": 127599,
     "critical_events": 9,
     "active_sectors": 10
   },
@@ -31,15 +31,21 @@
     "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
-    "sector": "Pokrovsk",
-    "lat": 48.28,
-    "lon": 37.18,
+    "sector": "Kupiansk",
+    "lat": 49.71,
+    "lon": 37.61,
     "zoom": 9,
     "score": 100,
     "change_km2": 4.88,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
+    {
+      "sector": "Kupiansk",
+      "osint": 1,
+      "firms": 173,
+      "score": 100
+    },
     {
       "sector": "Pokrovsk",
       "osint": 19,
@@ -61,32 +67,26 @@
     {
       "sector": "Zaporizhzhia",
       "osint": 1,
-      "firms": 120,
+      "firms": 123,
       "score": 100
     },
     {
       "sector": "Other / Unclassified",
       "osint": 10,
-      "firms": 2252,
+      "firms": 2905,
       "score": 100
-    },
-    {
-      "sector": "Kupiansk",
-      "osint": 1,
-      "firms": 75,
-      "score": 80
     },
     {
       "sector": "Crimea",
       "osint": 1,
-      "firms": 72,
-      "score": 77
+      "firms": 74,
+      "score": 79
     },
     {
       "sector": "Kharkiv",
       "osint": 0,
-      "firms": 36,
-      "score": 32
+      "firms": 68,
+      "score": 61
     }
   ],
   "top_events": [
