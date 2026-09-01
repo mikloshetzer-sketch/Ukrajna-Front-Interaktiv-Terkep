@@ -12147,5 +12147,137 @@
       "deepstate": "cyterat/deepstate-map-data via GitHub API"
     },
     "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
+  },
+  {
+    "date": "2026-09-01",
+    "updated_utc": "2026-09-01T19:29:58.467451+00:00",
+    "front_activity_index": 75,
+    "status": "HIGH",
+    "components": {
+      "osint_density": 25,
+      "firms_activity": 20,
+      "territorial_change": 9.8,
+      "active_sectors": 10,
+      "critical_events": 10
+    },
+    "counts": {
+      "osint": 27,
+      "firms_3d": 11416,
+      "firms_10d": 37805,
+      "firms_30d": 128921,
+      "critical_events": 6,
+      "active_sectors": 10
+    },
+    "territorial": {
+      "available": true,
+      "error": null,
+      "previous_file": "deepstatemap_data_20260831.geojson",
+      "current_file": "deepstatemap_data_20260901.geojson",
+      "previous_total_km2": 116707.24,
+      "current_total_km2": 116710.49,
+      "russian_gain_km2": 3.25,
+      "ukrainian_recapture_km2": 0,
+      "net_change_km2": 3.25,
+      "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    },
+    "territorial_hotspot": {
+      "sector": "Kupiansk",
+      "lat": 49.71,
+      "lon": 37.61,
+      "zoom": 9,
+      "score": 100,
+      "change_km2": 3.25,
+      "method": "Top classified sector based on OSINT + FIRMS density"
+    },
+    "top_sectors": [
+      {
+        "sector": "Kupiansk",
+        "osint": 0,
+        "firms": 1493,
+        "score": 100
+      },
+      {
+        "sector": "Lyman",
+        "osint": 0,
+        "firms": 889,
+        "score": 100
+      },
+      {
+        "sector": "Bakhmut-Toretsk",
+        "osint": 0,
+        "firms": 450,
+        "score": 100
+      },
+      {
+        "sector": "Pokrovsk",
+        "osint": 23,
+        "firms": 308,
+        "score": 100
+      },
+      {
+        "sector": "Kurakhove",
+        "osint": 0,
+        "firms": 251,
+        "score": 100
+      },
+      {
+        "sector": "Velyka Novosilka",
+        "osint": 0,
+        "firms": 345,
+        "score": 100
+      },
+      {
+        "sector": "Zaporizhzhia",
+        "osint": 0,
+        "firms": 805,
+        "score": 100
+      },
+      {
+        "sector": "Kherson-Dnipro",
+        "osint": 0,
+        "firms": 1027,
+        "score": 100
+      }
+    ],
+    "top_events": [
+      {
+        "title": "Artem Romaniukov Appointed Acting Head of the Defence Procurement Agency",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Enemy Command Post, Communications Hub, UAV Launch Sites and Warehouses Hit — General Staff of the Armed Forces of Ukraine",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "“September Could Change a Lot”: President Announces New Long-Range Strikes in Response to Russian Attacks",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "“We Are Discussing Setting a Date for a Visit to Ukraine” — President Holds Talks with Steve Witkoff and Jared Kushner",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Russian “Rusich” Militant Convicted in Finland for 2014 Crimes Against Ukrainian Soldiers",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Ukraine’s Defence Intelligence Publishes Details of russia’s 3M22 Zircon Ballistic Missile",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      }
+    ],
+    "data_sources": {
+      "osint": "data/osint_feed.json",
+      "firms_3d": "data/firms_3.json",
+      "firms_10d": "data/firms_10.json",
+      "firms_30d": "data/firms_30.json",
+      "deepstate": "cyterat/deepstate-map-data via GitHub API"
+    },
+    "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
   }
 ]

@@ -1,27 +1,39 @@
 {
-  "updated_utc": "2026-08-31T22:58:03.522129+00:00",
-  "date": "2026-08-31",
+  "updated_utc": "2026-09-01T19:30:02.072883+00:00",
+  "date": "2026-09-01",
   "territorial_sector": {
-    "sector": "Kupiansk",
-    "lat": 49.808875699999994,
-    "lon": 37.61075387272728,
-    "distance_km": 11.0,
-    "change_type": "ukrainian_recapture",
-    "area_km2": 2.39,
-    "label": "Ukrainian recapture"
+    "sector": "Bakhmut-Toretsk",
+    "lat": 48.71116046666666,
+    "lon": 37.83488034999999,
+    "distance_km": 16.9,
+    "change_type": "russian_gain",
+    "area_km2": 3.27,
+    "label": "Russian territorial gain"
   },
   "priority_osint_events": [
     {
-      "title": "Reported drone strike near Kijev",
+      "title": "Reported drone strike near Moszkva",
       "source": "forrás nélkül",
-      "sector": "Kyiv Area",
-      "lat": 50.45,
-      "lon": 30.523,
+      "sector": "Moscow / Russia Interior",
+      "lat": 55.755,
+      "lon": 37.617,
       "distance_to_sector_km": 0,
       "event_type": "drone",
       "event_label": "Drone / UAV activity",
       "icon": "🛩",
       "priority": 106
+    },
+    {
+      "title": "Enemy Command Post, Communications Hub, UAV Launch Sites and Warehouses Hit — General Staff of the Armed Forces of Ukraine",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "drone",
+      "event_label": "Drone / UAV activity",
+      "icon": "🛩",
+      "priority": 103
     },
     {
       "title": "Air Defence, Fibre-Optic Drones and Robots: Ukraine Sets Out the Defence Forces’ Urgent Needs to Latvia",
@@ -60,6 +72,30 @@
       "priority": 103
     },
     {
+      "title": "Ukraine’s Defence Intelligence Publishes Details of russia’s 3M22 Zircon Ballistic Missile",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "missile",
+      "event_label": "Missile / rocket strike",
+      "icon": "☄",
+      "priority": 101
+    },
+    {
+      "title": "Russian Offensive Campaign Assessment, August 31, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "frontline",
+      "event_label": "Frontline pressure",
+      "icon": "⚔",
+      "priority": 95
+    },
+    {
       "title": "Russian Offensive Campaign Assessment, August 30, 2026",
       "source": "forrás nélkül",
       "sector": "Pokrovsk",
@@ -84,16 +120,16 @@
       "priority": 95
     },
     {
-      "title": "Russian Offensive Campaign Assessment, August 28, 2026",
+      "title": "“September Could Change a Lot”: President Announces New Long-Range Strikes in Response to Russian Attacks",
       "source": "forrás nélkül",
       "sector": "Pokrovsk",
       "lat": 48.5,
       "lon": 36.5,
       "distance_to_sector_km": 55.9,
-      "event_type": "frontline",
-      "event_label": "Frontline pressure",
-      "icon": "⚔",
-      "priority": 95
+      "event_type": "strike",
+      "event_label": "Strike / attack",
+      "icon": "✹",
+      "priority": 91
     },
     {
       "title": "«Long-Range Sanctions» Are Working: How Ukraine’s Strikes Have Hit Russia’s Fuel System",
@@ -108,18 +144,6 @@
       "priority": 91
     },
     {
-      "title": "Reported military-related update near Kijev",
-      "source": "forrás nélkül",
-      "sector": "Kyiv Area",
-      "lat": 50.45,
-      "lon": 30.523,
-      "distance_to_sector_km": 0,
-      "event_type": "military_update",
-      "event_label": "Military update",
-      "icon": "●",
-      "priority": 66
-    },
-    {
       "title": "Reported military-related update near Moszkva",
       "source": "forrás nélkül",
       "sector": "Moscow / Russia Interior",
@@ -130,43 +154,30 @@
       "event_label": "Military update",
       "icon": "●",
       "priority": 66
-    },
-    {
-      "title": "Interim Command: The US Reveals Details of the Stopgap «Flying White House» Air Force One",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "military_update",
-      "event_label": "Military update",
-      "icon": "●",
-      "priority": 63
-    },
-    {
-      "title": "Not Commanding Troops but Building a System: Why Yevhenii Khmara’s Experience Could Change the Ministry of Defence",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "military_update",
-      "event_label": "Military update",
-      "icon": "●",
-      "priority": 63
     }
   ],
   "front_pressure_points": [
     {
-      "sector": "Kupiansk",
-      "title": "Kupiansk territorial gain axis",
-      "lat": 49.71,
-      "lon": 37.61,
+      "sector": "Bakhmut-Toretsk",
+      "title": "Bakhmut-Toretsk territorial gain axis",
+      "lat": 48.58,
+      "lon": 37.95,
       "score": 130,
       "osint": 0,
-      "firms": 714,
+      "firms": 450,
       "pressure_type": "territorial_gain_axis",
       "icon": "▲"
+    },
+    {
+      "sector": "Kupiansk",
+      "title": "Kupiansk FIRMS thermal cluster",
+      "lat": 49.71,
+      "lon": 37.61,
+      "score": 100,
+      "osint": 0,
+      "firms": 1493,
+      "pressure_type": "thermal_activity_cluster",
+      "icon": "🔥"
     },
     {
       "sector": "Lyman",
@@ -175,18 +186,7 @@
       "lon": 37.8,
       "score": 100,
       "osint": 0,
-      "firms": 513,
-      "pressure_type": "thermal_activity_cluster",
-      "icon": "🔥"
-    },
-    {
-      "sector": "Bakhmut-Toretsk",
-      "title": "Bakhmut-Toretsk FIRMS thermal cluster",
-      "lat": 48.58,
-      "lon": 37.95,
-      "score": 100,
-      "osint": 0,
-      "firms": 242,
+      "firms": 889,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -196,8 +196,8 @@
       "lat": 48.28,
       "lon": 37.18,
       "score": 100,
-      "osint": 17,
-      "firms": 153,
+      "osint": 23,
+      "firms": 308,
       "pressure_type": "osint_activity_cluster",
       "icon": "⚔"
     },
@@ -208,7 +208,7 @@
       "lon": 37.28,
       "score": 100,
       "osint": 0,
-      "firms": 201,
+      "firms": 251,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -219,7 +219,7 @@
       "lon": 36.84,
       "score": 100,
       "osint": 0,
-      "firms": 169,
+      "firms": 345,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -230,7 +230,7 @@
       "lon": 35.14,
       "score": 100,
       "osint": 0,
-      "firms": 598,
+      "firms": 805,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -241,7 +241,7 @@
       "lon": 32.61,
       "score": 100,
       "osint": 0,
-      "firms": 866,
+      "firms": 1027,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     }
@@ -249,11 +249,7 @@
   "event_categories": [
     {
       "category": "Drone / UAV activity",
-      "count": 4
-    },
-    {
-      "category": "Military update",
-      "count": 4
+      "count": 5
     },
     {
       "category": "Frontline pressure",
@@ -261,15 +257,23 @@
     },
     {
       "category": "Strike / attack",
+      "count": 2
+    },
+    {
+      "category": "Missile / rocket strike",
+      "count": 1
+    },
+    {
+      "category": "Military update",
       "count": 1
     }
   ],
-  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 70. Ukrainian forces recaptured approximately 2.32 km², closest to the Kupiansk sector. The main pressure focus is Kupiansk. The strongest event category is Drone / UAV activity. The system processed 20 OSINT events, 9482 short-term FIRMS hotspots and 10 active sectors.",
+  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 75. Russian forces gained approximately 3.25 km², closest to the Bakhmut-Toretsk sector. The main pressure focus is Bakhmut-Toretsk. The strongest event category is Drone / UAV activity. The system processed 27 OSINT events, 11416 short-term FIRMS hotspots and 10 active sectors.",
   "counts": {
     "priority_osint": 12,
     "pressure_points": 8,
-    "firms_3d": 9482,
-    "firms_10d": 40843,
+    "firms_3d": 11416,
+    "firms_10d": 37805,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."
