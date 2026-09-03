@@ -1,14 +1,14 @@
 {
-  "updated_utc": "2026-09-02T21:11:45.137107+00:00",
-  "date": "2026-09-02",
+  "updated_utc": "2026-09-03T21:12:54.186659+00:00",
+  "date": "2026-09-03",
   "territorial_sector": {
-    "sector": "Velyka Novosilka",
-    "lat": 47.616538842857146,
-    "lon": 36.12372900714286,
-    "distance_km": 59.1,
-    "change_type": "russian_gain",
-    "area_km2": 10.81,
-    "label": "Russian territorial gain"
+    "sector": "No territorial delta",
+    "lat": null,
+    "lon": null,
+    "distance_km": null,
+    "change_type": "none",
+    "area_km2": 0,
+    "label": "No mapped daily territorial change"
   },
   "priority_osint_events": [
     {
@@ -36,18 +36,6 @@
       "priority": 103
     },
     {
-      "title": "Reported drone strike near Zaporizzsja",
-      "source": "forrás nélkül",
-      "sector": "Zaporizhzhia",
-      "lat": 47.838,
-      "lon": 35.139,
-      "distance_to_sector_km": 0.2,
-      "event_type": "drone",
-      "event_label": "Drone / UAV activity",
-      "icon": "🛩",
-      "priority": 103
-    },
-    {
       "title": "Enemy Command Post, Communications Hub, UAV Launch Sites and Warehouses Hit — General Staff of the Armed Forces of Ukraine",
       "source": "forrás nélkül",
       "sector": "Pokrovsk",
@@ -60,43 +48,7 @@
       "priority": 103
     },
     {
-      "title": "Air Defence, Fibre-Optic Drones and Robots: Ukraine Sets Out the Defence Forces’ Urgent Needs to Latvia",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "drone",
-      "event_label": "Drone / UAV activity",
-      "icon": "🛩",
-      "priority": 103
-    },
-    {
-      "title": "FPV Drones and Offensive Combat: Norway Trains Ukrainian Troops to NATO Standards",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "drone",
-      "event_label": "Drone / UAV activity",
-      "icon": "🛩",
-      "priority": 103
-    },
-    {
-      "title": "Reported missile strike near Szlovjanszk",
-      "source": "forrás nélkül",
-      "sector": "Lyman",
-      "lat": 48.866,
-      "lon": 37.616,
-      "distance_to_sector_km": 19.3,
-      "event_type": "missile",
-      "event_label": "Missile / rocket strike",
-      "icon": "☄",
-      "priority": 101
-    },
-    {
-      "title": "Ukraine’s Defence Intelligence Publishes Details of russia’s 3M22 Zircon Ballistic Missile",
+      "title": "Ukraine to Receive Additional Air Defense Missiles from Germany",
       "source": "forrás nélkül",
       "sector": "Pokrovsk",
       "lat": 48.5,
@@ -106,6 +58,54 @@
       "event_label": "Missile / rocket strike",
       "icon": "☄",
       "priority": 101
+    },
+    {
+      "title": "Mach 3.5 Missiles and Laser Guidance: 3rd Army Corps Shows RapidRanger Air Defense System",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "missile",
+      "event_label": "Missile / rocket strike",
+      "icon": "☄",
+      "priority": 101
+    },
+    {
+      "title": "Reported ground assault or offensive activity near Kijev",
+      "source": "forrás nélkül",
+      "sector": "Kyiv Area",
+      "lat": 50.45,
+      "lon": 30.523,
+      "distance_to_sector_km": 0,
+      "event_type": "frontline",
+      "event_label": "Frontline pressure",
+      "icon": "⚔",
+      "priority": 98
+    },
+    {
+      "title": "12 Major Oil Refineries, Two Defense Industry Facilities and Logistics Hit — August Deep Strike Results in russia",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "logistics",
+      "event_label": "Logistics / infrastructure strike",
+      "icon": "⛓",
+      "priority": 97
+    },
+    {
+      "title": "Russian Offensive Campaign Assessment, September 2, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "frontline",
+      "event_label": "Frontline pressure",
+      "icon": "⚔",
+      "priority": 95
     },
     {
       "title": "“Action Is Needed Now”: Volodymyr Zelenskyy Urges Partners to Strengthen Air Defense and Pressure russia After New Wave of Attacks",
@@ -144,30 +144,19 @@
       "priority": 95
     },
     {
-      "title": "Russian Offensive Campaign Assessment, August 30, 2026",
+      "title": "General Staff Reveals Details of Strike on NOVATEK-Ust-Luga: Fire Breaks Out at the Facility",
       "source": "forrás nélkül",
       "sector": "Pokrovsk",
       "lat": 48.5,
       "lon": 36.5,
       "distance_to_sector_km": 55.9,
-      "event_type": "frontline",
-      "event_label": "Frontline pressure",
-      "icon": "⚔",
-      "priority": 95
+      "event_type": "strike",
+      "event_label": "Strike / attack",
+      "icon": "✹",
+      "priority": 91
     }
   ],
   "front_pressure_points": [
-    {
-      "sector": "Velyka Novosilka",
-      "title": "Velyka Novosilka territorial gain axis",
-      "lat": 47.84,
-      "lon": 36.84,
-      "score": 130,
-      "osint": 0,
-      "firms": 588,
-      "pressure_type": "territorial_gain_axis",
-      "icon": "▲"
-    },
     {
       "sector": "Kupiansk",
       "title": "Kupiansk FIRMS thermal cluster",
@@ -175,7 +164,7 @@
       "lon": 37.61,
       "score": 100,
       "osint": 0,
-      "firms": 1416,
+      "firms": 1191,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -185,8 +174,8 @@
       "lat": 48.99,
       "lon": 37.8,
       "score": 100,
-      "osint": 1,
-      "firms": 1177,
+      "osint": 0,
+      "firms": 1141,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -197,7 +186,7 @@
       "lon": 37.95,
       "score": 100,
       "osint": 0,
-      "firms": 579,
+      "firms": 739,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -208,7 +197,7 @@
       "lon": 37.18,
       "score": 100,
       "osint": 23,
-      "firms": 307,
+      "firms": 372,
       "pressure_type": "osint_activity_cluster",
       "icon": "⚔"
     },
@@ -219,7 +208,18 @@
       "lon": 37.28,
       "score": 100,
       "osint": 0,
-      "firms": 328,
+      "firms": 477,
+      "pressure_type": "thermal_activity_cluster",
+      "icon": "🔥"
+    },
+    {
+      "sector": "Velyka Novosilka",
+      "title": "Velyka Novosilka FIRMS thermal cluster",
+      "lat": 47.84,
+      "lon": 36.84,
+      "score": 100,
+      "osint": 0,
+      "firms": 625,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -229,8 +229,8 @@
       "lat": 47.84,
       "lon": 35.14,
       "score": 100,
-      "osint": 2,
-      "firms": 774,
+      "osint": 0,
+      "firms": 689,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -241,31 +241,39 @@
       "lon": 32.61,
       "score": 100,
       "osint": 0,
-      "firms": 825,
+      "firms": 595,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     }
   ],
   "event_categories": [
     {
-      "category": "Drone / UAV activity",
-      "count": 6
+      "category": "Frontline pressure",
+      "count": 5
     },
     {
-      "category": "Frontline pressure",
-      "count": 4
+      "category": "Drone / UAV activity",
+      "count": 3
     },
     {
       "category": "Missile / rocket strike",
       "count": 2
+    },
+    {
+      "category": "Logistics / infrastructure strike",
+      "count": 1
+    },
+    {
+      "category": "Strike / attack",
+      "count": 1
     }
   ],
-  "ai_summary": "Front activity is assessed as CRITICAL with an FAI value of 100. Russian forces gained approximately 21.54 km², closest to the Velyka Novosilka sector. The main pressure focus is Velyka Novosilka. The strongest event category is Drone / UAV activity. The system processed 33 OSINT events, 11608 short-term FIRMS hotspots and 10 active sectors.",
+  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 65. No measurable net territorial change was detected. The main pressure focus is Kupiansk. The strongest event category is Drone / UAV activity. The system processed 27 OSINT events, 11706 short-term FIRMS hotspots and 10 active sectors.",
   "counts": {
     "priority_osint": 12,
     "pressure_points": 8,
-    "firms_3d": 11608,
-    "firms_10d": 34007,
+    "firms_3d": 11706,
+    "firms_10d": 31274,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."
