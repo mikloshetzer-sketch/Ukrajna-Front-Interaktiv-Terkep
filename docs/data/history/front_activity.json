@@ -12543,5 +12543,137 @@
       "deepstate": "cyterat/deepstate-map-data via GitHub API"
     },
     "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
+  },
+  {
+    "date": "2026-09-04",
+    "updated_utc": "2026-09-04T20:55:39.847712+00:00",
+    "front_activity_index": 100,
+    "status": "CRITICAL",
+    "components": {
+      "osint_density": 25,
+      "firms_activity": 20,
+      "territorial_change": 35,
+      "active_sectors": 10,
+      "critical_events": 10
+    },
+    "counts": {
+      "osint": 35,
+      "firms_3d": 9774,
+      "firms_10d": 28518,
+      "firms_30d": 131023,
+      "critical_events": 10,
+      "active_sectors": 10
+    },
+    "territorial": {
+      "available": true,
+      "error": null,
+      "previous_file": "deepstatemap_data_20260903.geojson",
+      "current_file": "deepstatemap_data_20260904.geojson",
+      "previous_total_km2": 116732.03,
+      "current_total_km2": 116751.09,
+      "russian_gain_km2": 19.06,
+      "ukrainian_recapture_km2": 0,
+      "net_change_km2": 19.06,
+      "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    },
+    "territorial_hotspot": {
+      "sector": "Kupiansk",
+      "lat": 49.71,
+      "lon": 37.61,
+      "zoom": 9,
+      "score": 100,
+      "change_km2": 19.06,
+      "method": "Top classified sector based on OSINT + FIRMS density"
+    },
+    "top_sectors": [
+      {
+        "sector": "Kupiansk",
+        "osint": 0,
+        "firms": 408,
+        "score": 100
+      },
+      {
+        "sector": "Lyman",
+        "osint": 0,
+        "firms": 841,
+        "score": 100
+      },
+      {
+        "sector": "Bakhmut-Toretsk",
+        "osint": 0,
+        "firms": 577,
+        "score": 100
+      },
+      {
+        "sector": "Pokrovsk",
+        "osint": 22,
+        "firms": 251,
+        "score": 100
+      },
+      {
+        "sector": "Kurakhove",
+        "osint": 1,
+        "firms": 439,
+        "score": 100
+      },
+      {
+        "sector": "Velyka Novosilka",
+        "osint": 0,
+        "firms": 493,
+        "score": 100
+      },
+      {
+        "sector": "Zaporizhzhia",
+        "osint": 0,
+        "firms": 491,
+        "score": 100
+      },
+      {
+        "sector": "Kherson-Dnipro",
+        "osint": 0,
+        "firms": 389,
+        "score": 100
+      }
+    ],
+    "top_events": [
+      {
+        "title": "Reported rear-area strike near Donyeck",
+        "source": "forrás nélkül",
+        "sector": "Kurakhove"
+      },
+      {
+        "title": "Reported rear-area strike near Harkiv",
+        "source": "forrás nélkül",
+        "sector": "Kharkiv"
+      },
+      {
+        "title": "Reported ground assault or offensive activity near Odessza",
+        "source": "forrás nélkül",
+        "sector": "Other / Unclassified"
+      },
+      {
+        "title": "Russian Offensive Campaign Assessment, September 3, 2026",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "The IRIS-T Family Gets a New Member: German Arms Maker Unveils Next-Generation Short-Range Air Defense System",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Mykhailo Drapatyi Publishes His Principles for the Management and Development of the Armed Forces of Ukraine: What They Envision",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      }
+    ],
+    "data_sources": {
+      "osint": "data/osint_feed.json",
+      "firms_3d": "data/firms_3.json",
+      "firms_10d": "data/firms_10.json",
+      "firms_30d": "data/firms_30.json",
+      "deepstate": "cyterat/deepstate-map-data via GitHub API"
+    },
+    "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
   }
 ]
