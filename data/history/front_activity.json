@@ -13066,5 +13066,137 @@
       "deepstate": "cyterat/deepstate-map-data via GitHub API"
     },
     "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
+  },
+  {
+    "date": "2026-09-08",
+    "updated_utc": "2026-09-08T21:19:13.919728+00:00",
+    "front_activity_index": 85,
+    "status": "CRITICAL",
+    "components": {
+      "osint_density": 25,
+      "firms_activity": 20,
+      "territorial_change": 19.6,
+      "active_sectors": 10,
+      "critical_events": 10
+    },
+    "counts": {
+      "osint": 27,
+      "firms_3d": 10388,
+      "firms_10d": 34892,
+      "firms_30d": 123235,
+      "critical_events": 8,
+      "active_sectors": 10
+    },
+    "territorial": {
+      "available": true,
+      "error": null,
+      "previous_file": "deepstatemap_data_20260907.geojson",
+      "current_file": "deepstatemap_data_20260908.geojson",
+      "previous_total_km2": 116754.49,
+      "current_total_km2": 116761.02,
+      "russian_gain_km2": 6.54,
+      "ukrainian_recapture_km2": 0,
+      "net_change_km2": 6.54,
+      "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    },
+    "territorial_hotspot": {
+      "sector": "Pokrovsk",
+      "lat": 48.28,
+      "lon": 37.18,
+      "zoom": 9,
+      "score": 100,
+      "change_km2": 6.54,
+      "method": "Top classified sector based on OSINT + FIRMS density"
+    },
+    "top_sectors": [
+      {
+        "sector": "Pokrovsk",
+        "osint": 11,
+        "firms": 39,
+        "score": 100
+      },
+      {
+        "sector": "Kurakhove",
+        "osint": 0,
+        "firms": 113,
+        "score": 100
+      },
+      {
+        "sector": "Zaporizhzhia",
+        "osint": 2,
+        "firms": 109,
+        "score": 100
+      },
+      {
+        "sector": "Crimea",
+        "osint": 1,
+        "firms": 108,
+        "score": 100
+      },
+      {
+        "sector": "Other / Unclassified",
+        "osint": 13,
+        "firms": 9730,
+        "score": 100
+      },
+      {
+        "sector": "Kherson-Dnipro",
+        "osint": 0,
+        "firms": 82,
+        "score": 74
+      },
+      {
+        "sector": "Velyka Novosilka",
+        "osint": 0,
+        "firms": 71,
+        "score": 64
+      },
+      {
+        "sector": "Kupiansk",
+        "osint": 0,
+        "firms": 37,
+        "score": 33
+      }
+    ],
+    "top_events": [
+      {
+        "title": "Paralysis of russia’s oil and gas giants: General Staff confirms shutdown of LUKOIL and NOVATEK plants after Ukrainian strikes",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Ukraine and Italy discuss steps to strengthen Ukrainian air defense",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Bastion complex — carrier of Zircon and Oniks missiles — struck in Crimea: DIU operation details",
+        "source": "forrás nélkül",
+        "sector": "Crimea"
+      },
+      {
+        "title": "Two levels of air raid alerts introduced in Ukraine: how will they work?",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "“Hedgehog” on tracks: 58th Brigade shows IFV with unique iron armor against enemy drones",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Prototypes already exist: Ukraine develops high-speed interceptors against jet-powered “Shaheds”",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      }
+    ],
+    "data_sources": {
+      "osint": "data/osint_feed.json",
+      "firms_3d": "data/firms_3.json",
+      "firms_10d": "data/firms_10.json",
+      "firms_30d": "data/firms_30.json",
+      "deepstate": "cyterat/deepstate-map-data via GitHub API"
+    },
+    "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
   }
 ]
