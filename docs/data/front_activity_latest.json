@@ -1,95 +1,115 @@
 {
-  "date": "2026-09-08",
-  "updated_utc": "2026-09-08T21:19:13.919728+00:00",
-  "front_activity_index": 85,
+  "date": "2026-09-09",
+  "updated_utc": "2026-09-09T19:13:43.602345+00:00",
+  "front_activity_index": 100,
   "status": "CRITICAL",
   "components": {
     "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 19.6,
+    "territorial_change": 35,
     "active_sectors": 10,
     "critical_events": 10
   },
   "counts": {
     "osint": 27,
-    "firms_3d": 10388,
-    "firms_10d": 34892,
-    "firms_30d": 123235,
-    "critical_events": 8,
+    "firms_3d": 8571,
+    "firms_10d": 34264,
+    "firms_30d": 122588,
+    "critical_events": 5,
     "active_sectors": 10
   },
   "territorial": {
     "available": true,
     "error": null,
-    "previous_file": "deepstatemap_data_20260907.geojson",
-    "current_file": "deepstatemap_data_20260908.geojson",
-    "previous_total_km2": 116754.49,
-    "current_total_km2": 116761.02,
-    "russian_gain_km2": 6.54,
+    "previous_file": "deepstatemap_data_20260908.geojson",
+    "current_file": "deepstatemap_data_20260909.geojson",
+    "previous_total_km2": 116761.02,
+    "current_total_km2": 116775.5,
+    "russian_gain_km2": 14.48,
     "ukrainian_recapture_km2": 0,
-    "net_change_km2": 6.54,
+    "net_change_km2": 14.48,
     "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
-    "sector": "Pokrovsk",
-    "lat": 48.28,
-    "lon": 37.18,
+    "sector": "Kupiansk",
+    "lat": 49.71,
+    "lon": 37.61,
     "zoom": 9,
     "score": 100,
-    "change_km2": 6.54,
+    "change_km2": 14.48,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
     {
+      "sector": "Kupiansk",
+      "osint": 0,
+      "firms": 112,
+      "score": 100
+    },
+    {
+      "sector": "Lyman",
+      "osint": 0,
+      "firms": 114,
+      "score": 100
+    },
+    {
+      "sector": "Bakhmut-Toretsk",
+      "osint": 0,
+      "firms": 138,
+      "score": 100
+    },
+    {
       "sector": "Pokrovsk",
       "osint": 11,
-      "firms": 39,
+      "firms": 108,
       "score": 100
     },
     {
       "sector": "Kurakhove",
       "osint": 0,
-      "firms": 113,
+      "firms": 286,
+      "score": 100
+    },
+    {
+      "sector": "Velyka Novosilka",
+      "osint": 0,
+      "firms": 220,
       "score": 100
     },
     {
       "sector": "Zaporizhzhia",
-      "osint": 2,
-      "firms": 109,
-      "score": 100
-    },
-    {
-      "sector": "Crimea",
       "osint": 1,
-      "firms": 108,
-      "score": 100
-    },
-    {
-      "sector": "Other / Unclassified",
-      "osint": 13,
-      "firms": 9730,
+      "firms": 194,
       "score": 100
     },
     {
       "sector": "Kherson-Dnipro",
       "osint": 0,
-      "firms": 82,
-      "score": 74
-    },
-    {
-      "sector": "Velyka Novosilka",
-      "osint": 0,
-      "firms": 71,
-      "score": 64
-    },
-    {
-      "sector": "Kupiansk",
-      "osint": 0,
-      "firms": 37,
-      "score": 33
+      "firms": 168,
+      "score": 100
     }
   ],
   "top_events": [
+    {
+      "title": "Reported drone strike near Odessza",
+      "source": "forrás nélkül",
+      "sector": "Other / Unclassified"
+    },
+    {
+      "title": "Reported rear-area strike near Krasznodar",
+      "source": "forrás nélkül",
+      "sector": "Other / Unclassified"
+    },
+    {
+      "title": "Reported rear-area strike near Harkiv",
+      "source": "forrás nélkül",
+      "sector": "Kharkiv"
+    },
+    {
+      "title": "Russian Offensive Campaign Assessment, September 8, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk"
+    },
     {
       "title": "Paralysis of russia’s oil and gas giants: General Staff confirms shutdown of LUKOIL and NOVATEK plants after Ukrainian strikes",
       "source": "forrás nélkül",
@@ -97,26 +117,6 @@
     },
     {
       "title": "Ukraine and Italy discuss steps to strengthen Ukrainian air defense",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Bastion complex — carrier of Zircon and Oniks missiles — struck in Crimea: DIU operation details",
-      "source": "forrás nélkül",
-      "sector": "Crimea"
-    },
-    {
-      "title": "Two levels of air raid alerts introduced in Ukraine: how will they work?",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "“Hedgehog” on tracks: 58th Brigade shows IFV with unique iron armor against enemy drones",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Prototypes already exist: Ukraine develops high-speed interceptors against jet-powered “Shaheds”",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     }
