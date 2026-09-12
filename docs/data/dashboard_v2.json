@@ -1,16 +1,40 @@
 {
-  "updated_utc": "2026-09-11T21:08:55.994580+00:00",
-  "date": "2026-09-11",
+  "updated_utc": "2026-09-12T20:47:41.474566+00:00",
+  "date": "2026-09-12",
   "territorial_sector": {
-    "sector": "No territorial delta",
-    "lat": null,
-    "lon": null,
-    "distance_km": null,
-    "change_type": "none",
-    "area_km2": 0,
-    "label": "No mapped daily territorial change"
+    "sector": "Bakhmut-Toretsk",
+    "lat": 48.66795807272727,
+    "lon": 37.79296119090909,
+    "distance_km": 15.1,
+    "change_type": "russian_gain",
+    "area_km2": 3.95,
+    "label": "Russian territorial gain"
   },
   "priority_osint_events": [
+    {
+      "title": "Reported drone strike near Kyiv",
+      "source": "forrás nélkül",
+      "sector": "Kyiv Area",
+      "lat": 50.45,
+      "lon": 30.523,
+      "distance_to_sector_km": 0,
+      "event_type": "drone",
+      "event_label": "Drone / UAV activity",
+      "icon": "🛩",
+      "priority": 106
+    },
+    {
+      "title": "Reported drone strike near Kijev",
+      "source": "forrás nélkül",
+      "sector": "Kyiv Area",
+      "lat": 50.45,
+      "lon": 30.523,
+      "distance_to_sector_km": 0,
+      "event_type": "drone",
+      "event_label": "Drone / UAV activity",
+      "icon": "🛩",
+      "priority": 106
+    },
     {
       "title": "The Unit That Changed the Rules of Naval Warfare: Group 13 Commander on Combat Operations and Magura Drones",
       "source": "forrás nélkül",
@@ -48,6 +72,18 @@
       "priority": 100
     },
     {
+      "title": "Reported drone strike near Odessza",
+      "source": "forrás nélkül",
+      "sector": "Rear Area / Strategic Depth",
+      "lat": 46.482,
+      "lon": 30.723,
+      "distance_to_sector_km": 145.3,
+      "event_type": "drone",
+      "event_label": "Drone / UAV activity",
+      "icon": "🛩",
+      "priority": 98
+    },
+    {
       "title": "Reported ground assault or offensive activity near Kijev",
       "source": "forrás nélkül",
       "sector": "Kyiv Area",
@@ -58,6 +94,30 @@
       "event_label": "Frontline pressure",
       "icon": "⚔",
       "priority": 98
+    },
+    {
+      "title": "Reported ground assault or offensive activity near Donyeck",
+      "source": "forrás nélkül",
+      "sector": "Kurakhove",
+      "lat": 48.015,
+      "lon": 37.802,
+      "distance_to_sector_km": 38.9,
+      "event_type": "frontline",
+      "event_label": "Frontline pressure",
+      "icon": "⚔",
+      "priority": 95
+    },
+    {
+      "title": "Russian Offensive Campaign Assessment, September 11, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "frontline",
+      "event_label": "Frontline pressure",
+      "icon": "⚔",
+      "priority": 95
     },
     {
       "title": "Yevhenii Khmara discusses frontline needs and development of Ukrainian defence production with defence industry representatives",
@@ -94,69 +154,20 @@
       "event_label": "Frontline pressure",
       "icon": "⚔",
       "priority": 95
-    },
-    {
-      "title": "Russian Offensive Campaign Assessment, September 8, 2026",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "frontline",
-      "event_label": "Frontline pressure",
-      "icon": "⚔",
-      "priority": 95
-    },
-    {
-      "title": "Ukraine’s Defence Forces strike Ryazan oil refinery, airfield and three air defence assets",
-      "source": "forrás nélkül",
-      "sector": "Moscow / Russia Interior",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 0,
-      "event_type": "strike",
-      "event_label": "Strike / attack",
-      "icon": "✹",
-      "priority": 94
-    },
-    {
-      "title": "The city holds on: Kholodnyi Yar soldiers show how Druzhkivka lives under russian attacks",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "strike",
-      "event_label": "Strike / attack",
-      "icon": "✹",
-      "priority": 91
-    },
-    {
-      "title": "The Fleet Few Talk About: What russia Is Building in the Arctic and Why It Needs Warships",
-      "source": "forrás nélkül",
-      "sector": "Crimea",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 0,
-      "event_type": "naval_rear",
-      "event_label": "Rear-area / Crimea activity",
-      "icon": "⚓",
-      "priority": 88
-    },
-    {
-      "title": "Reported military-related update near Moszkva",
-      "source": "forrás nélkül",
-      "sector": "Moscow / Russia Interior",
-      "lat": 55.755,
-      "lon": 37.617,
-      "distance_to_sector_km": 0,
-      "event_type": "military_update",
-      "event_label": "Military update",
-      "icon": "●",
-      "priority": 66
     }
   ],
   "front_pressure_points": [
+    {
+      "sector": "Bakhmut-Toretsk",
+      "title": "Bakhmut-Toretsk territorial gain axis",
+      "lat": 48.58,
+      "lon": 37.95,
+      "score": 130,
+      "osint": 0,
+      "firms": 440,
+      "pressure_type": "territorial_gain_axis",
+      "icon": "▲"
+    },
     {
       "sector": "Kupiansk",
       "title": "Kupiansk FIRMS thermal cluster",
@@ -164,7 +175,7 @@
       "lon": 37.61,
       "score": 100,
       "osint": 0,
-      "firms": 331,
+      "firms": 309,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -175,18 +186,7 @@
       "lon": 37.8,
       "score": 100,
       "osint": 0,
-      "firms": 255,
-      "pressure_type": "thermal_activity_cluster",
-      "icon": "🔥"
-    },
-    {
-      "sector": "Bakhmut-Toretsk",
-      "title": "Bakhmut-Toretsk FIRMS thermal cluster",
-      "lat": 48.58,
-      "lon": 37.95,
-      "score": 100,
-      "osint": 0,
-      "firms": 397,
+      "firms": 290,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -197,7 +197,7 @@
       "lon": 37.18,
       "score": 100,
       "osint": 20,
-      "firms": 229,
+      "firms": 215,
       "pressure_type": "osint_activity_cluster",
       "icon": "⚔"
     },
@@ -207,8 +207,8 @@
       "lat": 47.99,
       "lon": 37.28,
       "score": 100,
-      "osint": 1,
-      "firms": 402,
+      "osint": 2,
+      "firms": 290,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -219,7 +219,7 @@
       "lon": 36.84,
       "score": 100,
       "osint": 0,
-      "firms": 551,
+      "firms": 535,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -230,7 +230,7 @@
       "lon": 35.14,
       "score": 100,
       "osint": 0,
-      "firms": 407,
+      "firms": 481,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -241,7 +241,7 @@
       "lon": 32.61,
       "score": 100,
       "osint": 0,
-      "firms": 265,
+      "firms": 234,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     }
@@ -249,15 +249,11 @@
   "event_categories": [
     {
       "category": "Frontline pressure",
-      "count": 5
-    },
-    {
-      "category": "Strike / attack",
-      "count": 2
+      "count": 6
     },
     {
       "category": "Drone / UAV activity",
-      "count": 1
+      "count": 4
     },
     {
       "category": "Missile / rocket strike",
@@ -266,22 +262,14 @@
     {
       "category": "Logistics / infrastructure strike",
       "count": 1
-    },
-    {
-      "category": "Rear-area / Crimea activity",
-      "count": 1
-    },
-    {
-      "category": "Military update",
-      "count": 1
     }
   ],
-  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 63. No measurable net territorial change was detected. The main pressure focus is Kupiansk. The strongest event category is Drone / UAV activity. The system processed 25 OSINT events, 8429 short-term FIRMS hotspots and 10 active sectors.",
+  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 77. Russian forces gained approximately 3.92 km², closest to the Bakhmut-Toretsk sector. The main pressure focus is Bakhmut-Toretsk. The strongest event category is Drone / UAV activity. The system processed 33 OSINT events, 8352 short-term FIRMS hotspots and 10 active sectors.",
   "counts": {
     "priority_osint": 12,
     "pressure_points": 8,
-    "firms_3d": 8429,
-    "firms_10d": 32085,
+    "firms_3d": 8352,
+    "firms_10d": 30781,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."
