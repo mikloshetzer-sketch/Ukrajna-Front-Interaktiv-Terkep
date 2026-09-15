@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ukrajna–Oroszország frontkövető</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <link rel="stylesheet" href="./styles/main.css" />
+
+  <style>
+    :root{
+      --ui-page:#eaf0f5;
+      --ui-card:#ffffff;
+      --ui-soft:#f5f8fb;
+      --ui-header-a:#18364f;
+      --ui-header-b:#3f7ca3;
+      --ui-text:#17324d;
+      --ui-body:#33475b;
+      --ui-muted:#6f8294;
+      --ui-line:#cbd7e2;
+      --ui-line-strong:#b6c5d3;
+      --ui-blue:#2f83bd;
+      --ui-blue-dark:#1d5f8f;
+      --ui-blue-soft:#eaf4fb;
+      --ui-red:#d8463f;
+      --ui-red-soft:#fff0ef;
+      --ui-green:#2f8a61;
+      --ui-green-soft:#edf7f2;
+      --ui-purple:#6c4dc5;
+      --ui-shadow:0 8px 22px rgba(30,55,80,.10);
+      --ui-radius:13px;
+    }
+
+    *{box-sizing:border-box}
+
+    html,body{
+      margin:0;
+      width:100%;
+      height:100%;
+      overflow:hidden;
+      font-family:Inter,Arial,sans-serif;
+      color:var(--ui-text);
+      background:var(--ui-page);
+    }
+
+    #app{
+      display:grid;
+      grid-template-columns:332px minmax(0,1fr);
+      width:100%;
+      height:100vh;
+      background:var(--ui-page);
+    }
+
+    #sidebar{
+      position:relative;
+      z-index:1000;
+      overflow-y:auto;
+      overflow-x:hidden;
+      padding:0 12px 20px;
+      border-right:1px solid var(--ui-line-strong);
+      background:
+        linear-gradient(180deg,#dfe8f0 0%,#edf3f8 130px,#e8eef4 100%);
+      scrollbar-width:thin;
+      scrollbar-color:#8ea3b5 transparent;
+    }
+
+    #sidebar::-webkit-scrollbar{width:8px}
+    #sidebar::-webkit-scrollbar-thumb{
+      background:#8ea3b5;
+      border-radius:999px;
+    }
+
+    .sidebar-hero{
+      position:sticky;
+      top:0;
+      z-index:10;
+      margin:0 -12px 12px;
+      padding:17px 17px 16px;
+      color:#fff;
+      background:linear-gradient(120deg,var(--ui-header-a),var(--ui-header-b));
+      border-bottom:1px solid rgba(255,255,255,.15);
+      box-shadow:0 5px 18px rgba(20,40,60,.20);
+    }
+
+    .sidebar-brand{
+      display:flex;
+      align-items:flex-start;
+      gap:11px;
+    }
+
+    .sidebar-mark{
+      width:40px;
+      height:40px;
+      flex:0 0 40px;
+      display:grid;
+      place-items:center;
+      border:1px solid rgba(255,255,255,.28);
+      border-radius:10px;
+      background:rgba(255,255,255,.09);
+      font-weight:900;
+      letter-spacing:.04em;
+    }
+
+    .sidebar-kicker{
+      color:#a8ddff;
+      font-size:10px;
+      font-weight:900;
+      letter-spacing:.11em;
+      text-transform:uppercase;
+    }
+
+    #sidebar .sidebar-hero h1{
+      margin:2px 0 5px;
+      color:#fff;
+      font-family:Georgia,"Times New Roman",serif;
+      font-size:24px;
+      line-height:1.05;
+      letter-spacing:-.02em;
+    }
+
+    .sidebar-hero .muted{
+      margin:0;
+      color:#dfedf6;
+      font-size:10px;
+      line-height:1.5;
+    }
+
+    .data-strip{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:6px;
+      margin-top:12px;
+    }
+
+    .data-chip{
+      padding:7px 5px;
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:8px;
+      background:rgba(255,255,255,.08);
+      text-align:center;
+    }
+
+    .data-chip strong{
+      display:block;
+      color:#fff;
+      font-size:10px;
+    }
+
+    .data-chip span{
+      display:block;
+      margin-top:2px;
+      color:#b9d8ea;
+      font-size:7px;
+      text-transform:uppercase;
+      font-weight:800;
+      letter-spacing:.05em;
+    }
+
+    #sidebar .panel{
+      margin:0 0 10px;
+      padding:12px;
+      border:1px solid var(--ui-line);
+      border-radius:var(--ui-radius);
+      background:var(--ui-card);
+      box-shadow:var(--ui-shadow);
+    }
+
+    #sidebar .panel h2{
+      margin:0 0 10px;
+      color:var(--ui-text);
+      font-family:Georgia,"Times New Roman",serif;
+      font-size:18px;
+      line-height:1.1;
+    }
+
+    #sidebar .panel h2::after{
+      content:"";
+      display:block;
+      width:32px;
+      height:2px;
+      margin-top:6px;
+      border-radius:999px;
+      background:var(--ui-blue);
+    }
+
+    .dashboard-launch{
+      border-left:5px solid var(--ui-purple) !important;
+      background:linear-gradient(135deg,#fff,#f6f3ff) !important;
+    }
+
+    .dashboard-launch .button-like{
+      margin-top:2px;
+      background:linear-gradient(90deg,#5f45b7,#7358cc);
+      border-color:#563ba8;
+      box-shadow:0 5px 14px rgba(108,77,197,.23);
+    }
+
+    .dashboard-launch .button-like:hover{
+      background:linear-gradient(90deg,#5237aa,#6548be);
+    }
+
+    button,.button-like,select,textarea,input[type="range"]{
+      font:inherit;
+    }
+
+    button,.button-like{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:34px;
+      padding:8px 10px;
+      border:1px solid var(--ui-blue-dark);
+      border-radius:8px;
+      background:linear-gradient(180deg,#338bc4,#2475aa);
+      color:#fff;
+      font-size:11px;
+      font-weight:800;
+      text-decoration:none;
+      cursor:pointer;
+      transition:.18s ease;
+    }
+
+    button:hover,.button-like:hover{
+      transform:translateY(-1px);
+      filter:brightness(.97);
+      box-shadow:0 4px 10px rgba(31,83,122,.18);
+    }
+
+    button.secondary{
+      border-color:var(--ui-line-strong);
+      background:linear-gradient(180deg,#fff,#edf2f6);
+      color:var(--ui-text);
+    }
+
+    button.secondary:hover{
+      background:var(--ui-blue-soft);
+      border-color:#99bdd5;
+    }
+
+    .button-like{
+      display:flex;
+      width:100%;
+      text-align:center;
+    }
+
+    select,textarea{
+      width:100%;
+      border:1px solid var(--ui-line-strong);
+      border-radius:8px;
+      background:#fff;
+      color:var(--ui-text);
+      outline:none;
+    }
+
+    select{
+      min-height:35px;
+      padding:7px 9px;
+      font-size:11px;
+    }
+
+    select:focus,textarea:focus{
+      border-color:var(--ui-blue);
+      box-shadow:0 0 0 3px rgba(47,131,189,.12);
+    }
+
+    input[type="range"]{
+      width:100%;
+      accent-color:var(--ui-blue);
+    }
+
+    .grid-2{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:7px;
+    }
+
+    .grid-3{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:7px;
+    }
+
+    .top-gap{margin-top:8px}
+
+    .small,.muted,.toolbox-note,
+    .suriyak-legend-note,.suriyak-legend-empty,
+
+    .satellite-marker-box{
+      margin-top:8px;
+      padding:8px 9px;
+      border:1px solid var(--ui-line);
+      border-left:4px solid #202124;
+      border-radius:8px;
+      background:var(--ui-soft);
+    }
+
+    .satellite-marker-box-title{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      margin-bottom:6px;
+      color:var(--ui-text);
+      font-size:10px;
+      font-weight:850;
+    }
+
+    .satellite-marker-box-title span:last-child{
+      color:var(--ui-muted);
+      font-size:9px;
+      font-weight:700;
+    }
+
+    .satellite-marker-list{
+      display:grid;
+      gap:4px;
+      max-height:150px;
+      overflow:auto;
+      padding-right:2px;
+      scrollbar-width:thin;
+      scrollbar-color:#9aa9b7 transparent;
+    }
+
+    .satellite-marker-row{
+      display:flex;
+      align-items:flex-start;
+      gap:7px;
+      padding:5px 6px;
+      border:1px solid transparent;
+      border-radius:7px;
+      background:#fff;
+      color:var(--ui-body);
+      font-size:10px;
+      line-height:1.25;
+      cursor:pointer;
+    }
+
+    .satellite-marker-row:hover{
+      border-color:var(--ui-line);
+      background:#f8fafc;
+    }
+
+    .satellite-marker-row input{
+      margin:1px 0 0;
+      accent-color:#202124;
+    }
+
+    .satellite-marker-name{
+      min-width:0;
+      flex:1 1 auto;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      font-weight:750;
+    }
+
+    .satellite-marker-empty{
+      padding:6px;
+      color:var(--ui-muted);
+      font-size:9px;
+      line-height:1.4;
+      background:#fff;
+      border:1px dashed var(--ui-line);
+      border-radius:7px;
+    }
+
+    .satellite-marker-actions{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:6px;
+      margin-top:7px;
+    }
+
+    .satellite-marker-actions button{
+      width:100%;
+      min-height:30px;
+      padding:6px 7px;
+      font-size:10px;
+    }
+
+    .satellite-marker-note{
+      margin-top:6px;
+      color:var(--ui-muted);
+      font-size:9px;
+      line-height:1.4;
+    }
+
+    .satellite-contrast-note{
+      color:var(--ui-muted);
+      font-size:10px;
+      line-height:1.45;
+    }
+
+    .status-wrap{
+      margin-top:10px;
+      padding:9px 10px;
+      border:1px solid var(--ui-line);
+      border-left:4px solid var(--ui-blue);
+      border-radius:8px;
+      background:var(--ui-soft);
+      color:var(--ui-body);
+      font-size:10px;
+      line-height:1.55;
+    }
+
+    .toggle{
+      display:flex;
+      align-items:flex-start;
+      gap:8px;
+      padding:6px 7px;
+      margin-bottom:4px;
+      border:1px solid transparent;
+      border-radius:7px;
+      color:var(--ui-body);
+      font-size:11px;
+      line-height:1.25;
+      transition:.15s ease;
+    }
+
+    .toggle:hover{
+      border-color:var(--ui-line);
+      background:var(--ui-soft);
+    }
+
+    .toggle input{
+      margin:1px 0 0;
+      accent-color:var(--ui-blue);
+    }
+
+    .toolbox-row{margin-top:9px}
+
+    .toolbox-row label{
+      display:block;
+      margin-bottom:4px;
+      color:var(--ui-text);
+      font-size:10px;
+      font-weight:850;
+    }
+
+    .toolbox-actions{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:7px;
+      margin-top:10px;
+    }
+
+    .toolbox-actions button{width:100%}
+
+
+    .toolbox-draw-settings{
+      display:none;
+      margin-top:9px;
+      padding:9px;
+      border:1px solid var(--ui-line);
+      border-left:4px solid var(--ui-blue);
+      border-radius:9px;
+      background:var(--ui-soft);
+    }
+
+    .toolbox-draw-settings.is-open{display:block}
+
+    .toolbox-color-grid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:6px;
+      margin-top:5px;
+    }
+
+    .toolbox-color{
+      position:relative;
+      min-height:32px;
+      padding:0;
+      border:2px solid transparent;
+      border-radius:8px;
+      background:#fff;
+      box-shadow:none;
+    }
+
+    .toolbox-color:hover{
+      transform:none;
+      box-shadow:none;
+      background:#fff;
+    }
+
+    .toolbox-color.is-active{
+      border-color:var(--ui-text);
+      box-shadow:0 0 0 2px rgba(23,50,77,.10);
+    }
+
+    .toolbox-color-swatch{
+      width:17px;
+      height:17px;
+      display:block;
+      border:1px solid rgba(0,0,0,.24);
+      border-radius:999px;
+    }
+
+    .toolbox-color[data-color="#d32f2f"] .toolbox-color-swatch{background:#d32f2f}
+    .toolbox-color[data-color="#1565c0"] .toolbox-color-swatch{background:#1565c0}
+    .toolbox-color[data-color="#f59e0b"] .toolbox-color-swatch{background:#f59e0b}
+    .toolbox-color[data-color="#202124"] .toolbox-color-swatch{background:#202124}
+
+    .toolbox-draw-preview{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin-top:8px;
+      padding:7px 8px;
+      border:1px solid var(--ui-line);
+      border-radius:8px;
+      background:#fff;
+      color:var(--ui-body);
+      font-size:9px;
+      line-height:1.35;
+    }
+
+    .toolbox-preview-line{
+      width:52px;
+      flex:0 0 52px;
+      border-top:3px solid #d32f2f;
+    }
+
+    #annotationText{
+      width:100%;
+      min-height:90px;
+      margin-top:8px;
+      padding:8px;
+      resize:vertical;
+      font-size:11px;
+      line-height:1.4;
+    }
+
+    .suriyak-subpanel{
+      display:none;
+      margin:7px 0 9px 20px;
+      padding:8px 9px;
+      border-left:3px solid var(--ui-blue);
+      border-radius:8px;
+      background:var(--ui-blue-soft);
+    }
+
+    .suriyak-subpanel.is-open{display:block}
+
+    .suriyak-subpanel-title{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      margin-bottom:6px;
+      color:var(--ui-text);
+      font-size:10px;
+      font-weight:850;
+    }
+
+    .suriyak-meta{
+      color:var(--ui-muted);
+      font-size:9px;
+      font-weight:700;
+      white-space:nowrap;
+    }
+
+    .suriyak-category-list{display:grid;gap:5px}
+
+    .suriyak-category-row{
+      display:grid;
+      grid-template-columns:18px 16px 1fr auto;
+      align-items:center;
+      gap:6px;
+      font-size:10px;
+    }
+
+    .suriyak-swatch{
+      width:13px;
+      height:13px;
+      display:inline-block;
+      border:1px solid rgba(0,0,0,.22);
+      border-radius:3px;
+      background:#757575;
+    }
+
+    .suriyak-category-count{
+      color:var(--ui-muted);
+      font-size:9px;
+      white-space:nowrap;
+    }
+
+    .satellite-contrast-note{
+      display:none;
+      margin:6px 0 8px 20px;
+    }
+
+    .satellite-contrast-note.is-open{display:block}
+
+    .historical-legend-item{
+      display:flex;
+      align-items:center;
+      gap:6px;
+      margin-bottom:4px;
+      font-size:10px;
+    }
+
+    .historical-legend-swatch{
+      width:15px;
+      height:15px;
+      flex:0 0 15px;
+      border:1px solid rgba(0,0,0,.22);
+      border-radius:4px;
+    }
+
+    .legend{
+      display:grid;
+      gap:6px;
+      color:var(--ui-body);
+      font-size:10px;
+    }
+
+    .swatch{
+      display:inline-block;
+      width:12px;
+      height:12px;
+      margin-right:5px;
+      border-radius:3px;
+      vertical-align:-2px;
+    }
+
+    .swatch.gain{background:var(--ui-red)}
+    .swatch.loss{background:var(--ui-green)}
+
+    #app > main{
+      position:relative;
+      min-width:0;
+      height:100vh;
+      overflow:hidden;
+      background:#d9e3eb;
+    }
+
+    #map{
+      width:100%;
+      height:100%;
+      background:#d9e3eb;
+    }
+
+    .leaflet-control-zoom a{
+      color:var(--ui-text) !important;
+      background:#fff !important;
+      border-color:var(--ui-line) !important;
+    }
+
+    .leaflet-control-attribution{
+      color:var(--ui-muted) !important;
+      background:rgba(255,255,255,.90) !important;
+    }
+
+
+    .deep-strike-panel{
+      border-left:5px solid #7a8ca0 !important;
+      background:
+        linear-gradient(135deg,#ffffff 0%,#f7fafc 100%) !important;
+    }
+
+    .deep-strike-master{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:8px;
+      padding:8px 9px;
+      border:1px solid var(--ui-line);
+      border-radius:8px;
+      background:var(--ui-soft);
+    }
+
+    .deep-strike-master label{
+      display:flex;
+      align-items:center;
+      gap:7px;
+      margin:0;
+      color:var(--ui-text);
+      font-size:11px;
+      font-weight:850;
+      cursor:pointer;
+    }
+
+    .deep-strike-master input{
+      accent-color:var(--ui-blue);
+    }
+
+    .deep-strike-dot{
+      width:10px;
+      height:10px;
+      flex:0 0 10px;
+      display:inline-block;
+      border-radius:999px;
+      box-shadow:0 0 0 2px rgba(255,255,255,.9);
+    }
+
+    .deep-strike-dot.ua-ru{background:#1565c0}
+    .deep-strike-dot.ru-ua{background:#c1121f}
+
+    .deep-strike-controls{
+      display:grid;
+      gap:7px;
+    }
+
+    .deep-strike-row{
+      display:grid;
+      grid-template-columns:78px minmax(0,1fr);
+      align-items:center;
+      gap:8px;
+    }
+
+    .deep-strike-row > label{
+      color:var(--ui-text);
+      font-size:10px;
+      font-weight:850;
+    }
+
+    .deep-strike-direction-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:6px;
+    }
+
+    .deep-strike-direction{
+      display:flex;
+      align-items:center;
+      gap:6px;
+      min-height:32px;
+      padding:6px 7px;
+      border:1px solid var(--ui-line);
+      border-radius:8px;
+      background:#fff;
+      color:var(--ui-body);
+      font-size:10px;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .deep-strike-direction:hover{
+      background:var(--ui-soft);
+    }
+
+    .deep-strike-direction input{
+      margin:0;
+    }
+
+    .deep-strike-direction.ua-ru input{
+      accent-color:#1565c0;
+    }
+
+    .deep-strike-direction.ru-ua input{
+      accent-color:#c1121f;
+    }
+
+    .deep-strike-label-toggle{
+      display:flex;
+      align-items:center;
+      gap:7px;
+      padding:7px 8px;
+      border:1px solid var(--ui-line);
+      border-radius:8px;
+      background:#fff;
+      color:var(--ui-body);
+      font-size:10px;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .deep-strike-label-toggle input{
+      margin:0;
+      accent-color:var(--ui-blue);
+    }
+
+    .deep-strike-actions{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:6px;
+    }
+
+    .deep-strike-summary{
+      margin-top:8px;
+      padding:8px 9px;
+      border:1px solid var(--ui-line);
+      border-radius:8px;
+      background:var(--ui-soft);
+      color:var(--ui-body);
+      font-size:10px;
+      line-height:1.45;
+    }
+
+    .deep-strike-note{
+      margin-top:7px;
+      color:var(--ui-muted);
+      font-size:9px;
+      line-height:1.45;
+    }
+
+    @media(max-width:900px){
+      #app{grid-template-columns:292px minmax(0,1fr)}
+      #sidebar .sidebar-hero h1{font-size:21px}
+    }
+
+    @media(max-width:700px){
+      #app{
+        display:block;
+        height:auto;
+        overflow:auto;
+      }
+
+      #sidebar{
+        position:relative;
+        width:100%;
+        height:auto;
+        max-height:none;
+        overflow:visible;
+        border-right:0;
+      }
+
+      #app > main{
+        height:70vh;
+        min-height:520px;
+      }
+
+      .sidebar-hero{position:relative}
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <aside id="sidebar">
+      <div class="sidebar-hero">
+        <div class="sidebar-brand">
+          <div class="sidebar-mark">UF</div>
+          <div>
+            <div class="sidebar-kicker">Törésvonalak.blog</div>
+            <h1>Ukrajna–Oroszország frontkövető</h1>
+            <p class="muted">
+              DeepState-alapú napi fronthelyzet, történeti visszanézés, FIRMS,
+              OSINT és műveleti elemzőrétegek.
+            </p>
+          </div>
+        </div>
+
+        <div class="data-strip">
+          <div class="data-chip"><strong>DeepState</strong><span>front data</span></div>
+          <div class="data-chip"><strong>FIRMS</strong><span>thermal</span></div>
+          <div class="data-chip"><strong>OSINT</strong><span>event feed</span></div>
+        </div>
+      </div>
+
+
+      <section class="panel dashboard-launch">
+        <h2>📊 Elemző Dashboard</h2>
+
+        <a
+          href="./docs/ukraine-analysis.html"
+          target="_blank"
+          rel="noopener"
+          class="button-like"
+          style="display:block;width:100%;"
+        >
+          Dashboard megnyitása
+        </a>
+
+        <div class="small top-gap">
+          Operatív és stratégiai elemző felület.
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Fő vezérlés</h2>
+        <div class="grid-2">
+          <button id="btnLatest">Legfrissebb</button>
+          <button id="btnFit" class="secondary">Ukrajna nézet</button>
+        </div>
+
+        <div class="grid-3 top-gap">
+          <button id="btnMinus7" class="secondary">-7 nap</button>
+          <button id="btnMinus30" class="secondary">-30 nap</button>
+          <button id="btnToday" class="secondary">Legfrissebb</button>
+        </div>
+
+        <div class="grid-2 top-gap">
+          <button id="btnResetLabels" class="secondary">Reset all labels</button>
+        </div>
+
+        <div class="status-wrap">
+          <div><strong>Dátum:</strong> <span id="currentDate">–</span></div>
+          <div><strong>Állapot:</strong> <span id="statusText">Indulás…</span></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Időcsúszka és lejátszás</h2>
+        <input id="timeline" type="range" min="0" max="0" step="1" value="0" />
+
+        <div class="grid-3 top-gap">
+          <button id="btnPlay">Lejátszás</button>
+          <button id="btnPause" class="secondary">Szünet</button>
+          <select id="speedSelect">
+            <option value="1200">Lassú</option>
+            <option value="700" selected>Normál</option>
+            <option value="300">Gyors</option>
+          </select>
+        </div>
+
+        <div class="small top-gap">
+          A lejátszás napi léptékben váltja a DeepState történeti állapotokat.
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Rétegek</h2>
+        <label class="toggle"><input id="toggleOccupied" type="checkbox" checked /> Megszállt terület</label>
+        <label class="toggle"><input id="toggleFrontline" type="checkbox" checked /> Frontline emphasis</label>
+        <label class="toggle"><input id="toggleSuriyak" type="checkbox" /> Suriyak referencia-réteg</label>
+        <div id="suriyakSubpanel" class="suriyak-subpanel" aria-live="polite">
+          <div class="suriyak-subpanel-title">
+            <span>Suriyak térképi rétegek</span>
+            <span id="suriyakLayerMeta" class="suriyak-meta">Nincs betöltve</span>
+          </div>
+
+          <div id="suriyakCategoryList" class="suriyak-category-list">
+            <div class="suriyak-legend-empty">
+              A kategóriák a <code>data/suriyak_legend.json</code> fájlból töltődnek be.
+            </div>
+          </div>
+
+          <div id="suriyakLegendNote" class="suriyak-legend-note">
+            A főkapcsoló aktiválása után jelennek meg a kategorizált Suriyak térképi rétegek.
+          </div>
+        </div>
+        <label class="toggle"><input id="toggleSatelliteContrast" type="checkbox" /> Műholdas kontraszt mód</label>
+        <div id="satelliteContrastNote" class="satellite-contrast-note">
+          Erősebb kontúrok és visszafogottabb kitöltések műholdas háttérhez. A DeepState és a Suriyak rétegek együtt kapnak kontrasztosabb stílust.
+        </div>
+        <label class="toggle"><input id="toggleAxes" type="checkbox" checked /> Main attack axes</label>
+        <label class="toggle"><input id="toggleBattleNodes" type="checkbox" checked /> Active battle nodes</label>
+        <label class="toggle"><input id="toggleDelta" type="checkbox" checked /> Napi területi delta</label>
+        <label class="toggle"><input id="toggleHistoricalDelta" type="checkbox" checked /> Történeti területi delta</label>
+        <label class="toggle"><input id="toggleAnnotations" type="checkbox" checked /> Elemző megjegyzések</label>
+        <label class="toggle"><input id="toggleBorders" type="checkbox" checked /> Országhatárok</label>
+        <label class="toggle"><input id="toggleFirms" type="checkbox" /> FIRMS hőanomáliák</label>
+        <label class="toggle"><input id="toggleOsint" type="checkbox" /> OSINT feed</label>
+        <label class="toggle"><input id="toggleHeatmap" type="checkbox" /> Front activity heatmap</label>
+        <label class="toggle"><input id="toggleUnits" type="checkbox" /> Harcoló alakulatok</label>
+        <label class="toggle"><input id="toggleFrontDashboard" type="checkbox" /> Napi front dashboard</label>
+      </section>
+
+      <section class="panel deep-strike-panel" id="deepStrikesPanel">
+        <h2>🎯 Mélységi csapások</h2>
+
+        <div class="deep-strike-master">
+          <label for="toggleDeepStrikes">
+            <input id="toggleDeepStrikes" type="checkbox" checked />
+            Pontok megjelenítése
+          </label>
+          <span class="small">manual Excel → JSON</span>
+        </div>
+
+        <div class="deep-strike-controls">
+          <div class="deep-strike-row">
+            <label for="deepStrikesDate">Dátum</label>
+            <select id="deepStrikesDate">
+              <option value="">Betöltés…</option>
+            </select>
+          </div>
+
+          <div class="deep-strike-row">
+            <label for="deepStrikesWindow">Időablak</label>
+            <select id="deepStrikesWindow">
+              <option value="day">Adott nap</option>
+              <option value="7" selected>Utolsó 7 nap</option>
+              <option value="30">Utolsó 30 nap</option>
+              <option value="90">Utolsó 90 nap</option>
+              <option value="all">Összes</option>
+            </select>
+          </div>
+
+          <div class="deep-strike-direction-grid">
+            <label class="deep-strike-direction ua-ru" for="toggleDeepStrikesUaRu">
+              <input id="toggleDeepStrikesUaRu" type="checkbox" checked />
+              <span class="deep-strike-dot ua-ru"></span>
+              UA → RU
+            </label>
+
+            <label class="deep-strike-direction ru-ua" for="toggleDeepStrikesRuUa">
+              <input id="toggleDeepStrikesRuUa" type="checkbox" checked />
+              <span class="deep-strike-dot ru-ua"></span>
+              RU → UA
+            </label>
+          </div>
+
+          <label class="deep-strike-label-toggle" for="toggleDeepStrikeLabels">
+            <input id="toggleDeepStrikeLabels" type="checkbox" />
+            Kapcsolható eseményleírások
+          </label>
+
+          <div class="deep-strike-actions">
+            <button id="btnResetDeepStrikeLabels" class="secondary" type="button">
+              Leírásblokkok helyzetének visszaállítása
+            </button>
+          </div>
+        </div>
+
+        <div id="deepStrikesSummary" class="deep-strike-summary">
+          Mélységi csapás adatok betöltése…
+        </div>
+
+        <div class="deep-strike-note">
+          Kék: ukrán csapás orosz hátországban. Piros: orosz csapás ukrán hátországban.
+          A leírásblokkok egérrel mozgathatók, HU/EN váltót és lenyitható részletes leírást tartalmaznak.
+        </div>
+      </section>
+
+      <section class="panel" id="satelliteIntelligencePanel">
+        <h2>🛰 Satellite Intelligence</h2>
+
+        <label class="toggle">
+          <input id="toggleSatellite" type="checkbox" />
+          Műholdas réteg bekapcsolása
+        </label>
+
+        <div class="toolbox-row">
+          <label for="baseMapSelect">Base map / háttértérkép</label>
+          <select id="baseMapSelect">
+            <option value="osm" selected>OpenStreetMap</option>
+            <option value="carto">CARTO Light</option>
+            <option value="esri">Esri World Imagery</option>
+          </select>
+        </div>
+
+        <div class="toolbox-row">
+          <label for="satelliteSourceSelect">Satellite analysis mód</label>
+          <select id="satelliteSourceSelect">
+            <option value="sentinel2" selected>Sentinel-2 archívum</option>
+            <option value="hybrid">Hybrid mód: Esri + Sentinel-2</option>
+            <option value="off">Csak háttértérkép / Sentinel nélkül</option>
+          </select>
+        </div>
+
+        <div class="toolbox-row">
+          <label for="satelliteLocationSelect">Helyszín</label>
+          <select id="satelliteLocationSelect">
+            <option value="">Archívum betöltése…</option>
+          </select>
+        </div>
+
+        <div class="satellite-marker-box" id="satelliteMarkerBox">
+          <div class="satellite-marker-box-title">
+            <span>📍 Térképi helyjelölések</span>
+            <span>több hely választható</span>
+          </div>
+
+          <div id="satelliteMarkerList" class="satellite-marker-list">
+            <div class="satellite-marker-empty">
+              A helyszínek az archívum betöltése után jelennek meg.
+            </div>
+          </div>
+
+          <div class="satellite-marker-actions">
+            <button id="btnSatelliteMarkersAll" type="button" class="secondary">
+              Mind kijelöl
+            </button>
+            <button id="btnSatelliteMarkersNone" type="button" class="secondary">
+              Kijelölés törlése
+            </button>
+          </div>
+
+          <div class="satellite-marker-note">
+            A bepipált helyszínekhez később egyszerű fekete pont és név jelenik meg a térképen.
+            A műholdkép-választás ettől független marad.
+          </div>
+        </div>
+
+        <div class="toolbox-row">
+          <label for="satelliteImageSelect">Archív kép</label>
+          <select id="satelliteImageSelect">
+            <option value="">Nincs kiválasztott kép</option>
+          </select>
+        </div>
+
+        <div class="toolbox-row">
+          <label for="satelliteOpacity">
+            Átlátszóság: <span id="satelliteOpacityValue">72%</span>
+          </label>
+          <input id="satelliteOpacity" type="range" min="0" max="100" step="1" value="72" />
+        </div>
+
+        <div class="grid-2 top-gap">
+          <button id="btnSatelliteFit" type="button" class="secondary">Képre zoom</button>
+          <button id="btnSatelliteRefresh" type="button" class="secondary">Archívum frissítése</button>
+        </div>
+
+        <div id="satelliteSummary" class="small top-gap">
+          Sentinel-2 archívum betöltése…
+        </div>
+
+        <div class="small top-gap">
+          A Base map választó kezeli az OpenStreetMap, CARTO és Esri World Imagery hátteret.
+          A Sentinel-2 archívum külön elemző overlayként jelenik meg, és a mérőpontok, saját markerek, FIRMS és frontvonalak alatt marad.
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Történeti területi delta</h2>
+
+        <select id="historicalDeltaWindow">
+          <option value="5">5 nap</option>
+          <option value="10" selected>10 nap</option>
+          <option value="15">15 nap</option>
+          <option value="30">30 nap</option>
+        </select>
+
+        <div id="historicalDeltaSummary" class="small top-gap">
+          Az utolsó 30 nap napi területi változásaiból választható 5, 10, 15 vagy 30 napos nézet.
+        </div>
+
+        <div id="historicalDeltaLegend" class="small top-gap">
+          A jelmagyarázat az adatok betöltése után jelenik meg.
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Elemző megjegyzések</h2>
+
+        <select id="annotationType">
+          <option value="analysis">📊 Elemző</option>
+          <option value="operation">⚔️ Műveleti</option>
+          <option value="logistics">🚚 Logisztikai</option>
+          <option value="warning">⚠️ Figyelmeztetés</option>
+          <option value="note">📝 Megjegyzés</option>
+        </select>
+
+        <textarea
+          id="annotationText"
+          rows="4"
+          placeholder="Írd be a térképre kerülő megjegyzést..."
+        ></textarea>
+
+        <div class="grid-2 top-gap">
+          <button id="btnAddAnnotation" type="button">+ Megjegyzés elhelyezése</button>
+          <button id="btnClearAnnotations" class="secondary" type="button">Törlés</button>
+        </div>
+
+        <div id="annotationsSummary" class="small top-gap">
+          Nincs még elemző megjegyzés.
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>OSINT archívum</h2>
+        <select id="osintArchiveDate">
+          <option value="">Live feed</option>
+        </select>
+        <div class="small top-gap">
+          A Live feed az aktuális <code>data/osint_feed.json</code> fájlt használja.
+          Archív dátum választásakor később a <code>data/osint_archive/YYYY-MM-DD.json</code> tölthető vissza.
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Harcoló alakulatok</h2>
+        <select id="unitLayerMode">
+          <option value="all">Mindkét oldal</option>
+          <option value="ukraine">Ukrán alakulatok</option>
+          <option value="russia">Orosz alakulatok</option>
+        </select>
+
+        <div id="unitLayerSummary" class="small top-gap">
+          Alakulat-réteg még nincs betöltve. Később ide jöhetnek például MilitaryLand / saját adatbázis alapján
+          dandár-, ezred- vagy zászlóaljszintű nyílt forrású pozíciók.
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>OSINT Toolbox</h2>
+
+        <div class="toolbox-row">
+          <label for="toolboxMode">Eszköz mód</label>
+          <select id="toolboxMode">
+            <option value="coordinate" selected>📍 Koordináta jelölés</option>
+            <option value="distance">📏 Távolságmérés</option>
+            <option value="identify">🎯 Objektum azonosítás</option>
+            <option value="draw">✏️ Elemző rajzolás</option>
+            <option value="off">Kikapcsolva</option>
+          </select>
+        </div>
+
+        <div class="toolbox-row" id="toolboxObjectTypeRow">
+          <label for="toolboxObjectType">Objektumtípus</label>
+          <select id="toolboxObjectType">
+            <option value="unknown" selected>📍 Ismeretlen / általános pont</option>
+            <option value="airfield">✈️ Reptér / légibázis</option>
+            <option value="port">⚓ Kikötő</option>
+            <option value="bridge">🌉 Híd</option>
+            <option value="railway">🚂 Vasút / vasúti csomópont</option>
+            <option value="warehouse">📦 Raktár / logisztikai pont</option>
+            <option value="fuel">🛢 Üzemanyag / olajlétesítmény</option>
+            <option value="industrial">🏭 Ipari objektum</option>
+            <option value="radar">📡 Radar / kommunikáció</option>
+            <option value="airdefense">🛡 Légvédelem</option>
+            <option value="target">🎯 Célpont</option>
+          </select>
+        </div>
+
+        <div id="toolboxDrawSettings" class="toolbox-draw-settings">
+          <div class="toolbox-row" style="margin-top:0;">
+            <label for="toolboxDrawShape">Rajzeszköz</label>
+            <select id="toolboxDrawShape">
+              <option value="line" selected>━ Vonal</option>
+              <option value="dashed-line">┄ Szaggatott vonal</option>
+              <option value="circle">◯ Kör</option>
+              <option value="dashed-circle">◌ Szaggatott kör</option>
+              <option value="triangle">△ Háromszög</option>
+              <option value="arrow">➜ Nyíl</option>
+              <option value="dashed-arrow">⇢ Szaggatott nyíl</option>
+            </select>
+          </div>
+
+          <div class="toolbox-row">
+            <label>Szín</label>
+            <div id="toolboxColorGrid" class="toolbox-color-grid" role="group" aria-label="Rajz színe">
+              <button class="toolbox-color is-active" type="button" data-color="#d32f2f" title="Piros" aria-label="Piros">
+                <span class="toolbox-color-swatch"></span>
+              </button>
+              <button class="toolbox-color" type="button" data-color="#1565c0" title="Kék" aria-label="Kék">
+                <span class="toolbox-color-swatch"></span>
+              </button>
+              <button class="toolbox-color" type="button" data-color="#f59e0b" title="Narancs" aria-label="Narancs">
+                <span class="toolbox-color-swatch"></span>
+              </button>
+              <button class="toolbox-color" type="button" data-color="#202124" title="Fekete" aria-label="Fekete">
+                <span class="toolbox-color-swatch"></span>
+              </button>
+            </div>
+            <input id="toolboxDrawColor" type="hidden" value="#d32f2f" />
+          </div>
+
+          <div class="toolbox-draw-preview">
+            <span id="toolboxDrawPreview" class="toolbox-preview-line"></span>
+            <span id="toolboxDrawPreviewText">Vonal · piros · folytonos</span>
+          </div>
+
+          <div class="toolbox-actions">
+            <button id="btnToolboxUndoDrawing" class="secondary" type="button">↶ Visszavonás</button>
+            <button id="btnToolboxClearDrawings" class="secondary" type="button">Rajzok törlése</button>
+          </div>
+        </div>
+
+        <div class="toolbox-actions">
+          <button id="btnToolboxClearMarkers" class="secondary" type="button">Markerek törlése</button>
+          <button id="btnToolboxExportGeoJson" class="secondary" type="button">GeoJSON export</button>
+        </div>
+
+        <div id="toolboxStatus" class="toolbox-note">
+          Jelenleg a koordináta jelölés aktív.
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>FIRMS</h2>
+        <select id="firmsWindow">
+          <option value="1" selected>24 óra</option>
+          <option value="3">3 nap</option>
+          <option value="10">10 nap</option>
+          <option value="30">30 nap</option>
+        </select>
+
+        <div class="small top-gap">
+          FIRMS thermal anomaly layer with local JSON updates. A 24 órás nézet a legfrissebb hőanomáliákat mutatja.
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>FIRMS hotspot summary</h2>
+        <div id="firmsSummary" class="small">
+          No FIRMS summary yet.
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Napi delta</h2>
+        <div id="deltaSummary" class="small">
+          Még nincs számolt változás.
+        </div>
+
+        <div class="legend top-gap">
+          <div><span class="swatch gain"></span> Orosz területszerzés</div>
+          <div><span class="swatch loss"></span> Ukrán visszaszerzés</div>
+        </div>
+      </section>
+
+      <section id="frontDashboardPanel" class="panel" style="display:none;">
+        <h2>Napi front dashboard</h2>
+        <div id="dailyDashboard" class="small">
+          A napi vizuális dashboard külön oldalon nyílik meg.
+        </div>
+
+        <div class="grid-2 top-gap">
+          <a
+            href="./docs/front-dashboard.html"
+            target="_blank"
+            rel="noopener"
+            class="button-like"
+            id="openFrontDashboard"
+          >
+            Dashboard megnyitása
+          </a>
+
+          <button id="closeFrontDashboard" class="secondary" type="button">
+            Elrejtés
+          </button>
+        </div>
+
+        <div class="small top-gap">
+          A dashboard a <code>docs/data/front_activity_latest.json</code>,
+          a <code>data/firms_1.json</code>, <code>data/firms_3.json</code>,
+          <code>data/firms_10.json</code>, <code>data/osint_feed.json</code>
+          és a DeepState-adatok alapján készül.
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Automatikus napi operatív összefoglaló</h2>
+        <div id="autoOpsSummary" class="small">
+          Nincs még automatikus összefoglaló.
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Top threat sectors</h2>
+        <div id="topThreatSectors" class="small">
+          Nincs még threat ranking.
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Szektoronkénti napi mérleg</h2>
+        <div id="sectorBalanceSummary" class="small">
+          Nincs még napi szektormérleg.
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>OSINT feed</h2>
+        <div id="osintFeedList" class="small">
+          No OSINT feed loaded yet.
+        </div>
+      </section>
+    </aside>
+
+    <main>
+      <div id="map"></div>
+    </main>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+  <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
+  <script type="module" src="./src/app.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const mode = document.getElementById("toolboxMode");
+      const objectRow = document.getElementById("toolboxObjectTypeRow");
+      const drawSettings = document.getElementById("toolboxDrawSettings");
+      const shape = document.getElementById("toolboxDrawShape");
+      const colorInput = document.getElementById("toolboxDrawColor");
+      const colorButtons = Array.from(document.querySelectorAll(".toolbox-color"));
+      const preview = document.getElementById("toolboxDrawPreview");
+      const previewText = document.getElementById("toolboxDrawPreviewText");
+
+      const shapeNames = {
+        "line": "Vonal",
+        "dashed-line": "Szaggatott vonal",
+        "circle": "Kör",
+        "dashed-circle": "Szaggatott kör",
+        "triangle": "Háromszög",
+        "arrow": "Nyíl",
+        "dashed-arrow": "Szaggatott nyíl"
+      };
+
+      const colorNames = {
+        "#d32f2f": "piros",
+        "#1565c0": "kék",
+        "#f59e0b": "narancs",
+        "#202124": "fekete"
+      };
+
+      function refreshToolboxUi() {
+        if (!mode) return;
+        const isDraw = mode.value === "draw";
+
+        if (drawSettings) {
+          drawSettings.classList.toggle("is-open", isDraw);
+        }
+
+        if (objectRow) {
+          objectRow.style.display = isDraw ? "none" : "";
+        }
+      }
+
+      function refreshPreview() {
+        if (!shape || !colorInput || !preview || !previewText) return;
+
+        const shapeValue = shape.value;
+        const color = colorInput.value;
+        const dashed = shapeValue === "dashed-line" || shapeValue === "dashed-circle" || shapeValue === "dashed-arrow";
+
+        preview.style.borderTopColor = color;
+        preview.style.borderTopStyle = dashed ? "dashed" : "solid";
+        previewText.textContent =
+          `${shapeNames[shapeValue] || shapeValue} · ${colorNames[color] || color} · ${dashed ? "szaggatott" : "folytonos"}`;
+      }
+
+      if (mode) {
+        mode.addEventListener("change", refreshToolboxUi);
+      }
+
+      if (shape) {
+        shape.addEventListener("change", refreshPreview);
+      }
+
+      colorButtons.forEach((button) => {
+        button.addEventListener("click", function () {
+          const color = button.dataset.color;
+          if (!colorInput || !color) return;
+
+          colorInput.value = color;
+
+          colorButtons.forEach((item) => {
+            item.classList.toggle("is-active", item === button);
+          });
+
+          refreshPreview();
+        });
+      });
+
+      refreshToolboxUi();
+      refreshPreview();
+    });
+  </script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const toggle = document.getElementById("toggleFrontDashboard");
+      const panel = document.getElementById("frontDashboardPanel");
+      const closeButton = document.getElementById("closeFrontDashboard");
+      const dailyDashboard = document.getElementById("dailyDashboard");
+
+      if (!toggle || !panel) return;
+
+      function setDashboardPanel(isVisible) {
+        panel.style.display = isVisible ? "block" : "none";
+        toggle.checked = isVisible;
+
+        if (dailyDashboard) {
+          dailyDashboard.textContent = isVisible
+            ? "A napi front dashboard bekapcsolva. Megnyitható külön lapon."
+            : "A napi vizuális dashboard külön oldalon nyílik meg.";
+        }
+      }
+
+      toggle.addEventListener("change", function () {
+        setDashboardPanel(toggle.checked);
+      });
+
+      if (closeButton) {
+        closeButton.addEventListener("click", function () {
+          setDashboardPanel(false);
+        });
+      }
+    });
+  </script>
+</body>
+</html>
