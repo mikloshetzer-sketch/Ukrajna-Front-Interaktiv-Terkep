@@ -1,81 +1,139 @@
 <!doctype html>
 <html lang="hu">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Ukrajna–Oroszország Front Monitor | Törésvonalak</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ukraine Front Monitor | Törésvonalak.blog</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <style>
-:root{--ui-bg:#eef3f7;--ui-card:#fff;--ui-text:#173149;--ui-body:#334e63;--ui-muted:#718396;--ui-line:#d8e2ea;--ui-soft:#f4f7f9;--ui-blue:#326b91;--ui-blue2:#17384f;--ru:#c1121f;--ua:#1565c0;--green:#2e7d5b;--amber:#b7791f;--shadow:0 8px 24px rgba(28,57,78,.10)}
-*{box-sizing:border-box}body{margin:0;background:var(--ui-bg);color:var(--ui-text);font-family:Inter,Arial,sans-serif}.wrap{max-width:1320px;margin:auto;padding:20px}
-.hero{background:linear-gradient(135deg,#fff,#f7fafc);border-bottom:1px solid var(--ui-line);padding:25px 0}.hero-in{max-width:1320px;margin:auto;padding:0 20px}.brand{display:flex;gap:14px;align-items:flex-start}.mark{width:54px;height:54px;border-radius:10px;background:var(--ui-blue2);color:#fff;display:grid;place-items:center;font-weight:900;letter-spacing:.06em}.kicker{font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--ui-blue)}h1{font-size:28px;margin:4px 0 6px}.lead{max-width:850px;color:var(--ui-muted);font-size:13px;line-height:1.55;margin:0}.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}.chip{background:#fff;border:1px solid var(--ui-line);border-radius:8px;padding:7px 10px;font-size:10px}.chip strong{color:var(--ui-blue2)}
-.section-title{display:flex;justify-content:space-between;align-items:end;gap:20px;margin:20px 0 10px}.section-title h2{font-size:17px;margin:0}.section-title p{font-size:10px;color:var(--ui-muted);margin:0}
-.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.kpi,.panel,.navcard{background:#fff;border:1px solid var(--ui-line);border-radius:10px;box-shadow:var(--shadow)}.kpi{padding:14px}.kpi .label{font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:var(--ui-muted);font-weight:800}.kpi .value{font-size:25px;font-weight:900;margin:7px 0 3px}.kpi .sub{font-size:9px;color:var(--ui-muted)}.pos{color:var(--ru)}.neg{color:var(--ua)}.neutral{color:var(--ui-blue2)}
-.analytics{display:grid;grid-template-columns:1.55fr .8fr;gap:10px}.panel{padding:14px}.panel h3{font-size:13px;margin:0 0 4px}.panel .desc{font-size:9px;color:var(--ui-muted);margin-bottom:10px}.chartbox{height:210px}.balance{display:grid;gap:11px;margin-top:18px}.barrow{display:grid;grid-template-columns:92px 1fr 75px;gap:8px;align-items:center;font-size:10px}.track{height:11px;background:var(--ui-soft);border-radius:999px;overflow:hidden}.fill{height:100%;border-radius:999px}.fill.ru{background:var(--ru)}.fill.ua{background:var(--ua)}.barval{text-align:right;font-weight:900}
-.navgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.navcard{padding:17px;display:flex;flex-direction:column;min-height:190px}.navtop{display:flex;justify-content:space-between;gap:10px}.navicon{font-weight:900;color:var(--ui-blue);font-size:12px}.tag{font-size:8px;text-transform:uppercase;font-weight:900;color:var(--ui-blue);background:#edf4f8;border-radius:999px;padding:5px 8px}.navcard h3{margin:15px 0 6px;font-size:16px}.navcard p{font-size:10px;color:var(--ui-muted);line-height:1.5;margin:0}.btns{display:flex;gap:7px;flex-wrap:wrap;margin-top:auto;padding-top:14px}.btn{display:inline-block;text-decoration:none;border-radius:8px;padding:8px 10px;background:var(--ui-blue);color:#fff;font-size:9px;font-weight:900}.btn.secondary{background:var(--ui-blue2)}
-.method{display:grid;grid-template-columns:1fr 1fr;gap:10px}.note{font-size:10px;line-height:1.55;color:var(--ui-body)}.status{margin-top:10px;padding:9px 11px;border-radius:8px;background:#fff;border:1px solid var(--ui-line);font-size:9px;color:var(--ui-muted)}.warn{border-left:4px solid var(--amber)}
-footer{max-width:1320px;margin:auto;padding:8px 20px 28px;color:var(--ui-muted);font-size:9px}
-@media(max-width:950px){.kpis{grid-template-columns:repeat(2,1fr)}.analytics,.navgrid,.method{grid-template-columns:1fr}}@media(max-width:550px){.kpis{grid-template-columns:1fr}.mark{display:none}.wrap,.hero-in{padding-left:12px;padding-right:12px}}
+:root{
+  --page:#edf3f7;--card:#fff;--text:#123a57;--body:#45657d;--muted:#7890a3;
+  --line:#cfdae3;--blue:#1d6fa5;--head1:#173d57;--head2:#3f82ad;
+  --soft:#f5f9fc;--red:#c83d43;--green:#2f8a61;--shadow:0 10px 25px rgba(28,61,84,.08)
+}
+*{box-sizing:border-box}body{margin:0;background:var(--page);color:var(--text);font-family:Inter,Arial,sans-serif}
+.hero{background:linear-gradient(115deg,var(--head1),var(--head2));color:#fff}
+.hero-inner{max-width:1480px;margin:auto;padding:38px 42px 42px;display:grid;grid-template-columns:1fr auto;gap:35px}
+.brand{display:flex;gap:18px}.mark{width:54px;height:54px;border:1px solid rgba(255,255,255,.28);border-radius:12px;background:rgba(255,255,255,.08);display:grid;place-items:center;font-weight:900;font-size:18px}
+.kicker{font-size:12px;font-weight:900;letter-spacing:.16em;color:#bce6ff;text-transform:uppercase}
+h1{font-family:Georgia,"Times New Roman",serif;font-size:52px;line-height:1.02;margin:8px 0 13px;letter-spacing:-.025em}
+.hero p{max-width:900px;font-size:14px;line-height:1.6;margin:0;color:#eef7fc}
+.hero-tags{display:flex;gap:10px;flex-wrap:wrap;align-content:flex-start;justify-content:flex-end}.hero-tag{padding:10px 17px;border:1px solid rgba(255,255,255,.25);border-radius:999px;background:rgba(255,255,255,.09);font-size:11px;font-weight:800}
+main{max-width:1480px;margin:auto;padding:38px 42px}.heading{display:flex;justify-content:space-between;gap:30px;align-items:end;margin:0 0 14px}
+.heading h2{font:700 29px Georgia,"Times New Roman",serif;margin:0}.heading p{font-size:11px;color:var(--muted);max-width:650px;margin:0;line-height:1.45}
+.overview{display:grid;grid-template-columns:repeat(7,1fr);background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}
+.metric{padding:23px 14px;text-align:center;border-right:1px solid var(--line)}.metric:last-child{border-right:0}
+.value{font-size:28px;font-weight:900;letter-spacing:-.02em}.label{margin-top:8px;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.07em;color:#58748a}.source{margin-top:7px;font-size:9px;color:var(--muted)}
+.red{color:var(--red)}.green{color:var(--green)}
+.section{margin-top:32px}.analytics{display:grid;grid-template-columns:1.5fr .8fr;gap:14px}.panel,.navcard{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+.panel{padding:20px}.panel h3{font:700 20px Georgia,"Times New Roman",serif;margin:0 0 5px}.small{font-size:10px;line-height:1.5;color:var(--muted)}
+.chart{height:240px;margin-top:12px}.situation{display:grid;gap:9px;margin-top:14px}.row{display:flex;justify-content:space-between;gap:15px;padding:10px 0;border-bottom:1px solid #e7eef3;font-size:11px}.row:last-child{border:0}.row strong:last-child{text-align:right}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.navcard{padding:22px;min-height:210px;display:flex;flex-direction:column}.cardtop{display:flex;justify-content:space-between}.icon{font-size:20px;font-weight:900;color:#0f649a}.tag{font-size:8px;color:#1673ac;font-weight:900;letter-spacing:.1em;text-transform:uppercase}.navcard h3{font:700 23px Georgia,"Times New Roman",serif;margin:18px 0 8px}.navcard p{font-size:11px;line-height:1.55;color:var(--body);margin:0}.actions{margin-top:auto;padding-top:18px;display:flex;gap:8px;flex-wrap:wrap}
+.btn{padding:9px 12px;border-radius:8px;background:#176fa6;color:#fff;text-decoration:none;font-size:10px;font-weight:900}.btn.dark{background:#173d57}
+.note{margin-top:14px;padding:12px 14px;border:1px solid var(--line);border-left:4px solid var(--blue);border-radius:10px;background:#fff;font-size:10px;line-height:1.55;color:var(--body)}
+footer{max-width:1480px;margin:auto;padding:0 42px 30px;color:var(--muted);font-size:9px}
+@media(max-width:1100px){.overview{grid-template-columns:repeat(4,1fr)}.metric{border-bottom:1px solid var(--line)}.analytics,.cards{grid-template-columns:1fr}.hero-inner{grid-template-columns:1fr}.hero-tags{justify-content:flex-start}}
+@media(max-width:650px){.hero-inner,main{padding-left:18px;padding-right:18px}h1{font-size:38px}.overview{grid-template-columns:repeat(2,1fr)}.heading{display:block}.heading p{margin-top:7px}.brand{gap:12px}}
 </style>
-</head><body>
-<header class="hero"><div class="hero-in"><div class="brand"><div class="mark">UF</div><div><div class="kicker">Törésvonalak.blog · OSINT projekt</div><h1>Ukrajna–Oroszország frontkövető</h1><p class="lead">DeepState-alapú fronthelyzet, történeti területi változások, FIRMS hőanomáliák, OSINT események és műveleti elemzőrétegek. Ez az oldal a rendszer összefoglaló és navigációs felülete.</p></div></div><div class="chips"><span class="chip"><strong>DeepState</strong> front data</span><span class="chip"><strong>FIRMS</strong> thermal</span><span class="chip"><strong>OSINT</strong> event feed</span><span class="chip"><strong>Suriyak</strong> reference</span></div></div></header>
-<main class="wrap">
-<div class="section-title"><h2>Aktuális helyzetkép</h2><p>Az értékek a repó elérhető adatfájljaiból töltődnek; hiányzó mező esetén nincs becsült adat.</p></div>
-<section class="kpis">
-<div class="kpi"><div class="label">Orosz kontroll alatt</div><div class="value neutral" id="controlled">—</div><div class="sub">km² · legfrissebb elérhető adat</div></div>
-<div class="kpi"><div class="label">Utolsó napi nettó változás</div><div class="value" id="d1">—</div><div class="sub">km²</div></div>
-<div class="kpi"><div class="label">7 napos nettó változás</div><div class="value" id="d7">—</div><div class="sub">km²</div></div>
-<div class="kpi"><div class="label">30 napos nettó változás</div><div class="value" id="d30">—</div><div class="sub">km²</div></div>
-<div class="kpi"><div class="label">Adat dátuma</div><div class="value neutral" id="latestDate" style="font-size:19px">—</div><div class="sub" id="sourceLabel">automatikus felismerés</div></div>
+</head>
+<body>
+<header class="hero"><div class="hero-inner">
+  <div class="brand"><div class="mark">UF</div><div>
+    <div class="kicker">Törésvonalak.blog · OSINT project</div>
+    <h1>Ukraine Front<br>Monitor</h1>
+    <p>Open-source monitoring and analytical platform for territorial changes, front activity, deep strikes, FIRMS thermal anomalies and OSINT reporting in the Russia–Ukraine war.</p>
+  </div></div>
+  <div class="hero-tags"><span class="hero-tag">Automated collection</span><span class="hero-tag">Historical datasets</span><span class="hero-tag">Analytical dashboards</span></div>
+</div></header>
+
+<main>
+<section>
+ <div class="heading"><h2>System overview</h2><p>A főoldal a rendszerben már kiszámított adatokat jeleníti meg. Nem számolja újra a területi értékeket.</p></div>
+ <div class="overview">
+  <div class="metric"><div class="value" id="controlled">–</div><div class="label">RU controlled area</div><div class="source">current_total_km²</div></div>
+  <div class="metric"><div class="value red" id="ruGain">–</div><div class="label">RU daily gain</div><div class="source">precomputed</div></div>
+  <div class="metric"><div class="value green" id="uaRecapture">–</div><div class="label">UA daily recapture</div><div class="source">precomputed</div></div>
+  <div class="metric"><div class="value" id="fai">–</div><div class="label">Front Activity Index</div><div class="source" id="status">–</div></div>
+  <div class="metric"><div class="value" id="osint">–</div><div class="label">OSINT events</div><div class="source">latest dataset</div></div>
+  <div class="metric"><div class="value" id="firms">–</div><div class="label">FIRMS · 3 days</div><div class="source">hotspots</div></div>
+  <div class="metric"><div class="value" id="date">–</div><div class="label">Latest data update</div><div class="source">auto-detected</div></div>
+ </div>
 </section>
 
-<div class="section-title"><h2>Területi változások</h2><p>Pozitív érték: orosz nettó területszerzés · negatív érték: ukrán nettó visszaszerzés.</p></div>
-<section class="analytics">
-<div class="panel"><h3>Napi területi változás · utolsó 30 adatpont</h3><div class="desc">A történeti delta adatsor alapján. A grafikon nem a harcok intenzitását, hanem a területi kontroll változását mutatja.</div><div class="chartbox"><canvas id="deltaChart"></canvas></div></div>
-<div class="panel"><h3>7 napos területi mérleg</h3><div class="desc">Külön RU gain / UA recapture csak akkor jelenik meg, ha az adatforrás külön tárolja ezeket.</div><div class="balance">
-<div class="barrow"><b>RU gain</b><div class="track"><div class="fill ru" id="ruBar" style="width:0"></div></div><div class="barval pos" id="ruGain">—</div></div>
-<div class="barrow"><b>UA recapture</b><div class="track"><div class="fill ua" id="uaBar" style="width:0"></div></div><div class="barval neg" id="uaGain">—</div></div>
-<div class="barrow"><b>Net change</b><div></div><div class="barval" id="net7">—</div></div>
-</div><div class="status" id="dataStatus">Adatok keresése…</div></div>
+<section class="section">
+ <div class="heading"><h2>Front situation</h2><p>A diagram a history fájlban már eltárolt napi <b>net_change_km2</b> értékeket rajzolja ki; nem készít új területszámítást.</p></div>
+ <div class="analytics">
+  <div class="panel"><h3>Territorial change · latest 30 records</h3><div class="small">Piros: orosz nettó területszerzés. Zöld: ukrán nettó visszaszerzés. A megjelenített értékek a dashboard történeti adataiból származnak.</div><div class="chart"><canvas id="trend"></canvas></div></div>
+  <div class="panel"><h3>Latest operational picture</h3><div class="small">A már előállított front_activity_latest.json legfontosabb mezői.</div>
+   <div class="situation">
+    <div class="row"><span>Main territorial hotspot</span><strong id="hotspot">–</strong></div>
+    <div class="row"><span>Daily net change</span><strong id="net">–</strong></div>
+    <div class="row"><span>Active sectors</span><strong id="sectors">–</strong></div>
+    <div class="row"><span>Critical events</span><strong id="critical">–</strong></div>
+    <div class="row"><span>FIRMS · 10 days</span><strong id="firms10">–</strong></div>
+   </div>
+  </div>
+ </div>
 </section>
 
-<div class="section-title"><h2>Elemző felületek</h2><p>A meglévő térképes oldal működése változatlan marad.</p></div>
-<section class="navgrid">
-<article class="navcard"><div class="navtop"><span class="navicon">MAP</span><span class="tag">Fő térkép</span></div><h3>Interaktív fronttérkép</h3><p>DeepState történeti állapotok, napi és történeti delta, Suriyak referencia, FIRMS, OSINT, front activity heatmap, harcoló alakulatok, napi dashboard és mélységi csapások.</p><div class="btns"><a class="btn secondary" href="front-map.html">Térkép megnyitása →</a></div></article>
-<article class="navcard"><div class="navtop"><span class="navicon">ANL</span><span class="tag">Operatív / stratégiai</span></div><h3>Ukraine Analysis Dashboard</h3><p>A rendszer külön operatív és stratégiai elemzőfelülete a fronthelyzet részletesebb vizsgálatához.</p><div class="btns"><a class="btn" href="./docs/ukraine-analysis.html" target="_blank" rel="noopener">Dashboard megnyitása →</a></div></article>
-<article class="navcard"><div class="navtop"><span class="navicon">STRIKE</span><span class="tag">Térképi réteg</span></div><h3>Mélységi csapások</h3><p>UA → RU és RU → UA események napi, 7, 30, 90 napos és teljes időablakban. A jelenlegi rendszerben a térképes felületen érhető el.</p><div class="btns"><a class="btn" href="front-map.html#deepStrikesPanel">Mélységi csapások →</a></div></article>
-<article class="navcard"><div class="navtop"><span class="navicon">OSINT</span><span class="tag">Rétegek</span></div><h3>FIRMS · OSINT · Front Activity</h3><p>NASA FIRMS hőanomáliák, OSINT feed és frontaktivitási hőtérkép a fő interaktív térképen.</p><div class="btns"><a class="btn" href="front-map.html">Rétegek megnyitása →</a><a class="btn secondary" href="https://github.com/mikloshetzer-sketch/Ukrajna-Front-Interaktiv-Terkep" target="_blank" rel="noopener">Repo →</a></div></article>
+<section class="section">
+ <div class="heading"><h2>Explore the monitor</h2><p>A meglévő térképes és elemző oldalak változatlanul megmaradnak, az új főoldal csak közös belépési pont.</p></div>
+ <div class="cards">
+  <article class="navcard"><div class="cardtop"><span class="icon">MAP</span><span class="tag">Operating picture</span></div><h3>Interactive Front Map</h3><p>A teljes korábbi térképes rendszer: DeepState, történeti delta, FIRMS, OSINT, front activity heatmap, Suriyak, Satellite Intelligence, mélységi csapások és elemző eszközök.</p><div class="actions"><a class="btn dark" href="front-map.html">Open interactive map →</a></div></article>
+  <article class="navcard"><div class="cardtop"><span class="icon">ANL</span><span class="tag">Strategic analysis</span></div><h3>Ukraine Analysis Dashboard</h3><p>A külön operatív és stratégiai elemzőfelület a fronthelyzet mélyebb vizsgálatához.</p><div class="actions"><a class="btn" href="./docs/ukraine-analysis.html">Open analysis →</a></div></article>
+  <article class="navcard"><div class="cardtop"><span class="icon">OPS</span><span class="tag">Daily dashboard</span></div><h3>Frontline Situation Dashboard</h3><p>Napi műveleti helyzetkép Front Activity Indexszel, területi adatokkal, taktikai térképekkel, OSINT eseményekkel, FIRMS adatokkal és front pressure mutatókkal.</p><div class="actions"><a class="btn" href="./docs/front-dashboard.html">Open daily dashboard →</a></div></article>
+  <article class="navcard"><div class="cardtop"><span class="icon">INT</span><span class="tag">Integrated layers</span></div><h3>Deep Strikes · FIRMS · OSINT</h3><p>A mélységi csapások, hőanomáliák, OSINT események és műholdas elemzőrétegek a teljes interaktív fronttérképen érhetők el.</p><div class="actions"><a class="btn" href="front-map.html#deepStrikesPanel">Open intelligence layers →</a><a class="btn dark" href="https://github.com/mikloshetzer-sketch/Ukrajna-Front-Interaktiv-Terkep">Repository →</a></div></article>
+ </div>
+ <div class="note" id="loadStatus">Adatkapcsolat ellenőrzése…</div>
 </section>
-
-<div class="section-title"><h2>Adatok és értelmezés</h2></div>
-<section class="method"><div class="panel"><h3>Mit mutat a rendszer?</h3><p class="note">A fronttérkép napi DeepState-állapotokat, területi változásokat és kiegészítő OSINT-rétegeket egyesít. A főoldali KPI-k és mini chartok kizárólag olyan értéket jelenítenek meg, amelyet a repóban elérhető strukturált adatokból fel lehet ismerni.</p></div><div class="panel warn"><h3>Módszertani megjegyzés</h3><p class="note">A területi delta a térképi kontroll változásának becslése. Nem azonos a harci aktivitással, veszteséggel vagy a katonai kezdeményezés egészével. FIRMS és OSINT adatok kiegészítő indikátorok.</p></div></section>
-</main><footer>Ukrajna–Oroszország frontkövető · Törésvonalak.blog · OSINT monitoring</footer>
+</main>
+<footer>Ukraine Front Monitor · Törésvonalak.blog · Open-source analytical project</footer>
 
 <script>
-const CANDIDATES=[
- "data/territorial_delta_history.json","data/territorial_history.json","data/territory_history.json",
- "data/delta_history.json","data/territorial_delta.json","data/front_history.json","data/daily_delta.json"
-];
-const fetchJSON=async u=>{const r=await fetch(u+"?v="+Date.now(),{cache:"no-store"});if(!r.ok)throw Error();return r.json()};
-const num=(o,keys)=>{for(const k of keys){const v=o?.[k];if(v!==undefined&&v!==null&&v!==""&&!isNaN(Number(v)))return Number(v)}return null};
-const datev=o=>o?.date||o?.day||o?.snapshot_date||o?.timestamp||o?.generated_at||null;
-const delta=v=>v==null?"—":`${v>=0?"+":""}${v.toFixed(2)} km²`;
-function paint(el,v){el.textContent=delta(v);el.className="value "+(v>0?"pos":v<0?"neg":"neutral")}
-function rowsFrom(p){if(Array.isArray(p))return p;for(const k of ["history","records","data","events","deltas","items"]){if(Array.isArray(p?.[k]))return p[k]}return []}
-function norm(r){return {date:datev(r),net:num(r,["net_change","territorial_delta","delta","net_delta","change_km2","delta_km2","net_km2"]),ru:num(r,["ru_gain","russian_gain","ru_gain_km2","russian_gain_km2"]),ua:num(r,["ua_recapture","ukrainian_recapture","ua_recapture_km2","ukrainian_gain_km2"]),controlled:num(r,["russian_control_km2","ru_control_km2","controlled_area_km2","russian_control","ru_control"])}}
-function sum(a,k,n){return a.slice(-n).reduce((s,x)=>s+(Number.isFinite(x[k])?x[k]:0),0)}
+const LATEST="./docs/data/front_activity_latest.json";
+const HISTORY="./docs/data/history/front_activity.json";
+const $=id=>document.getElementById(id);
+const km=v=>Number.isFinite(Number(v))?Number(v).toFixed(2)+" km²":"–";
+const signed=v=>{if(!Number.isFinite(Number(v)))return "–";let n=Number(v);return(n>0?"+":"")+n.toFixed(2)+" km²"};
+const fmt=n=>Number.isFinite(Number(n))?Number(n).toLocaleString("hu-HU"):"–";
+async function getJSON(p){const r=await fetch(p+"?v="+Date.now(),{cache:"no-store"});if(!r.ok)throw new Error(p+" HTTP "+r.status);return r.json()}
 (async()=>{
- let data=null,used=null;
- for(const f of CANDIDATES){try{const p=await fetchJSON(f),r=rowsFrom(p).map(norm).filter(x=>x.date||x.net!=null||x.controlled!=null);if(r.length){data=r;used=f;break}}catch{}}
- if(!data){dataStatus.textContent="A területi történeti JSON fájl neve nem volt automatikusan felismerhető. A navigáció működik; a KPI-k bekötéséhez a tényleges adatfájl útvonala szükséges.";return}
- data.sort((a,b)=>new Date(a.date||0)-new Date(b.date||0));const last=data[data.length-1];
- sourceLabel.textContent=used; latestDate.textContent=last.date?String(last.date).slice(0,10):"—";
- if(last.controlled!=null)controlled.textContent=last.controlled.toLocaleString("hu-HU",{maximumFractionDigits:2})+" km²";
- paint(d1,last.net); const d7v=sum(data,"net",7),d30v=sum(data,"net",30);paint(d7,d7v);paint(d30,d30v);net7.textContent=delta(d7v);net7.className="barval "+(d7v>0?"pos":d7v<0?"neg":"");
- const last7=data.slice(-7),hasRU=last7.some(x=>x.ru!=null),hasUA=last7.some(x=>x.ua!=null);let rg=hasRU?sum(data,"ru",7):null,ug=hasUA?sum(data,"ua",7):null;
- if(rg!=null)ruGain.textContent=delta(rg);if(ug!=null)uaGain.textContent=delta(ug);if(rg!=null||ug!=null){const m=Math.max(rg||0,ug||0,1);ruBar.style.width=((rg||0)/m*100)+"%";uaBar.style.width=((ug||0)/m*100)+"%"}
- dataStatus.textContent=`Betöltve: ${used} · ${data.length} történeti rekord.`;
- const pts=data.filter(x=>x.net!=null).slice(-30);
- new Chart(document.getElementById("deltaChart"),{type:"bar",data:{labels:pts.map(x=>String(x.date||"").slice(5,10)),datasets:[{data:pts.map(x=>x.net),backgroundColor:pts.map(x=>x.net>=0?"rgba(193,18,31,.72)":"rgba(21,101,192,.72)"),borderWidth:0,borderRadius:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>delta(c.raw)}}},scales:{x:{grid:{display:false},ticks:{font:{size:8},maxRotation:0}},y:{grid:{color:"#e7edf2"},ticks:{font:{size:8}},title:{display:true,text:"km²",font:{size:9}}}}}})
+ try{
+  const [latest,history]=await Promise.all([getJSON(LATEST),getJSON(HISTORY)]);
+  const t=latest.territorial||{}, c=latest.counts||{};
+  $("controlled").textContent=km(t.current_total_km2);
+  $("ruGain").textContent=km(t.russian_gain_km2);
+  $("uaRecapture").textContent=km(t.ukrainian_recapture_km2);
+  $("fai").textContent=fmt(latest.front_activity_index);
+  $("status").textContent=latest.status||"–";
+  $("osint").textContent=fmt(c.osint);
+  $("firms").textContent=fmt(c.firms_3d);
+  $("date").textContent=latest.date||"–";
+  $("hotspot").textContent=latest.territorial_hotspot?.sector||"–";
+  $("net").textContent=signed(t.net_change_km2);
+  $("sectors").textContent=fmt(c.active_sectors);
+  $("critical").textContent=fmt(c.critical_events);
+  $("firms10").textContent=fmt(c.firms_10d);
+
+  // Visualization only: no territorial value is recalculated here.
+  const pts=(Array.isArray(history)?history:[])
+    .filter(x=>x?.territorial?.available && Number.isFinite(Number(x.territorial.net_change_km2)))
+    .slice(-30);
+  new Chart($("trend"),{
+   type:"bar",
+   data:{labels:pts.map(x=>x.date.slice(5)),datasets:[{
+    data:pts.map(x=>Number(x.territorial.net_change_km2)),
+    backgroundColor:pts.map(x=>Number(x.territorial.net_change_km2)>=0?"rgba(200,61,67,.78)":"rgba(47,138,97,.78)"),
+    borderRadius:3,borderWidth:0
+   }]},
+   options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>signed(c.raw)}}},
+    scales:{x:{grid:{display:false},ticks:{font:{size:9},maxRotation:0}},y:{grid:{color:"#e5edf3"},ticks:{font:{size:9}},title:{display:true,text:"km²"}}}}
+  });
+  $("loadStatus").textContent="Online · front_activity_latest.json és front_activity history betöltve. A főoldal kizárólag a rendszerben már előállított értékeket jeleníti meg.";
+ }catch(e){
+  console.error(e);
+  $("loadStatus").textContent="Adatbetöltési hiba: "+e.message;
+ }
 })();
 </script>
 </body></html>
