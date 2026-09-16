@@ -1207,6 +1207,14 @@
     .campaign-method-note strong{color:var(--body)}
     @media(max-width:760px){.campaign-kpi-row{grid-template-columns:1fr 1fr}}
 
+
+    /* Campaign Evolution – composition and dominant-system view */
+    .campaign-evolution-card{margin-top:10px}
+    .campaign-evolution-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
+    .campaign-evolution-legend{font-size:8px;color:var(--muted);line-height:1.45;max-width:430px}
+    .campaign-evolution-summary{margin-top:8px;padding:10px 12px;border:1px solid var(--line);border-left:5px solid var(--blue);border-radius:9px;background:var(--blue-soft);font-size:9px;line-height:1.6;color:var(--body)}
+    .campaign-evolution-summary strong{color:var(--text)}
+
     /* PDF reports and archive */
     .pdf-report-panel{
       border-top:4px solid var(--purple);
@@ -1783,6 +1791,19 @@
           <article class="deepstrike-chart-card"><div class="deepstrike-card-head"><div class="deepstrike-card-title">Supply Chain Campaign Timeline</div><div class="deepstrike-card-subtitle">RU → UA események napi bontásban, funkcionális célrendszer szerint</div></div><div class="deepstrike-chart-wrap" style="height:320px"><canvas id="campaignTimelineChart"></canvas></div></article>
           <article class="deepstrike-detail-card"><div class="deepstrike-card-head"><div class="deepstrike-card-title">Targeting Shift</div><div class="deepstrike-card-subtitle">Aktuális időszak összevetése az azonos hosszúságú közvetlenül megelőző időszakkal</div></div><div id="campaignShiftList" class="campaign-shift-list"></div></article>
         </div>
+
+        <article class="deepstrike-chart-card campaign-evolution-card">
+          <div class="deepstrike-card-head campaign-evolution-head">
+            <div>
+              <div class="deepstrike-card-title">Campaign Evolution – Target System Share</div>
+              <div class="deepstrike-card-subtitle">Az azonosított RU → UA funkcionális célrendszerek részarányának időbeli változása. Az Other nem része a megoszlásnak.</div>
+            </div>
+            <div class="campaign-evolution-legend">100%-os összetétel: minden időpont azt mutatja, hogy az adott napi/heti azonosított ellátásilánc-csapások milyen arányban oszlottak meg a célrendszerek között.</div>
+          </div>
+          <div class="deepstrike-chart-wrap" style="height:330px"><canvas id="campaignEvolutionChart"></canvas></div>
+          <div id="campaignEvolutionSummary" class="campaign-evolution-summary"><strong>Campaign Evolution:</strong> adatok betöltése…</div>
+        </article>
+
         <div id="campaignAssessment" class="campaign-assessment"><strong>Ellátásilánc-értékelés:</strong> adatok betöltése…</div>
         <div class="campaign-method-note">
           <strong>Megjegyzés / Note:</strong> A kategorizálás a nyílt forrásokban azonosítható konkrét célpontok alapján történik. Azok az események, amelyeknél csak a település vagy régió ismert, illetve a célpont funkciója nem határozható meg kellő bizonyossággal, az <em>Other</em> kategóriában maradnak. Emiatt az egyes kampánykategóriák értékei minimumként megerősített értékek. / Classification is based on specifically identifiable targets reported in open sources. Events for which only the city or region is known, or where the target function cannot be determined with sufficient confidence, remain classified as <em>Other</em>. Counts for individual campaign categories should therefore be interpreted as minimum confirmed values.
@@ -3904,6 +3925,7 @@ function buildDeepStrikeAssessment(items,period){
 
 
 let campaignTimelineChart=null;
+let campaignEvolutionChart=null;
 let ACTIVE_CAMPAIGNS=new Set();
 const CAMPAIGNS=[
   ['black_sea_port','Black Sea Ports','#17324d'],
@@ -3955,6 +3977,41 @@ function bindCampaignViewButtons(){
   updateCampaignViewButtons();
 }
 function setCampaignText(id,value){const el=document.getElementById(id);if(el)el.textContent=value}
+
+function renderCampaignEvolution(current){
+  const canvas=document.getElementById('campaignEvolutionChart');
+  if(!canvas) return;
+  const classified=current.filter(i=>campaignCategory(i)!=='other'&&ACTIVE_CAMPAIGNS.has(campaignCategory(i)));
+  const keys=[...new Set(classified.map(campaignTimeKey).filter(Boolean))].sort();
+  const systems=CAMPAIGNS.filter(([k])=>k!=='other'&&ACTIVE_CAMPAIGNS.has(k));
+  const totals=new Map(keys.map(key=>[key,classified.filter(i=>campaignTimeKey(i)===key).length]));
+  destroyDeepStrikeChart(campaignEvolutionChart);
+  campaignEvolutionChart=new Chart(canvas,{
+    type:'line',
+    data:{labels:keys,datasets:systems.map(([k,n,c])=>({
+      label:n,
+      data:keys.map(key=>{const total=totals.get(key)||0;const count=classified.filter(i=>campaignTimeKey(i)===key&&campaignCategory(i)===k).length;return total?count/total*100:0}),
+      borderColor:c,backgroundColor:c,pointRadius:2,pointHoverRadius:4,borderWidth:2,tension:.22,fill:false
+    }))},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},scales:{
+      x:{ticks:{maxRotation:45,font:{size:8}},title:{display:CAMPAIGN_TIME_VIEW==='weekly',text:CAMPAIGN_TIME_VIEW==='weekly'?'Hét kezdete (hétfő)':'',font:{size:8}}},
+      y:{beginAtZero:true,max:100,ticks:{callback:v=>`${v}%`,font:{size:9}},title:{display:true,text:'Részarány az azonosított célrendszerek között',font:{size:8}}}
+    },plugins:{legend:{position:'bottom',labels:{boxWidth:9,font:{size:8}}},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${Number(ctx.parsed.y||0).toFixed(0)}%`,afterBody:(items)=>{const key=items[0]?.label;return key?`Azonosított esemény: ${totals.get(key)||0}`:''}}}}}
+  });
+  const summary=document.getElementById('campaignEvolutionSummary');
+  if(!summary) return;
+  if(!classified.length||!keys.length){summary.innerHTML='<strong>Campaign Evolution:</strong> nincs elegendő azonosított funkcionális esemény a kiválasztott időszakban.';return;}
+  const dominant=keys.map(key=>{
+    const total=totals.get(key)||1;
+    const rows=systems.map(([k,n])=>({k,n,c:classified.filter(i=>campaignTimeKey(i)===key&&campaignCategory(i)===k).length})).sort((a,b)=>b.c-a.c);
+    return {key,total,top:rows[0],share:(rows[0]?.c||0)/total*100};
+  }).filter(x=>x.top?.c>0);
+  const first=dominant[0],last=dominant.at(-1);
+  const changes=[]; for(let j=1;j<dominant.length;j++){if(dominant[j].top.k!==dominant[j-1].top.k)changes.push(`${dominant[j-1].top.n} → ${dominant[j].top.n}`)}
+  const unique=[...new Set(changes)];
+  summary.innerHTML=`<strong>Campaign Evolution:</strong> Az időszak elején a legnagyobb részarányt a <strong>${first?.top?.n||'–'}</strong>, a legutóbbi megfigyelt időpontban a <strong>${last?.top?.n||'–'}</strong> adta az azonosított funkcionális célrendszerek között.${unique.length?` A domináns célrendszer váltása a vizsgált időszakban: <strong>${unique.join('; ')}</strong>.`: ' A domináns célrendszerben nem azonosítható váltás a rendelkezésre álló időpontok között.'} A részarányok az Other eseményeket nem tartalmazzák, és nem bizonyítanak önmagukban hadműveleti szándékot.`;
+}
+
 function renderRussianCampaign(period){
   renderCampaignFilters();
   bindCampaignViewButtons();
@@ -3986,6 +4043,7 @@ function renderRussianCampaign(period){
   setCampaignText('campaignTopSystem',topSupply?.n||'–');
   setCampaignText('campaignTopSystemSub',topSupply?`${topSupply.c} esemény`:'nincs rögzített esemény');
   setCampaignText('campaignActiveSystems',String(activeSystems));
+  renderCampaignEvolution(current);
 
   const curN=current.length||1,prevN=previous.length||1;
   const rows=CAMPAIGNS.map(([k,n])=>{
@@ -4298,6 +4356,7 @@ loadPdfReports();
 
 </body>
 </html>
+
 
 
 
