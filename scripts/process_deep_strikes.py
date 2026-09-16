@@ -29,6 +29,10 @@ Támogatott opcionális Excel-oszlopok:
 - Rövid leírás EN
 - Részletes leírás HU
 - Részletes leírás EN
+- Campaign category
+
+A Campaign category opcionális. Ha nincs kitöltve, az RU_UA eseményeknél
+a script a helyszín, célponttípus és leírás alapján automatikusan besorol.
 """
 
 from __future__ import annotations
@@ -95,6 +99,7 @@ OPTIONAL_HEADERS = {
     "Rövid leírás EN",
     "Részletes leírás HU",
     "Részletes leírás EN",
+    "Campaign category",
 }
 
 
@@ -337,6 +342,103 @@ def get_optional_value(
 
 
 # ============================================================
+# KAMPÁNYKATEGÓRIA – UKRÁN ELLÁTÁSI LÁNC ELEMZÉS
+# ============================================================
+
+CAMPAIGN_CATEGORIES = {
+    "black_sea_port",
+    "danube_corridor",
+    "rail",
+    "border_logistics",
+    "warehouse_distribution",
+    "energy_logistics",
+    "military_industry",
+    "other",
+}
+
+CAMPAIGN_ALIASES = {
+    "black sea ports": "black_sea_port",
+    "black sea port": "black_sea_port",
+    "black_sea_ports": "black_sea_port",
+    "danube corridor": "danube_corridor",
+    "danube ports": "danube_corridor",
+    "rail network": "rail",
+    "railway": "rail",
+    "border logistics": "border_logistics",
+    "warehouses & distribution": "warehouse_distribution",
+    "warehouses and distribution": "warehouse_distribution",
+    "warehouse": "warehouse_distribution",
+    "energy logistics": "energy_logistics",
+    "military / industry": "military_industry",
+    "military industry": "military_industry",
+}
+
+
+def normalize_campaign_category(value: Any) -> str:
+    """Opcionálisan kézzel megadott kampánykategória normalizálása."""
+    text = clean_text(value).casefold()
+    if not text:
+        return ""
+    text = CAMPAIGN_ALIASES.get(text, text.replace("-", "_").replace(" ", "_"))
+    return text if text in CAMPAIGN_CATEGORIES else ""
+
+
+def infer_campaign_category(
+    direction: str,
+    region_hu: str,
+    location_hu: str,
+    target_type_hu: str,
+    description_hu: str,
+) -> str:
+    """
+    Funkcionális célrendszer automatikus besorolása.
+
+    Elsődleges célja az RU_UA események ukrán ellátási lánc szempontú
+    elemzése. A sorrend szándékos: a specifikus folyosók megelőzik az
+    általános raktár/energia kategóriákat.
+    """
+    if direction != "RU_UA":
+        return "other"
+
+    text = " ".join((region_hu, location_hu, target_type_hu, description_hu)).casefold()
+
+    def has(*terms: str) -> bool:
+        return any(term in text for term in terms)
+
+    # Duna menti export- és határlogisztikai folyosó.
+    if has("izmaj", "izmail", "reni", "orlivka", "duna", "danube", "tudora"):
+        return "danube_corridor"
+
+    # Fekete-tengeri nagy kikötők és kapcsolódó export-infrastruktúra.
+    if has("odes", "odess", "chornomorsk", "csornomorszk", "pivdennyi", "pivdenny", "yuzhny") and has(
+        "kiköt", "port", "terminál", "terminal", "gabona", "grain", "export"
+    ):
+        return "black_sea_port"
+
+    # Vasúti hálózat, depó, állomás, gördülőállomány.
+    if has("vasút", "rail", "vonat", "train", "depó", "depot", "mozdony", "locomotive", "állomás"):
+        return "rail"
+
+    # Határátkelők, kompok és határ menti logisztikai csomópontok.
+    if has("határátkel", "border crossing", "border checkpoint", "komp", "ferry", "yahodyn", "jagodyn"):
+        return "border_logistics"
+
+    # Raktárak és elosztóközpontok.
+    if has("raktár", "warehouse", "elosztó", "distribution", "logisztikai központ", "sorting terminal", "válogatóterminál"):
+        return "warehouse_distribution"
+
+    # Üzemanyag- és energiaellátás, ha nem specifikusabb kategória.
+    if has("energia", "energy", "villamos", "electric", "alállomás", "substation", "erőmű", "power plant", "benzinkút", "petrol station", "üzemanyag", "fuel", "olajdepó"):
+        return "energy_logistics"
+
+    # Hadiipari / katonai célpontok elkülönítése az ellátási lánctól.
+    if has("katonai", "military", "hadiipar", "defence industry", "defense industry", "lősz", "ammunition", "repülőtér", "airfield", "légibázis", "air base"):
+        return "military_industry"
+
+    return "other"
+
+
+# ============================================================
 # EXCEL FELDOLGOZÁS
 # ============================================================
 
@@ -530,6 +632,14 @@ def read_sheet(
                 )
             )
 
+            campaign_category_manual = normalize_campaign_category(
+                get_optional_value(
+                    row,
+                    column,
+                    "Campaign category",
+                )
+            )
+
             # Ha még nincs külön részletes magyar szöveg,
             # legalább a rövid leírás megjelenik lenyitáskor.
             if not description_long_hu:
@@ -547,6 +657,21 @@ def read_sheet(
                     description_short_en
                 )
 
+
+            # ====================================================
+            # KAMPÁNYKATEGÓRIA
+            # ====================================================
+
+            campaign_category = (
+                campaign_category_manual
+                or infer_campaign_category(
+                    direction,
+                    region_hu,
+                    location_hu,
+                    target_type_hu,
+                    description_short_hu,
+                )
+            )
 
             # ====================================================
             # KÖTELEZŐ MEZŐK ELLENŐRZÉSE
@@ -808,6 +933,13 @@ def read_sheet(
 
 
                 # ------------------------------------------------
+                # FUNKCIONÁLIS KAMPÁNYKATEGÓRIA
+                # ------------------------------------------------
+
+                "campaign_category": campaign_category,
+
+
+                # ------------------------------------------------
                 # KOORDINÁTÁK
                 # ------------------------------------------------
 
@@ -952,6 +1084,17 @@ def build_summary(
         for event in events
     )
 
+    by_campaign_category = Counter(
+        event.get("campaign_category", "other")
+        for event in events
+    )
+
+    ru_ua_campaign_category = Counter(
+        event.get("campaign_category", "other")
+        for event in events
+        if event.get("direction") == "RU_UA"
+    )
+
     by_date = Counter(
         event["date"]
         for event in events
@@ -1058,6 +1201,20 @@ def build_summary(
                     -item[1],
                     item[0],
                 ),
+            )
+        ),
+
+        "campaign_categories": dict(
+            sorted(
+                by_campaign_category.items(),
+                key=lambda item: (-item[1], item[0]),
+            )
+        ),
+
+        "ru_ua_campaign_categories": dict(
+            sorted(
+                ru_ua_campaign_category.items(),
+                key=lambda item: (-item[1], item[0]),
             )
         ),
 
@@ -1251,7 +1408,7 @@ def main() -> int:
 
         "update_mode": "manual",
 
-        "schema_version": "2.0",
+        "schema_version": "2.1",
 
         "multilingual": True,
 
@@ -1280,7 +1437,7 @@ def main() -> int:
             str(input_path)
         ),
 
-        "schema_version": "2.0",
+        "schema_version": "2.1",
 
         "valid_event_count": (
             len(events)
@@ -1327,7 +1484,7 @@ def main() -> int:
                 "deep_strike_history"
             ),
 
-            "schema_version": "2.0",
+            "schema_version": "2.1",
 
             **summary,
         },
