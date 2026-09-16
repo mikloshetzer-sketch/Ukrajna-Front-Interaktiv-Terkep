@@ -3883,19 +3883,23 @@ const CAMPAIGNS=[
   ['warehouse_distribution','Warehouses & Distribution','#6c4dc5'],
   ['energy_logistics','Energy Logistics','#c58c25'],
   ['military_industry','Military / Industry','#2f8a61'],
+  ['industrial_production','Industrial Production','#8d6e63'],
   ['other','Other','#78909c']
 ];
 function campaignText(i){return [i?.campaign_category,i?.target_type_hu,i?.target_type,i?.location_hu,i?.location,i?.region_hu,i?.region,deepStrikeShortText(i)].filter(Boolean).join(' ').toLowerCase()}
 function campaignCategory(i){
   const explicit=String(i?.campaign_category||'').trim(); if(explicit) return explicit;
   const t=campaignText(i);
-  if(/izmaj|izmail|reni|orliv|duna|danube/.test(t)) return 'danube_corridor';
-  if(/odes|odess|chornom|csornom|pivden|yuzhn|fekete.tenger|black sea/.test(t)&&/kiköt|port|harbour|terminal|grain|gabona/.test(t)) return 'black_sea_port';
-  if(/vasút|rail|train|mozdony|locomotive|állomás|station|depot/.test(t)) return 'rail';
-  if(/határ|border|crossing|customs|yahod|jagod|tudora|starokoz/.test(t)) return 'border_logistics';
-  if(/raktár|warehouse|distribution|eloszt|logistic|logiszt/.test(t)) return 'warehouse_distribution';
-  if(/energia|energy|power|substation|alállomás|fuel|üzemanyag|petrol|benzinkút|oil depot/.test(t)) return 'energy_logistics';
-  if(/military|katonai|hadiipar|defen|airfield|repülőtér|drone|uav|radar/.test(t)) return 'military_industry';
+  if(/izmaj|izmail|reni|orliv|duna|danube|tudora|starokoz/.test(t)) return 'danube_corridor';
+  const maritimePlace=/odes|odess|chornom|csornom|pivden|yuzhn|mikolaj|mykolaiv|fekete.tenger|black sea|tengeri folyosó/.test(t);
+  const maritimeTarget=/kiköt|\bport\b|harbour|harbor|hajó|vessel|tengeri folyosó|maritime corridor|olajterminál|gabonaexport|grain terminal/.test(t);
+  if(maritimePlace&&maritimeTarget) return 'black_sea_port';
+  if(/vasút|railway|rail network|rail depot|vonat|train|mozdony|locomotive|pályaudvar|rendezőpályaudvar|rail yard/.test(t)) return 'rail';
+  if(/határátkel|border crossing|border checkpoint|vám|customs|kompterminál|ferry terminal|yahod|jagod/.test(t)) return 'border_logistics';
+  if(/raktár|warehouse|distribution|eloszt|logisztikai központ|logisztikai infrastruktúra|logistics hub|logistics infrastructure|sorting terminal|válogatóterminál|nova poshta/.test(t)) return 'warehouse_distribution';
+  if(/energia|energy|villamos|electric|substation|alállomás|erőmű|power plant|fuel station|üzemanyagtöltő|üzemanyag|fuel|petrol station|benzinkút|olajdepó|power grid/.test(t)) return 'energy_logistics';
+  if(/military|katonai|hadiipar|védelmi ipar|defen[cs]e industry|lőszerraktár|ammunition depot|airfield|repülőtér|légibázis|air base|dróngyárt|drone production/.test(t)) return 'military_industry';
+  if(/acélmű|steelworks|steel plant|bányászati|mining infrastructure|kohó|metallurgical plant|ipari üzem|industrial plant|gyártóüzem|manufacturing plant/.test(t)) return 'industrial_production';
   return 'other';
 }
 function campaignName(key){return CAMPAIGNS.find(x=>x[0]===key)?.[1]||key}
@@ -4198,8 +4202,6 @@ loadPdfReports();
 
 </body>
 </html>
-
-
 
 
 
