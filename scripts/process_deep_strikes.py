@@ -353,6 +353,7 @@ CAMPAIGN_CATEGORIES = {
     "warehouse_distribution",
     "energy_logistics",
     "military_industry",
+    "industrial_production",
     "other",
 }
 
@@ -371,6 +372,8 @@ CAMPAIGN_ALIASES = {
     "energy logistics": "energy_logistics",
     "military / industry": "military_industry",
     "military industry": "military_industry",
+    "industrial production": "industrial_production",
+    "industry": "industrial_production",
 }
 
 
@@ -391,11 +394,12 @@ def infer_campaign_category(
     description_hu: str,
 ) -> str:
     """
-    Funkcionális célrendszer automatikus besorolása.
+    Funkcionális célrendszer automatikus besorolása az RU_UA eseményekhez.
 
-    Elsődleges célja az RU_UA események ukrán ellátási lánc szempontú
-    elemzése. A sorrend szándékos: a specifikus folyosók megelőzik az
-    általános raktár/energia kategóriákat.
+    A szabályok prioritásosak. A konkrét közlekedési/logisztikai funkció
+    mindig megelőzi az általános energia-, ipari vagy katonai besorolást.
+    A cél nem minden esemény erőltetett kategorizálása: a tisztán lakó-,
+    városi és civil célpontok továbbra is ``other`` értéken maradnak.
     """
     if direction != "RU_UA":
         return "other"
@@ -405,35 +409,82 @@ def infer_campaign_category(
     def has(*terms: str) -> bool:
         return any(term in text for term in terms)
 
-    # Duna menti export- és határlogisztikai folyosó.
-    if has("izmaj", "izmail", "reni", "orlivka", "duna", "danube", "tudora"):
+    # 1. Duna menti export- és határlogisztikai folyosó.
+    # A földrajzi azonosító elsőbbséget élvez, mert ugyanaz az esemény
+    # gyakran kikötői, komp- és határfunkciót is egyszerre tartalmaz.
+    if has("izmaj", "izmail", "reni", "orlivka", "duna", "danube", "tudora", "starokozache"):
         return "danube_corridor"
 
-    # Fekete-tengeri nagy kikötők és kapcsolódó export-infrastruktúra.
-    if has("odes", "odess", "chornomorsk", "csornomorszk", "pivdennyi", "pivdenny", "yuzhny") and has(
-        "kiköt", "port", "terminál", "terminal", "gabona", "grain", "export"
-    ):
+    # 2. Fekete-tengeri / déli tengeri kikötői rendszer és hajózás.
+    # Ide kerül Odesza, Csornomorszk, Pivdennyi és Mikolajiv kikötői
+    # infrastruktúrája, valamint a tengeri kereskedelmi hajózási folyosó.
+    maritime_place = has(
+        "odes", "odess", "chornomorsk", "csornomorszk",
+        "pivdennyi", "pivdenny", "yuzhny", "mikolajiv",
+        "mykolaiv", "fekete-tenger", "black sea", "tengeri folyosó"
+    )
+    maritime_target = has(
+        "kiköt", " port", "harbour", "harbor", "hajó", "vessel",
+        "tengeri folyosó", "maritime corridor", "olajterminál",
+        "gabonaexport", "grain terminal"
+    )
+    if maritime_place and maritime_target:
         return "black_sea_port"
 
-    # Vasúti hálózat, depó, állomás, gördülőállomány.
-    if has("vasút", "rail", "vonat", "train", "depó", "depot", "mozdony", "locomotive", "állomás"):
+    # 3. Vasúti hálózat. Szándékosan nincs általános "állomás" kulcsszó,
+    # mert az üzemanyagtöltő állomás korábban tévesen vasútnak minősült.
+    if has(
+        "vasút", "railway", "rail network", "rail depot",
+        "vonat", "train", "mozdony", "locomotive",
+        "pályaudvar", "rendezőpályaudvar", "rail yard"
+    ):
         return "rail"
 
-    # Határátkelők, kompok és határ menti logisztikai csomópontok.
-    if has("határátkel", "border crossing", "border checkpoint", "komp", "ferry", "yahodyn", "jagodyn"):
+    # 4. Határátkelők, vám- és komp-infrastruktúra.
+    if has(
+        "határátkel", "border crossing", "border checkpoint",
+        "vám", "customs", "kompterminál", "ferry terminal",
+        "yahodyn", "jagodyn"
+    ):
         return "border_logistics"
 
-    # Raktárak és elosztóközpontok.
-    if has("raktár", "warehouse", "elosztó", "distribution", "logisztikai központ", "sorting terminal", "válogatóterminál"):
+    # 5. Raktározás, postai és elosztási logisztika.
+    if has(
+        "raktár", "warehouse", "elosztó", "distribution",
+        "logisztikai központ", "logisztikai infrastruktúra",
+        "logistics hub", "logistics infrastructure",
+        "sorting terminal", "válogatóterminál", "nova poshta"
+    ):
         return "warehouse_distribution"
 
-    # Üzemanyag- és energiaellátás, ha nem specifikusabb kategória.
-    if has("energia", "energy", "villamos", "electric", "alállomás", "substation", "erőmű", "power plant", "benzinkút", "petrol station", "üzemanyag", "fuel", "olajdepó"):
+    # 6. Üzemanyag- és energiaellátás.
+    if has(
+        "energia", "energy", "villamos", "electric",
+        "alállomás", "substation", "erőmű", "power plant",
+        "benzinkút", "petrol station", "fuel station",
+        "üzemanyagtöltő", "üzemanyag", "fuel", "olajdepó",
+        "power grid", "villamosenergia"
+    ):
         return "energy_logistics"
 
-    # Hadiipari / katonai célpontok elkülönítése az ellátási lánctól.
-    if has("katonai", "military", "hadiipar", "defence industry", "defense industry", "lősz", "ammunition", "repülőtér", "airfield", "légibázis", "air base"):
+    # 7. Katonai / hadiipari infrastruktúra.
+    if has(
+        "katonai", "military", "hadiipar", "védelmi ipar",
+        "defence industry", "defense industry", "lőszerraktár",
+        "ammunition depot", "repülőtér", "airfield",
+        "légibázis", "air base", "dróngyárt", "drone production"
+    ):
         return "military_industry"
+
+    # 8. Ipari termelési kapacitás. Csak konkrét ipari funkciók kerülnek ide;
+    # az általános "városi és ipari infrastruktúra" megfogalmazás nem elég.
+    if has(
+        "acélmű", "steelworks", "steel plant", "bányászati",
+        "mining infrastructure", "kohó", "metallurgical plant",
+        "ipari üzem", "industrial plant", "gyártóüzem",
+        "manufacturing plant"
+    ):
+        return "industrial_production"
 
     return "other"
 
