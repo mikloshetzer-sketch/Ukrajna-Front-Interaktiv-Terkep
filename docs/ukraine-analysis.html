@@ -1193,6 +1193,20 @@
     .campaign-assessment{margin-top:10px;padding:12px 14px;border:1px solid var(--line);border-left:5px solid var(--red);border-radius:10px;background:var(--red-soft);color:var(--body);font-size:10px;line-height:1.65}
     @media(max-width:900px){.campaign-grid{grid-template-columns:1fr}}
 
+    /* Campaign evolution controls + methodology */
+    .campaign-evolution-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:8px 0 0}
+    .campaign-view-switch{display:flex;gap:5px}
+    .campaign-view-btn{padding:5px 8px;border:1px solid var(--line-strong);border-radius:7px;background:#fff;color:var(--muted);font-size:8px;font-weight:900;cursor:pointer}
+    .campaign-view-btn.active{background:var(--text);border-color:var(--text);color:#fff}
+    .campaign-kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:10px 0}
+    .campaign-mini-kpi{padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:#fff}
+    .campaign-mini-kpi .k{font-size:7px;color:var(--muted);font-weight:900;text-transform:uppercase;letter-spacing:.04em}
+    .campaign-mini-kpi .v{margin-top:3px;font-size:17px;color:var(--text);font-weight:950}
+    .campaign-mini-kpi .s{margin-top:2px;font-size:8px;color:var(--muted)}
+    .campaign-method-note{margin-top:8px;padding:9px 11px;border:1px dashed var(--line-strong);border-radius:8px;background:var(--soft);color:var(--muted);font-size:8px;line-height:1.55}
+    .campaign-method-note strong{color:var(--body)}
+    @media(max-width:760px){.campaign-kpi-row{grid-template-columns:1fr 1fr}}
+
     /* PDF reports and archive */
     .pdf-report-panel{
       border-top:4px solid var(--purple);
@@ -1752,11 +1766,27 @@
         <div class="deepstrike-card-title">Russian Strike Campaign – Ukrainian Supply Chain</div>
         <div class="deepstrike-card-subtitle">Az orosz hátországi csapások funkcionális bontása. A kategóriák az ukrán ellátási lánc egyes elemei elleni rögzített támadásokat mutatják; önmagukban nem bizonyítanak egységes kampánytervet.</div>
         <div class="campaign-toolbar" id="campaignFilters"></div>
+        <div class="campaign-evolution-toolbar">
+          <div class="deepstrike-card-subtitle">Időbeli nézet</div>
+          <div class="campaign-view-switch">
+            <button class="campaign-view-btn active" id="campaignDailyBtn" type="button">Napi</button>
+            <button class="campaign-view-btn" id="campaignWeeklyBtn" type="button">Heti</button>
+          </div>
+        </div>
+        <div class="campaign-kpi-row">
+          <div class="campaign-mini-kpi"><div class="k">Supply-chain esemény</div><div class="v" id="campaignSupplyCount">–</div><div class="s">Other nélkül</div></div>
+          <div class="campaign-mini-kpi"><div class="k">Supply-chain részarány</div><div class="v" id="campaignSupplyShare">–</div><div class="s">RU → UA eseményeken belül</div></div>
+          <div class="campaign-mini-kpi"><div class="k">Legaktívabb rendszer</div><div class="v" id="campaignTopSystem" style="font-size:12px">–</div><div class="s" id="campaignTopSystemSub">–</div></div>
+          <div class="campaign-mini-kpi"><div class="k">Aktív célrendszerek</div><div class="v" id="campaignActiveSystems">–</div><div class="s">rögzített kategória</div></div>
+        </div>
         <div class="campaign-grid">
           <article class="deepstrike-chart-card"><div class="deepstrike-card-head"><div class="deepstrike-card-title">Supply Chain Campaign Timeline</div><div class="deepstrike-card-subtitle">RU → UA események napi bontásban, funkcionális célrendszer szerint</div></div><div class="deepstrike-chart-wrap" style="height:320px"><canvas id="campaignTimelineChart"></canvas></div></article>
           <article class="deepstrike-detail-card"><div class="deepstrike-card-head"><div class="deepstrike-card-title">Targeting Shift</div><div class="deepstrike-card-subtitle">Aktuális időszak összevetése az azonos hosszúságú közvetlenül megelőző időszakkal</div></div><div id="campaignShiftList" class="campaign-shift-list"></div></article>
         </div>
         <div id="campaignAssessment" class="campaign-assessment"><strong>Ellátásilánc-értékelés:</strong> adatok betöltése…</div>
+        <div class="campaign-method-note">
+          <strong>Megjegyzés / Note:</strong> A kategorizálás a nyílt forrásokban azonosítható konkrét célpontok alapján történik. Azok az események, amelyeknél csak a település vagy régió ismert, illetve a célpont funkciója nem határozható meg kellő bizonyossággal, az <em>Other</em> kategóriában maradnak. Emiatt az egyes kampánykategóriák értékei minimumként megerősített értékek. / Classification is based on specifically identifiable targets reported in open sources. Events for which only the city or region is known, or where the target function cannot be determined with sufficient confidence, remain classified as <em>Other</em>. Counts for individual campaign categories should therefore be interpreted as minimum confirmed values.
+        </div>
       </div>
 
       <div id="deepStrikeAssessment" class="deepstrike-assessment">
@@ -3905,9 +3935,75 @@ function campaignCategory(i){
 function campaignName(key){return CAMPAIGNS.find(x=>x[0]===key)?.[1]||key}
 function renderCampaignFilters(){const el=document.getElementById('campaignFilters');if(!el)return;if(!ACTIVE_CAMPAIGNS.size)CAMPAIGNS.forEach(x=>ACTIVE_CAMPAIGNS.add(x[0]));el.innerHTML=CAMPAIGNS.map(([k,n])=>`<button class="campaign-filter ${ACTIVE_CAMPAIGNS.has(k)?'active':''}" data-campaign="${k}">${n}</button>`).join('');el.querySelectorAll('button').forEach(b=>b.onclick=()=>{const k=b.dataset.campaign;ACTIVE_CAMPAIGNS.has(k)?ACTIVE_CAMPAIGNS.delete(k):ACTIVE_CAMPAIGNS.add(k);renderCampaignFilters();renderRussianCampaign(Number(document.getElementById('periodSelect')?.value||30));});}
 function getCampaignWindow(period,previous=false){const ru=DEEP_STRIKE_EVENTS.filter(i=>deepStrikeDirection(i)==='RU_UA');const dates=ru.map(deepStrikeDate).filter(Boolean).sort();if(!dates.length)return[];const latest=new Date(`${dates.at(-1)}T00:00:00Z`);const days=Number(period);let end=new Date(latest),start=new Date(latest);if(previous){end.setUTCDate(end.getUTCDate()-days);start=new Date(end);start.setUTCDate(start.getUTCDate()-(days-1));}else start.setUTCDate(start.getUTCDate()-(days-1));const a=start.toISOString().slice(0,10),b=end.toISOString().slice(0,10);return ru.filter(i=>{const d=deepStrikeDate(i);return d>=a&&d<=b})}
-function renderRussianCampaign(period){renderCampaignFilters();const current=getCampaignWindow(period,false),previous=getCampaignWindow(period,true);const visible=current.filter(i=>ACTIVE_CAMPAIGNS.has(campaignCategory(i)));const dates=[...new Set(visible.map(deepStrikeDate))].sort();destroyDeepStrikeChart(campaignTimelineChart);const canvas=document.getElementById('campaignTimelineChart');if(canvas)campaignTimelineChart=new Chart(canvas,{type:'bar',data:{labels:dates,datasets:CAMPAIGNS.filter(x=>ACTIVE_CAMPAIGNS.has(x[0])).map(([k,n,c])=>({label:n,data:dates.map(d=>visible.filter(i=>deepStrikeDate(i)===d&&campaignCategory(i)===k).length),backgroundColor:c,borderWidth:0}))},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},scales:{x:{stacked:true,ticks:{maxRotation:45,font:{size:8}}},y:{stacked:true,beginAtZero:true,ticks:{precision:0,font:{size:9}}}},plugins:{legend:{position:'bottom',labels:{boxWidth:9,font:{size:8}}}}}});
-  const curN=current.length||1,prevN=previous.length||1;const rows=CAMPAIGNS.map(([k,n])=>{const c=current.filter(i=>campaignCategory(i)===k).length,p=previous.filter(i=>campaignCategory(i)===k).length,cs=c/curN*100,ps=p/prevN*100,d=cs-ps;return{k,n,c,p,cs,ps,d}}).filter(r=>r.c||r.p).sort((a,b)=>b.c-a.c);const list=document.getElementById('campaignShiftList');if(list)list.innerHTML=`<div class="campaign-shift-row head"><span>Kategória</span><span>Most</span><span>Előző</span><span>Δ pp</span></div>`+rows.map(r=>`<div class="campaign-shift-row"><span class="campaign-shift-name">${r.n}</span><span>${r.c} (${r.cs.toFixed(0)}%)</span><span>${r.p} (${r.ps.toFixed(0)}%)</span><span class="${r.d>2?'campaign-up':r.d<-2?'campaign-down':'campaign-flat'}">${r.d>0?'+':''}${r.d.toFixed(0)}</span></div>`).join('');
-  const box=document.getElementById('campaignAssessment');if(box){const top=rows[0];const shift=[...rows].sort((a,b)=>b.d-a.d)[0];box.innerHTML=current.length?`<strong>Ellátásilánc-értékelés:</strong> A kiválasztott időszakban <strong>${current.length}</strong> RU → UA mélységi csapás szerepel. A legtöbb rögzített esemény a <strong>${top?.n||'–'}</strong> kategóriába esik (${top?.c||0}). Az előző, azonos hosszúságú időszakhoz képest a legnagyobb részarány-növekedés a <strong>${shift?.n||'–'}</strong> kategóriában látható (${shift?.d>0?'+':''}${shift?.d?.toFixed(0)||0} százalékpont). Ez célpontválasztási mintázatot jelez az adatbázisban, nem önmagában bizonyított hadműveleti szándékot.`:'<strong>Ellátásilánc-értékelés:</strong> nincs RU → UA esemény a kiválasztott időszakban.'}}
+let CAMPAIGN_TIME_VIEW='daily';
+function campaignWeekKey(dateStr){
+  const d=new Date(`${dateStr}T00:00:00Z`);
+  if(Number.isNaN(d.getTime())) return dateStr;
+  const day=(d.getUTCDay()+6)%7; d.setUTCDate(d.getUTCDate()-day);
+  return d.toISOString().slice(0,10);
+}
+function campaignTimeKey(item){const d=deepStrikeDate(item);return CAMPAIGN_TIME_VIEW==='weekly'?campaignWeekKey(d):d}
+function updateCampaignViewButtons(){
+  const d=document.getElementById('campaignDailyBtn'),w=document.getElementById('campaignWeeklyBtn');
+  if(d)d.classList.toggle('active',CAMPAIGN_TIME_VIEW==='daily');
+  if(w)w.classList.toggle('active',CAMPAIGN_TIME_VIEW==='weekly');
+}
+function bindCampaignViewButtons(){
+  const d=document.getElementById('campaignDailyBtn'),w=document.getElementById('campaignWeeklyBtn');
+  if(d&&!d.dataset.bound){d.dataset.bound='1';d.addEventListener('click',()=>{CAMPAIGN_TIME_VIEW='daily';updateCampaignViewButtons();renderRussianCampaign(Number(document.getElementById('periodSelect')?.value||30));});}
+  if(w&&!w.dataset.bound){w.dataset.bound='1';w.addEventListener('click',()=>{CAMPAIGN_TIME_VIEW='weekly';updateCampaignViewButtons();renderRussianCampaign(Number(document.getElementById('periodSelect')?.value||30));});}
+  updateCampaignViewButtons();
+}
+function setCampaignText(id,value){const el=document.getElementById(id);if(el)el.textContent=value}
+function renderRussianCampaign(period){
+  renderCampaignFilters();
+  bindCampaignViewButtons();
+  const current=getCampaignWindow(period,false),previous=getCampaignWindow(period,true);
+  const visible=current.filter(i=>ACTIVE_CAMPAIGNS.has(campaignCategory(i)));
+  const dates=[...new Set(visible.map(campaignTimeKey).filter(Boolean))].sort();
+  destroyDeepStrikeChart(campaignTimelineChart);
+  const canvas=document.getElementById('campaignTimelineChart');
+  if(canvas)campaignTimelineChart=new Chart(canvas,{
+    type:'bar',
+    data:{labels:dates,datasets:CAMPAIGNS.filter(x=>ACTIVE_CAMPAIGNS.has(x[0])).map(([k,n,c])=>({
+      label:n,
+      data:dates.map(d=>visible.filter(i=>campaignTimeKey(i)===d&&campaignCategory(i)===k).length),
+      backgroundColor:c,borderWidth:0
+    }))},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},scales:{
+      x:{stacked:true,ticks:{maxRotation:45,font:{size:8}},title:{display:CAMPAIGN_TIME_VIEW==='weekly',text:CAMPAIGN_TIME_VIEW==='weekly'?'Hét kezdete (hétfő)':'',font:{size:8}}},
+      y:{stacked:true,beginAtZero:true,ticks:{precision:0,font:{size:9}}}
+    },plugins:{legend:{position:'bottom',labels:{boxWidth:9,font:{size:8}}},tooltip:{callbacks:{title:(items)=>CAMPAIGN_TIME_VIEW==='weekly'?`Hét: ${items[0]?.label||''}`:(items[0]?.label||'')}}}}
+  });
+
+  const supply=current.filter(i=>campaignCategory(i)!=='other');
+  const supplyShare=current.length?(supply.length/current.length*100):0;
+  const supplyCounts=CAMPAIGNS.filter(x=>x[0]!=='other').map(([k,n])=>({k,n,c:current.filter(i=>campaignCategory(i)===k).length})).sort((a,b)=>b.c-a.c);
+  const topSupply=supplyCounts.find(x=>x.c>0);
+  const activeSystems=supplyCounts.filter(x=>x.c>0).length;
+  setCampaignText('campaignSupplyCount',String(supply.length));
+  setCampaignText('campaignSupplyShare',`${supplyShare.toFixed(0)}%`);
+  setCampaignText('campaignTopSystem',topSupply?.n||'–');
+  setCampaignText('campaignTopSystemSub',topSupply?`${topSupply.c} esemény`:'nincs rögzített esemény');
+  setCampaignText('campaignActiveSystems',String(activeSystems));
+
+  const curN=current.length||1,prevN=previous.length||1;
+  const rows=CAMPAIGNS.map(([k,n])=>{
+    const c=current.filter(i=>campaignCategory(i)===k).length,p=previous.filter(i=>campaignCategory(i)===k).length;
+    const cs=c/curN*100,ps=p/prevN*100,d=cs-ps;return{k,n,c,p,cs,ps,d}
+  }).filter(r=>r.c||r.p).sort((a,b)=>b.c-a.c);
+  const list=document.getElementById('campaignShiftList');
+  if(list)list.innerHTML=`<div class="campaign-shift-row head"><span>Kategória</span><span>Most</span><span>Előző</span><span>Δ pp</span></div>`+rows.map(r=>`<div class="campaign-shift-row"><span class="campaign-shift-name">${r.n}</span><span>${r.c} (${r.cs.toFixed(0)}%)</span><span>${r.p} (${r.ps.toFixed(0)}%)</span><span class="${r.d>2?'campaign-up':r.d<-2?'campaign-down':'campaign-flat'}">${r.d>0?'+':''}${r.d.toFixed(0)}</span></div>`).join('');
+
+  const box=document.getElementById('campaignAssessment');
+  if(box){
+    const classifiedRows=rows.filter(r=>r.k!=='other');
+    const top=classifiedRows.sort((a,b)=>b.c-a.c)[0];
+    const shift=[...classifiedRows].sort((a,b)=>b.d-a.d)[0];
+    const other=current.filter(i=>campaignCategory(i)==='other').length;
+    box.innerHTML=current.length?`<strong>Ellátásilánc-értékelés:</strong> A kiválasztott időszakban <strong>${current.length}</strong> RU → UA mélységi csapás szerepel, ebből <strong>${supply.length}</strong> kapcsolható megerősített funkcionális kampánykategóriához. A leggyakoribb azonosított célrendszer a <strong>${top?.n||'–'}</strong> (${top?.c||0} esemény). Az előző, azonos hosszúságú időszakhoz képest a legnagyobb részarány-növekedés az azonosított kategóriák között a <strong>${shift?.n||'–'}</strong> esetében látható (${shift?.d>0?'+':''}${shift?.d?.toFixed(0)||0} százalékpont). <strong>${other}</strong> esemény maradt Other besorolásban a célpont funkciójának bizonytalansága miatt. Ez az adatbázisban megfigyelhető célpontválasztási mintázat, nem önmagában bizonyított hadműveleti szándék.`:'<strong>Ellátásilánc-értékelés:</strong> nincs RU → UA esemény a kiválasztott időszakban.';
+  }
+}
 
 function renderDeepStrikeAnalysis(period){
   const items=getDeepStrikeFilteredEvents(period);
@@ -4202,6 +4298,11 @@ loadPdfReports();
 
 </body>
 </html>
+
+
+
+
+
 
 
 
