@@ -1,19 +1,19 @@
 {
   "schema_version": "1.3.0",
   "dataset": "ukraine_conflict_dashboard_current",
-  "generated_at": "2026-09-16T11:38:06.232034Z",
-  "latest_data_at": "2026-09-16T08:43:00Z",
+  "generated_at": "2026-09-16T16:59:37.448829Z",
+  "latest_data_at": "2026-09-16T12:02:00Z",
   "periods": {
     "1": {
       "days": 1,
-      "start_at": "2026-09-15T11:38:06.232034Z",
-      "end_at": "2026-09-16T11:38:06.232034Z",
+      "start_at": "2026-09-15T16:59:37.448829Z",
+      "end_at": "2026-09-16T16:59:37.448829Z",
       "ru_gain_km2": 0.0,
       "ua_recapture_km2": 0.0,
       "net_change_km2": 0.0,
-      "firms_count": 107,
-      "conflict_index": -29,
-      "osint_events": 11,
+      "firms_count": 529,
+      "conflict_index": -35,
+      "osint_events": 12,
       "availability": {
         "territorial": "fresh",
         "firms": "fresh",
@@ -22,14 +22,14 @@
     },
     "7": {
       "days": 7,
-      "start_at": "2026-09-09T11:38:06.232034Z",
-      "end_at": "2026-09-16T11:38:06.232034Z",
+      "start_at": "2026-09-09T16:59:37.448829Z",
+      "end_at": "2026-09-16T16:59:37.448829Z",
       "ru_gain_km2": 33.53,
       "ua_recapture_km2": 9.87,
       "net_change_km2": 23.66,
-      "firms_count": 11936,
-      "conflict_index": -43,
-      "osint_events": 14,
+      "firms_count": 12219,
+      "conflict_index": -48,
+      "osint_events": 15,
       "availability": {
         "territorial": "fresh",
         "firms": "fresh",
@@ -38,14 +38,14 @@
     },
     "30": {
       "days": 30,
-      "start_at": "2026-08-17T11:38:06.232034Z",
-      "end_at": "2026-09-16T11:38:06.232034Z",
+      "start_at": "2026-08-17T16:59:37.448829Z",
+      "end_at": "2026-09-16T16:59:37.448829Z",
       "ru_gain_km2": 182.46,
       "ua_recapture_km2": 25.68,
       "net_change_km2": 156.78,
-      "firms_count": 102102,
-      "conflict_index": -43,
-      "osint_events": 14,
+      "firms_count": 102529,
+      "conflict_index": -48,
+      "osint_events": 15,
       "availability": {
         "territorial": "fresh",
         "firms": "fresh",
@@ -54,14 +54,14 @@
     },
     "90": {
       "days": 90,
-      "start_at": "2026-06-18T11:38:06.232034Z",
-      "end_at": "2026-09-16T11:38:06.232034Z",
+      "start_at": "2026-06-18T16:59:37.448829Z",
+      "end_at": "2026-09-16T16:59:37.448829Z",
       "ru_gain_km2": 0.0,
       "ua_recapture_km2": 0.0,
       "net_change_km2": 0.0,
-      "firms_count": 102102,
-      "conflict_index": -43,
-      "osint_events": 14,
+      "firms_count": 102529,
+      "conflict_index": -48,
+      "osint_events": 15,
       "availability": {
         "territorial": "fresh",
         "firms": "fresh",
@@ -79,8 +79,8 @@
         "risk": "ELEVATED",
         "ru_gain_km2": 0.0,
         "ua_recapture_km2": 0.0,
-        "firms_count": 21,
-        "osint_events": 6,
+        "firms_count": 195,
+        "osint_events": 5,
         "components": {
           "territorial": 0.0,
           "firms": 25.0,
@@ -92,7 +92,7 @@
         "id": "pokrovsk",
         "name": "Pokrovsk",
         "sub": "folyamatos szárazföldi nyomás",
-        "score": 26,
+        "score": 29,
         "risk": "MODERATE",
         "ru_gain_km2": 0.0,
         "ua_recapture_km2": 0.0,
@@ -101,7 +101,7 @@
         "components": {
           "territorial": 0.0,
           "firms": 0.0,
-          "osint": 21.0,
+          "osint": 24.4,
           "activity_baseline": 5
         }
       },
@@ -109,34 +109,68 @@
         "id": "south_donetsk",
         "name": "Dél-Donyeck",
         "sub": "szakaszos területi mozgás",
-        "score": 10,
+        "score": 20,
         "risk": "MODERATE",
         "ru_gain_km2": 0.0,
         "ua_recapture_km2": 0.0,
-        "firms_count": 0,
+        "firms_count": 20,
+        "osint_events": 2,
+        "components": {
+          "territorial": 0.0,
+          "firms": 2.6,
+          "osint": 10.5,
+          "activity_baseline": 7
+        }
+      },
+      {
+        "id": "zaporizhzhia",
+        "name": "Zaporizzsja",
+        "sub": "korlátozott, de növekvő aktivitás",
+        "score": 14,
+        "risk": "MODERATE",
+        "ru_gain_km2": 0.0,
+        "ua_recapture_km2": 0.0,
+        "firms_count": 74,
+        "osint_events": 0,
+        "components": {
+          "territorial": 0.0,
+          "firms": 9.5,
+          "osint": 0.0,
+          "activity_baseline": 5
+        }
+      },
+      {
+        "id": "crimea",
+        "name": "Krím",
+        "sub": "csapások és légvédelmi aktivitás",
+        "score": 12,
+        "risk": "MODERATE",
+        "ru_gain_km2": 0.0,
+        "ua_recapture_km2": 0.0,
+        "firms_count": 2,
         "osint_events": 1,
         "components": {
           "territorial": 0.0,
-          "firms": 0.0,
-          "osint": 4.5,
-          "activity_baseline": 5
+          "firms": 0.3,
+          "osint": 5.2,
+          "activity_baseline": 7
         }
       },
       {
         "id": "kherson",
         "name": "Herszon",
         "sub": "alacsonyabb területi dinamika",
-        "score": 3,
+        "score": 7,
         "risk": "MODERATE",
         "ru_gain_km2": 0.0,
         "ua_recapture_km2": 0.0,
-        "firms_count": 0,
+        "firms_count": 18,
         "osint_events": 0,
         "components": {
           "territorial": 0.0,
-          "firms": 0.0,
+          "firms": 2.3,
           "osint": 0.0,
-          "activity_baseline": 3
+          "activity_baseline": 5
         }
       },
       {
@@ -157,43 +191,9 @@
         }
       },
       {
-        "id": "crimea",
-        "name": "Krím",
-        "sub": "csapások és légvédelmi aktivitás",
-        "score": 3,
-        "risk": "MODERATE",
-        "ru_gain_km2": 0.0,
-        "ua_recapture_km2": 0.0,
-        "firms_count": 0,
-        "osint_events": 0,
-        "components": {
-          "territorial": 0.0,
-          "firms": 0.0,
-          "osint": 0.0,
-          "activity_baseline": 3
-        }
-      },
-      {
         "id": "kupiansk_lyman",
         "name": "Kupjanszk–Liman",
         "sub": "északi hadműveleti nyomás",
-        "score": 3,
-        "risk": "MODERATE",
-        "ru_gain_km2": 0.0,
-        "ua_recapture_km2": 0.0,
-        "firms_count": 0,
-        "osint_events": 0,
-        "components": {
-          "territorial": 0.0,
-          "firms": 0.0,
-          "osint": 0.0,
-          "activity_baseline": 3
-        }
-      },
-      {
-        "id": "zaporizhzhia",
-        "name": "Zaporizzsja",
-        "sub": "korlátozott, de növekvő aktivitás",
         "score": 3,
         "risk": "MODERATE",
         "ru_gain_km2": 0.0,
@@ -213,7 +213,7 @@
         "id": "kupiansk_lyman",
         "name": "Kupjanszk–Liman",
         "sub": "északi hadműveleti nyomás",
-        "score": 56,
+        "score": 55,
         "risk": "ELEVATED",
         "ru_gain_km2": 17.58,
         "ua_recapture_km2": 0.0,
@@ -221,7 +221,7 @@
         "osint_events": 0,
         "components": {
           "territorial": 35.0,
-          "firms": 13.9,
+          "firms": 13.2,
           "osint": 0.0,
           "activity_baseline": 7
         }
@@ -238,7 +238,7 @@
         "osint_events": 0,
         "components": {
           "territorial": 31.8,
-          "firms": 9.4,
+          "firms": 9.0,
           "osint": 0.0,
           "activity_baseline": 7
         }
@@ -247,16 +247,16 @@
         "id": "ukrainian_rear",
         "name": "Ukrán hátország",
         "sub": "mélységi csapások és infrastruktúra",
-        "score": 47,
+        "score": 45,
         "risk": "MODERATE",
         "ru_gain_km2": 0.0,
         "ua_recapture_km2": 0.0,
-        "firms_count": 1893,
-        "osint_events": 6,
+        "firms_count": 1980,
+        "osint_events": 5,
         "components": {
           "territorial": 0.0,
           "firms": 25.0,
-          "osint": 14.9,
+          "osint": 13.1,
           "activity_baseline": 7
         }
       },
@@ -264,7 +264,7 @@
         "id": "pokrovsk",
         "name": "Pokrovsk",
         "sub": "folyamatos szárazföldi nyomás",
-        "score": 41,
+        "score": 40,
         "risk": "MODERATE",
         "ru_gain_km2": 0.0,
         "ua_recapture_km2": 0.0,
@@ -272,7 +272,7 @@
         "osint_events": 7,
         "components": {
           "territorial": 0.0,
-          "firms": 8.7,
+          "firms": 8.3,
           "osint": 25.0,
           "activity_baseline": 7
         }
@@ -281,16 +281,16 @@
         "id": "south_donetsk",
         "name": "Dél-Donyeck",
         "sub": "szakaszos területi mozgás",
-        "score": 20,
+        "score": 23,
         "risk": "MODERATE",
         "ru_gain_km2": 0.0,
         "ua_recapture_km2": 0.0,
-        "firms_count": 785,
-        "osint_events": 1,
+        "firms_count": 805,
+        "osint_events": 2,
         "components": {
           "territorial": 0.0,
-          "firms": 10.4,
-          "osint": 2.7,
+          "firms": 10.2,
+          "osint": 5.5,
           "activity_baseline": 7
         }
       },
@@ -298,15 +298,15 @@
         "id": "zaporizhzhia",
         "name": "Zaporizzsja",
         "sub": "korlátozott, de növekvő aktivitás",
-        "score": 16,
+        "score": 17,
         "risk": "MODERATE",
         "ru_gain_km2": 0.0,
         "ua_recapture_km2": 0.0,
-        "firms_count": 869,
+        "firms_count": 943,
         "osint_events": 0,
         "components": {
           "territorial": 0.0,
-          "firms": 11.5,
+          "firms": 11.9,
           "osint": 0.0,
           "activity_baseline": 5
         }
@@ -319,11 +319,11 @@
         "risk": "MODERATE",
         "ru_gain_km2": 0.0,
         "ua_recapture_km2": 0.0,
-        "firms_count": 742,
+        "firms_count": 760,
         "osint_events": 0,
         "components": {
           "territorial": 0.0,
-          "firms": 9.8,
+          "firms": 9.6,
           "osint": 0.0,
           "activity_baseline": 5
         }
@@ -332,17 +332,17 @@
         "id": "crimea",
         "name": "Krím",
         "sub": "csapások és légvédelmi aktivitás",
-        "score": 6,
+        "score": 11,
         "risk": "MODERATE",
         "ru_gain_km2": 0.0,
         "ua_recapture_km2": 0.0,
-        "firms_count": 100,
-        "osint_events": 0,
+        "firms_count": 102,
+        "osint_events": 1,
         "components": {
           "territorial": 0.0,
           "firms": 1.3,
-          "osint": 0.0,
-          "activity_baseline": 5
+          "osint": 2.7,
+          "activity_baseline": 7
         }
       }
     ],
@@ -402,16 +402,16 @@
         "id": "ukrainian_rear",
         "name": "Ukrán hátország",
         "sub": "mélységi csapások és infrastruktúra",
-        "score": 40,
+        "score": 38,
         "risk": "MODERATE",
         "ru_gain_km2": 0.0,
         "ua_recapture_km2": 0.0,
-        "firms_count": 11801,
-        "osint_events": 6,
+        "firms_count": 11977,
+        "osint_events": 5,
         "components": {
           "territorial": 0.0,
-          "firms": 17.7,
-          "osint": 14.9,
+          "firms": 18.0,
+          "osint": 13.1,
           "activity_baseline": 7
         }
       },
@@ -419,16 +419,16 @@
         "id": "south_donetsk",
         "name": "Dél-Donyeck",
         "sub": "szakaszos területi mozgás",
-        "score": 26,
+        "score": 29,
         "risk": "MODERATE",
         "ru_gain_km2": 8.61,
         "ua_recapture_km2": 0.0,
-        "firms_count": 6685,
-        "osint_events": 1,
+        "firms_count": 6705,
+        "osint_events": 2,
         "components": {
           "territorial": 4.1,
-          "firms": 10.0,
-          "osint": 2.7,
+          "firms": 10.1,
+          "osint": 5.5,
           "activity_baseline": 9
         }
       },
@@ -440,7 +440,7 @@
         "risk": "MODERATE",
         "ru_gain_km2": 0.0,
         "ua_recapture_km2": 0.0,
-        "firms_count": 6917,
+        "firms_count": 6935,
         "osint_events": 0,
         "components": {
           "territorial": 0.0,
@@ -457,11 +457,11 @@
         "risk": "MODERATE",
         "ru_gain_km2": 0.0,
         "ua_recapture_km2": 0.0,
-        "firms_count": 5888,
+        "firms_count": 5962,
         "osint_events": 0,
         "components": {
           "territorial": 0.0,
-          "firms": 8.8,
+          "firms": 9.0,
           "osint": 0.0,
           "activity_baseline": 5
         }
@@ -470,17 +470,17 @@
         "id": "crimea",
         "name": "Krím",
         "sub": "csapások és légvédelmi aktivitás",
-        "score": 6,
+        "score": 11,
         "risk": "MODERATE",
         "ru_gain_km2": 0.0,
         "ua_recapture_km2": 0.0,
-        "firms_count": 661,
-        "osint_events": 0,
+        "firms_count": 663,
+        "osint_events": 1,
         "components": {
           "territorial": 0.0,
           "firms": 1.0,
-          "osint": 0.0,
-          "activity_baseline": 5
+          "osint": 2.7,
+          "activity_baseline": 7
         }
       }
     ],
@@ -506,16 +506,16 @@
         "id": "ukrainian_rear",
         "name": "Ukrán hátország",
         "sub": "mélységi csapások és infrastruktúra",
-        "score": 40,
+        "score": 38,
         "risk": "MODERATE",
         "ru_gain_km2": 0.0,
         "ua_recapture_km2": 0.0,
-        "firms_count": 11801,
-        "osint_events": 6,
+        "firms_count": 11977,
+        "osint_events": 5,
         "components": {
           "territorial": 0.0,
-          "firms": 17.7,
-          "osint": 14.9,
+          "firms": 18.0,
+          "osint": 13.1,
           "activity_baseline": 7
         }
       },
@@ -540,16 +540,16 @@
         "id": "south_donetsk",
         "name": "Dél-Donyeck",
         "sub": "szakaszos területi mozgás",
-        "score": 20,
+        "score": 23,
         "risk": "MODERATE",
         "ru_gain_km2": 0.0,
         "ua_recapture_km2": 0.0,
-        "firms_count": 6685,
-        "osint_events": 1,
+        "firms_count": 6705,
+        "osint_events": 2,
         "components": {
           "territorial": 0.0,
-          "firms": 10.0,
-          "osint": 2.7,
+          "firms": 10.1,
+          "osint": 5.5,
           "activity_baseline": 7
         }
       },
@@ -561,7 +561,7 @@
         "risk": "MODERATE",
         "ru_gain_km2": 0.0,
         "ua_recapture_km2": 0.0,
-        "firms_count": 6917,
+        "firms_count": 6935,
         "osint_events": 0,
         "components": {
           "territorial": 0.0,
@@ -595,11 +595,11 @@
         "risk": "MODERATE",
         "ru_gain_km2": 0.0,
         "ua_recapture_km2": 0.0,
-        "firms_count": 5888,
+        "firms_count": 5962,
         "osint_events": 0,
         "components": {
           "territorial": 0.0,
-          "firms": 8.8,
+          "firms": 9.0,
           "osint": 0.0,
           "activity_baseline": 5
         }
@@ -608,23 +608,38 @@
         "id": "crimea",
         "name": "Krím",
         "sub": "csapások és légvédelmi aktivitás",
-        "score": 6,
+        "score": 11,
         "risk": "MODERATE",
         "ru_gain_km2": 0.0,
         "ua_recapture_km2": 0.0,
-        "firms_count": 661,
-        "osint_events": 0,
+        "firms_count": 663,
+        "osint_events": 1,
         "components": {
           "territorial": 0.0,
           "firms": 1.0,
-          "osint": 0.0,
-          "activity_baseline": 5
+          "osint": 2.7,
+          "activity_baseline": 7
         }
       }
     ]
   },
   "events": {
     "24": [
+      {
+        "id": "firms-24-50.61-58.35",
+        "kind": "firms",
+        "type": "Rendkívüli FIRMS-klaszter",
+        "title": "50.61, 58.35 térsége",
+        "value": "47 hőpont",
+        "value_numeric": 47,
+        "time": "2026-09-16T10:02:00Z",
+        "class_name": "firms",
+        "confidence": "Közepes",
+        "source": "NASA FIRMS",
+        "sector_id": "unassigned",
+        "note": "A térben koncentrálódó hőpontok száma meghaladta az automatikus riasztási küszöböt. A hőpont önmagában nem bizonyít katonai eseményt.",
+        "priority": 107
+      },
       {
         "id": "osint-2026-09-16T00:00:00+00:00-0",
         "kind": "osint",
@@ -672,25 +687,24 @@
         "url": "https://armyinform.com.ua/en/2026/09/16/countering-ballistic-missiles-and-jet-powered-uavs-yevhenii-khmara-holds-talks-with-danish-defence-minister/",
         "note": "Countering Ballistic Missiles and Jet-Powered UAVs: Yevhenii Khmara Holds Talks with Danish Defence Minister",
         "priority": 90
-      },
-      {
-        "id": "osint-2026-09-16T00:00:00+00:00-3",
-        "kind": "osint",
-        "type": "General Military Update",
-        "title": "“This Is Only the ‘First Season’”: Andrii Biletskyi Reveals Details of Operation Vivaldi for the First Time",
-        "value": "8/10",
-        "value_numeric": 8,
-        "time": "2026-09-16T00:00:00Z",
-        "class_name": "strike",
-        "confidence": "Közepes",
-        "source": "ArmyInform",
-        "sector_id": "pokrovsk",
-        "url": "https://armyinform.com.ua/en/2026/09/16/%e2%80%9cthis-is-only-the-%e2%80%98first-season%e2%80%99%e2%80%9d-andrii-biletskyi-reveals-details-of-operation-vivaldi-for-the-first-time/",
-        "note": "“This Is Only the ‘First Season’”: Andrii Biletskyi Reveals Details of Operation Vivaldi for the First Time",
-        "priority": 90
       }
     ],
     "48": [
+      {
+        "id": "firms-48-50.61-58.35",
+        "kind": "firms",
+        "type": "Rendkívüli FIRMS-klaszter",
+        "title": "50.61, 58.35 térsége",
+        "value": "47 hőpont",
+        "value_numeric": 47,
+        "time": "2026-09-16T10:02:00Z",
+        "class_name": "firms",
+        "confidence": "Közepes",
+        "source": "NASA FIRMS",
+        "sector_id": "unassigned",
+        "note": "A térben koncentrálódó hőpontok száma meghaladta az automatikus riasztási küszöböt. A hőpont önmagában nem bizonyít katonai eseményt.",
+        "priority": 107
+      },
       {
         "id": "territorial-2026-09-15T00:00:00+00:00-4",
         "kind": "territorial",
@@ -735,21 +749,6 @@
         "sector_id": "kupiansk_lyman",
         "note": "A gördülő frontgeometria a küszöbértéket meghaladó területi változást azonosított.",
         "priority": 104.21
-      },
-      {
-        "id": "territorial-2026-09-15T00:00:00+00:00-1",
-        "kind": "territorial",
-        "type": "Orosz területi nyereség",
-        "title": "Kostiantynivka–Csasziv Jar",
-        "value": "3.00 km²",
-        "value_numeric": 3.0,
-        "time": "2026-09-15T00:00:00Z",
-        "class_name": "",
-        "confidence": "Magas",
-        "source": "Területi delta",
-        "sector_id": "kostiantynivka_chasiv_yar",
-        "note": "A gördülő frontgeometria a küszöbértéket meghaladó területi változást azonosított.",
-        "priority": 103.0
       }
     ],
     "72": [
@@ -767,6 +766,21 @@
         "sector_id": "unassigned",
         "note": "A térben koncentrálódó hőpontok száma meghaladta az automatikus riasztási küszöböt. A hőpont önmagában nem bizonyít katonai eseményt.",
         "priority": 112
+      },
+      {
+        "id": "firms-72-50.61-58.35",
+        "kind": "firms",
+        "type": "Rendkívüli FIRMS-klaszter",
+        "title": "50.61, 58.35 térsége",
+        "value": "47 hőpont",
+        "value_numeric": 47,
+        "time": "2026-09-16T10:02:00Z",
+        "class_name": "firms",
+        "confidence": "Közepes",
+        "source": "NASA FIRMS",
+        "sector_id": "unassigned",
+        "note": "A térben koncentrálódó hőpontok száma meghaladta az automatikus riasztási küszöböt. A hőpont önmagában nem bizonyít katonai eseményt.",
+        "priority": 107
       },
       {
         "id": "territorial-2026-09-15T00:00:00+00:00-5",
@@ -797,21 +811,6 @@
         "sector_id": "kostiantynivka_chasiv_yar",
         "note": "A gördülő frontgeometria a küszöbértéket meghaladó területi változást azonosított.",
         "priority": 104.28
-      },
-      {
-        "id": "territorial-2026-09-15T00:00:00+00:00-3",
-        "kind": "territorial",
-        "type": "Orosz területi nyereség",
-        "title": "Kupjanszk–Liman",
-        "value": "4.21 km²",
-        "value_numeric": 4.21,
-        "time": "2026-09-15T00:00:00Z",
-        "class_name": "",
-        "confidence": "Magas",
-        "source": "Területi delta",
-        "sector_id": "kupiansk_lyman",
-        "note": "A gördülő frontgeometria a küszöbértéket meghaladó területi változást azonosított.",
-        "priority": 104.21
       }
     ]
   },
@@ -825,9 +824,9 @@
         "source": "territorial",
         "path": "data/territorial_delta_30days.geojson",
         "exists": true,
-        "updated_at": "2026-09-16T11:38:04.950545Z",
+        "updated_at": "2026-09-16T16:59:36.089042Z",
         "latest_record_at": "2026-09-16T00:00:00Z",
-        "age_hours": 11.6,
+        "age_hours": 17.0,
         "status": "fresh",
         "record_count": 89,
         "note": "A 90 napos ablakhoz a windows összesítő is elérhető."
@@ -836,22 +835,22 @@
         "source": "firms",
         "path": "data/firms_30.json",
         "exists": true,
-        "updated_at": "2026-09-16T11:31:37.691272Z",
-        "latest_record_at": "2026-09-16T08:43:00Z",
-        "age_hours": 2.9,
+        "updated_at": "2026-09-16T16:53:56.463891Z",
+        "latest_record_at": "2026-09-16T12:02:00Z",
+        "age_hours": 5.0,
         "status": "fresh",
-        "record_count": 102102,
+        "record_count": 102529,
         "note": ""
       },
       "osint": {
         "source": "osint",
         "path": "data/osint_feed.json",
         "exists": true,
-        "updated_at": "2026-09-16T09:53:50.429267Z",
+        "updated_at": "2026-09-16T15:24:53.286378Z",
         "latest_record_at": "2026-09-16T00:00:00Z",
-        "age_hours": 11.6,
+        "age_hours": 17.0,
         "status": "fresh",
-        "record_count": 14,
+        "record_count": 15,
         "note": ""
       }
     }
