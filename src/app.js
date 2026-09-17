@@ -122,6 +122,11 @@ const dom = {
   toggleDeepStrikeLabels: document.getElementById('toggleDeepStrikeLabels'),
   btnResetDeepStrikeLabels: document.getElementById('btnResetDeepStrikeLabels'),
   deepStrikesSummary: document.getElementById('deepStrikesSummary'),
+  deepStrikeCategoryList: document.getElementById('deepStrikeCategoryList'),
+  btnDeepStrikeCategoriesAll: document.getElementById('btnDeepStrikeCategoriesAll'),
+  btnDeepStrikeCategoriesIdentified: document.getElementById('btnDeepStrikeCategoriesIdentified'),
+  btnDeepStrikeCategoriesLogistics: document.getElementById('btnDeepStrikeCategoriesLogistics'),
+  btnDeepStrikeCategoriesClear: document.getElementById('btnDeepStrikeCategoriesClear'),
 
   suriyakSubpanel: document.getElementById('suriyakSubpanel'),
   suriyakLayerMeta: document.getElementById('suriyakLayerMeta'),
@@ -158,6 +163,7 @@ const appState = {
   deepStrikes: [],
   deepStrikesLoaded: false,
   deepStrikesSummary: null,
+  deepStrikeSelectedCategories: null,
   coordinateMarkersController: null,
   measureToolController: null,
   objectIdentificationController: null,
@@ -1616,6 +1622,58 @@ function getDeepStrikeDateRange(events) {
   };
 }
 
+const DEEP_STRIKE_CATEGORY_LABELS = {
+  energy: 'Energia',
+  transport: 'Közlekedés',
+  rail: 'Vasút',
+  logistics: 'Logisztika',
+  fuel: 'Üzemanyag',
+  port: 'Kikötő',
+  military_industry: 'Hadiipar',
+  military: 'Katonai célpont',
+  air_defense: 'Légvédelem',
+  command: 'Vezetés / parancsnokság',
+  communications: 'Kommunikáció',
+  other: 'Other'
+};
+const DEEP_STRIKE_LOGISTICS_CATEGORIES = new Set(['transport','rail','logistics','fuel','port','energy']);
+function getDeepStrikeCategory(item) {
+  return String(item?.campaignCategory || item?.campaign_category || 'other').trim().toLowerCase() || 'other';
+}
+function getRuUaDeepStrikeCategories(events) {
+  const counts = new Map();
+  (Array.isArray(events) ? events : []).forEach(item => {
+    if (String(item?.direction || '').toUpperCase() !== 'RU_UA') return;
+    const id = getDeepStrikeCategory(item);
+    counts.set(id, (counts.get(id) || 0) + 1);
+  });
+  return [...counts.entries()].sort((a,b) => b[1]-a[1] || a[0].localeCompare(b[0]));
+}
+function ensureDeepStrikeCategorySelection(events) {
+  const ids = getRuUaDeepStrikeCategories(events).map(([id]) => id);
+  if (!(appState.deepStrikeSelectedCategories instanceof Set)) appState.deepStrikeSelectedCategories = new Set(ids);
+  return appState.deepStrikeSelectedCategories;
+}
+function renderDeepStrikeCategoryList(events) {
+  if (!dom.deepStrikeCategoryList) return;
+  const categories = getRuUaDeepStrikeCategories(events);
+  if (!categories.length) {
+    dom.deepStrikeCategoryList.innerHTML = '<span class="small">Nincs RU → UA célrendszer-kategória.</span>';
+    return;
+  }
+  const selected = ensureDeepStrikeCategorySelection(events);
+  dom.deepStrikeCategoryList.innerHTML = categories.map(([id,count]) => {
+    const checked = selected.has(id) ? 'checked' : '';
+    const label = DEEP_STRIKE_CATEGORY_LABELS[id] || id.replaceAll('_',' ');
+    return `<label class="deep-strike-category"><input type="checkbox" class="deep-strike-category-toggle" data-category-id="${id}" ${checked}/><span class="deep-strike-category-swatch" style="background:#c1121f"></span><span>${label}</span><span class="deep-strike-category-count">${count}</span></label>`;
+  }).join('');
+}
+function setDeepStrikeCategorySelection(ids) {
+  appState.deepStrikeSelectedCategories = new Set(ids);
+  renderDeepStrikeCategoryList(appState.deepStrikes);
+  refreshDeepStrikes();
+}
+
 function filterDeepStrikeEventsForUi(events) {
   const { startDate, endDate } = getDeepStrikeDateRange(events);
 
@@ -1635,6 +1693,10 @@ function filterDeepStrikeEventsForUi(events) {
 
     if (direction === 'UA_RU' && !showUaRu) return false;
     if (direction === 'RU_UA' && !showRuUa) return false;
+    if (direction === 'RU_UA') {
+      const selected = ensureDeepStrikeCategorySelection(events);
+      if (!selected.has(getDeepStrikeCategory(item))) return false;
+    }
 
     if (startDate && date < startDate) return false;
     if (endDate && date > endDate) return false;
@@ -1712,6 +1774,8 @@ async function loadDeepStrikesOnce() {
   appState.deepStrikesLoaded = true;
 
   prepareDeepStrikeDateControl(appState.deepStrikes);
+  ensureDeepStrikeCategorySelection(appState.deepStrikes);
+  renderDeepStrikeCategoryList(appState.deepStrikes);
 
   return appState.deepStrikes;
 }
@@ -1804,6 +1868,26 @@ function bindDeepStrikeControls() {
   controls.forEach(control => {
     control.addEventListener('change', refreshDeepStrikes);
   });
+
+  dom.deepStrikeCategoryList?.addEventListener('change', event => {
+    const input = event.target.closest('.deep-strike-category-toggle');
+    if (!input) return;
+    ensureDeepStrikeCategorySelection(appState.deepStrikes);
+    if (input.checked) appState.deepStrikeSelectedCategories.add(input.dataset.categoryId);
+    else appState.deepStrikeSelectedCategories.delete(input.dataset.categoryId);
+    refreshDeepStrikes();
+  });
+
+  dom.btnDeepStrikeCategoriesAll?.addEventListener('click', () => {
+    setDeepStrikeCategorySelection(getRuUaDeepStrikeCategories(appState.deepStrikes).map(([id]) => id));
+  });
+  dom.btnDeepStrikeCategoriesIdentified?.addEventListener('click', () => {
+    setDeepStrikeCategorySelection(getRuUaDeepStrikeCategories(appState.deepStrikes).map(([id]) => id).filter(id => id !== 'other'));
+  });
+  dom.btnDeepStrikeCategoriesLogistics?.addEventListener('click', () => {
+    setDeepStrikeCategorySelection(getRuUaDeepStrikeCategories(appState.deepStrikes).map(([id]) => id).filter(id => DEEP_STRIKE_LOGISTICS_CATEGORIES.has(id)));
+  });
+  dom.btnDeepStrikeCategoriesClear?.addEventListener('click', () => setDeepStrikeCategorySelection([]));
 
   dom.btnResetDeepStrikeLabels?.addEventListener('click', () => {
     resetAllSavedDeepStrikeLabels(layerState);
@@ -2719,3 +2803,4 @@ async function init() {
 }
 
 init();
+
