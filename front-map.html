@@ -752,6 +752,24 @@
       accent-color:#c1121f;
     }
 
+    .deep-strike-category-panel{
+      padding:8px;
+      border:1px solid var(--ui-line);
+      border-radius:8px;
+      background:#fff;
+    }
+    .deep-strike-category-title{font-size:10px;font-weight:900;color:var(--ui-text);margin-bottom:6px;}
+    .deep-strike-category-list{display:grid;gap:4px;}
+    .deep-strike-category{display:grid;grid-template-columns:16px 10px minmax(0,1fr) 24px;align-items:center;gap:6px;padding:4px 5px;border-radius:6px;font-size:9.5px;font-weight:750;color:var(--ui-body);cursor:pointer;}
+    .deep-strike-category:hover{background:var(--ui-soft);}
+    .deep-strike-category input{margin:0;accent-color:#c1121f;}
+    .deep-strike-category-swatch{width:9px;height:9px;border-radius:999px;display:block;}
+    .deep-strike-category-count{text-align:right;color:var(--ui-muted);font-weight:900;}
+    .deep-strike-category-actions{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:7px;}
+    .deep-strike-category-actions button{padding:5px 6px;font-size:9px;}
+    .deep-strike-category-help{margin-top:6px;color:var(--ui-muted);font-size:8.5px;line-height:1.4;}
+    .deep-strike-summary-categories{display:block;margin-top:4px;color:var(--ui-muted);font-size:9px;}
+
     .deep-strike-label-toggle{
       display:flex;
       align-items:center;
@@ -992,6 +1010,22 @@
             </label>
           </div>
 
+          <div class="deep-strike-category-panel">
+            <div class="deep-strike-category-title">RU → UA célrendszerek</div>
+            <div id="deepStrikeCategoryList" class="deep-strike-category-list">
+              <span class="small">Kategóriák betöltése…</span>
+            </div>
+            <div class="deep-strike-category-actions">
+              <button id="btnDeepStrikeCategoriesAll" class="secondary" type="button">Mind</button>
+              <button id="btnDeepStrikeCategoriesIdentified" class="secondary" type="button">Azonosított</button>
+              <button id="btnDeepStrikeCategoriesLogistics" class="secondary" type="button">Logisztika</button>
+              <button id="btnDeepStrikeCategoriesClear" class="secondary" type="button">Törlés</button>
+            </div>
+            <div class="deep-strike-category-help">
+              A célrendszer-szűrés csak az RU → UA eseményekre vonatkozik. Az „Azonosított” az Other kategória kivételével minden célrendszert, a „Logisztika” a hat logisztikai kategóriát választja ki.
+            </div>
+          </div>
+
           <label class="deep-strike-label-toggle" for="toggleDeepStrikeLabels">
             <input id="toggleDeepStrikeLabels" type="checkbox" />
             Kapcsolható eseményleírások
@@ -1009,7 +1043,7 @@
         </div>
 
         <div class="deep-strike-note">
-          Kék: ukrán csapás orosz hátországban. Piros: orosz csapás ukrán hátországban.
+          Kék: UA → RU. Az RU → UA pontok belső színe a kiválasztott célrendszert jelöli, piros körvonallal.
           A leírásblokkok egérrel mozgathatók, HU/EN váltót és lenyitható részletes leírást tartalmaznak.
         </div>
       </section>
