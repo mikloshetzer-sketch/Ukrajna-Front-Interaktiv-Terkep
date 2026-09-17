@@ -2059,3 +2059,4 @@ export function renderOsintLayer(layerState, points) {
     `).addTo(layerState.osintLayer);
   });
 }
+
