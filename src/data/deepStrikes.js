@@ -89,6 +89,9 @@ function normalizeEvent(raw) {
       raw.target_type
     ),
 
+    campaignCategory:
+      cleanText(raw.campaign_category) || 'other',
+
     description: cleanText(
       raw.description
     ),
