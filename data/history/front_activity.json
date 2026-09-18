@@ -14386,5 +14386,137 @@
       "deepstate": "cyterat/deepstate-map-data via GitHub API"
     },
     "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
+  },
+  {
+    "date": "2026-09-18",
+    "updated_utc": "2026-09-18T21:06:53.373961+00:00",
+    "front_activity_index": 77,
+    "status": "HIGH",
+    "components": {
+      "osint_density": 25,
+      "firms_activity": 20,
+      "territorial_change": 12.1,
+      "active_sectors": 10,
+      "critical_events": 10
+    },
+    "counts": {
+      "osint": 15,
+      "firms_3d": 2915,
+      "firms_10d": 17098,
+      "firms_30d": 95889,
+      "critical_events": 5,
+      "active_sectors": 10
+    },
+    "territorial": {
+      "available": true,
+      "error": null,
+      "previous_file": "deepstatemap_data_20260917.geojson",
+      "current_file": "deepstatemap_data_20260918.geojson",
+      "previous_total_km2": 116799.2,
+      "current_total_km2": 116803.23,
+      "russian_gain_km2": 4.03,
+      "ukrainian_recapture_km2": 0,
+      "net_change_km2": 4.03,
+      "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    },
+    "territorial_hotspot": {
+      "sector": "Pokrovsk",
+      "lat": 48.28,
+      "lon": 37.18,
+      "zoom": 9,
+      "score": 100,
+      "change_km2": 4.03,
+      "method": "Top classified sector based on OSINT + FIRMS density"
+    },
+    "top_sectors": [
+      {
+        "sector": "Pokrovsk",
+        "osint": 7,
+        "firms": 76,
+        "score": 100
+      },
+      {
+        "sector": "Velyka Novosilka",
+        "osint": 0,
+        "firms": 183,
+        "score": 100
+      },
+      {
+        "sector": "Zaporizhzhia",
+        "osint": 0,
+        "firms": 181,
+        "score": 100
+      },
+      {
+        "sector": "Other / Unclassified",
+        "osint": 5,
+        "firms": 2134,
+        "score": 100
+      },
+      {
+        "sector": "Kurakhove",
+        "osint": 1,
+        "firms": 89,
+        "score": 92
+      },
+      {
+        "sector": "Kherson-Dnipro",
+        "osint": 1,
+        "firms": 86,
+        "score": 89
+      },
+      {
+        "sector": "Bakhmut-Toretsk",
+        "osint": 0,
+        "firms": 60,
+        "score": 54
+      },
+      {
+        "sector": "Crimea",
+        "osint": 1,
+        "firms": 40,
+        "score": 48
+      }
+    ],
+    "top_events": [
+      {
+        "title": "Reported drone strike near Donyeck",
+        "source": "forrás nélkül",
+        "sector": "Kurakhove"
+      },
+      {
+        "title": "Reported military-related update near Herszon",
+        "source": "forrás nélkül",
+        "sector": "Kherson-Dnipro"
+      },
+      {
+        "title": "Reported drone strike near Krím",
+        "source": "forrás nélkül",
+        "sector": "Crimea"
+      },
+      {
+        "title": "Russian Offensive Campaign Assessment, September 17, 2026",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Protecting Gas Stations and Ukrzaliznytsia and Increasing EW Procurement: President of Ukraine Holds Headquarters Meeting",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Defense Forces Strike Syzran Oil Refinery and Atlant Aero Enterprise",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      }
+    ],
+    "data_sources": {
+      "osint": "data/osint_feed.json",
+      "firms_3d": "data/firms_3.json",
+      "firms_10d": "data/firms_10.json",
+      "firms_30d": "data/firms_30.json",
+      "deepstate": "cyterat/deepstate-map-data via GitHub API"
+    },
+    "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
   }
 ]
