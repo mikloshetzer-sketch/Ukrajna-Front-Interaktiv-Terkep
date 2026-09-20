@@ -1,122 +1,122 @@
 {
-  "date": "2026-09-19",
-  "updated_utc": "2026-09-19T20:54:34.501105+00:00",
-  "front_activity_index": 66,
-  "status": "HIGH",
+  "date": "2026-09-20",
+  "updated_utc": "2026-09-20T19:56:35.333544+00:00",
+  "front_activity_index": 98,
+  "status": "CRITICAL",
   "components": {
-    "osint_density": 20.0,
+    "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 14.5,
+    "territorial_change": 35,
     "active_sectors": 10,
-    "critical_events": 2
+    "critical_events": 8
   },
   "counts": {
-    "osint": 8,
-    "firms_3d": 4369,
-    "firms_10d": 16572,
-    "firms_30d": 95215,
-    "critical_events": 1,
+    "osint": 14,
+    "firms_3d": 5461,
+    "firms_10d": 15189,
+    "firms_30d": 90771,
+    "critical_events": 4,
     "active_sectors": 10
   },
   "territorial": {
     "available": true,
     "error": null,
-    "previous_file": "deepstatemap_data_20260918.geojson",
-    "current_file": "deepstatemap_data_20260919.geojson",
-    "previous_total_km2": 116803.23,
-    "current_total_km2": 116808.06,
-    "russian_gain_km2": 4.83,
-    "ukrainian_recapture_km2": 0,
-    "net_change_km2": 4.83,
+    "previous_file": "deepstatemap_data_20260919.geojson",
+    "current_file": "deepstatemap_data_20260920.geojson",
+    "previous_total_km2": 116808.06,
+    "current_total_km2": 116782.59,
+    "russian_gain_km2": 0,
+    "ukrainian_recapture_km2": 25.47,
+    "net_change_km2": -25.47,
     "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
-    "sector": "Bakhmut-Toretsk",
-    "lat": 48.58,
-    "lon": 37.95,
+    "sector": "Lyman",
+    "lat": 48.99,
+    "lon": 37.8,
     "zoom": 9,
     "score": 100,
-    "change_km2": 4.83,
+    "change_km2": -25.47,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
     {
+      "sector": "Lyman",
+      "osint": 1,
+      "firms": 115,
+      "score": 100
+    },
+    {
       "sector": "Bakhmut-Toretsk",
       "osint": 0,
-      "firms": 197,
+      "firms": 238,
       "score": 100
     },
     {
       "sector": "Pokrovsk",
-      "osint": 7,
-      "firms": 142,
+      "osint": 3,
+      "firms": 156,
       "score": 100
     },
     {
       "sector": "Kurakhove",
-      "osint": 0,
-      "firms": 196,
+      "osint": 2,
+      "firms": 253,
       "score": 100
     },
     {
       "sector": "Velyka Novosilka",
       "osint": 0,
-      "firms": 388,
+      "firms": 473,
       "score": 100
     },
     {
       "sector": "Zaporizhzhia",
       "osint": 0,
-      "firms": 287,
+      "firms": 472,
       "score": 100
     },
     {
       "sector": "Kherson-Dnipro",
       "osint": 0,
-      "firms": 156,
+      "firms": 210,
       "score": 100
     },
     {
       "sector": "Other / Unclassified",
-      "osint": 1,
-      "firms": 2800,
+      "osint": 7,
+      "firms": 3342,
       "score": 100
-    },
-    {
-      "sector": "Kupiansk",
-      "osint": 0,
-      "firms": 88,
-      "score": 79
     }
   ],
   "top_events": [
     {
+      "title": "Reported rear-area strike near Szlovjanszk",
+      "source": "forrás nélkül",
+      "sector": "Lyman"
+    },
+    {
+      "title": "Reported ground assault or offensive activity near Donyeck",
+      "source": "forrás nélkül",
+      "sector": "Kurakhove"
+    },
+    {
+      "title": "Reported drone strike near Donyeck",
+      "source": "forrás nélkül",
+      "sector": "Kurakhove"
+    },
+    {
+      "title": "Reported rear-area strike near Krím",
+      "source": "forrás nélkül",
+      "sector": "Crimea"
+    },
+    {
+      "title": "Russian Offensive Campaign Assessment, September 19, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk"
+    },
+    {
       "title": "Russian Offensive Campaign Assessment, September 18, 2026",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Russian Offensive Campaign Assessment, September 17, 2026",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Russian Offensive Campaign Assessment, September 16, 2026",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Protecting Gas Stations and Ukrzaliznytsia and Increasing EW Procurement: President of Ukraine Holds Headquarters Meeting",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Defense Forces Strike Syzran Oil Refinery and Atlant Aero Enterprise",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Countering Ballistic Missiles and Jet-Powered UAVs: Yevhenii Khmara Holds Talks with Danish Defence Minister",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     }
