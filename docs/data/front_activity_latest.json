@@ -1,33 +1,33 @@
 {
-  "date": "2026-09-24",
-  "updated_utc": "2026-09-24T21:41:33.677619+00:00",
-  "front_activity_index": 65,
-  "status": "HIGH",
+  "date": "2026-09-25",
+  "updated_utc": "2026-09-25T13:25:14.065142+00:00",
+  "front_activity_index": 83,
+  "status": "CRITICAL",
   "components": {
     "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 0.0,
+    "territorial_change": 17.6,
     "active_sectors": 10,
     "critical_events": 10
   },
   "counts": {
-    "osint": 34,
-    "firms_3d": 2766,
-    "firms_10d": 11350,
-    "firms_30d": 67680,
-    "critical_events": 8,
-    "active_sectors": 8
+    "osint": 27,
+    "firms_3d": 2302,
+    "firms_10d": 11533,
+    "firms_30d": 65747,
+    "critical_events": 6,
+    "active_sectors": 6
   },
   "territorial": {
     "available": true,
     "error": null,
-    "previous_file": "deepstatemap_data_20260923.geojson",
-    "current_file": "deepstatemap_data_20260924.geojson",
+    "previous_file": "deepstatemap_data_20260924.geojson",
+    "current_file": "deepstatemap_data_20260925.geojson",
     "previous_total_km2": 116783.12,
-    "current_total_km2": 116783.12,
-    "russian_gain_km2": 0,
+    "current_total_km2": 116788.98,
+    "russian_gain_km2": 5.86,
     "ukrainian_recapture_km2": 0,
-    "net_change_km2": 0.0,
+    "net_change_km2": 5.86,
     "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
@@ -36,45 +36,21 @@
     "lon": 37.18,
     "zoom": 9,
     "score": 100,
-    "change_km2": 0.0,
+    "change_km2": 5.86,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
     {
       "sector": "Pokrovsk",
-      "osint": 23,
-      "firms": 2,
+      "osint": 22,
+      "firms": 0,
       "score": 100
     },
     {
       "sector": "Other / Unclassified",
-      "osint": 9,
-      "firms": 2716,
+      "osint": 5,
+      "firms": 2290,
       "score": 100
-    },
-    {
-      "sector": "Kharkiv",
-      "osint": 2,
-      "firms": 0,
-      "score": 24
-    },
-    {
-      "sector": "Lyman",
-      "osint": 0,
-      "firms": 17,
-      "score": 15
-    },
-    {
-      "sector": "Bakhmut-Toretsk",
-      "osint": 0,
-      "firms": 14,
-      "score": 13
-    },
-    {
-      "sector": "Zaporizhzhia",
-      "osint": 0,
-      "firms": 11,
-      "score": 10
     },
     {
       "sector": "Velyka Novosilka",
@@ -83,15 +59,39 @@
       "score": 4
     },
     {
-      "sector": "Kupiansk",
+      "sector": "Zaporizhzhia",
+      "osint": 0,
+      "firms": 5,
+      "score": 4
+    },
+    {
+      "sector": "Lyman",
       "osint": 0,
       "firms": 1,
       "score": 1
+    },
+    {
+      "sector": "Bakhmut-Toretsk",
+      "osint": 0,
+      "firms": 1,
+      "score": 1
+    },
+    {
+      "sector": "Kharkiv",
+      "osint": 0,
+      "firms": 1,
+      "score": 1
+    },
+    {
+      "sector": "Kupiansk",
+      "osint": 0,
+      "firms": 0,
+      "score": 0
     }
   ],
   "top_events": [
     {
-      "title": "Reported military-related update near Dobropillja",
+      "title": "Russian Offensive Campaign Assessment, September 24, 2026",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     },
