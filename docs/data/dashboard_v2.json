@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-09-25T13:25:15.595342+00:00",
+  "updated_utc": "2026-09-25T21:44:55.829142+00:00",
   "date": "2026-09-25",
   "territorial_sector": {
     "sector": "Pokrovsk",
@@ -11,6 +11,18 @@
     "label": "Russian territorial gain"
   },
   "priority_osint_events": [
+    {
+      "title": "Reported drone strike near Kyiv",
+      "source": "forrás nélkül",
+      "sector": "Kyiv Area",
+      "lat": 50.45,
+      "lon": 30.523,
+      "distance_to_sector_km": 0,
+      "event_type": "drone",
+      "event_label": "Drone / UAV activity",
+      "icon": "🛩",
+      "priority": 106
+    },
     {
       "title": "Reported drone strike near Kijev",
       "source": "forrás nélkül",
@@ -73,18 +85,6 @@
     },
     {
       "title": "€3.3 Billion Now in Ukraine: EU Tranche to Go First and Foremost on Missiles and Drones",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "drone",
-      "event_label": "Drone / UAV activity",
-      "icon": "🛩",
-      "priority": 103
-    },
-    {
-      "title": "Yevhenii Khmara and Catherine Vautrin Discuss Strengthening Ukraine’s Air Defence and Countering Shaheds",
       "source": "forrás nélkül",
       "sector": "Pokrovsk",
       "lat": 48.5,
@@ -169,6 +169,28 @@
       "icon": "▲"
     },
     {
+      "sector": "Kurakhove",
+      "title": "Kurakhove pressure axis",
+      "lat": 47.99,
+      "lon": 37.28,
+      "score": 20,
+      "osint": 1,
+      "firms": 9,
+      "pressure_type": "pressure_axis",
+      "icon": "⚑"
+    },
+    {
+      "sector": "Zaporizhzhia",
+      "title": "Zaporizhzhia FIRMS thermal cluster",
+      "lat": 47.84,
+      "lon": 35.14,
+      "score": 12,
+      "osint": 0,
+      "firms": 13,
+      "pressure_type": "thermal_activity_cluster",
+      "icon": "🔥"
+    },
+    {
       "sector": "Velyka Novosilka",
       "title": "Velyka Novosilka pressure axis",
       "lat": 47.84,
@@ -180,13 +202,13 @@
       "icon": "⚑"
     },
     {
-      "sector": "Zaporizhzhia",
-      "title": "Zaporizhzhia pressure axis",
-      "lat": 47.84,
-      "lon": 35.14,
-      "score": 4,
+      "sector": "Bakhmut-Toretsk",
+      "title": "Bakhmut-Toretsk pressure axis",
+      "lat": 48.58,
+      "lon": 37.95,
+      "score": 3,
       "osint": 0,
-      "firms": 5,
+      "firms": 3,
       "pressure_type": "pressure_axis",
       "icon": "⚑"
     },
@@ -195,31 +217,9 @@
       "title": "Lyman pressure axis",
       "lat": 48.99,
       "lon": 37.8,
-      "score": 1,
+      "score": 2,
       "osint": 0,
-      "firms": 1,
-      "pressure_type": "pressure_axis",
-      "icon": "⚑"
-    },
-    {
-      "sector": "Bakhmut-Toretsk",
-      "title": "Bakhmut-Toretsk pressure axis",
-      "lat": 48.58,
-      "lon": 37.95,
-      "score": 1,
-      "osint": 0,
-      "firms": 1,
-      "pressure_type": "pressure_axis",
-      "icon": "⚑"
-    },
-    {
-      "sector": "Kharkiv",
-      "title": "Kharkiv pressure axis",
-      "lat": 49.99,
-      "lon": 36.23,
-      "score": 1,
-      "osint": 0,
-      "firms": 1,
+      "firms": 2,
       "pressure_type": "pressure_axis",
       "icon": "⚑"
     },
@@ -228,9 +228,9 @@
       "title": "Kupiansk pressure axis",
       "lat": 49.71,
       "lon": 37.61,
-      "score": 0,
+      "score": 1,
       "osint": 0,
-      "firms": 0,
+      "firms": 1,
       "pressure_type": "pressure_axis",
       "icon": "⚑"
     }
@@ -253,12 +253,12 @@
       "count": 1
     }
   ],
-  "ai_summary": "Front activity is assessed as CRITICAL with an FAI value of 83. Russian forces gained approximately 5.86 km², closest to the Pokrovsk sector. The main pressure focus is Pokrovsk. The strongest event category is Drone / UAV activity. The system processed 27 OSINT events, 2302 short-term FIRMS hotspots and 6 active sectors.",
+  "ai_summary": "Front activity is assessed as CRITICAL with an FAI value of 83. Russian forces gained approximately 5.86 km², closest to the Pokrovsk sector. The main pressure focus is Pokrovsk. The strongest event category is Drone / UAV activity. The system processed 31 OSINT events, 2546 short-term FIRMS hotspots and 8 active sectors.",
   "counts": {
     "priority_osint": 12,
     "pressure_points": 7,
-    "firms_3d": 2302,
-    "firms_10d": 11533,
+    "firms_3d": 2546,
+    "firms_10d": 11777,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."
