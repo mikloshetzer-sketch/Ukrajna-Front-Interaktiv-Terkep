@@ -1,33 +1,33 @@
 {
-  "date": "2026-09-28",
-  "updated_utc": "2026-09-28T23:26:16.146343+00:00",
-  "front_activity_index": 100,
-  "status": "CRITICAL",
+  "date": "2026-09-29",
+  "updated_utc": "2026-09-29T22:30:26.333121+00:00",
+  "front_activity_index": 63,
+  "status": "HIGH",
   "components": {
     "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 35,
+    "territorial_change": 0.0,
     "active_sectors": 10,
-    "critical_events": 10
+    "critical_events": 8
   },
   "counts": {
-    "osint": 21,
-    "firms_3d": 2102,
-    "firms_10d": 10956,
-    "firms_30d": 63550,
-    "critical_events": 6,
-    "active_sectors": 9
+    "osint": 16,
+    "firms_3d": 2894,
+    "firms_10d": 10343,
+    "firms_30d": 61474,
+    "critical_events": 4,
+    "active_sectors": 10
   },
   "territorial": {
     "available": true,
     "error": null,
-    "previous_file": "deepstatemap_data_20260927.geojson",
-    "current_file": "deepstatemap_data_20260928.geojson",
-    "previous_total_km2": 116795.04,
+    "previous_file": "deepstatemap_data_20260928.geojson",
+    "current_file": "deepstatemap_data_20260929.geojson",
+    "previous_total_km2": 116764.82,
     "current_total_km2": 116764.82,
     "russian_gain_km2": 0,
-    "ukrainian_recapture_km2": 30.22,
-    "net_change_km2": -30.22,
+    "ukrainian_recapture_km2": 0,
+    "net_change_km2": 0.0,
     "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
@@ -36,60 +36,80 @@
     "lon": 37.18,
     "zoom": 9,
     "score": 100,
-    "change_km2": -30.22,
+    "change_km2": 0.0,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
     {
       "sector": "Pokrovsk",
-      "osint": 10,
-      "firms": 4,
+      "osint": 12,
+      "firms": 30,
       "score": 100
     },
     {
       "sector": "Other / Unclassified",
-      "osint": 9,
-      "firms": 2029,
+      "osint": 3,
+      "firms": 2582,
       "score": 100
     },
     {
       "sector": "Kurakhove",
-      "osint": 2,
-      "firms": 22,
-      "score": 44
-    },
-    {
-      "sector": "Kherson-Dnipro",
-      "osint": 0,
-      "firms": 15,
-      "score": 14
-    },
-    {
-      "sector": "Velyka Novosilka",
-      "osint": 0,
-      "firms": 11,
-      "score": 10
+      "osint": 1,
+      "firms": 48,
+      "score": 55
     },
     {
       "sector": "Zaporizhzhia",
       "osint": 0,
-      "firms": 11,
-      "score": 10
+      "firms": 56,
+      "score": 50
     },
     {
       "sector": "Crimea",
       "osint": 0,
-      "firms": 4,
-      "score": 4
+      "firms": 53,
+      "score": 48
     },
     {
-      "sector": "Kupiansk",
+      "sector": "Velyka Novosilka",
       "osint": 0,
-      "firms": 3,
-      "score": 3
+      "firms": 42,
+      "score": 38
+    },
+    {
+      "sector": "Kherson-Dnipro",
+      "osint": 0,
+      "firms": 38,
+      "score": 34
+    },
+    {
+      "sector": "Bakhmut-Toretsk",
+      "osint": 0,
+      "firms": 21,
+      "score": 19
     }
   ],
   "top_events": [
+    {
+      "title": "Reported military-related update near Donyeck",
+      "source": "forrás nélkül",
+      "sector": "Kurakhove"
+    },
+    {
+      "title": "Ukrainian F-16s Down More Than 3,150 Targets, Including 666 Cruise Missiles",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk"
+    },
+    {
+      "title": "From Missile Components to Oil Refineries: Ukraine Strikes Key Russian Military Targets",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk"
+    },
+    {
+      "title": "Ukraine Calls on EU to Accelerate Defence Funding and Deliver Critical Air Defence Missiles",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk"
+    },
     {
       "title": "Air Defence, Drones and Long-Range Artillery: Ukraine Presents the Defence Forces’ Needs to Partners",
       "source": "forrás nélkül",
@@ -99,26 +119,6 @@
       "title": "Defence Plants and Oil Facilities: President Reports New Strikes on Russia",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
-    },
-    {
-      "title": "Freedom of Russia Carries Out Large-Scale Operation «Barrel» Behind Russian Lines",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "France Continues Training Ukrainian Troops in Poland Under the EUMAM Ukraine Mission",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "President Imposes Sanctions on Those Who Took Part in Illegal «Elections» in Occupied Ukraine",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Reported ground assault or offensive activity near Donyeck",
-      "source": "forrás nélkül",
-      "sector": "Kurakhove"
     }
   ],
   "data_sources": {

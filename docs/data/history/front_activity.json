@@ -15838,5 +15838,137 @@
       "deepstate": "cyterat/deepstate-map-data via GitHub API"
     },
     "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
+  },
+  {
+    "date": "2026-09-29",
+    "updated_utc": "2026-09-29T22:30:26.333121+00:00",
+    "front_activity_index": 63,
+    "status": "HIGH",
+    "components": {
+      "osint_density": 25,
+      "firms_activity": 20,
+      "territorial_change": 0.0,
+      "active_sectors": 10,
+      "critical_events": 8
+    },
+    "counts": {
+      "osint": 16,
+      "firms_3d": 2894,
+      "firms_10d": 10343,
+      "firms_30d": 61474,
+      "critical_events": 4,
+      "active_sectors": 10
+    },
+    "territorial": {
+      "available": true,
+      "error": null,
+      "previous_file": "deepstatemap_data_20260928.geojson",
+      "current_file": "deepstatemap_data_20260929.geojson",
+      "previous_total_km2": 116764.82,
+      "current_total_km2": 116764.82,
+      "russian_gain_km2": 0,
+      "ukrainian_recapture_km2": 0,
+      "net_change_km2": 0.0,
+      "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    },
+    "territorial_hotspot": {
+      "sector": "Pokrovsk",
+      "lat": 48.28,
+      "lon": 37.18,
+      "zoom": 9,
+      "score": 100,
+      "change_km2": 0.0,
+      "method": "Top classified sector based on OSINT + FIRMS density"
+    },
+    "top_sectors": [
+      {
+        "sector": "Pokrovsk",
+        "osint": 12,
+        "firms": 30,
+        "score": 100
+      },
+      {
+        "sector": "Other / Unclassified",
+        "osint": 3,
+        "firms": 2582,
+        "score": 100
+      },
+      {
+        "sector": "Kurakhove",
+        "osint": 1,
+        "firms": 48,
+        "score": 55
+      },
+      {
+        "sector": "Zaporizhzhia",
+        "osint": 0,
+        "firms": 56,
+        "score": 50
+      },
+      {
+        "sector": "Crimea",
+        "osint": 0,
+        "firms": 53,
+        "score": 48
+      },
+      {
+        "sector": "Velyka Novosilka",
+        "osint": 0,
+        "firms": 42,
+        "score": 38
+      },
+      {
+        "sector": "Kherson-Dnipro",
+        "osint": 0,
+        "firms": 38,
+        "score": 34
+      },
+      {
+        "sector": "Bakhmut-Toretsk",
+        "osint": 0,
+        "firms": 21,
+        "score": 19
+      }
+    ],
+    "top_events": [
+      {
+        "title": "Reported military-related update near Donyeck",
+        "source": "forrás nélkül",
+        "sector": "Kurakhove"
+      },
+      {
+        "title": "Ukrainian F-16s Down More Than 3,150 Targets, Including 666 Cruise Missiles",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "From Missile Components to Oil Refineries: Ukraine Strikes Key Russian Military Targets",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Ukraine Calls on EU to Accelerate Defence Funding and Deliver Critical Air Defence Missiles",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Air Defence, Drones and Long-Range Artillery: Ukraine Presents the Defence Forces’ Needs to Partners",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Defence Plants and Oil Facilities: President Reports New Strikes on Russia",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      }
+    ],
+    "data_sources": {
+      "osint": "data/osint_feed.json",
+      "firms_3d": "data/firms_3.json",
+      "firms_10d": "data/firms_10.json",
+      "firms_30d": "data/firms_30.json",
+      "deepstate": "cyterat/deepstate-map-data via GitHub API"
+    },
+    "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
   }
 ]
