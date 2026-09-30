@@ -15970,5 +15970,137 @@
       "deepstate": "cyterat/deepstate-map-data via GitHub API"
     },
     "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
+  },
+  {
+    "date": "2026-09-30",
+    "updated_utc": "2026-09-30T22:28:37.440848+00:00",
+    "front_activity_index": 73,
+    "status": "HIGH",
+    "components": {
+      "osint_density": 25,
+      "firms_activity": 20,
+      "territorial_change": 8.5,
+      "active_sectors": 10,
+      "critical_events": 10
+    },
+    "counts": {
+      "osint": 34,
+      "firms_3d": 3708,
+      "firms_10d": 9954,
+      "firms_30d": 59883,
+      "critical_events": 13,
+      "active_sectors": 10
+    },
+    "territorial": {
+      "available": true,
+      "error": null,
+      "previous_file": "deepstatemap_data_20260929.geojson",
+      "current_file": "deepstatemap_data_20260930.geojson",
+      "previous_total_km2": 116764.82,
+      "current_total_km2": 116767.64,
+      "russian_gain_km2": 2.83,
+      "ukrainian_recapture_km2": 0,
+      "net_change_km2": 2.83,
+      "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    },
+    "territorial_hotspot": {
+      "sector": "Pokrovsk",
+      "lat": 48.28,
+      "lon": 37.18,
+      "zoom": 9,
+      "score": 100,
+      "change_km2": 2.83,
+      "method": "Top classified sector based on OSINT + FIRMS density"
+    },
+    "top_sectors": [
+      {
+        "sector": "Pokrovsk",
+        "osint": 18,
+        "firms": 30,
+        "score": 100
+      },
+      {
+        "sector": "Other / Unclassified",
+        "osint": 12,
+        "firms": 3349,
+        "score": 100
+      },
+      {
+        "sector": "Crimea",
+        "osint": 0,
+        "firms": 92,
+        "score": 83
+      },
+      {
+        "sector": "Zaporizhzhia",
+        "osint": 0,
+        "firms": 62,
+        "score": 56
+      },
+      {
+        "sector": "Kharkiv",
+        "osint": 3,
+        "firms": 17,
+        "score": 51
+      },
+      {
+        "sector": "Kherson-Dnipro",
+        "osint": 1,
+        "firms": 40,
+        "score": 48
+      },
+      {
+        "sector": "Kurakhove",
+        "osint": 0,
+        "firms": 43,
+        "score": 39
+      },
+      {
+        "sector": "Velyka Novosilka",
+        "osint": 0,
+        "firms": 43,
+        "score": 39
+      }
+    ],
+    "top_events": [
+      {
+        "title": "Ukrainian Armed Forces Training Centres to Be Upgraded with EU Support",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "“Mom, I’m Going to Fly!” — 22-Year-Old Khrystyna Dreamed of the Skies, Now She Downs Shaheds with FPV Interceptors",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "They Treat Me as an Equal”: Ukrainian Drone Operator “Harley” on Serving Alongside Her Comrades",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Ukraine and Belgium Agree on Delivery of Three F-16s by End of 2026",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Ukraine Gets New NASAMS Missiles as Talks Continue on Patriot Missile Supplies",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Oleshky Under Russian Occupation: Civilians Face Hunger, Blockade and No Safe Way Out",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      }
+    ],
+    "data_sources": {
+      "osint": "data/osint_feed.json",
+      "firms_3d": "data/firms_3.json",
+      "firms_10d": "data/firms_10.json",
+      "firms_30d": "data/firms_30.json",
+      "deepstate": "cyterat/deepstate-map-data via GitHub API"
+    },
+    "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
   }
 ]
