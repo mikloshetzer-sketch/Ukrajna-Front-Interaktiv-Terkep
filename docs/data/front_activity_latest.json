@@ -1,33 +1,33 @@
 {
-  "date": "2026-10-02",
-  "updated_utc": "2026-10-02T22:26:48.020956+00:00",
-  "front_activity_index": 65,
-  "status": "HIGH",
+  "date": "2026-10-03",
+  "updated_utc": "2026-10-03T18:46:36.198089+00:00",
+  "front_activity_index": 89,
+  "status": "CRITICAL",
   "components": {
     "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 0.0,
+    "territorial_change": 24.4,
     "active_sectors": 10,
     "critical_events": 10
   },
   "counts": {
-    "osint": 32,
-    "firms_3d": 3934,
-    "firms_10d": 10338,
-    "firms_30d": 53608,
-    "critical_events": 13,
+    "osint": 21,
+    "firms_3d": 2951,
+    "firms_10d": 9885,
+    "firms_30d": 51151,
+    "critical_events": 7,
     "active_sectors": 10
   },
   "territorial": {
     "available": true,
     "error": null,
-    "previous_file": "deepstatemap_data_20261001.geojson",
-    "current_file": "deepstatemap_data_20261002.geojson",
+    "previous_file": "deepstatemap_data_20261002.geojson",
+    "current_file": "deepstatemap_data_20261003.geojson",
     "previous_total_km2": 116776.26,
-    "current_total_km2": 116776.26,
-    "russian_gain_km2": 0,
+    "current_total_km2": 116784.39,
+    "russian_gain_km2": 8.13,
     "ukrainian_recapture_km2": 0,
-    "net_change_km2": 0.0,
+    "net_change_km2": 8.13,
     "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
@@ -36,60 +36,70 @@
     "lon": 37.18,
     "zoom": 9,
     "score": 100,
-    "change_km2": 0.0,
+    "change_km2": 8.13,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
     {
       "sector": "Pokrovsk",
-      "osint": 20,
-      "firms": 45,
+      "osint": 17,
+      "firms": 70,
       "score": 100
     },
     {
       "sector": "Other / Unclassified",
-      "osint": 11,
-      "firms": 3575,
+      "osint": 3,
+      "firms": 2499,
       "score": 100
     },
     {
       "sector": "Zaporizhzhia",
       "osint": 0,
-      "firms": 69,
-      "score": 62
-    },
-    {
-      "sector": "Kharkiv",
-      "osint": 1,
-      "firms": 38,
-      "score": 46
-    },
-    {
-      "sector": "Crimea",
-      "osint": 0,
-      "firms": 45,
-      "score": 40
-    },
-    {
-      "sector": "Velyka Novosilka",
-      "osint": 0,
-      "firms": 42,
-      "score": 38
+      "firms": 90,
+      "score": 81
     },
     {
       "sector": "Kherson-Dnipro",
       "osint": 0,
-      "firms": 40,
-      "score": 36
+      "firms": 66,
+      "score": 59
+    },
+    {
+      "sector": "Velyka Novosilka",
+      "osint": 0,
+      "firms": 52,
+      "score": 47
+    },
+    {
+      "sector": "Kharkiv",
+      "osint": 1,
+      "firms": 39,
+      "score": 47
+    },
+    {
+      "sector": "Crimea",
+      "osint": 0,
+      "firms": 36,
+      "score": 32
     },
     {
       "sector": "Kupiansk",
       "osint": 0,
-      "firms": 32,
-      "score": 29
+      "firms": 33,
+      "score": 30
     }
   ],
   "top_events": [
+    {
+      "title": "Reported ground assault or offensive activity near Harkiv",
+      "source": "forrás nélkül",
+      "sector": "Kharkiv"
+    },
+    {
+      "title": "Russian Offensive Campaign Assessment, October 2, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk"
+    },
     {
       "title": "Inside Ukraine’s Middle Strike Strategy: Innovation, Drones and the Fight Deep Behind Russian Lines",
       "source": "forrás nélkül",
@@ -101,22 +111,12 @@
       "sector": "Pokrovsk"
     },
     {
-      "title": "Reported rear-area strike near Voronyezs",
-      "source": "forrás nélkül",
-      "sector": "Other / Unclassified"
-    },
-    {
       "title": "Russian Offensive Campaign Assessment, October 1, 2026",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     },
     {
       "title": "From Magura to UAV Interceptors: How Ukraine’s Maritime Drones Are Transforming Naval Warfare",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "46,230 Russian Troops Lost in September — Highest Monthly Figure of 2026",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     }

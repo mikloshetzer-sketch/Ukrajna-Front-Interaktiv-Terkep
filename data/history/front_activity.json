@@ -16366,5 +16366,137 @@
       "deepstate": "cyterat/deepstate-map-data via GitHub API"
     },
     "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
+  },
+  {
+    "date": "2026-10-03",
+    "updated_utc": "2026-10-03T18:46:36.198089+00:00",
+    "front_activity_index": 89,
+    "status": "CRITICAL",
+    "components": {
+      "osint_density": 25,
+      "firms_activity": 20,
+      "territorial_change": 24.4,
+      "active_sectors": 10,
+      "critical_events": 10
+    },
+    "counts": {
+      "osint": 21,
+      "firms_3d": 2951,
+      "firms_10d": 9885,
+      "firms_30d": 51151,
+      "critical_events": 7,
+      "active_sectors": 10
+    },
+    "territorial": {
+      "available": true,
+      "error": null,
+      "previous_file": "deepstatemap_data_20261002.geojson",
+      "current_file": "deepstatemap_data_20261003.geojson",
+      "previous_total_km2": 116776.26,
+      "current_total_km2": 116784.39,
+      "russian_gain_km2": 8.13,
+      "ukrainian_recapture_km2": 0,
+      "net_change_km2": 8.13,
+      "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    },
+    "territorial_hotspot": {
+      "sector": "Pokrovsk",
+      "lat": 48.28,
+      "lon": 37.18,
+      "zoom": 9,
+      "score": 100,
+      "change_km2": 8.13,
+      "method": "Top classified sector based on OSINT + FIRMS density"
+    },
+    "top_sectors": [
+      {
+        "sector": "Pokrovsk",
+        "osint": 17,
+        "firms": 70,
+        "score": 100
+      },
+      {
+        "sector": "Other / Unclassified",
+        "osint": 3,
+        "firms": 2499,
+        "score": 100
+      },
+      {
+        "sector": "Zaporizhzhia",
+        "osint": 0,
+        "firms": 90,
+        "score": 81
+      },
+      {
+        "sector": "Kherson-Dnipro",
+        "osint": 0,
+        "firms": 66,
+        "score": 59
+      },
+      {
+        "sector": "Velyka Novosilka",
+        "osint": 0,
+        "firms": 52,
+        "score": 47
+      },
+      {
+        "sector": "Kharkiv",
+        "osint": 1,
+        "firms": 39,
+        "score": 47
+      },
+      {
+        "sector": "Crimea",
+        "osint": 0,
+        "firms": 36,
+        "score": 32
+      },
+      {
+        "sector": "Kupiansk",
+        "osint": 0,
+        "firms": 33,
+        "score": 30
+      }
+    ],
+    "top_events": [
+      {
+        "title": "Reported ground assault or offensive activity near Harkiv",
+        "source": "forrás nélkül",
+        "sector": "Kharkiv"
+      },
+      {
+        "title": "Russian Offensive Campaign Assessment, October 2, 2026",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Inside Ukraine’s Middle Strike Strategy: Innovation, Drones and the Fight Deep Behind Russian Lines",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Ukraine Expects Accelerated Delivery of F-16 Ammunition and Air Defence Missiles",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Russian Offensive Campaign Assessment, October 1, 2026",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "From Magura to UAV Interceptors: How Ukraine’s Maritime Drones Are Transforming Naval Warfare",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      }
+    ],
+    "data_sources": {
+      "osint": "data/osint_feed.json",
+      "firms_3d": "data/firms_3.json",
+      "firms_10d": "data/firms_10.json",
+      "firms_30d": "data/firms_30.json",
+      "deepstate": "cyterat/deepstate-map-data via GitHub API"
+    },
+    "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
   }
 ]
