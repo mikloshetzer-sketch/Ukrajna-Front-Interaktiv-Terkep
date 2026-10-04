@@ -16498,5 +16498,137 @@
       "deepstate": "cyterat/deepstate-map-data via GitHub API"
     },
     "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
+  },
+  {
+    "date": "2026-10-04",
+    "updated_utc": "2026-10-04T21:45:50.566128+00:00",
+    "front_activity_index": 89,
+    "status": "CRITICAL",
+    "components": {
+      "osint_density": 25,
+      "firms_activity": 20,
+      "territorial_change": 24.0,
+      "active_sectors": 10,
+      "critical_events": 10
+    },
+    "counts": {
+      "osint": 16,
+      "firms_3d": 2901,
+      "firms_10d": 10235,
+      "firms_30d": 49489,
+      "critical_events": 6,
+      "active_sectors": 10
+    },
+    "territorial": {
+      "available": true,
+      "error": null,
+      "previous_file": "deepstatemap_data_20261003.geojson",
+      "current_file": "deepstatemap_data_20261004.geojson",
+      "previous_total_km2": 116784.39,
+      "current_total_km2": 116792.41,
+      "russian_gain_km2": 8.01,
+      "ukrainian_recapture_km2": 0,
+      "net_change_km2": 8.01,
+      "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    },
+    "territorial_hotspot": {
+      "sector": "Pokrovsk",
+      "lat": 48.28,
+      "lon": 37.18,
+      "zoom": 9,
+      "score": 100,
+      "change_km2": 8.01,
+      "method": "Top classified sector based on OSINT + FIRMS density"
+    },
+    "top_sectors": [
+      {
+        "sector": "Pokrovsk",
+        "osint": 10,
+        "firms": 50,
+        "score": 100
+      },
+      {
+        "sector": "Other / Unclassified",
+        "osint": 5,
+        "firms": 2374,
+        "score": 100
+      },
+      {
+        "sector": "Kherson-Dnipro",
+        "osint": 0,
+        "firms": 101,
+        "score": 91
+      },
+      {
+        "sector": "Crimea",
+        "osint": 0,
+        "firms": 101,
+        "score": 91
+      },
+      {
+        "sector": "Zaporizhzhia",
+        "osint": 0,
+        "firms": 93,
+        "score": 84
+      },
+      {
+        "sector": "Velyka Novosilka",
+        "osint": 0,
+        "firms": 69,
+        "score": 62
+      },
+      {
+        "sector": "Kupiansk",
+        "osint": 1,
+        "firms": 19,
+        "score": 29
+      },
+      {
+        "sector": "Bakhmut-Toretsk",
+        "osint": 0,
+        "firms": 28,
+        "score": 25
+      }
+    ],
+    "top_events": [
+      {
+        "title": "Russians “capture” railway station in Kupiansk-Vuzlovyi using AI — but forget about the building’s real condition",
+        "source": "forrás nélkül",
+        "sector": "Kupiansk"
+      },
+      {
+        "title": "Russian Offensive Campaign Assessment, October 3, 2026",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Russian Offensive Campaign Assessment, October 2, 2026",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Inside Ukraine’s Middle Strike Strategy: Innovation, Drones and the Fight Deep Behind Russian Lines",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Ukraine Expects Accelerated Delivery of F-16 Ammunition and Air Defence Missiles",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Russian Offensive Campaign Assessment, October 1, 2026",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      }
+    ],
+    "data_sources": {
+      "osint": "data/osint_feed.json",
+      "firms_3d": "data/firms_3.json",
+      "firms_10d": "data/firms_10.json",
+      "firms_30d": "data/firms_30.json",
+      "deepstate": "cyterat/deepstate-map-data via GitHub API"
+    },
+    "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
   }
 ]
