@@ -1,6 +1,6 @@
 {
-  "updated_utc": "2026-10-05T20:26:45.904065+00:00",
-  "date": "2026-10-05",
+  "updated_utc": "2026-10-06T00:14:18.323839+00:00",
+  "date": "2026-10-06",
   "territorial_sector": {
     "sector": "Velyka Novosilka",
     "lat": 47.725475025,
@@ -48,18 +48,6 @@
       "priority": 101
     },
     {
-      "title": "Reported ground assault or offensive activity near Kijev",
-      "source": "forrás nélkül",
-      "sector": "Kyiv Area",
-      "lat": 50.45,
-      "lon": 30.523,
-      "distance_to_sector_km": 0,
-      "event_type": "frontline",
-      "event_label": "Frontline pressure",
-      "icon": "⚔",
-      "priority": 98
-    },
-    {
       "title": "Russians “capture” railway station in Kupiansk-Vuzlovyi using AI — but forget about the building’s real condition",
       "source": "forrás nélkül",
       "sector": "Kupiansk",
@@ -70,6 +58,18 @@
       "event_label": "Logistics / infrastructure strike",
       "icon": "⛓",
       "priority": 97
+    },
+    {
+      "title": "Russian Offensive Campaign Assessment, October 5, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "frontline",
+      "event_label": "Frontline pressure",
+      "icon": "⚔",
+      "priority": 95
     },
     {
       "title": "Russian Offensive Campaign Assessment, October 4, 2026",
@@ -132,6 +132,18 @@
       "priority": 66
     },
     {
+      "title": "Evgeniy Khmara: Ukraine’s Combat Experience Could Strengthen the Protection of the Baltic Sea",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "military_update",
+      "event_label": "Military update",
+      "icon": "●",
+      "priority": 63
+    },
+    {
       "title": "€1.3 Billion to Strengthen Ukraine’s Defense and Energy Sector: Results of the Meeting Between Volodymyr Zelenskyy and Friedrich Merz",
       "source": "forrás nélkül",
       "sector": "Pokrovsk",
@@ -151,8 +163,8 @@
       "lat": 48.28,
       "lon": 37.18,
       "score": 100,
-      "osint": 6,
-      "firms": 48,
+      "osint": 8,
+      "firms": 23,
       "pressure_type": "osint_activity_cluster",
       "icon": "⚔"
     },
@@ -161,20 +173,9 @@
       "title": "Crimea FIRMS thermal cluster",
       "lat": 45.2,
       "lon": 34.1,
-      "score": 91,
+      "score": 68,
       "osint": 0,
-      "firms": 101,
-      "pressure_type": "thermal_activity_cluster",
-      "icon": "🔥"
-    },
-    {
-      "sector": "Kherson-Dnipro",
-      "title": "Kherson-Dnipro FIRMS thermal cluster",
-      "lat": 46.64,
-      "lon": 32.61,
-      "score": 86,
-      "osint": 0,
-      "firms": 95,
+      "firms": 75,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -183,20 +184,20 @@
       "title": "Velyka Novosilka territorial gain axis",
       "lat": 47.84,
       "lon": 36.84,
-      "score": 67,
+      "score": 57,
       "osint": 0,
-      "firms": 41,
+      "firms": 30,
       "pressure_type": "territorial_gain_axis",
       "icon": "▲"
     },
     {
-      "sector": "Zaporizhzhia",
-      "title": "Zaporizhzhia FIRMS thermal cluster",
-      "lat": 47.84,
-      "lon": 35.14,
-      "score": 53,
+      "sector": "Kherson-Dnipro",
+      "title": "Kherson-Dnipro FIRMS thermal cluster",
+      "lat": 46.64,
+      "lon": 32.61,
+      "score": 50,
       "osint": 0,
-      "firms": 59,
+      "firms": 55,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -205,9 +206,9 @@
       "title": "Kurakhove FIRMS thermal cluster",
       "lat": 47.99,
       "lon": 37.28,
-      "score": 51,
+      "score": 47,
       "osint": 1,
-      "firms": 43,
+      "firms": 39,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -216,9 +217,20 @@
       "title": "Bakhmut-Toretsk FIRMS thermal cluster",
       "lat": 48.58,
       "lon": 37.95,
-      "score": 41,
+      "score": 33,
       "osint": 0,
-      "firms": 46,
+      "firms": 37,
+      "pressure_type": "thermal_activity_cluster",
+      "icon": "🔥"
+    },
+    {
+      "sector": "Zaporizhzhia",
+      "title": "Zaporizhzhia FIRMS thermal cluster",
+      "lat": 47.84,
+      "lon": 35.14,
+      "score": 30,
+      "osint": 0,
+      "firms": 33,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     }
@@ -230,7 +242,7 @@
     },
     {
       "category": "Military update",
-      "count": 3
+      "count": 4
     },
     {
       "category": "Drone / UAV activity",
@@ -245,12 +257,12 @@
       "count": 1
     }
   ],
-  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 72. Russian forces gained approximately 2.26 km², closest to the Velyka Novosilka sector. The main pressure focus is Pokrovsk. The strongest event category is Drone / UAV activity. The system processed 11 OSINT events, 3160 short-term FIRMS hotspots and 10 active sectors.",
+  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 70. Russian forces gained approximately 2.26 km², closest to the Velyka Novosilka sector. The main pressure focus is Pokrovsk. The strongest event category is Drone / UAV activity. The system processed 12 OSINT events, 2428 short-term FIRMS hotspots and 10 active sectors.",
   "counts": {
-    "priority_osint": 11,
+    "priority_osint": 12,
     "pressure_points": 7,
-    "firms_3d": 3160,
-    "firms_10d": 10802,
+    "firms_3d": 2428,
+    "firms_10d": 10304,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."
