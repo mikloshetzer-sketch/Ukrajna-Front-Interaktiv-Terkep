@@ -1,13 +1,112 @@
 {
   "type": "FeatureCollection",
   "metadata": {
-    "updated_utc": "2026-10-06T22:44:05.724716+00:00",
-    "previous_file": "deepstatemap_data_20261005.geojson",
-    "current_file": "deepstatemap_data_20261006.geojson",
-    "russian_gain_km2": 0,
-    "ukrainian_recapture_km2": 0,
-    "net_change_km2": 0,
+    "updated_utc": "2026-10-07T23:14:45.837124+00:00",
+    "previous_file": "deepstatemap_data_20261006.geojson",
+    "current_file": "deepstatemap_data_20261007.geojson",
+    "russian_gain_km2": 1.3,
+    "ukrainian_recapture_km2": 1.57,
+    "net_change_km2": -0.27,
     "method": "Shapely geometric difference between the latest two DeepState GeoJSON files. Area is approximate."
   },
-  "features": []
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "change_type": "russian_gain",
+        "label": "Russian territorial gain",
+        "area_km2": 1.3
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              37.1796566,
+              48.4123619
+            ],
+            [
+              37.1777947,
+              48.4170306
+            ],
+            [
+              37.1711991,
+              48.4193079
+            ],
+            [
+              37.1716782,
+              48.4213011
+            ],
+            [
+              37.1909722,
+              48.4224116
+            ],
+            [
+              37.1927559,
+              48.4158884
+            ],
+            [
+              37.2012641,
+              48.4147722
+            ],
+            [
+              37.1893227,
+              48.4158884
+            ],
+            [
+              37.1893882,
+              48.4099749
+            ],
+            [
+              37.1796566,
+              48.4123619
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "change_type": "ukrainian_recapture",
+        "label": "Ukrainian recapture",
+        "area_km2": 1.57
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              37.0102664,
+              48.2790643
+            ],
+            [
+              37.0272032,
+              48.2745965
+            ],
+            [
+              37.0440688,
+              48.2801549
+            ],
+            [
+              37.0322672,
+              48.2753963
+            ],
+            [
+              37.0321532,
+              48.2672961
+            ],
+            [
+              37.012002,
+              48.2678744
+            ],
+            [
+              37.0102664,
+              48.2790643
+            ]
+          ]
+        ]
+      }
+    }
+  ]
 }
