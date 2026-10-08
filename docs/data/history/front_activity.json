@@ -17026,5 +17026,137 @@
       "deepstate": "cyterat/deepstate-map-data via GitHub API"
     },
     "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
+  },
+  {
+    "date": "2026-10-08",
+    "updated_utc": "2026-10-08T23:30:12.064512+00:00",
+    "front_activity_index": 100,
+    "status": "CRITICAL",
+    "components": {
+      "osint_density": 25,
+      "firms_activity": 20,
+      "territorial_change": 35,
+      "active_sectors": 10,
+      "critical_events": 10
+    },
+    "counts": {
+      "osint": 21,
+      "firms_3d": 4941,
+      "firms_10d": 13450,
+      "firms_30d": 42125,
+      "critical_events": 5,
+      "active_sectors": 10
+    },
+    "territorial": {
+      "available": true,
+      "error": null,
+      "previous_file": "deepstatemap_data_20261007.geojson",
+      "current_file": "deepstatemap_data_20261008.geojson",
+      "previous_total_km2": 116794.39,
+      "current_total_km2": 116806.39,
+      "russian_gain_km2": 11.99,
+      "ukrainian_recapture_km2": 0,
+      "net_change_km2": 11.99,
+      "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    },
+    "territorial_hotspot": {
+      "sector": "Pokrovsk",
+      "lat": 48.28,
+      "lon": 37.18,
+      "zoom": 9,
+      "score": 100,
+      "change_km2": 11.99,
+      "method": "Top classified sector based on OSINT + FIRMS density"
+    },
+    "top_sectors": [
+      {
+        "sector": "Pokrovsk",
+        "osint": 13,
+        "firms": 43,
+        "score": 100
+      },
+      {
+        "sector": "Kurakhove",
+        "osint": 2,
+        "firms": 87,
+        "score": 100
+      },
+      {
+        "sector": "Other / Unclassified",
+        "osint": 5,
+        "firms": 4459,
+        "score": 100
+      },
+      {
+        "sector": "Bakhmut-Toretsk",
+        "osint": 0,
+        "firms": 80,
+        "score": 72
+      },
+      {
+        "sector": "Velyka Novosilka",
+        "osint": 0,
+        "firms": 74,
+        "score": 67
+      },
+      {
+        "sector": "Zaporizhzhia",
+        "osint": 1,
+        "firms": 43,
+        "score": 51
+      },
+      {
+        "sector": "Kupiansk",
+        "osint": 0,
+        "firms": 56,
+        "score": 50
+      },
+      {
+        "sector": "Lyman",
+        "osint": 0,
+        "firms": 33,
+        "score": 30
+      }
+    ],
+    "top_events": [
+      {
+        "title": "Ukraine Strikes Gazprom’s Major Oil Refining Complex 1,300 km from the Border",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Reported rear-area strike near Donyeck",
+        "source": "forrás nélkül",
+        "sector": "Kurakhove"
+      },
+      {
+        "title": "Reported ground assault or offensive activity near Donyeck",
+        "source": "forrás nélkül",
+        "sector": "Kurakhove"
+      },
+      {
+        "title": "Reported military-related update near Zaporizzsja",
+        "source": "forrás nélkül",
+        "sector": "Zaporizhzhia"
+      },
+      {
+        "title": "Hero of Ukraine “Hunter”: How a Former Appliance Repairman Became a UAV Commander",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Ukraine Receives €1.24 Billion from the EU for Interceptor Drones and Ukrainian-Made Missiles",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      }
+    ],
+    "data_sources": {
+      "osint": "data/osint_feed.json",
+      "firms_3d": "data/firms_3.json",
+      "firms_10d": "data/firms_10.json",
+      "firms_30d": "data/firms_30.json",
+      "deepstate": "cyterat/deepstate-map-data via GitHub API"
+    },
+    "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
   }
 ]

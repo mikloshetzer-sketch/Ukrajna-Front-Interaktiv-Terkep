@@ -1,33 +1,33 @@
 {
-  "date": "2026-10-07",
-  "updated_utc": "2026-10-07T23:14:44.504210+00:00",
-  "front_activity_index": 64,
-  "status": "HIGH",
+  "date": "2026-10-08",
+  "updated_utc": "2026-10-08T23:30:12.064512+00:00",
+  "front_activity_index": 100,
+  "status": "CRITICAL",
   "components": {
     "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 0.8,
+    "territorial_change": 35,
     "active_sectors": 10,
-    "critical_events": 8
+    "critical_events": 10
   },
   "counts": {
-    "osint": 11,
-    "firms_3d": 4369,
-    "firms_10d": 12551,
-    "firms_30d": 42157,
-    "critical_events": 4,
+    "osint": 21,
+    "firms_3d": 4941,
+    "firms_10d": 13450,
+    "firms_30d": 42125,
+    "critical_events": 5,
     "active_sectors": 10
   },
   "territorial": {
     "available": true,
     "error": null,
-    "previous_file": "deepstatemap_data_20261006.geojson",
-    "current_file": "deepstatemap_data_20261007.geojson",
-    "previous_total_km2": 116794.67,
-    "current_total_km2": 116794.39,
-    "russian_gain_km2": 0,
-    "ukrainian_recapture_km2": 0.27,
-    "net_change_km2": -0.27,
+    "previous_file": "deepstatemap_data_20261007.geojson",
+    "current_file": "deepstatemap_data_20261008.geojson",
+    "previous_total_km2": 116794.39,
+    "current_total_km2": 116806.39,
+    "russian_gain_km2": 11.99,
+    "ukrainian_recapture_km2": 0,
+    "net_change_km2": 11.99,
     "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
@@ -35,70 +35,75 @@
     "lat": 48.28,
     "lon": 37.18,
     "zoom": 9,
-    "score": 86,
-    "change_km2": -0.27,
+    "score": 100,
+    "change_km2": 11.99,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
     {
-      "sector": "Other / Unclassified",
-      "osint": 6,
-      "firms": 3893,
+      "sector": "Pokrovsk",
+      "osint": 13,
+      "firms": 43,
       "score": 100
     },
     {
-      "sector": "Pokrovsk",
-      "osint": 3,
-      "firms": 56,
-      "score": 86
-    },
-    {
       "sector": "Kurakhove",
-      "osint": 0,
-      "firms": 78,
-      "score": 70
+      "osint": 2,
+      "firms": 87,
+      "score": 100
     },
     {
-      "sector": "Zaporizhzhia",
-      "osint": 1,
-      "firms": 56,
-      "score": 62
+      "sector": "Other / Unclassified",
+      "osint": 5,
+      "firms": 4459,
+      "score": 100
     },
     {
       "sector": "Bakhmut-Toretsk",
       "osint": 0,
-      "firms": 67,
-      "score": 60
+      "firms": 80,
+      "score": 72
     },
     {
       "sector": "Velyka Novosilka",
       "osint": 0,
-      "firms": 59,
-      "score": 53
+      "firms": 74,
+      "score": 67
     },
     {
-      "sector": "Kharkiv",
+      "sector": "Zaporizhzhia",
       "osint": 1,
-      "firms": 39,
-      "score": 47
+      "firms": 43,
+      "score": 51
     },
     {
       "sector": "Kupiansk",
       "osint": 0,
-      "firms": 47,
-      "score": 42
+      "firms": 56,
+      "score": 50
+    },
+    {
+      "sector": "Lyman",
+      "osint": 0,
+      "firms": 33,
+      "score": 30
     }
   ],
   "top_events": [
     {
-      "title": "Reported missile strike near Harkiv",
+      "title": "Ukraine Strikes Gazprom’s Major Oil Refining Complex 1,300 km from the Border",
       "source": "forrás nélkül",
-      "sector": "Kharkiv"
+      "sector": "Pokrovsk"
     },
     {
-      "title": "Reported drone strike near Voronyezs",
+      "title": "Reported rear-area strike near Donyeck",
       "source": "forrás nélkül",
-      "sector": "Other / Unclassified"
+      "sector": "Kurakhove"
+    },
+    {
+      "title": "Reported ground assault or offensive activity near Donyeck",
+      "source": "forrás nélkül",
+      "sector": "Kurakhove"
     },
     {
       "title": "Reported military-related update near Zaporizzsja",
@@ -106,17 +111,12 @@
       "sector": "Zaporizhzhia"
     },
     {
-      "title": "Russian Offensive Campaign Assessment, October 6, 2026",
+      "title": "Hero of Ukraine “Hunter”: How a Former Appliance Repairman Became a UAV Commander",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     },
     {
-      "title": "Russian Offensive Campaign Assessment, October 5, 2026",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Russian Offensive Campaign Assessment, October 4, 2026",
+      "title": "Ukraine Receives €1.24 Billion from the EU for Interceptor Drones and Ukrainian-Made Missiles",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     }
