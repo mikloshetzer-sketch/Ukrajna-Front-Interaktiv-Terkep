@@ -1,14 +1,14 @@
 {
-  "updated_utc": "2026-10-09T22:47:59.717272+00:00",
-  "date": "2026-10-09",
+  "updated_utc": "2026-10-10T21:55:48.851343+00:00",
+  "date": "2026-10-10",
   "territorial_sector": {
-    "sector": "No territorial delta",
-    "lat": null,
-    "lon": null,
-    "distance_km": null,
-    "change_type": "none",
-    "area_km2": 0,
-    "label": "No mapped daily territorial change"
+    "sector": "Kupiansk",
+    "lat": 50.214594787500005,
+    "lon": 37.544046025,
+    "distance_km": 56.3,
+    "change_type": "russian_gain",
+    "area_km2": 9.1,
+    "label": "Russian territorial gain"
   },
   "priority_osint_events": [
     {
@@ -22,6 +22,42 @@
       "event_label": "Drone / UAV activity",
       "icon": "🛩",
       "priority": 106
+    },
+    {
+      "title": "Reported drone strike near Kyiv",
+      "source": "forrás nélkül",
+      "sector": "Kyiv Area",
+      "lat": 50.45,
+      "lon": 30.523,
+      "distance_to_sector_km": 0,
+      "event_type": "drone",
+      "event_label": "Drone / UAV activity",
+      "icon": "🛩",
+      "priority": 106
+    },
+    {
+      "title": "Reported drone strike near Moszkva",
+      "source": "forrás nélkül",
+      "sector": "Moscow / Russia Interior",
+      "lat": 55.755,
+      "lon": 37.617,
+      "distance_to_sector_km": 0,
+      "event_type": "drone",
+      "event_label": "Drone / UAV activity",
+      "icon": "🛩",
+      "priority": 106
+    },
+    {
+      "title": "Reported drone strike near Donyeck",
+      "source": "forrás nélkül",
+      "sector": "Kurakhove",
+      "lat": 48.015,
+      "lon": 37.802,
+      "distance_to_sector_km": 38.9,
+      "event_type": "drone",
+      "event_label": "Drone / UAV activity",
+      "icon": "🛩",
+      "priority": 103
     },
     {
       "title": "Hero of Ukraine “Hunter”: How a Former Appliance Repairman Became a UAV Commander",
@@ -48,16 +84,28 @@
       "priority": 103
     },
     {
-      "title": "Unkraine and Netherland Discussed How to Provide Greater Protection for Lives Against Russian Jet-Powered “Shaheds”",
+      "title": "Reported missile strike near Harkiv",
+      "source": "forrás nélkül",
+      "sector": "Kharkiv",
+      "lat": 49.993,
+      "lon": 36.23,
+      "distance_to_sector_km": 0.3,
+      "event_type": "missile",
+      "event_label": "Missile / rocket strike",
+      "icon": "☄",
+      "priority": 101
+    },
+    {
+      "title": "Russian Offensive Campaign Assessment, October 9, 2026",
       "source": "forrás nélkül",
       "sector": "Pokrovsk",
       "lat": 48.5,
       "lon": 36.5,
       "distance_to_sector_km": 55.9,
-      "event_type": "drone",
-      "event_label": "Drone / UAV activity",
-      "icon": "🛩",
-      "priority": 103
+      "event_type": "frontline",
+      "event_label": "Frontline pressure",
+      "icon": "⚔",
+      "priority": 95
     },
     {
       "title": "Russian Offensive Campaign Assessment, October 8, 2026",
@@ -96,19 +144,7 @@
       "priority": 95
     },
     {
-      "title": "Russian Offensive Campaign Assessment, October 6, 2026",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "frontline",
-      "event_label": "Frontline pressure",
-      "icon": "⚔",
-      "priority": 95
-    },
-    {
-      "title": "Reported rear-area strike near Kijev",
+      "title": "Reported rear-area strike near Kyiv",
       "source": "forrás nélkül",
       "sector": "Kyiv Area",
       "lat": 50.45,
@@ -118,42 +154,6 @@
       "event_label": "Strike / attack",
       "icon": "✹",
       "priority": 94
-    },
-    {
-      "title": "Ukraine Strikes Gazprom’s Major Oil Refining Complex 1,300 km from the Border",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "strike",
-      "event_label": "Strike / attack",
-      "icon": "✹",
-      "priority": 91
-    },
-    {
-      "title": "Volodymyr Zelenskyy: Russia Attacked Ships in Bulgarian Waters",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "strike",
-      "event_label": "Strike / attack",
-      "icon": "✹",
-      "priority": 91
-    },
-    {
-      "title": "Deep Strikes Have Knocked Out More Than Half of Russia’s Oil Refining Capacity",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "strike",
-      "event_label": "Strike / attack",
-      "icon": "✹",
-      "priority": 91
     }
   ],
   "front_pressure_points": [
@@ -164,7 +164,7 @@
       "lon": 37.8,
       "score": 100,
       "osint": 0,
-      "firms": 128,
+      "firms": 116,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -175,7 +175,7 @@
       "lon": 37.95,
       "score": 100,
       "osint": 0,
-      "firms": 128,
+      "firms": 112,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -185,8 +185,8 @@
       "lat": 48.28,
       "lon": 37.18,
       "score": 100,
-      "osint": 12,
-      "firms": 74,
+      "osint": 9,
+      "firms": 60,
       "pressure_type": "osint_activity_cluster",
       "icon": "⚔"
     },
@@ -196,41 +196,41 @@
       "lat": 47.99,
       "lon": 37.28,
       "score": 100,
-      "osint": 0,
-      "firms": 139,
+      "osint": 1,
+      "firms": 125,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
+    },
+    {
+      "sector": "Kupiansk",
+      "title": "Kupiansk territorial gain axis",
+      "lat": 49.71,
+      "lon": 37.61,
+      "score": 74,
+      "osint": 0,
+      "firms": 49,
+      "pressure_type": "territorial_gain_axis",
+      "icon": "▲"
     },
     {
       "sector": "Velyka Novosilka",
       "title": "Velyka Novosilka FIRMS thermal cluster",
       "lat": 47.84,
       "lon": 36.84,
-      "score": 69,
+      "score": 51,
       "osint": 0,
-      "firms": 77,
+      "firms": 57,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
     {
-      "sector": "Kupiansk",
-      "title": "Kupiansk FIRMS thermal cluster",
-      "lat": 49.71,
-      "lon": 37.61,
-      "score": 68,
+      "sector": "Crimea",
+      "title": "Crimea FIRMS thermal cluster",
+      "lat": 45.2,
+      "lon": 34.1,
+      "score": 25,
       "osint": 0,
-      "firms": 76,
-      "pressure_type": "thermal_activity_cluster",
-      "icon": "🔥"
-    },
-    {
-      "sector": "Kharkiv",
-      "title": "Kharkiv FIRMS thermal cluster",
-      "lat": 49.99,
-      "lon": 36.23,
-      "score": 24,
-      "osint": 1,
-      "firms": 13,
+      "firms": 28,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     }
@@ -238,23 +238,27 @@
   "event_categories": [
     {
       "category": "Drone / UAV activity",
-      "count": 4
+      "count": 6
     },
     {
       "category": "Frontline pressure",
       "count": 4
     },
     {
+      "category": "Missile / rocket strike",
+      "count": 1
+    },
+    {
       "category": "Strike / attack",
-      "count": 4
+      "count": 1
     }
   ],
-  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 63. No measurable net territorial change was detected. The main pressure focus is Lyman. The strongest event category is Drone / UAV activity. The system processed 20 OSINT events, 5007 short-term FIRMS hotspots and 10 active sectors.",
+  "ai_summary": "Front activity is assessed as CRITICAL with an FAI value of 91. Russian forces gained approximately 8.77 km², closest to the Kupiansk sector. The main pressure focus is Lyman. The strongest event category is Drone / UAV activity. The system processed 20 OSINT events, 4944 short-term FIRMS hotspots and 10 active sectors.",
   "counts": {
     "priority_osint": 12,
     "pressure_points": 7,
-    "firms_3d": 5007,
-    "firms_10d": 13992,
+    "firms_3d": 4944,
+    "firms_10d": 13643,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."

@@ -17290,5 +17290,137 @@
       "deepstate": "cyterat/deepstate-map-data via GitHub API"
     },
     "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
+  },
+  {
+    "date": "2026-10-10",
+    "updated_utc": "2026-10-10T21:55:46.378873+00:00",
+    "front_activity_index": 91,
+    "status": "CRITICAL",
+    "components": {
+      "osint_density": 25,
+      "firms_activity": 20,
+      "territorial_change": 26.3,
+      "active_sectors": 10,
+      "critical_events": 10
+    },
+    "counts": {
+      "osint": 20,
+      "firms_3d": 4944,
+      "firms_10d": 13643,
+      "firms_30d": 39264,
+      "critical_events": 8,
+      "active_sectors": 10
+    },
+    "territorial": {
+      "available": true,
+      "error": null,
+      "previous_file": "deepstatemap_data_20261009.geojson",
+      "current_file": "deepstatemap_data_20261010.geojson",
+      "previous_total_km2": 116806.39,
+      "current_total_km2": 116815.16,
+      "russian_gain_km2": 8.77,
+      "ukrainian_recapture_km2": 0,
+      "net_change_km2": 8.77,
+      "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    },
+    "territorial_hotspot": {
+      "sector": "Lyman",
+      "lat": 48.99,
+      "lon": 37.8,
+      "zoom": 9,
+      "score": 100,
+      "change_km2": 8.77,
+      "method": "Top classified sector based on OSINT + FIRMS density"
+    },
+    "top_sectors": [
+      {
+        "sector": "Lyman",
+        "osint": 0,
+        "firms": 116,
+        "score": 100
+      },
+      {
+        "sector": "Bakhmut-Toretsk",
+        "osint": 0,
+        "firms": 112,
+        "score": 100
+      },
+      {
+        "sector": "Pokrovsk",
+        "osint": 9,
+        "firms": 60,
+        "score": 100
+      },
+      {
+        "sector": "Kurakhove",
+        "osint": 1,
+        "firms": 125,
+        "score": 100
+      },
+      {
+        "sector": "Other / Unclassified",
+        "osint": 9,
+        "firms": 4354,
+        "score": 100
+      },
+      {
+        "sector": "Velyka Novosilka",
+        "osint": 0,
+        "firms": 57,
+        "score": 51
+      },
+      {
+        "sector": "Kupiansk",
+        "osint": 0,
+        "firms": 49,
+        "score": 44
+      },
+      {
+        "sector": "Crimea",
+        "osint": 0,
+        "firms": 28,
+        "score": 25
+      }
+    ],
+    "top_events": [
+      {
+        "title": "Reported drone strike near Donyeck",
+        "source": "forrás nélkül",
+        "sector": "Kurakhove"
+      },
+      {
+        "title": "Reported missile strike near Harkiv",
+        "source": "forrás nélkül",
+        "sector": "Kharkiv"
+      },
+      {
+        "title": "Russian Offensive Campaign Assessment, October 9, 2026",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "F-16 Ammunition and IRIS-T Systems: Evgeniy Khmara Held a Phone Conversation With Boris Pistorius",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Russian Offensive Campaign Assessment, October 8, 2026",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Ukraine Strikes Gazprom’s Major Oil Refining Complex 1,300 km from the Border",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      }
+    ],
+    "data_sources": {
+      "osint": "data/osint_feed.json",
+      "firms_3d": "data/firms_3.json",
+      "firms_10d": "data/firms_10.json",
+      "firms_30d": "data/firms_30.json",
+      "deepstate": "cyterat/deepstate-map-data via GitHub API"
+    },
+    "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
   }
 ]
