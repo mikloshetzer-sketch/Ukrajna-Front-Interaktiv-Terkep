@@ -1,33 +1,33 @@
 {
-  "date": "2026-10-13",
-  "updated_utc": "2026-10-13T23:00:13.729585+00:00",
-  "front_activity_index": 87,
+  "date": "2026-10-14",
+  "updated_utc": "2026-10-14T21:52:20.416318+00:00",
+  "front_activity_index": 100,
   "status": "CRITICAL",
   "components": {
     "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 22.4,
+    "territorial_change": 35,
     "active_sectors": 10,
     "critical_events": 10
   },
   "counts": {
-    "osint": 15,
-    "firms_3d": 3524,
-    "firms_10d": 14294,
-    "firms_30d": 35648,
-    "critical_events": 5,
+    "osint": 25,
+    "firms_3d": 2527,
+    "firms_10d": 14099,
+    "firms_30d": 35966,
+    "critical_events": 8,
     "active_sectors": 10
   },
   "territorial": {
     "available": true,
     "error": null,
-    "previous_file": "deepstatemap_data_20261012.geojson",
-    "current_file": "deepstatemap_data_20261013.geojson",
-    "previous_total_km2": 116826.73,
-    "current_total_km2": 116834.21,
-    "russian_gain_km2": 7.48,
-    "ukrainian_recapture_km2": 0,
-    "net_change_km2": 7.48,
+    "previous_file": "deepstatemap_data_20261013.geojson",
+    "current_file": "deepstatemap_data_20261014.geojson",
+    "previous_total_km2": 116834.21,
+    "current_total_km2": 116766.55,
+    "russian_gain_km2": 0,
+    "ukrainian_recapture_km2": 67.67,
+    "net_change_km2": -67.67,
     "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
@@ -36,26 +36,20 @@
     "lon": 37.18,
     "zoom": 9,
     "score": 100,
-    "change_km2": 7.48,
+    "change_km2": -67.67,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
     {
       "sector": "Pokrovsk",
-      "osint": 8,
-      "firms": 94,
-      "score": 100
-    },
-    {
-      "sector": "Kharkiv",
-      "osint": 1,
-      "firms": 100,
+      "osint": 15,
+      "firms": 57,
       "score": 100
     },
     {
       "sector": "Other / Unclassified",
-      "osint": 6,
-      "firms": 2901,
+      "osint": 8,
+      "firms": 2115,
       "score": 100
     },
     {
@@ -65,58 +59,64 @@
       "score": 82
     },
     {
-      "sector": "Zaporizhzhia",
-      "osint": 0,
-      "firms": 81,
-      "score": 73
-    },
-    {
       "sector": "Kupiansk",
       "osint": 0,
-      "firms": 75,
-      "score": 68
+      "firms": 56,
+      "score": 50
     },
     {
       "sector": "Bakhmut-Toretsk",
       "osint": 0,
-      "firms": 70,
-      "score": 63
+      "firms": 55,
+      "score": 50
     },
     {
-      "sector": "Kherson-Dnipro",
+      "sector": "Zaporizhzhia",
       "osint": 0,
-      "firms": 42,
-      "score": 38
+      "firms": 51,
+      "score": 46
+    },
+    {
+      "sector": "Kurakhove",
+      "osint": 1,
+      "firms": 25,
+      "score": 34
+    },
+    {
+      "sector": "Kharkiv",
+      "osint": 1,
+      "firms": 24,
+      "score": 34
     }
   ],
   "top_events": [
     {
-      "title": "After 18 Years Teaching Children, Svitlana Now Trains Soldiers to Save Lives",
+      "title": "Reported rear-area strike near Donyeck",
+      "source": "forrás nélkül",
+      "sector": "Kurakhove"
+    },
+    {
+      "title": "Starlink Restrictions Hit Ukrainian Forces: Polish Foreign Minister Urges Musk to Stop Playing Politics",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     },
     {
-      "title": "EU Adds 1,600 Russian Individuals and Entities to Sanctions List",
+      "title": "Starlink connectivity issues disrupt drone missions on Ukraine’s front line",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     },
     {
-      "title": "Reported ground assault or offensive activity near Harkiv",
-      "source": "forrás nélkül",
-      "sector": "Kharkiv"
-    },
-    {
-      "title": "From Drone Interceptors to Deep Strikes: Evgeniy Khmara Outlines Ukraine’s Defence Priorities",
+      "title": "EU Disburses €2.86 Billion to Bolster Ukraine’s Defence",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     },
     {
-      "title": "Ukrainian Air Defense Intercepted More Than 4,700 Air Targets in September",
+      "title": "Cyber threats are part of modern warfare: Ukraine shares its wartime experience at Hybrid CoE Course",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     },
     {
-      "title": "Ukraine and Estonia to advance joint defence projects",
+      "title": "“Positive Decisions Ahead”: Volodymyr Zelenskyy Announces Further Support for Ukraine This Week",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     }
