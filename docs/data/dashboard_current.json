@@ -1,17 +1,17 @@
 {
   "schema_version": "1.3.0",
   "dataset": "ukraine_conflict_dashboard_current",
-  "generated_at": "2026-10-16T21:12:03.210257Z",
-  "latest_data_at": "2026-10-16T12:40:00Z",
+  "generated_at": "2026-10-16T23:37:33.483787Z",
+  "latest_data_at": "2026-10-16T21:31:06.155252Z",
   "periods": {
     "1": {
       "days": 1,
-      "start_at": "2026-10-15T21:12:03.210257Z",
-      "end_at": "2026-10-16T21:12:03.210257Z",
+      "start_at": "2026-10-15T23:37:33.483787Z",
+      "end_at": "2026-10-16T23:37:33.483787Z",
       "ru_gain_km2": 8.64,
       "ua_recapture_km2": 0.0,
       "net_change_km2": 8.64,
-      "firms_count": 504,
+      "firms_count": 381,
       "conflict_index": -30,
       "osint_events": 14,
       "availability": {
@@ -22,12 +22,12 @@
     },
     "7": {
       "days": 7,
-      "start_at": "2026-10-09T21:12:03.210257Z",
-      "end_at": "2026-10-16T21:12:03.210257Z",
+      "start_at": "2026-10-09T23:37:33.483787Z",
+      "end_at": "2026-10-16T23:37:33.483787Z",
       "ru_gain_km2": 50.6,
       "ua_recapture_km2": 82.55,
       "net_change_km2": -31.95,
-      "firms_count": 7007,
+      "firms_count": 6919,
       "conflict_index": -65,
       "osint_events": 29,
       "availability": {
@@ -38,8 +38,8 @@
     },
     "30": {
       "days": 30,
-      "start_at": "2026-09-16T21:12:03.210257Z",
-      "end_at": "2026-10-16T21:12:03.210257Z",
+      "start_at": "2026-09-16T23:37:33.483787Z",
+      "end_at": "2026-10-16T23:37:33.483787Z",
       "ru_gain_km2": 133.16,
       "ua_recapture_km2": 159.16,
       "net_change_km2": -26.0,
@@ -54,8 +54,8 @@
     },
     "90": {
       "days": 90,
-      "start_at": "2026-07-18T21:12:03.210257Z",
-      "end_at": "2026-10-16T21:12:03.210257Z",
+      "start_at": "2026-07-18T23:37:33.483787Z",
+      "end_at": "2026-10-16T23:37:33.483787Z",
       "ru_gain_km2": 0.0,
       "ua_recapture_km2": 0.0,
       "net_change_km2": 0.0,
@@ -221,7 +221,7 @@
         "osint_events": 3,
         "components": {
           "territorial": 35.0,
-          "firms": 6.6,
+          "firms": 6.7,
           "osint": 3.1,
           "activity_baseline": 9
         }
@@ -238,7 +238,7 @@
         "osint_events": 18,
         "components": {
           "territorial": 3.6,
-          "firms": 2.5,
+          "firms": 2.6,
           "osint": 25.0,
           "activity_baseline": 9
         }
@@ -251,7 +251,7 @@
         "risk": "MODERATE",
         "ru_gain_km2": 0.0,
         "ua_recapture_km2": 0.0,
-        "firms_count": 906,
+        "firms_count": 900,
         "osint_events": 6,
         "components": {
           "territorial": 0.0,
@@ -641,36 +641,6 @@
         "priority": 108.64
       },
       {
-        "id": "firms-24-51.87-54.74",
-        "kind": "firms",
-        "type": "Rendkívüli FIRMS-klaszter",
-        "title": "51.87, 54.74 térsége",
-        "value": "47 hőpont",
-        "value_numeric": 47,
-        "time": "2026-10-16T10:04:00Z",
-        "class_name": "firms",
-        "confidence": "Közepes",
-        "source": "NASA FIRMS",
-        "sector_id": "unassigned",
-        "note": "A térben koncentrálódó hőpontok száma meghaladta az automatikus riasztási küszöböt. A hőpont önmagában nem bizonyít katonai eseményt.",
-        "priority": 107
-      },
-      {
-        "id": "firms-24-51.59-52.86",
-        "kind": "firms",
-        "type": "Rendkívüli FIRMS-klaszter",
-        "title": "51.59, 52.86 térsége",
-        "value": "39 hőpont",
-        "value_numeric": 39,
-        "time": "2026-10-16T10:41:00Z",
-        "class_name": "firms",
-        "confidence": "Közepes",
-        "source": "NASA FIRMS",
-        "sector_id": "unassigned",
-        "note": "A térben koncentrálódó hőpontok száma meghaladta az automatikus riasztási küszöböt. A hőpont önmagában nem bizonyít katonai eseményt.",
-        "priority": 99
-      },
-      {
         "id": "osint-2026-10-16T00:00:00+00:00-0",
         "kind": "osint",
         "type": "General Military Update",
@@ -685,23 +655,55 @@
         "url": "https://armyinform.com.ua/en/2026/10/16/ukraines-navy-destroyed-six-russian-su-34m-bombers-in-a-single-strike/",
         "note": "Ukraine’s Navy Destroyed Six Russian Su-34M Bombers in a Single Strike",
         "priority": 90
+      },
+      {
+        "id": "osint-2026-10-16T00:00:00+00:00-1",
+        "kind": "osint",
+        "type": "Naval",
+        "title": "Russian troop losses exceed 350,000 in 2026, Ukraine’s General Staff reports",
+        "value": "8/10",
+        "value_numeric": 8,
+        "time": "2026-10-16T00:00:00Z",
+        "class_name": "strike",
+        "confidence": "Közepes",
+        "source": "ArmyInform",
+        "sector_id": "pokrovsk",
+        "url": "https://armyinform.com.ua/en/2026/10/16/russian-troop-losses-exceed-350000-in-2026-ukraines-general-staff-reports/",
+        "note": "Russian troop losses exceed 350,000 in 2026, Ukraine’s General Staff reports",
+        "priority": 90
+      },
+      {
+        "id": "osint-2026-10-16T00:00:00+00:00-2",
+        "kind": "osint",
+        "type": "Air Defense",
+        "title": "We Are Working on New Air Defense Packages – Volodymyr Zelenskyy Following His Meeting with Mark Rutte",
+        "value": "8/10",
+        "value_numeric": 8,
+        "time": "2026-10-16T00:00:00Z",
+        "class_name": "strike",
+        "confidence": "Közepes",
+        "source": "ArmyInform",
+        "sector_id": "pokrovsk",
+        "url": "https://armyinform.com.ua/en/2026/10/16/we-are-working-on-new-air-defense-packages-volodymyr-zelenskyy-following-his-meeting-with-mark-rutte/",
+        "note": "We Are Working on New Air Defense Packages – Volodymyr Zelenskyy Following His Meeting with Mark Rutte",
+        "priority": 90
       }
     ],
     "48": [
       {
-        "id": "firms-48-51.87-54.73",
+        "id": "firms-48-51.87-54.74",
         "kind": "firms",
         "type": "Rendkívüli FIRMS-klaszter",
-        "title": "51.87, 54.73 térsége",
-        "value": "54 hőpont",
-        "value_numeric": 54,
+        "title": "51.87, 54.74 térsége",
+        "value": "50 hőpont",
+        "value_numeric": 50,
         "time": "2026-10-16T10:04:00Z",
         "class_name": "firms",
         "confidence": "Közepes",
         "source": "NASA FIRMS",
         "sector_id": "unassigned",
         "note": "A térben koncentrálódó hőpontok száma meghaladta az automatikus riasztási küszöböt. A hőpont önmagában nem bizonyít katonai eseményt.",
-        "priority": 114
+        "priority": 110
       },
       {
         "id": "territorial-2026-10-16T00:00:00+00:00-0",
@@ -723,15 +725,15 @@
         "kind": "firms",
         "type": "Rendkívüli FIRMS-klaszter",
         "title": "51.59, 52.86 térsége",
-        "value": "43 hőpont",
-        "value_numeric": 43,
+        "value": "41 hőpont",
+        "value_numeric": 41,
         "time": "2026-10-16T10:41:00Z",
         "class_name": "firms",
         "confidence": "Közepes",
         "source": "NASA FIRMS",
         "sector_id": "unassigned",
         "note": "A térben koncentrálódó hőpontok száma meghaladta az automatikus riasztási küszöböt. A hőpont önmagában nem bizonyít katonai eseményt.",
-        "priority": 103
+        "priority": 101
       },
       {
         "id": "firms-48-53.45-59.06",
@@ -770,45 +772,45 @@
         "kind": "firms",
         "type": "Rendkívüli FIRMS-klaszter",
         "title": "51.86, 54.73 térsége",
-        "value": "101 hőpont",
-        "value_numeric": 101,
+        "value": "82 hőpont",
+        "value_numeric": 82,
         "time": "2026-10-16T10:04:00Z",
         "class_name": "firms",
         "confidence": "Közepes",
         "source": "NASA FIRMS",
         "sector_id": "unassigned",
         "note": "A térben koncentrálódó hőpontok száma meghaladta az automatikus riasztási küszöböt. A hőpont önmagában nem bizonyít katonai eseményt.",
-        "priority": 161
+        "priority": 142
       },
       {
         "id": "firms-72-51.59-52.85",
         "kind": "firms",
         "type": "Rendkívüli FIRMS-klaszter",
         "title": "51.59, 52.85 térsége",
-        "value": "89 hőpont",
-        "value_numeric": 89,
+        "value": "66 hőpont",
+        "value_numeric": 66,
         "time": "2026-10-16T10:41:00Z",
         "class_name": "firms",
         "confidence": "Közepes",
         "source": "NASA FIRMS",
         "sector_id": "unassigned",
         "note": "A térben koncentrálódó hőpontok száma meghaladta az automatikus riasztási küszöböt. A hőpont önmagában nem bizonyít katonai eseményt.",
-        "priority": 149
+        "priority": 126
       },
       {
-        "id": "firms-72-53.45-59.05",
+        "id": "firms-72-45.47-37.86",
         "kind": "firms",
         "type": "Rendkívüli FIRMS-klaszter",
-        "title": "53.45, 59.05 térsége",
-        "value": "64 hőpont",
-        "value_numeric": 64,
-        "time": "2026-10-16T10:04:00Z",
+        "title": "45.47, 37.86 térsége",
+        "value": "55 hőpont",
+        "value_numeric": 55,
+        "time": "2026-10-14T11:36:00Z",
         "class_name": "firms",
         "confidence": "Közepes",
         "source": "NASA FIRMS",
         "sector_id": "unassigned",
         "note": "A térben koncentrálódó hőpontok száma meghaladta az automatikus riasztási küszöböt. A hőpont önmagában nem bizonyít katonai eseményt.",
-        "priority": 124
+        "priority": 115
       }
     ]
   },
@@ -822,9 +824,9 @@
         "source": "territorial",
         "path": "data/territorial_delta_30days.geojson",
         "exists": true,
-        "updated_at": "2026-10-16T21:12:01.453726Z",
-        "latest_record_at": "2026-10-16T00:00:00Z",
-        "age_hours": 21.2,
+        "updated_at": "2026-10-16T23:37:32.237301Z",
+        "latest_record_at": "2026-10-16T21:31:06.155252Z",
+        "age_hours": 2.1,
         "status": "fresh",
         "record_count": 79,
         "note": "A 90 napos ablakhoz a windows összesítő is elérhető."
@@ -835,7 +837,7 @@
         "exists": true,
         "updated_at": "2026-10-16T21:06:47.791344Z",
         "latest_record_at": "2026-10-16T12:40:00Z",
-        "age_hours": 8.5,
+        "age_hours": 11.0,
         "status": "fresh",
         "record_count": 36062,
         "note": ""
@@ -846,7 +848,7 @@
         "exists": true,
         "updated_at": "2026-10-16T19:55:48.243613Z",
         "latest_record_at": "2026-10-16T00:00:00Z",
-        "age_hours": 21.2,
+        "age_hours": 23.6,
         "status": "fresh",
         "record_count": 29,
         "note": ""
