@@ -1,33 +1,33 @@
 {
-  "date": "2026-10-17",
-  "updated_utc": "2026-10-17T20:49:11.117333+00:00",
-  "front_activity_index": 83,
-  "status": "CRITICAL",
+  "date": "2026-10-18",
+  "updated_utc": "2026-10-18T20:57:33.317949+00:00",
+  "front_activity_index": 61,
+  "status": "HIGH",
   "components": {
     "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 21.6,
-    "active_sectors": 8,
-    "critical_events": 8
+    "territorial_change": 0.0,
+    "active_sectors": 6,
+    "critical_events": 10
   },
   "counts": {
-    "osint": 22,
-    "firms_3d": 1405,
-    "firms_10d": 11045,
-    "firms_30d": 35637,
-    "critical_events": 4,
-    "active_sectors": 4
+    "osint": 18,
+    "firms_3d": 1690,
+    "firms_10d": 9919,
+    "firms_30d": 34820,
+    "critical_events": 5,
+    "active_sectors": 3
   },
   "territorial": {
     "available": true,
     "error": null,
-    "previous_file": "deepstatemap_data_20261016.geojson",
-    "current_file": "deepstatemap_data_20261017.geojson",
-    "previous_total_km2": 116775.11,
+    "previous_file": "deepstatemap_data_20261017.geojson",
+    "current_file": "deepstatemap_data_20261018.geojson",
+    "previous_total_km2": 116782.31,
     "current_total_km2": 116782.31,
-    "russian_gain_km2": 7.2,
+    "russian_gain_km2": 0,
     "ukrainian_recapture_km2": 0,
-    "net_change_km2": 7.2,
+    "net_change_km2": 0.0,
     "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
@@ -36,36 +36,30 @@
     "lon": 37.18,
     "zoom": 9,
     "score": 100,
-    "change_km2": 7.2,
+    "change_km2": 0.0,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
     {
       "sector": "Pokrovsk",
-      "osint": 17,
+      "osint": 11,
       "firms": 0,
       "score": 100
     },
     {
       "sector": "Other / Unclassified",
-      "osint": 4,
-      "firms": 1401,
+      "osint": 6,
+      "firms": 1688,
       "score": 100
     },
     {
-      "sector": "Zaporizhzhia",
+      "sector": "Kherson-Dnipro",
       "osint": 1,
       "firms": 0,
       "score": 12
     },
     {
       "sector": "Kupiansk",
-      "osint": 0,
-      "firms": 2,
-      "score": 2
-    },
-    {
-      "sector": "Kherson-Dnipro",
       "osint": 0,
       "firms": 2,
       "score": 2
@@ -87,6 +81,12 @@
       "osint": 0,
       "firms": 0,
       "score": 0
+    },
+    {
+      "sector": "Velyka Novosilka",
+      "osint": 0,
+      "firms": 0,
+      "score": 0
     }
   ],
   "top_events": [
@@ -96,9 +96,14 @@
       "sector": "Pokrovsk"
     },
     {
-      "title": "Reported naval-related military activity near Zaporizzsja",
+      "title": "Reported drone strike near Kherson",
       "source": "forrás nélkül",
-      "sector": "Zaporizhzhia"
+      "sector": "Kherson-Dnipro"
+    },
+    {
+      "title": "Russian Offensive Campaign Assessment, October 17, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk"
     },
     {
       "title": "Ukraine’s Navy Destroyed Six Russian Su-34M Bombers in a Single Strike",
@@ -112,11 +117,6 @@
     },
     {
       "title": "We Are Working on New Air Defense Packages – Volodymyr Zelenskyy Following His Meeting with Mark Rutte",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Russian Offensive Campaign Assessment, October 16, 2026",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     }
