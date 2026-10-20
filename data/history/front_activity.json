@@ -18478,5 +18478,137 @@
       "deepstate": "cyterat/deepstate-map-data via GitHub API"
     },
     "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
+  },
+  {
+    "date": "2026-10-20",
+    "updated_utc": "2026-10-20T21:47:16.168775+00:00",
+    "front_activity_index": 78,
+    "status": "HIGH",
+    "components": {
+      "osint_density": 25,
+      "firms_activity": 20,
+      "territorial_change": 12.8,
+      "active_sectors": 10,
+      "critical_events": 10
+    },
+    "counts": {
+      "osint": 22,
+      "firms_3d": 2857,
+      "firms_10d": 8917,
+      "firms_30d": 32958,
+      "critical_events": 5,
+      "active_sectors": 5
+    },
+    "territorial": {
+      "available": true,
+      "error": null,
+      "previous_file": "deepstatemap_data_20261019.geojson",
+      "current_file": "deepstatemap_data_20261020.geojson",
+      "previous_total_km2": 116782.31,
+      "current_total_km2": 116786.6,
+      "russian_gain_km2": 4.28,
+      "ukrainian_recapture_km2": 0,
+      "net_change_km2": 4.28,
+      "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    },
+    "territorial_hotspot": {
+      "sector": "Pokrovsk",
+      "lat": 48.28,
+      "lon": 37.18,
+      "zoom": 9,
+      "score": 100,
+      "change_km2": 4.28,
+      "method": "Top classified sector based on OSINT + FIRMS density"
+    },
+    "top_sectors": [
+      {
+        "sector": "Pokrovsk",
+        "osint": 13,
+        "firms": 1,
+        "score": 100
+      },
+      {
+        "sector": "Other / Unclassified",
+        "osint": 5,
+        "firms": 2854,
+        "score": 100
+      },
+      {
+        "sector": "Zaporizhzhia",
+        "osint": 2,
+        "firms": 0,
+        "score": 24
+      },
+      {
+        "sector": "Kurakhove",
+        "osint": 1,
+        "firms": 1,
+        "score": 13
+      },
+      {
+        "sector": "Kharkiv",
+        "osint": 1,
+        "firms": 0,
+        "score": 12
+      },
+      {
+        "sector": "Bakhmut-Toretsk",
+        "osint": 0,
+        "firms": 1,
+        "score": 1
+      },
+      {
+        "sector": "Kupiansk",
+        "osint": 0,
+        "firms": 0,
+        "score": 0
+      },
+      {
+        "sector": "Lyman",
+        "osint": 0,
+        "firms": 0,
+        "score": 0
+      }
+    ],
+    "top_events": [
+      {
+        "title": "Ukrainian Drones Strike Russian Supply Trucks in occupied Southern Ukraine",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Early Warning of Russian Missile Attacks and the Situation with Starlink: Volodymyr Zelenskyy Had a Conversation with Marco Rubio",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Starlink Connectivity Problems are Slowing Ukrainian Military Operations",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Drone Warfare in Ukraine: DELTA Mission Control Recorded More Than 3 Million Strike Missions",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Ukraine expands defence industry cooperation with Germany",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Hunting Jet-Powered Shaheds: How the Rapid Ranger Air Defence System Operates in Ukraine",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      }
+    ],
+    "data_sources": {
+      "osint": "data/osint_feed.json",
+      "firms_3d": "data/firms_3.json",
+      "firms_10d": "data/firms_10.json",
+      "firms_30d": "data/firms_30.json",
+      "deepstate": "cyterat/deepstate-map-data via GitHub API"
+    },
+    "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
   }
 ]
