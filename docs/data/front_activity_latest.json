@@ -1,33 +1,33 @@
 {
-  "date": "2026-10-20",
-  "updated_utc": "2026-10-20T21:47:16.168775+00:00",
-  "front_activity_index": 78,
-  "status": "HIGH",
+  "date": "2026-10-21",
+  "updated_utc": "2026-10-21T21:53:10.899269+00:00",
+  "front_activity_index": 81,
+  "status": "CRITICAL",
   "components": {
     "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 12.8,
+    "territorial_change": 16.4,
     "active_sectors": 10,
     "critical_events": 10
   },
   "counts": {
-    "osint": 22,
-    "firms_3d": 2857,
-    "firms_10d": 8917,
-    "firms_30d": 32958,
-    "critical_events": 5,
-    "active_sectors": 5
+    "osint": 24,
+    "firms_3d": 3390,
+    "firms_10d": 8337,
+    "firms_30d": 33192,
+    "critical_events": 6,
+    "active_sectors": 7
   },
   "territorial": {
     "available": true,
     "error": null,
-    "previous_file": "deepstatemap_data_20261019.geojson",
-    "current_file": "deepstatemap_data_20261020.geojson",
-    "previous_total_km2": 116782.31,
-    "current_total_km2": 116786.6,
-    "russian_gain_km2": 4.28,
+    "previous_file": "deepstatemap_data_20261020.geojson",
+    "current_file": "deepstatemap_data_20261021.geojson",
+    "previous_total_km2": 116786.6,
+    "current_total_km2": 116792.05,
+    "russian_gain_km2": 5.46,
     "ukrainian_recapture_km2": 0,
-    "net_change_km2": 4.28,
+    "net_change_km2": 5.46,
     "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
@@ -36,7 +36,7 @@
     "lon": 37.18,
     "zoom": 9,
     "score": 100,
-    "change_km2": 4.28,
+    "change_km2": 5.46,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
@@ -48,15 +48,9 @@
     },
     {
       "sector": "Other / Unclassified",
-      "osint": 5,
-      "firms": 2854,
+      "osint": 8,
+      "firms": 3385,
       "score": 100
-    },
-    {
-      "sector": "Zaporizhzhia",
-      "osint": 2,
-      "firms": 0,
-      "score": 24
     },
     {
       "sector": "Kurakhove",
@@ -65,10 +59,22 @@
       "score": 13
     },
     {
-      "sector": "Kharkiv",
+      "sector": "Zaporizhzhia",
       "osint": 1,
       "firms": 0,
       "score": 12
+    },
+    {
+      "sector": "Crimea",
+      "osint": 1,
+      "firms": 0,
+      "score": 12
+    },
+    {
+      "sector": "Lyman",
+      "osint": 0,
+      "firms": 1,
+      "score": 1
     },
     {
       "sector": "Bakhmut-Toretsk",
@@ -77,19 +83,33 @@
       "score": 1
     },
     {
-      "sector": "Kupiansk",
+      "sector": "Kherson-Dnipro",
       "osint": 0,
-      "firms": 0,
-      "score": 0
-    },
-    {
-      "sector": "Lyman",
-      "osint": 0,
-      "firms": 0,
-      "score": 0
+      "firms": 1,
+      "score": 1
     }
   ],
   "top_events": [
+    {
+      "title": "Reported air defense activity near Donyeck",
+      "source": "forrás nélkül",
+      "sector": "Kurakhove"
+    },
+    {
+      "title": "Reported military-related update near Lviv",
+      "source": "forrás nélkül",
+      "sector": "Other / Unclassified"
+    },
+    {
+      "title": "Reported military-related update near Zaporizzsja",
+      "source": "forrás nélkül",
+      "sector": "Zaporizhzhia"
+    },
+    {
+      "title": "Reported military-related update near Krím",
+      "source": "forrás nélkül",
+      "sector": "Crimea"
+    },
     {
       "title": "Ukrainian Drones Strike Russian Supply Trucks in occupied Southern Ukraine",
       "source": "forrás nélkül",
@@ -97,26 +117,6 @@
     },
     {
       "title": "Early Warning of Russian Missile Attacks and the Situation with Starlink: Volodymyr Zelenskyy Had a Conversation with Marco Rubio",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Starlink Connectivity Problems are Slowing Ukrainian Military Operations",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Drone Warfare in Ukraine: DELTA Mission Control Recorded More Than 3 Million Strike Missions",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Ukraine expands defence industry cooperation with Germany",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Hunting Jet-Powered Shaheds: How the Rapid Ranger Air Defence System Operates in Ukraine",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     }
