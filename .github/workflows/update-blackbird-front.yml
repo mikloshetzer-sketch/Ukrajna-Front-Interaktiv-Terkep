@@ -1,0 +1,46 @@
+name: Update Black Bird map snapshot
+
+on:
+  schedule:
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: blackbird-snapshot
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fetch and validate GeoJSON
+        id: blackbird
+        run: python scripts/update_blackbird_front.py
+      - name: Upload changed compressed snapshot
+        if: steps.blackbird.outputs.changed == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: blackbird-snapshot-${{ github.run_id }}
+          path: blackbird-artifacts/*.geojson.gz
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0
+      - name: Commit small status file
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/blackbird_front_summary.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Update Black Bird map retrieval status'
+            git push
+          fi
