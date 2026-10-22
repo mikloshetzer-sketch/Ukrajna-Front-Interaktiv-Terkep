@@ -1,13 +1,13 @@
 {
-  "updated_utc": "2026-10-21T21:53:12.088915+00:00",
-  "date": "2026-10-21",
+  "updated_utc": "2026-10-22T21:50:40.419200+00:00",
+  "date": "2026-10-22",
   "territorial_sector": {
-    "sector": "Velyka Novosilka",
-    "lat": 47.69673552857142,
-    "lon": 36.132253,
-    "distance_km": 55.2,
+    "sector": "Lyman",
+    "lat": 48.80879196923077,
+    "lon": 37.84883432307692,
+    "distance_km": 20.5,
     "change_type": "russian_gain",
-    "area_km2": 5.39,
+    "area_km2": 4.85,
     "label": "Russian territorial gain"
   },
   "priority_osint_events": [
@@ -17,6 +17,18 @@
       "sector": "Kyiv Area",
       "lat": 50.45,
       "lon": 30.523,
+      "distance_to_sector_km": 0,
+      "event_type": "drone",
+      "event_label": "Drone / UAV activity",
+      "icon": "🛩",
+      "priority": 106
+    },
+    {
+      "title": "Reported drone strike near Moszkva",
+      "source": "forrás nélkül",
+      "sector": "Moscow / Russia Interior",
+      "lat": 55.755,
+      "lon": 37.617,
       "distance_to_sector_km": 0,
       "event_type": "drone",
       "event_label": "Drone / UAV activity",
@@ -34,6 +46,54 @@
       "event_label": "Drone / UAV activity",
       "icon": "🛩",
       "priority": 106
+    },
+    {
+      "title": "“Three Waves of Ballistic Missiles From ‘Humanists’”: Volodymyr Zelenskyy called the attack on Kyiv Russia’s response to U.S. peace initiatives",
+      "source": "forrás nélkül",
+      "sector": "Kyiv Area",
+      "lat": 50.45,
+      "lon": 30.523,
+      "distance_to_sector_km": 0,
+      "event_type": "missile",
+      "event_label": "Missile / rocket strike",
+      "icon": "☄",
+      "priority": 104
+    },
+    {
+      "title": "Ballistic Missile Attack Hits Six Kyiv Districts, Killing One and Injuring 22, Including Four Children",
+      "source": "forrás nélkül",
+      "sector": "Kyiv Area",
+      "lat": 50.45,
+      "lon": 30.523,
+      "distance_to_sector_km": 0,
+      "event_type": "missile",
+      "event_label": "Missile / rocket strike",
+      "icon": "☄",
+      "priority": 104
+    },
+    {
+      "title": "Reported missile strike near Kyiv",
+      "source": "forrás nélkül",
+      "sector": "Kyiv Area",
+      "lat": 50.45,
+      "lon": 30.523,
+      "distance_to_sector_km": 0,
+      "event_type": "missile",
+      "event_label": "Missile / rocket strike",
+      "icon": "☄",
+      "priority": 104
+    },
+    {
+      "title": "Ukraine neutralises 408,000 Russian drones since start of 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "drone",
+      "event_label": "Drone / UAV activity",
+      "icon": "🛩",
+      "priority": 103
     },
     {
       "title": "Ukrainian Drones Strike Russian Supply Trucks in occupied Southern Ukraine",
@@ -94,66 +154,6 @@
       "event_label": "Missile / rocket strike",
       "icon": "☄",
       "priority": 101
-    },
-    {
-      "title": "Russian Offensive Campaign Assessment, October 20, 2026",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "frontline",
-      "event_label": "Frontline pressure",
-      "icon": "⚔",
-      "priority": 95
-    },
-    {
-      "title": "Russian Offensive Campaign Assessment, October 19, 2026",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "frontline",
-      "event_label": "Frontline pressure",
-      "icon": "⚔",
-      "priority": 95
-    },
-    {
-      "title": "Russian Offensive Campaign Assessment, October 18, 2026",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "frontline",
-      "event_label": "Frontline pressure",
-      "icon": "⚔",
-      "priority": 95
-    },
-    {
-      "title": "Russian Strike Hits Operating Room at Kyiv Heart Institute, Injuring Patient",
-      "source": "forrás nélkül",
-      "sector": "Kyiv Area",
-      "lat": 50.45,
-      "lon": 30.523,
-      "distance_to_sector_km": 0,
-      "event_type": "strike",
-      "event_label": "Strike / attack",
-      "icon": "✹",
-      "priority": 94
-    },
-    {
-      "title": "Reported rear-area strike near Kijev",
-      "source": "forrás nélkül",
-      "sector": "Kyiv Area",
-      "lat": 50.45,
-      "lon": 30.523,
-      "distance_to_sector_km": 0,
-      "event_type": "strike",
-      "event_label": "Strike / attack",
-      "icon": "✹",
-      "priority": 94
     }
   ],
   "front_pressure_points": [
@@ -163,21 +163,21 @@
       "lat": 48.28,
       "lon": 37.18,
       "score": 100,
-      "osint": 13,
-      "firms": 1,
+      "osint": 18,
+      "firms": 0,
       "pressure_type": "osint_activity_cluster",
       "icon": "⚔"
     },
     {
-      "sector": "Kurakhove",
-      "title": "Kurakhove pressure axis",
-      "lat": 47.99,
-      "lon": 37.28,
-      "score": 13,
-      "osint": 1,
+      "sector": "Lyman",
+      "title": "Lyman territorial gain axis",
+      "lat": 48.99,
+      "lon": 37.8,
+      "score": 31,
+      "osint": 0,
       "firms": 1,
-      "pressure_type": "pressure_axis",
-      "icon": "⚑"
+      "pressure_type": "territorial_gain_axis",
+      "icon": "▲"
     },
     {
       "sector": "Zaporizhzhia",
@@ -191,24 +191,13 @@
       "icon": "⚑"
     },
     {
-      "sector": "Crimea",
-      "title": "Crimea pressure axis",
-      "lat": 45.2,
-      "lon": 34.1,
+      "sector": "Kharkiv",
+      "title": "Kharkiv pressure axis",
+      "lat": 49.99,
+      "lon": 36.23,
       "score": 12,
       "osint": 1,
       "firms": 0,
-      "pressure_type": "pressure_axis",
-      "icon": "⚑"
-    },
-    {
-      "sector": "Lyman",
-      "title": "Lyman pressure axis",
-      "lat": 48.99,
-      "lon": 37.8,
-      "score": 1,
-      "osint": 0,
-      "firms": 1,
       "pressure_type": "pressure_axis",
       "icon": "⚑"
     },
@@ -217,9 +206,9 @@
       "title": "Bakhmut-Toretsk pressure axis",
       "lat": 48.58,
       "lon": 37.95,
-      "score": 1,
+      "score": 2,
       "osint": 0,
-      "firms": 1,
+      "firms": 2,
       "pressure_type": "pressure_axis",
       "icon": "⚑"
     },
@@ -233,32 +222,35 @@
       "firms": 1,
       "pressure_type": "pressure_axis",
       "icon": "⚑"
+    },
+    {
+      "sector": "Kupiansk",
+      "title": "Kupiansk pressure axis",
+      "lat": 49.71,
+      "lon": 37.61,
+      "score": 0,
+      "osint": 0,
+      "firms": 0,
+      "pressure_type": "pressure_axis",
+      "icon": "⚑"
     }
   ],
   "event_categories": [
     {
       "category": "Drone / UAV activity",
-      "count": 6
-    },
-    {
-      "category": "Frontline pressure",
-      "count": 3
-    },
-    {
-      "category": "Strike / attack",
-      "count": 2
+      "count": 8
     },
     {
       "category": "Missile / rocket strike",
-      "count": 1
+      "count": 4
     }
   ],
-  "ai_summary": "Front activity is assessed as CRITICAL with an FAI value of 81. Russian forces gained approximately 5.46 km², closest to the Velyka Novosilka sector. The main pressure focus is Pokrovsk. The strongest event category is Drone / UAV activity. The system processed 24 OSINT events, 3390 short-term FIRMS hotspots and 7 active sectors.",
+  "ai_summary": "Front activity is assessed as CRITICAL with an FAI value of 84. Russian forces gained approximately 6.17 km², closest to the Lyman sector. The main pressure focus is Pokrovsk. The strongest event category is Drone / UAV activity. The system processed 31 OSINT events, 3094 short-term FIRMS hotspots and 6 active sectors.",
   "counts": {
     "priority_osint": 12,
     "pressure_points": 7,
-    "firms_3d": 3390,
-    "firms_10d": 8337,
+    "firms_3d": 3094,
+    "firms_10d": 7579,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."
