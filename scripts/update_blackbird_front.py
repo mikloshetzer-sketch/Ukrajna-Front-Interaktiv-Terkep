@@ -11,7 +11,7 @@ import sys
 import tempfile
 import urllib.request
 from collections import Counter
-from blackbird_layers import summarize_layers
+from blackbird_layers import summarize_layers, audit_layers
 
 URL = 'https://www.scribblemaps.com/api/maps/091194/geojson'
 MAX_BYTES = 250 * 1024 * 1024
@@ -64,7 +64,7 @@ def main():
             'last_successful_check_utc': stamp,
             'last_change_detected_utc': stamp if changed else previous.get('last_change_detected_utc'),
             'sha256': digest, 'size_bytes': len(data), 'feature_count': len(features),
-            'geometry_types': dict(kinds), 'layer_categories': summarize_layers(features),
+            'geometry_types': dict(kinds), 'layer_categories': summarize_layers(features), 'layer_audit': audit_layers(features),
             'changed_on_last_check': changed, 'last_snapshot_name': filename,
             'note': 'Complete source map, not a verified frontline layer. Collection time is not publisher update time.'
         }
@@ -82,3 +82,4 @@ def main():
 
 if __name__ == '__main__':
     sys.exit(main())
+
