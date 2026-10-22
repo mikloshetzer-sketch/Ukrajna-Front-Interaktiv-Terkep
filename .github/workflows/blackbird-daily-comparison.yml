@@ -1,0 +1,72 @@
+name: Black Bird daily public comparison
+
+on:
+  workflow_run:
+    workflows: ["Update Black Bird map snapshot"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: blackbird-daily-comparison
+  cancel-in-progress: false
+
+jobs:
+  compare:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download latest and preceding archived snapshots
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/blackbird/current /tmp/blackbird/previous
+          python - <<'PY'
+          import json, os, pathlib, subprocess, urllib.request, zipfile, io
+          repo=os.environ['GH_REPO']; token=os.environ['GH_TOKEN']
+          request=urllib.request.Request(f'https://api.github.com/repos/{repo}/actions/artifacts?per_page=100',headers={'Authorization':f'Bearer {token}','Accept':'application/vnd.github+json','User-Agent':'BlackBirdDailyComparison'})
+          with urllib.request.urlopen(request, timeout=45) as response: artifacts=json.load(response)['artifacts']
+          snapshots=sorted((a for a in artifacts if a['name'].startswith('blackbird-snapshot-') and not a['expired']),key=lambda a:a['created_at'],reverse=True)
+          if not snapshots: raise SystemExit('No available Black Bird snapshots. Run collector first.')
+          for item, dest in zip(snapshots[:2],['current','previous']):
+              req=urllib.request.Request(item['archive_download_url'],headers={'Authorization':f'Bearer {token}','Accept':'application/vnd.github+json','User-Agent':'BlackBirdDailyComparison'})
+              with urllib.request.urlopen(req, timeout=90) as response: content=response.read()
+              with zipfile.ZipFile(io.BytesIO(content)) as z:
+                  files=[n for n in z.namelist() if n.endswith('.geojson.gz')]
+                  if len(files)!=1: raise SystemExit(f'Expected one snapshot in {item["name"]}; got {files}')
+                  pathlib.Path('/tmp/blackbird',dest,'snapshot.geojson.gz').write_bytes(z.read(files[0]))
+          PY
+      - name: Compare and create dated public metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          DATE=$(date -u +%F)
+          if [ -f /tmp/blackbird/previous/snapshot.geojson.gz ]; then
+            python scripts/compare_blackbird_daily.py --current /tmp/blackbird/current/snapshot.geojson.gz --previous /tmp/blackbird/previous/snapshot.geojson.gz --date "$DATE"
+          else
+            python scripts/compare_blackbird_daily.py --current /tmp/blackbird/current/snapshot.geojson.gz --date "$DATE"
+          fi
+      - name: Commit dated public metadata
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/blackbird_history/
+          if ! git diff --cached --quiet; then
+            git commit -m 'Archive Black Bird daily comparison metadata'
+            git pull --rebase origin main
+            git push origin main
+          fi
