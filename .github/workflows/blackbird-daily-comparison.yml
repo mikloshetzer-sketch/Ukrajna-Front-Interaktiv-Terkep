@@ -35,21 +35,27 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p /tmp/blackbird/current /tmp/blackbird/previous
-          python - <<'PY'
-          import json, os, pathlib, subprocess, urllib.request, zipfile, io
-          repo=os.environ['GH_REPO']; token=os.environ['GH_TOKEN']
-          request=urllib.request.Request(f'https://api.github.com/repos/{repo}/actions/artifacts?per_page=100',headers={'Authorization':f'Bearer {token}','Accept':'application/vnd.github+json','User-Agent':'BlackBirdDailyComparison'})
-          with urllib.request.urlopen(request, timeout=45) as response: artifacts=json.load(response)['artifacts']
-          snapshots=sorted((a for a in artifacts if a['name'].startswith('blackbird-snapshot-') and not a['expired']),key=lambda a:a['created_at'],reverse=True)
-          if not snapshots: raise SystemExit('No available Black Bird snapshots. Run collector first.')
-          for item, dest in zip(snapshots[:2],['current','previous']):
-              req=urllib.request.Request(item['archive_download_url'],headers={'Authorization':f'Bearer {token}','Accept':'application/vnd.github+json','User-Agent':'BlackBirdDailyComparison'})
-              with urllib.request.urlopen(req, timeout=90) as response: content=response.read()
-              with zipfile.ZipFile(io.BytesIO(content)) as z:
-                  files=[n for n in z.namelist() if n.endswith('.geojson.gz')]
-                  if len(files)!=1: raise SystemExit(f'Expected one snapshot in {item["name"]}; got {files}')
-                  pathlib.Path('/tmp/blackbird',dest,'snapshot.geojson.gz').write_bytes(z.read(files[0]))
-          PY
+          gh api --paginate "repos/${GH_REPO}/actions/artifacts?per_page=100" \
+            --jq '.artifacts[] | select(.expired == false and (.name | startswith("blackbird-snapshot-"))) | [.created_at, (.workflow_run.id | tostring), .name] | @tsv' \
+            | sort -r | head -n 2 > /tmp/blackbird/snapshots.tsv
+          if [ ! -s /tmp/blackbird/snapshots.tsv ]; then
+            echo "No available Black Bird snapshots. Run collector first." >&2
+            exit 1
+          fi
+          n=0
+          while IFS=$'\t' read -r created_at run_id artifact_name; do
+            if [ "$n" -eq 0 ]; then dest=current; else dest=previous; fi
+            gh run download "$run_id" --repo "$GH_REPO" --name "$artifact_name" --dir "/tmp/blackbird/$dest"
+            found=$(find "/tmp/blackbird/$dest" -type f -name '*.geojson.gz' -print -quit)
+            if [ -z "$found" ]; then
+              echo "Missing GeoJSON snapshot in artifact $artifact_name" >&2
+              exit 1
+            fi
+            if [ "$found" != "/tmp/blackbird/$dest/snapshot.geojson.gz" ]; then
+              mv "$found" "/tmp/blackbird/$dest/snapshot.geojson.gz"
+            fi
+            n=$((n + 1))
+          done < /tmp/blackbird/snapshots.tsv
       - name: Compare and create dated public metadata
         shell: bash
         run: |
