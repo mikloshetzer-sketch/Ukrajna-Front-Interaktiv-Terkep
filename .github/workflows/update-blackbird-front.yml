@@ -6,41 +6,93 @@ on:
   workflow_dispatch:
 
 permissions:
+  actions: read
   contents: write
 
 concurrency:
-  group: blackbird-snapshot
+  group: blackbird-unified
   cancel-in-progress: false
 
 jobs:
-  fetch:
+  collect-analyze:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 35
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: main
           persist-credentials: true
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Fetch and validate GeoJSON
+      - name: Retrieve previous available source snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/blackbird/previous
+          # Download BEFORE publishing the new artifact. Missing history is valid on first run.
+          previous=$(gh api --paginate "repos/${GH_REPO}/actions/artifacts?per_page=100" \
+            --jq '.artifacts[] | select(.expired == false and (.name | startswith("blackbird-snapshot-"))) | [.created_at, (.workflow_run.id | tostring), .name] | @tsv' \
+            | sort -r | head -n 1 || true)
+          if [ -n "$previous" ]; then
+            IFS=$'\t' read -r created_at run_id artifact_name <<< "$previous"
+            gh run download "$run_id" --repo "$GH_REPO" --name "$artifact_name" --dir /tmp/blackbird/previous
+            found=$(find /tmp/blackbird/previous -type f -name '*.geojson.gz' -print -quit)
+            if [ -z "$found" ]; then
+              echo 'Previous artifact does not contain GeoJSON' >&2
+              exit 1
+            fi
+            if [ "$found" != /tmp/blackbird/previous/snapshot.geojson.gz ]; then
+              mv "$found" /tmp/blackbird/previous/snapshot.geojson.gz
+            fi
+          else
+            echo 'No previous snapshot available; baseline report will be created.'
+          fi
+      - name: Fetch, validate and classify source
         id: blackbird
         run: python scripts/update_blackbird_front.py
+      - name: Compare and write daily analysis
+        shell: bash
+        run: |
+          set -euo pipefail
+          date_utc=$(date -u +%F)
+          if [ -f /tmp/blackbird/previous/snapshot.geojson.gz ]; then
+            python scripts/compare_blackbird_daily.py \
+              --current blackbird-artifacts/current.geojson.gz \
+              --previous /tmp/blackbird/previous/snapshot.geojson.gz \
+              --date "$date_utc"
+          else
+            python scripts/compare_blackbird_daily.py \
+              --current blackbird-artifacts/current.geojson.gz --date "$date_utc"
+          fi
       - name: Upload changed compressed snapshot
         if: steps.blackbird.outputs.changed == 'true'
-        uses: actions/upload-artifact@v4
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p blackbird-upload
+          cp blackbird-artifacts/current.geojson.gz blackbird-upload/snapshot.geojson.gz
+      - uses: actions/upload-artifact@v4
+        if: steps.blackbird.outputs.changed == 'true'
         with:
           name: blackbird-snapshot-${{ github.run_id }}
-          path: blackbird-artifacts/*.geojson.gz
+          path: blackbird-upload/snapshot.geojson.gz
           if-no-files-found: error
           retention-days: 90
           compression-level: 0
-      - name: Commit small status file
+      - name: Commit status and daily analysis
+        shell: bash
         run: |
+          set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add data/blackbird_front_summary.json
+          git add data/blackbird_front_summary.json data/blackbird_history/
           if ! git diff --cached --quiet; then
-            git commit -m 'Update Black Bird map retrieval status'
-            git push
+            git commit -m 'Update Black Bird collection and daily analysis'
+            git pull --rebase origin main
+            git push origin HEAD:main
           fi
+
