@@ -7,7 +7,7 @@ import hashlib
 import json
 from collections import Counter, defaultdict
 from pathlib import Path
-from blackbird_layers import classify, summarize_layers
+from blackbird_layers import classify, summarize_layers, audit_layers
 
 
 def read(path):
@@ -70,7 +70,7 @@ def main():
         'date_utc': args.date, 'source': 'Black Bird Group / Scribble Maps',
         'source_url': 'https://www.scribblemaps.com/api/maps/091194/geojson',
         'feature_count': len(current), 'geometry_types': dict(sorted(kinds.items())),
-        'layer_categories': summarize_layers(current),
+        'layer_categories': summarize_layers(current), 'layer_audit': audit_layers(current),
         'comparison_status': 'no_previous_snapshot',
         'territorial_change_km2': None,
         'note': 'Coarse cells indicate edited map objects only, not verified territorial change. Raw geometry is not republished.'
