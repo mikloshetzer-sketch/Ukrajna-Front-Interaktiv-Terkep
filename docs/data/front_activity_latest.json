@@ -1,33 +1,33 @@
 {
-  "date": "2026-10-22",
-  "updated_utc": "2026-10-22T21:50:38.577382+00:00",
-  "front_activity_index": 84,
-  "status": "CRITICAL",
+  "date": "2026-10-23",
+  "updated_utc": "2026-10-23T21:34:25.505030+00:00",
+  "front_activity_index": 77,
+  "status": "HIGH",
   "components": {
     "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 18.5,
+    "territorial_change": 11.6,
     "active_sectors": 10,
     "critical_events": 10
   },
   "counts": {
-    "osint": 31,
-    "firms_3d": 3094,
-    "firms_10d": 7579,
-    "firms_30d": 33043,
-    "critical_events": 11,
-    "active_sectors": 6
+    "osint": 28,
+    "firms_3d": 2803,
+    "firms_10d": 8248,
+    "firms_30d": 32804,
+    "critical_events": 9,
+    "active_sectors": 7
   },
   "territorial": {
     "available": true,
     "error": null,
-    "previous_file": "deepstatemap_data_20261021.geojson",
-    "current_file": "deepstatemap_data_20261022.geojson",
-    "previous_total_km2": 116792.05,
-    "current_total_km2": 116798.23,
-    "russian_gain_km2": 6.17,
+    "previous_file": "deepstatemap_data_20261022.geojson",
+    "current_file": "deepstatemap_data_20261023.geojson",
+    "previous_total_km2": 116798.23,
+    "current_total_km2": 116802.1,
+    "russian_gain_km2": 3.88,
     "ukrainian_recapture_km2": 0,
-    "net_change_km2": 6.17,
+    "net_change_km2": 3.88,
     "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
@@ -36,21 +36,45 @@
     "lon": 37.18,
     "zoom": 9,
     "score": 100,
-    "change_km2": 6.17,
+    "change_km2": 3.88,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
     {
       "sector": "Pokrovsk",
-      "osint": 18,
+      "osint": 19,
       "firms": 0,
       "score": 100
     },
     {
       "sector": "Other / Unclassified",
-      "osint": 11,
-      "firms": 3090,
+      "osint": 6,
+      "firms": 2769,
       "score": 100
+    },
+    {
+      "sector": "Lyman",
+      "osint": 0,
+      "firms": 17,
+      "score": 15
+    },
+    {
+      "sector": "Kupiansk",
+      "osint": 0,
+      "firms": 14,
+      "score": 13
+    },
+    {
+      "sector": "Kherson-Dnipro",
+      "osint": 1,
+      "firms": 1,
+      "score": 13
+    },
+    {
+      "sector": "Kharkiv",
+      "osint": 1,
+      "firms": 1,
+      "score": 13
     },
     {
       "sector": "Zaporizhzhia",
@@ -59,66 +83,42 @@
       "score": 12
     },
     {
-      "sector": "Kharkiv",
-      "osint": 1,
-      "firms": 0,
-      "score": 12
-    },
-    {
       "sector": "Bakhmut-Toretsk",
       "osint": 0,
-      "firms": 2,
-      "score": 2
-    },
-    {
-      "sector": "Lyman",
-      "osint": 0,
       "firms": 1,
       "score": 1
-    },
-    {
-      "sector": "Kherson-Dnipro",
-      "osint": 0,
-      "firms": 1,
-      "score": 1
-    },
-    {
-      "sector": "Kupiansk",
-      "osint": 0,
-      "firms": 0,
-      "score": 0
     }
   ],
   "top_events": [
     {
-      "title": "Ukraine neutralises 408,000 Russian drones since start of 2026",
+      "title": "Starshield restrictions still in effect for Ukraine’s Defence Forces — connectivity losses continue",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     },
     {
-      "title": "Renovator project: NATO and Ukraine strengthen rehabilitation capabilities for wounded service personnel",
+      "title": "Ukraine and Finland Signed Seven Documents on Defense, Transport, Satellite Communications, and Construction",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     },
     {
-      "title": "15 km through tunnels behind enemy lines: Khartiia Corps details world’s first underground counteroffensive",
+      "title": "Ukraine’s F-16s receive over 50,000 rounds of 20 mm ammunition from Denmark",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     },
     {
-      "title": "Russia Suffers Record 2,250 Troop Casualties in One Day, Ukraine’s General Staff Reports",
+      "title": "Ukraine and Norway Discuss Missile Supplies for NASAMS and Ammunition for F-16s",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     },
     {
-      "title": "Evgeniy Khmara and Mykhailo Drapatyi discuss strengthening Ukraine’s air defences with Lockheed Martin",
+      "title": "Reported military-related update near Herszon",
       "source": "forrás nélkül",
-      "sector": "Pokrovsk"
+      "sector": "Kherson-Dnipro"
     },
     {
-      "title": "Reported military-related update near Zaporizzsja",
+      "title": "Reported rear-area strike near Odessza",
       "source": "forrás nélkül",
-      "sector": "Zaporizhzhia"
+      "sector": "Other / Unclassified"
     }
   ],
   "data_sources": {

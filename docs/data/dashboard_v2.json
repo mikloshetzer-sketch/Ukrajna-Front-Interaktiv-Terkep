@@ -1,34 +1,22 @@
 {
-  "updated_utc": "2026-10-22T21:50:40.419200+00:00",
-  "date": "2026-10-22",
+  "updated_utc": "2026-10-23T21:34:28.430154+00:00",
+  "date": "2026-10-23",
   "territorial_sector": {
-    "sector": "Lyman",
-    "lat": 48.80879196923077,
-    "lon": 37.84883432307692,
-    "distance_km": 20.5,
+    "sector": "Zaporizhzhia",
+    "lat": 47.55570471666667,
+    "lon": 35.58510275,
+    "distance_km": 45.9,
     "change_type": "russian_gain",
-    "area_km2": 4.85,
+    "area_km2": 1.96,
     "label": "Russian territorial gain"
   },
   "priority_osint_events": [
     {
-      "title": "Reported drone strike near Kijev",
-      "source": "forrás nélkül",
-      "sector": "Kyiv Area",
-      "lat": 50.45,
-      "lon": 30.523,
-      "distance_to_sector_km": 0,
-      "event_type": "drone",
-      "event_label": "Drone / UAV activity",
-      "icon": "🛩",
-      "priority": 106
-    },
-    {
-      "title": "Reported drone strike near Moszkva",
+      "title": "Reported drone strike near Belgorod",
       "source": "forrás nélkül",
       "sector": "Moscow / Russia Interior",
-      "lat": 55.755,
-      "lon": 37.617,
+      "lat": 50.595,
+      "lon": 36.587,
       "distance_to_sector_km": 0,
       "event_type": "drone",
       "event_label": "Drone / UAV activity",
@@ -61,18 +49,6 @@
     },
     {
       "title": "Ballistic Missile Attack Hits Six Kyiv Districts, Killing One and Injuring 22, Including Four Children",
-      "source": "forrás nélkül",
-      "sector": "Kyiv Area",
-      "lat": 50.45,
-      "lon": 30.523,
-      "distance_to_sector_km": 0,
-      "event_type": "missile",
-      "event_label": "Missile / rocket strike",
-      "icon": "☄",
-      "priority": 104
-    },
-    {
-      "title": "Reported missile strike near Kyiv",
       "source": "forrás nélkül",
       "sector": "Kyiv Area",
       "lat": 50.45,
@@ -132,16 +108,16 @@
       "priority": 103
     },
     {
-      "title": "Ukraine Carries Out World’s First Drone Evacuation of a Wounded Soldier From the Front Line",
+      "title": "Ukraine and Norway Discuss Missile Supplies for NASAMS and Ammunition for F-16s",
       "source": "forrás nélkül",
       "sector": "Pokrovsk",
       "lat": 48.5,
       "lon": 36.5,
       "distance_to_sector_km": 55.9,
-      "event_type": "drone",
-      "event_label": "Drone / UAV activity",
-      "icon": "🛩",
-      "priority": 103
+      "event_type": "missile",
+      "event_label": "Missile / rocket strike",
+      "icon": "☄",
+      "priority": 101
     },
     {
       "title": "Early Warning of Russian Missile Attacks and the Situation with Starlink: Volodymyr Zelenskyy Had a Conversation with Marco Rubio",
@@ -154,6 +130,30 @@
       "event_label": "Missile / rocket strike",
       "icon": "☄",
       "priority": 101
+    },
+    {
+      "title": "Russian Offensive Campaign Assessment, October 22, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "frontline",
+      "event_label": "Frontline pressure",
+      "icon": "⚔",
+      "priority": 95
+    },
+    {
+      "title": "15 km through tunnels behind enemy lines: Khartiia Corps details world’s first underground counteroffensive",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "frontline",
+      "event_label": "Frontline pressure",
+      "icon": "⚔",
+      "priority": 95
     }
   ],
   "front_pressure_points": [
@@ -163,30 +163,52 @@
       "lat": 48.28,
       "lon": 37.18,
       "score": 100,
-      "osint": 18,
+      "osint": 19,
       "firms": 0,
       "pressure_type": "osint_activity_cluster",
       "icon": "⚔"
     },
     {
-      "sector": "Lyman",
-      "title": "Lyman territorial gain axis",
-      "lat": 48.99,
-      "lon": 37.8,
-      "score": 31,
-      "osint": 0,
-      "firms": 1,
+      "sector": "Zaporizhzhia",
+      "title": "Zaporizhzhia territorial gain axis",
+      "lat": 47.84,
+      "lon": 35.14,
+      "score": 42,
+      "osint": 1,
+      "firms": 0,
       "pressure_type": "territorial_gain_axis",
       "icon": "▲"
     },
     {
-      "sector": "Zaporizhzhia",
-      "title": "Zaporizhzhia pressure axis",
-      "lat": 47.84,
-      "lon": 35.14,
-      "score": 12,
+      "sector": "Lyman",
+      "title": "Lyman FIRMS thermal cluster",
+      "lat": 48.99,
+      "lon": 37.8,
+      "score": 15,
+      "osint": 0,
+      "firms": 17,
+      "pressure_type": "thermal_activity_cluster",
+      "icon": "🔥"
+    },
+    {
+      "sector": "Kupiansk",
+      "title": "Kupiansk FIRMS thermal cluster",
+      "lat": 49.71,
+      "lon": 37.61,
+      "score": 13,
+      "osint": 0,
+      "firms": 14,
+      "pressure_type": "thermal_activity_cluster",
+      "icon": "🔥"
+    },
+    {
+      "sector": "Kherson-Dnipro",
+      "title": "Kherson-Dnipro pressure axis",
+      "lat": 46.64,
+      "lon": 32.61,
+      "score": 13,
       "osint": 1,
-      "firms": 0,
+      "firms": 1,
       "pressure_type": "pressure_axis",
       "icon": "⚑"
     },
@@ -195,9 +217,9 @@
       "title": "Kharkiv pressure axis",
       "lat": 49.99,
       "lon": 36.23,
-      "score": 12,
+      "score": 13,
       "osint": 1,
-      "firms": 0,
+      "firms": 1,
       "pressure_type": "pressure_axis",
       "icon": "⚑"
     },
@@ -206,31 +228,9 @@
       "title": "Bakhmut-Toretsk pressure axis",
       "lat": 48.58,
       "lon": 37.95,
-      "score": 2,
-      "osint": 0,
-      "firms": 2,
-      "pressure_type": "pressure_axis",
-      "icon": "⚑"
-    },
-    {
-      "sector": "Kherson-Dnipro",
-      "title": "Kherson-Dnipro pressure axis",
-      "lat": 46.64,
-      "lon": 32.61,
       "score": 1,
       "osint": 0,
       "firms": 1,
-      "pressure_type": "pressure_axis",
-      "icon": "⚑"
-    },
-    {
-      "sector": "Kupiansk",
-      "title": "Kupiansk pressure axis",
-      "lat": 49.71,
-      "lon": 37.61,
-      "score": 0,
-      "osint": 0,
-      "firms": 0,
       "pressure_type": "pressure_axis",
       "icon": "⚑"
     }
@@ -238,19 +238,23 @@
   "event_categories": [
     {
       "category": "Drone / UAV activity",
-      "count": 8
+      "count": 6
     },
     {
       "category": "Missile / rocket strike",
       "count": 4
+    },
+    {
+      "category": "Frontline pressure",
+      "count": 2
     }
   ],
-  "ai_summary": "Front activity is assessed as CRITICAL with an FAI value of 84. Russian forces gained approximately 6.17 km², closest to the Lyman sector. The main pressure focus is Pokrovsk. The strongest event category is Drone / UAV activity. The system processed 31 OSINT events, 3094 short-term FIRMS hotspots and 6 active sectors.",
+  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 77. Russian forces gained approximately 3.88 km², closest to the Zaporizhzhia sector. The main pressure focus is Pokrovsk. The strongest event category is Drone / UAV activity. The system processed 28 OSINT events, 2803 short-term FIRMS hotspots and 7 active sectors.",
   "counts": {
     "priority_osint": 12,
     "pressure_points": 7,
-    "firms_3d": 3094,
-    "firms_10d": 7579,
+    "firms_3d": 2803,
+    "firms_10d": 8248,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."
