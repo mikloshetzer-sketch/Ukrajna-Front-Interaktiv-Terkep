@@ -19270,5 +19270,137 @@
       "deepstate": "cyterat/deepstate-map-data via GitHub API"
     },
     "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
+  },
+  {
+    "date": "2026-10-26",
+    "updated_utc": "2026-10-26T22:49:20.205208+00:00",
+    "front_activity_index": 76,
+    "status": "HIGH",
+    "components": {
+      "osint_density": 25,
+      "firms_activity": 20,
+      "territorial_change": 11.4,
+      "active_sectors": 10,
+      "critical_events": 10
+    },
+    "counts": {
+      "osint": 16,
+      "firms_3d": 5923,
+      "firms_10d": 12678,
+      "firms_30d": 36880,
+      "critical_events": 5,
+      "active_sectors": 8
+    },
+    "territorial": {
+      "available": true,
+      "error": null,
+      "previous_file": "deepstatemap_data_20261025.geojson",
+      "current_file": "deepstatemap_data_20261026.geojson",
+      "previous_total_km2": 116806.02,
+      "current_total_km2": 116809.81,
+      "russian_gain_km2": 3.79,
+      "ukrainian_recapture_km2": 0,
+      "net_change_km2": 3.79,
+      "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    },
+    "territorial_hotspot": {
+      "sector": "Pokrovsk",
+      "lat": 48.28,
+      "lon": 37.18,
+      "zoom": 9,
+      "score": 100,
+      "change_km2": 3.79,
+      "method": "Top classified sector based on OSINT + FIRMS density"
+    },
+    "top_sectors": [
+      {
+        "sector": "Pokrovsk",
+        "osint": 9,
+        "firms": 37,
+        "score": 100
+      },
+      {
+        "sector": "Other / Unclassified",
+        "osint": 5,
+        "firms": 5650,
+        "score": 100
+      },
+      {
+        "sector": "Kupiansk",
+        "osint": 0,
+        "firms": 56,
+        "score": 50
+      },
+      {
+        "sector": "Lyman",
+        "osint": 0,
+        "firms": 49,
+        "score": 44
+      },
+      {
+        "sector": "Kharkiv",
+        "osint": 1,
+        "firms": 32,
+        "score": 41
+      },
+      {
+        "sector": "Kurakhove",
+        "osint": 0,
+        "firms": 38,
+        "score": 34
+      },
+      {
+        "sector": "Zaporizhzhia",
+        "osint": 1,
+        "firms": 19,
+        "score": 29
+      },
+      {
+        "sector": "Velyka Novosilka",
+        "osint": 0,
+        "firms": 23,
+        "score": 21
+      }
+    ],
+    "top_events": [
+      {
+        "title": "Reported military-related update near Voronyezs",
+        "source": "forrás nélkül",
+        "sector": "Other / Unclassified"
+      },
+      {
+        "title": "Ukraine Imposes Sanctions Against Entities and Individuals Helping Produce Russian Ballistic Missiles",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Reported military-related update near Zaporizzsja",
+        "source": "forrás nélkül",
+        "sector": "Zaporizhzhia"
+      },
+      {
+        "title": "Russian Offensive Campaign Assessment, October 25, 2026",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Russian Offensive Campaign Assessment, October 24, 2026",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Starlink Restrictions Eased: Ukraine Reports Stable Connections Above 400 km/h",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      }
+    ],
+    "data_sources": {
+      "osint": "data/osint_feed.json",
+      "firms_3d": "data/firms_3.json",
+      "firms_10d": "data/firms_10.json",
+      "firms_30d": "data/firms_30.json",
+      "deepstate": "cyterat/deepstate-map-data via GitHub API"
+    },
+    "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
   }
 ]
