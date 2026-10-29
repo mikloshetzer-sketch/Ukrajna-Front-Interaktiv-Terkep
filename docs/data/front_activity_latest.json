@@ -1,62 +1,68 @@
 {
-  "date": "2026-10-28",
-  "updated_utc": "2026-10-28T22:45:08.291335+00:00",
-  "front_activity_index": 65,
-  "status": "HIGH",
+  "date": "2026-10-29",
+  "updated_utc": "2026-10-29T22:54:08.011200+00:00",
+  "front_activity_index": 94,
+  "status": "CRITICAL",
   "components": {
     "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 0.0,
+    "territorial_change": 28.7,
     "active_sectors": 10,
     "critical_events": 10
   },
   "counts": {
-    "osint": 18,
-    "firms_3d": 7555,
-    "firms_10d": 16490,
-    "firms_30d": 40131,
-    "critical_events": 7,
+    "osint": 24,
+    "firms_3d": 6938,
+    "firms_10d": 17636,
+    "firms_30d": 41181,
+    "critical_events": 8,
     "active_sectors": 9
   },
   "territorial": {
     "available": true,
     "error": null,
-    "previous_file": "deepstatemap_data_20261027.geojson",
-    "current_file": "deepstatemap_data_20261028.geojson",
+    "previous_file": "deepstatemap_data_20261028.geojson",
+    "current_file": "deepstatemap_data_20261029.geojson",
     "previous_total_km2": 116814.24,
-    "current_total_km2": 116814.24,
-    "russian_gain_km2": 0,
+    "current_total_km2": 116823.82,
+    "russian_gain_km2": 9.57,
     "ukrainian_recapture_km2": 0,
-    "net_change_km2": 0.0,
+    "net_change_km2": 9.57,
     "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
-    "sector": "Pokrovsk",
-    "lat": 48.28,
-    "lon": 37.18,
+    "sector": "Kupiansk",
+    "lat": 49.71,
+    "lon": 37.61,
     "zoom": 9,
     "score": 100,
-    "change_km2": 0.0,
+    "change_km2": 9.57,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
     {
+      "sector": "Kupiansk",
+      "osint": 0,
+      "firms": 119,
+      "score": 100
+    },
+    {
       "sector": "Pokrovsk",
       "osint": 13,
-      "firms": 52,
+      "firms": 61,
+      "score": 100
+    },
+    {
+      "sector": "Kharkiv",
+      "osint": 1,
+      "firms": 114,
       "score": 100
     },
     {
       "sector": "Other / Unclassified",
-      "osint": 3,
-      "firms": 7194,
+      "osint": 8,
+      "firms": 6461,
       "score": 100
-    },
-    {
-      "sector": "Kupiansk",
-      "osint": 0,
-      "firms": 92,
-      "score": 83
     },
     {
       "sector": "Lyman",
@@ -65,31 +71,45 @@
       "score": 74
     },
     {
-      "sector": "Kharkiv",
-      "osint": 1,
-      "firms": 36,
-      "score": 44
-    },
-    {
-      "sector": "Bakhmut-Toretsk",
-      "osint": 0,
-      "firms": 29,
-      "score": 26
-    },
-    {
-      "sector": "Zaporizhzhia",
-      "osint": 0,
-      "firms": 29,
-      "score": 26
-    },
-    {
       "sector": "Velyka Novosilka",
       "osint": 0,
-      "firms": 23,
-      "score": 21
+      "firms": 28,
+      "score": 25
+    },
+    {
+      "sector": "Kherson-Dnipro",
+      "osint": 2,
+      "firms": 0,
+      "score": 24
+    },
+    {
+      "sector": "Kurakhove",
+      "osint": 0,
+      "firms": 26,
+      "score": 23
     }
   ],
   "top_events": [
+    {
+      "title": "Reported military-related update near Herszon",
+      "source": "forrás nélkül",
+      "sector": "Kherson-Dnipro"
+    },
+    {
+      "title": "Reported military-related update near Harkiv",
+      "source": "forrás nélkül",
+      "sector": "Kharkiv"
+    },
+    {
+      "title": "Reported aviation-related military activity near Herszon",
+      "source": "forrás nélkül",
+      "sector": "Kherson-Dnipro"
+    },
+    {
+      "title": "Russian Offensive Campaign Assessment, October 28, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk"
+    },
     {
       "title": "She’s 23, He’s 20: “Puma” and “Mechanic” Defend Ukraine Together",
       "source": "forrás nélkül",
@@ -97,26 +117,6 @@
     },
     {
       "title": "Ukraine Becomes First Country to Develop Dedicated Casualty Evacuation Drones",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Mother and Son Serving in the Same Unit: The Story of a Servicewoman in Ukraine’s 42nd Marine Brigade",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Russian Losses From Ukrainian Drone Strikes Exceed 300,000 personnel this year",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Protection Against Modern Threats and Defence Projects: Evgeniy Khmara Meets Moldova’s Defence Minister",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Ukrainian Strikes Disrupt Russian Missile Supply Chains, General Staff Says",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     }

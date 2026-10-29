@@ -1,27 +1,51 @@
 {
-  "updated_utc": "2026-10-28T22:45:10.652970+00:00",
-  "date": "2026-10-28",
+  "updated_utc": "2026-10-29T22:54:10.095095+00:00",
+  "date": "2026-10-29",
   "territorial_sector": {
-    "sector": "No territorial delta",
-    "lat": null,
-    "lon": null,
-    "distance_km": null,
-    "change_type": "none",
-    "area_km2": 0,
-    "label": "No mapped daily territorial change"
+    "sector": "Velyka Novosilka",
+    "lat": 47.742799028571426,
+    "lon": 36.105282085714286,
+    "distance_km": 55.9,
+    "change_type": "russian_gain",
+    "area_km2": 3.8,
+    "label": "Russian territorial gain"
   },
   "priority_osint_events": [
     {
-      "title": "Reported drone strike near Moszkva",
+      "title": "Reported drone strike near Kijev",
       "source": "forrás nélkül",
-      "sector": "Moscow / Russia Interior",
-      "lat": 55.755,
-      "lon": 37.617,
+      "sector": "Kyiv Area",
+      "lat": 50.45,
+      "lon": 30.523,
       "distance_to_sector_km": 0,
       "event_type": "drone",
       "event_label": "Drone / UAV activity",
       "icon": "🛩",
       "priority": 106
+    },
+    {
+      "title": "Reported drone strike near Kyiv",
+      "source": "forrás nélkül",
+      "sector": "Kyiv Area",
+      "lat": 50.45,
+      "lon": 30.523,
+      "distance_to_sector_km": 0,
+      "event_type": "drone",
+      "event_label": "Drone / UAV activity",
+      "icon": "🛩",
+      "priority": 106
+    },
+    {
+      "title": "Reported missile strike near Kijev",
+      "source": "forrás nélkül",
+      "sector": "Kyiv Area",
+      "lat": 50.45,
+      "lon": 30.523,
+      "distance_to_sector_km": 0,
+      "event_type": "missile",
+      "event_label": "Missile / rocket strike",
+      "icon": "☄",
+      "priority": 104
     },
     {
       "title": "Ukraine Becomes First Country to Develop Dedicated Casualty Evacuation Drones",
@@ -84,16 +108,16 @@
       "priority": 101
     },
     {
-      "title": "Reported ground assault or offensive activity near Moszkva",
+      "title": "Russian Offensive Campaign Assessment, October 28, 2026",
       "source": "forrás nélkül",
-      "sector": "Moscow / Russia Interior",
-      "lat": 55.755,
-      "lon": 37.617,
-      "distance_to_sector_km": 0,
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
       "event_type": "frontline",
       "event_label": "Frontline pressure",
       "icon": "⚔",
-      "priority": 98
+      "priority": 95
     },
     {
       "title": "From Liberated Territory to Tunnel Warfare: Ukraine’s Three Key Offensives of 2026",
@@ -130,33 +154,20 @@
       "event_label": "Frontline pressure",
       "icon": "⚔",
       "priority": 95
-    },
-    {
-      "title": "Russian Offensive Campaign Assessment, October 25, 2026",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "frontline",
-      "event_label": "Frontline pressure",
-      "icon": "⚔",
-      "priority": 95
-    },
-    {
-      "title": "Reported military-related update near Kijev",
-      "source": "forrás nélkül",
-      "sector": "Kyiv Area",
-      "lat": 50.45,
-      "lon": 30.523,
-      "distance_to_sector_km": 0,
-      "event_type": "military_update",
-      "event_label": "Military update",
-      "icon": "●",
-      "priority": 66
     }
   ],
   "front_pressure_points": [
+    {
+      "sector": "Kupiansk",
+      "title": "Kupiansk FIRMS thermal cluster",
+      "lat": 49.71,
+      "lon": 37.61,
+      "score": 100,
+      "osint": 0,
+      "firms": 119,
+      "pressure_type": "thermal_activity_cluster",
+      "icon": "🔥"
+    },
     {
       "sector": "Pokrovsk",
       "title": "Pokrovsk OSINT activity cluster",
@@ -164,18 +175,18 @@
       "lon": 37.18,
       "score": 100,
       "osint": 13,
-      "firms": 52,
+      "firms": 61,
       "pressure_type": "osint_activity_cluster",
       "icon": "⚔"
     },
     {
-      "sector": "Kupiansk",
-      "title": "Kupiansk FIRMS thermal cluster",
-      "lat": 49.71,
-      "lon": 37.61,
-      "score": 83,
-      "osint": 0,
-      "firms": 92,
+      "sector": "Kharkiv",
+      "title": "Kharkiv FIRMS thermal cluster",
+      "lat": 49.99,
+      "lon": 36.23,
+      "score": 100,
+      "osint": 1,
+      "firms": 114,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     },
@@ -191,74 +202,59 @@
       "icon": "🔥"
     },
     {
-      "sector": "Kharkiv",
-      "title": "Kharkiv FIRMS thermal cluster",
-      "lat": 49.99,
-      "lon": 36.23,
-      "score": 44,
-      "osint": 1,
-      "firms": 36,
-      "pressure_type": "thermal_activity_cluster",
-      "icon": "🔥"
-    },
-    {
-      "sector": "Bakhmut-Toretsk",
-      "title": "Bakhmut-Toretsk FIRMS thermal cluster",
-      "lat": 48.58,
-      "lon": 37.95,
-      "score": 26,
-      "osint": 0,
-      "firms": 29,
-      "pressure_type": "thermal_activity_cluster",
-      "icon": "🔥"
-    },
-    {
-      "sector": "Zaporizhzhia",
-      "title": "Zaporizhzhia FIRMS thermal cluster",
-      "lat": 47.84,
-      "lon": 35.14,
-      "score": 26,
-      "osint": 0,
-      "firms": 29,
-      "pressure_type": "thermal_activity_cluster",
-      "icon": "🔥"
-    },
-    {
       "sector": "Velyka Novosilka",
-      "title": "Velyka Novosilka FIRMS thermal cluster",
+      "title": "Velyka Novosilka territorial gain axis",
       "lat": 47.84,
       "lon": 36.84,
-      "score": 21,
+      "score": 55,
       "osint": 0,
-      "firms": 23,
+      "firms": 28,
+      "pressure_type": "territorial_gain_axis",
+      "icon": "▲"
+    },
+    {
+      "sector": "Kherson-Dnipro",
+      "title": "Kherson-Dnipro pressure axis",
+      "lat": 46.64,
+      "lon": 32.61,
+      "score": 24,
+      "osint": 2,
+      "firms": 0,
+      "pressure_type": "pressure_axis",
+      "icon": "⚑"
+    },
+    {
+      "sector": "Kurakhove",
+      "title": "Kurakhove FIRMS thermal cluster",
+      "lat": 47.99,
+      "lon": 37.28,
+      "score": 23,
+      "osint": 0,
+      "firms": 26,
       "pressure_type": "thermal_activity_cluster",
       "icon": "🔥"
     }
   ],
   "event_categories": [
     {
-      "category": "Frontline pressure",
-      "count": 5
-    },
-    {
       "category": "Drone / UAV activity",
-      "count": 3
+      "count": 4
     },
     {
       "category": "Missile / rocket strike",
-      "count": 3
+      "count": 4
     },
     {
-      "category": "Military update",
-      "count": 1
+      "category": "Frontline pressure",
+      "count": 4
     }
   ],
-  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 65. No measurable net territorial change was detected. The main pressure focus is Pokrovsk. The strongest event category is Drone / UAV activity. The system processed 18 OSINT events, 7555 short-term FIRMS hotspots and 9 active sectors.",
+  "ai_summary": "Front activity is assessed as CRITICAL with an FAI value of 94. Russian forces gained approximately 9.57 km², closest to the Velyka Novosilka sector. The main pressure focus is Kupiansk. The strongest event category is Drone / UAV activity. The system processed 24 OSINT events, 6938 short-term FIRMS hotspots and 9 active sectors.",
   "counts": {
     "priority_osint": 12,
     "pressure_points": 7,
-    "firms_3d": 7555,
-    "firms_10d": 16490,
+    "firms_3d": 6938,
+    "firms_10d": 17636,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."
