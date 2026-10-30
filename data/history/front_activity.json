@@ -19798,5 +19798,137 @@
       "deepstate": "cyterat/deepstate-map-data via GitHub API"
     },
     "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
+  },
+  {
+    "date": "2026-10-30",
+    "updated_utc": "2026-10-30T22:33:59.244787+00:00",
+    "front_activity_index": 65,
+    "status": "HIGH",
+    "components": {
+      "osint_density": 25,
+      "firms_activity": 20,
+      "territorial_change": 0.0,
+      "active_sectors": 10,
+      "critical_events": 10
+    },
+    "counts": {
+      "osint": 26,
+      "firms_3d": 6684,
+      "firms_10d": 18812,
+      "firms_30d": 41879,
+      "critical_events": 9,
+      "active_sectors": 9
+    },
+    "territorial": {
+      "available": true,
+      "error": null,
+      "previous_file": "deepstatemap_data_20261029.geojson",
+      "current_file": "deepstatemap_data_20261030.geojson",
+      "previous_total_km2": 116823.82,
+      "current_total_km2": 116823.82,
+      "russian_gain_km2": 0,
+      "ukrainian_recapture_km2": 0,
+      "net_change_km2": 0.0,
+      "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    },
+    "territorial_hotspot": {
+      "sector": "Kupiansk",
+      "lat": 49.71,
+      "lon": 37.61,
+      "zoom": 9,
+      "score": 100,
+      "change_km2": 0.0,
+      "method": "Top classified sector based on OSINT + FIRMS density"
+    },
+    "top_sectors": [
+      {
+        "sector": "Kupiansk",
+        "osint": 0,
+        "firms": 193,
+        "score": 100
+      },
+      {
+        "sector": "Lyman",
+        "osint": 0,
+        "firms": 173,
+        "score": 100
+      },
+      {
+        "sector": "Pokrovsk",
+        "osint": 14,
+        "firms": 247,
+        "score": 100
+      },
+      {
+        "sector": "Kharkiv",
+        "osint": 0,
+        "firms": 162,
+        "score": 100
+      },
+      {
+        "sector": "Other / Unclassified",
+        "osint": 10,
+        "firms": 5841,
+        "score": 100
+      },
+      {
+        "sector": "Kherson-Dnipro",
+        "osint": 2,
+        "firms": 0,
+        "score": 24
+      },
+      {
+        "sector": "Bakhmut-Toretsk",
+        "osint": 0,
+        "firms": 24,
+        "score": 22
+      },
+      {
+        "sector": "Kurakhove",
+        "osint": 0,
+        "firms": 21,
+        "score": 19
+      }
+    ],
+    "top_events": [
+      {
+        "title": "Reported rear-area strike near Herszon",
+        "source": "forrás nélkül",
+        "sector": "Kherson-Dnipro"
+      },
+      {
+        "title": "Russia’s Rassvet Satellite System and Shadow Fleet Vessels: Ukraine Imposed New Sanctions",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Ukraine Showed Components of Russian Missiles and Drones",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Reported military-related update near Herszon",
+        "source": "forrás nélkül",
+        "sector": "Kherson-Dnipro"
+      },
+      {
+        "title": "Reported rear-area strike near Volgográd",
+        "source": "forrás nélkül",
+        "sector": "Other / Unclassified"
+      },
+      {
+        "title": "Russian Offensive Campaign Assessment, October 29, 2026",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      }
+    ],
+    "data_sources": {
+      "osint": "data/osint_feed.json",
+      "firms_3d": "data/firms_3.json",
+      "firms_10d": "data/firms_10.json",
+      "firms_30d": "data/firms_30.json",
+      "deepstate": "cyterat/deepstate-map-data via GitHub API"
+    },
+    "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
   }
 ]
