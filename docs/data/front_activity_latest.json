@@ -1,33 +1,33 @@
 {
   "date": "2026-11-03",
-  "updated_utc": "2026-11-03T01:08:28.543637+00:00",
-  "front_activity_index": 83,
-  "status": "CRITICAL",
+  "updated_utc": "2026-11-03T23:34:12.570252+00:00",
+  "front_activity_index": 70,
+  "status": "HIGH",
   "components": {
     "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 29.9,
-    "active_sectors": 2,
-    "critical_events": 6
+    "territorial_change": 14.7,
+    "active_sectors": 8,
+    "critical_events": 2
   },
   "counts": {
-    "osint": 11,
-    "firms_3d": 797,
-    "firms_10d": 16318,
-    "firms_30d": 39811,
-    "critical_events": 3,
-    "active_sectors": 1
+    "osint": 12,
+    "firms_3d": 1258,
+    "firms_10d": 16779,
+    "firms_30d": 40272,
+    "critical_events": 1,
+    "active_sectors": 4
   },
   "territorial": {
     "available": true,
     "error": null,
-    "previous_file": "deepstatemap_data_20261101.geojson",
-    "current_file": "deepstatemap_data_20261102.geojson",
-    "previous_total_km2": 116833.69,
-    "current_total_km2": 116843.65,
-    "russian_gain_km2": 9.96,
+    "previous_file": "deepstatemap_data_20261102.geojson",
+    "current_file": "deepstatemap_data_20261103.geojson",
+    "previous_total_km2": 116843.65,
+    "current_total_km2": 116848.56,
+    "russian_gain_km2": 4.91,
     "ukrainian_recapture_km2": 0,
-    "net_change_km2": 9.96,
+    "net_change_km2": 4.91,
     "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
@@ -36,14 +36,14 @@
     "lon": 37.18,
     "zoom": 9,
     "score": 84,
-    "change_km2": 9.96,
+    "change_km2": 4.91,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
     {
       "sector": "Other / Unclassified",
-      "osint": 4,
-      "firms": 797,
+      "osint": 3,
+      "firms": 1257,
       "score": 100
     },
     {
@@ -51,6 +51,24 @@
       "osint": 7,
       "firms": 0,
       "score": 84
+    },
+    {
+      "sector": "Zaporizhzhia",
+      "osint": 1,
+      "firms": 0,
+      "score": 12
+    },
+    {
+      "sector": "Kherson-Dnipro",
+      "osint": 1,
+      "firms": 0,
+      "score": 12
+    },
+    {
+      "sector": "Bakhmut-Toretsk",
+      "osint": 0,
+      "firms": 1,
+      "score": 1
     },
     {
       "sector": "Kupiansk",
@@ -65,25 +83,7 @@
       "score": 0
     },
     {
-      "sector": "Bakhmut-Toretsk",
-      "osint": 0,
-      "firms": 0,
-      "score": 0
-    },
-    {
       "sector": "Kurakhove",
-      "osint": 0,
-      "firms": 0,
-      "score": 0
-    },
-    {
-      "sector": "Velyka Novosilka",
-      "osint": 0,
-      "firms": 0,
-      "score": 0
-    },
-    {
-      "sector": "Zaporizhzhia",
       "osint": 0,
       "firms": 0,
       "score": 0
@@ -91,32 +91,32 @@
   ],
   "top_events": [
     {
+      "title": "Reported naval-related military activity near Herszon",
+      "source": "forrás nélkül",
+      "sector": "Kherson-Dnipro"
+    },
+    {
+      "title": "Reported rear-area strike near Zaporizzsja",
+      "source": "forrás nélkül",
+      "sector": "Zaporizhzhia"
+    },
+    {
+      "title": "“The Borshchahivka Rembrandt”: how Ukrainians are responding with memes to provocateurs after the events in Petropavlivska Borshchahivka",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk"
+    },
+    {
+      "title": "Oleshkу Evacuees Сhose Ukraine: Western Media Counter Russia’s «Liberation» Narrative",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk"
+    },
+    {
+      "title": "Russian Offensive Campaign Assessment, November 2, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk"
+    },
+    {
       "title": "Russian losses in Ukraine hit new highs: 2,500 casualties in a day, 54,400 in October",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "From social media posts to strategy: NATO-backed course strengthens Ukraine’s military communications",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Russian Offensive Campaign Assessment, November 1, 2026",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Russian Offensive Campaign Assessment, October 31, 2026",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Russian Offensive Campaign Assessment, October 30, 2026",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Russia’s Rassvet Satellite System and Shadow Fleet Vessels: Ukraine Imposed New Sanctions",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     }
