@@ -20458,5 +20458,137 @@
       "deepstate": "cyterat/deepstate-map-data via GitHub API"
     },
     "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
+  },
+  {
+    "date": "2026-11-05",
+    "updated_utc": "2026-11-05T23:46:06.009752+00:00",
+    "front_activity_index": 78,
+    "status": "HIGH",
+    "components": {
+      "osint_density": 25,
+      "firms_activity": 20,
+      "territorial_change": 17.1,
+      "active_sectors": 10,
+      "critical_events": 6
+    },
+    "counts": {
+      "osint": 19,
+      "firms_3d": 582,
+      "firms_10d": 12163,
+      "firms_30d": 37421,
+      "critical_events": 3,
+      "active_sectors": 7
+    },
+    "territorial": {
+      "available": true,
+      "error": null,
+      "previous_file": "deepstatemap_data_20261104.geojson",
+      "current_file": "deepstatemap_data_20261105.geojson",
+      "previous_total_km2": 116849.53,
+      "current_total_km2": 116855.23,
+      "russian_gain_km2": 5.7,
+      "ukrainian_recapture_km2": 0,
+      "net_change_km2": 5.7,
+      "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    },
+    "territorial_hotspot": {
+      "sector": "Pokrovsk",
+      "lat": 48.28,
+      "lon": 37.18,
+      "zoom": 9,
+      "score": 100,
+      "change_km2": 5.7,
+      "method": "Top classified sector based on OSINT + FIRMS density"
+    },
+    "top_sectors": [
+      {
+        "sector": "Pokrovsk",
+        "osint": 14,
+        "firms": 0,
+        "score": 100
+      },
+      {
+        "sector": "Other / Unclassified",
+        "osint": 4,
+        "firms": 573,
+        "score": 100
+      },
+      {
+        "sector": "Kherson-Dnipro",
+        "osint": 1,
+        "firms": 0,
+        "score": 12
+      },
+      {
+        "sector": "Bakhmut-Toretsk",
+        "osint": 0,
+        "firms": 3,
+        "score": 3
+      },
+      {
+        "sector": "Lyman",
+        "osint": 0,
+        "firms": 2,
+        "score": 2
+      },
+      {
+        "sector": "Zaporizhzhia",
+        "osint": 0,
+        "firms": 2,
+        "score": 2
+      },
+      {
+        "sector": "Kurakhove",
+        "osint": 0,
+        "firms": 1,
+        "score": 1
+      },
+      {
+        "sector": "Velyka Novosilka",
+        "osint": 0,
+        "firms": 1,
+        "score": 1
+      }
+    ],
+    "top_events": [
+      {
+        "title": "42 Killed in Komyshuvakha: The Money Behind Russia’s Bombing Campaign",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "German Far Right Shares “Little Jesus of Borshchahivka” Video, Then Admits Falling For Russian Propaganda",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Cyberattacks Reach French Blood Storage Facilities as Experts Investigate Possible Russian and Iranian Links",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Reported drone strike near Herszon",
+        "source": "forrás nélkül",
+        "sector": "Kherson-Dnipro"
+      },
+      {
+        "title": "Russian Offensive Campaign Assessment, November 4, 2026",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "From Sabotage to Drone Strikes: Journalists Document Hundreds of Russia-Linked Hybrid Warfare Incidents Across Europe",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      }
+    ],
+    "data_sources": {
+      "osint": "data/osint_feed.json",
+      "firms_3d": "data/firms_3.json",
+      "firms_10d": "data/firms_10.json",
+      "firms_30d": "data/firms_30.json",
+      "deepstate": "cyterat/deepstate-map-data via GitHub API"
+    },
+    "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
   }
 ]
