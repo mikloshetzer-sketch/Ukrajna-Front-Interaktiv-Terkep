@@ -1,27 +1,27 @@
 {
-  "updated_utc": "2026-11-05T23:46:07.504061+00:00",
-  "date": "2026-11-05",
+  "updated_utc": "2026-11-06T23:24:25.095135+00:00",
+  "date": "2026-11-06",
   "territorial_sector": {
-    "sector": "Pokrovsk",
-    "lat": 48.4720778001301,
-    "lon": 37.469189731636476,
-    "distance_km": 30.2,
-    "change_type": "russian_gain",
-    "area_km2": 5.72,
-    "label": "Russian territorial gain"
+    "sector": "No territorial delta",
+    "lat": null,
+    "lon": null,
+    "distance_km": null,
+    "change_type": "none",
+    "area_km2": 0,
+    "label": "No mapped daily territorial change"
   },
   "priority_osint_events": [
     {
-      "title": "Reported drone strike near Herszon",
+      "title": "Reported drone strike near Kyiv",
       "source": "forrás nélkül",
-      "sector": "Kherson-Dnipro",
-      "lat": 46.635,
-      "lon": 32.616,
-      "distance_to_sector_km": 0.7,
+      "sector": "Kyiv Area",
+      "lat": 50.45,
+      "lon": 30.523,
+      "distance_to_sector_km": 0,
       "event_type": "drone",
       "event_label": "Drone / UAV activity",
       "icon": "🛩",
-      "priority": 103
+      "priority": 106
     },
     {
       "title": "From Sabotage to Drone Strikes: Journalists Document Hundreds of Russia-Linked Hybrid Warfare Incidents Across Europe",
@@ -36,16 +36,16 @@
       "priority": 103
     },
     {
-      "title": "Reported ground assault or offensive activity near Moszkva",
+      "title": "Russian Offensive Campaign Assessment, November 5, 2026",
       "source": "forrás nélkül",
-      "sector": "Moscow / Russia Interior",
-      "lat": 55.755,
-      "lon": 37.617,
-      "distance_to_sector_km": 0,
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
       "event_type": "frontline",
       "event_label": "Frontline pressure",
       "icon": "⚔",
-      "priority": 98
+      "priority": 95
     },
     {
       "title": "Russian Offensive Campaign Assessment, November 4, 2026",
@@ -72,16 +72,40 @@
       "priority": 95
     },
     {
-      "title": "Russian Offensive Campaign Assessment, November 2, 2026",
+      "title": "Reported rear-area strike near Kyiv",
       "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "frontline",
-      "event_label": "Frontline pressure",
-      "icon": "⚔",
-      "priority": 95
+      "sector": "Kyiv Area",
+      "lat": 50.45,
+      "lon": 30.523,
+      "distance_to_sector_km": 0,
+      "event_type": "strike",
+      "event_label": "Strike / attack",
+      "icon": "✹",
+      "priority": 94
+    },
+    {
+      "title": "Reported rear-area strike near Moszkva",
+      "source": "forrás nélkül",
+      "sector": "Moscow / Russia Interior",
+      "lat": 55.755,
+      "lon": 37.617,
+      "distance_to_sector_km": 0,
+      "event_type": "strike",
+      "event_label": "Strike / attack",
+      "icon": "✹",
+      "priority": 94
+    },
+    {
+      "title": "Reported rear-area strike near Kijev",
+      "source": "forrás nélkül",
+      "sector": "Kyiv Area",
+      "lat": 50.45,
+      "lon": 30.523,
+      "distance_to_sector_km": 0,
+      "event_type": "strike",
+      "event_label": "Strike / attack",
+      "icon": "✹",
+      "priority": 94
     },
     {
       "title": "Cyberattacks Reach French Blood Storage Facilities as Experts Investigate Possible Russian and Iranian Links",
@@ -130,65 +154,19 @@
       "event_label": "Military update",
       "icon": "●",
       "priority": 66
-    },
-    {
-      "title": "From Four Injured Soldiers to 40 “Hostages” in 16 Minutes: How Disinformation Fueled Unrest Near Kyiv",
-      "source": "forrás nélkül",
-      "sector": "Kyiv Area",
-      "lat": 50.45,
-      "lon": 30.523,
-      "distance_to_sector_km": 0,
-      "event_type": "military_update",
-      "event_label": "Military update",
-      "icon": "●",
-      "priority": 66
-    },
-    {
-      "title": "42 Killed in Komyshuvakha: The Money Behind Russia’s Bombing Campaign",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "military_update",
-      "event_label": "Military update",
-      "icon": "●",
-      "priority": 63
     }
   ],
   "front_pressure_points": [
     {
       "sector": "Pokrovsk",
-      "title": "Pokrovsk territorial gain axis",
+      "title": "Pokrovsk OSINT activity cluster",
       "lat": 48.28,
       "lon": 37.18,
-      "score": 130,
-      "osint": 14,
+      "score": 100,
+      "osint": 13,
       "firms": 0,
-      "pressure_type": "territorial_gain_axis",
-      "icon": "▲"
-    },
-    {
-      "sector": "Kherson-Dnipro",
-      "title": "Kherson-Dnipro pressure axis",
-      "lat": 46.64,
-      "lon": 32.61,
-      "score": 12,
-      "osint": 1,
-      "firms": 0,
-      "pressure_type": "pressure_axis",
-      "icon": "⚑"
-    },
-    {
-      "sector": "Bakhmut-Toretsk",
-      "title": "Bakhmut-Toretsk pressure axis",
-      "lat": 48.58,
-      "lon": 37.95,
-      "score": 3,
-      "osint": 0,
-      "firms": 3,
-      "pressure_type": "pressure_axis",
-      "icon": "⚑"
+      "pressure_type": "osint_activity_cluster",
+      "icon": "⚔"
     },
     {
       "sector": "Lyman",
@@ -213,6 +191,17 @@
       "icon": "⚑"
     },
     {
+      "sector": "Bakhmut-Toretsk",
+      "title": "Bakhmut-Toretsk pressure axis",
+      "lat": 48.58,
+      "lon": 37.95,
+      "score": 1,
+      "osint": 0,
+      "firms": 1,
+      "pressure_type": "pressure_axis",
+      "icon": "⚑"
+    },
+    {
       "sector": "Kurakhove",
       "title": "Kurakhove pressure axis",
       "lat": 47.99,
@@ -224,41 +213,52 @@
       "icon": "⚑"
     },
     {
+      "sector": "Kupiansk",
+      "title": "Kupiansk pressure axis",
+      "lat": 49.71,
+      "lon": 37.61,
+      "score": 0,
+      "osint": 0,
+      "firms": 0,
+      "pressure_type": "pressure_axis",
+      "icon": "⚑"
+    },
+    {
       "sector": "Velyka Novosilka",
       "title": "Velyka Novosilka pressure axis",
       "lat": 47.84,
       "lon": 36.84,
-      "score": 1,
+      "score": 0,
       "osint": 0,
-      "firms": 1,
+      "firms": 0,
       "pressure_type": "pressure_axis",
       "icon": "⚑"
     }
   ],
   "event_categories": [
     {
-      "category": "Frontline pressure",
-      "count": 4
+      "category": "Strike / attack",
+      "count": 5
     },
     {
-      "category": "Military update",
-      "count": 4
+      "category": "Frontline pressure",
+      "count": 3
     },
     {
       "category": "Drone / UAV activity",
       "count": 2
     },
     {
-      "category": "Strike / attack",
+      "category": "Military update",
       "count": 2
     }
   ],
-  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 78. Russian forces gained approximately 5.70 km², closest to the Pokrovsk sector. The main pressure focus is Pokrovsk. The strongest event category is Drone / UAV activity. The system processed 19 OSINT events, 582 short-term FIRMS hotspots and 7 active sectors.",
+  "ai_summary": "Front activity is assessed as ELEVATED with an FAI value of 59. No measurable net territorial change was detected. The main pressure focus is Pokrovsk. The strongest event category is Drone / UAV activity. The system processed 24 OSINT events, 183 short-term FIRMS hotspots and 5 active sectors.",
   "counts": {
     "priority_osint": 12,
     "pressure_points": 7,
-    "firms_3d": 582,
-    "firms_10d": 12163,
+    "firms_3d": 183,
+    "firms_10d": 9472,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."
