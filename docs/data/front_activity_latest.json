@@ -1,33 +1,33 @@
 {
-  "date": "2026-11-07",
-  "updated_utc": "2026-11-07T22:11:10.307276+00:00",
-  "front_activity_index": 70,
-  "status": "HIGH",
+  "date": "2026-11-08",
+  "updated_utc": "2026-11-08T22:20:15.981049+00:00",
+  "front_activity_index": 53,
+  "status": "ELEVATED",
   "components": {
     "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 12.7,
+    "territorial_change": 0.0,
     "active_sectors": 6,
-    "critical_events": 6
+    "critical_events": 2
   },
   "counts": {
-    "osint": 19,
-    "firms_3d": 140,
-    "firms_10d": 7283,
-    "firms_30d": 34105,
-    "critical_events": 3,
+    "osint": 14,
+    "firms_3d": 153,
+    "firms_10d": 4937,
+    "firms_30d": 32414,
+    "critical_events": 1,
     "active_sectors": 3
   },
   "territorial": {
     "available": true,
     "error": null,
-    "previous_file": "deepstatemap_data_20261106.geojson",
-    "current_file": "deepstatemap_data_20261107.geojson",
-    "previous_total_km2": 116855.23,
+    "previous_file": "deepstatemap_data_20261107.geojson",
+    "current_file": "deepstatemap_data_20261108.geojson",
+    "previous_total_km2": 116859.46,
     "current_total_km2": 116859.46,
-    "russian_gain_km2": 4.23,
+    "russian_gain_km2": 0,
     "ukrainian_recapture_km2": 0,
-    "net_change_km2": 4.23,
+    "net_change_km2": 0.0,
     "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
@@ -35,34 +35,34 @@
     "lat": 48.28,
     "lon": 37.18,
     "zoom": 9,
-    "score": 100,
-    "change_km2": 4.23,
+    "score": 84,
+    "change_km2": 0.0,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
     {
-      "sector": "Pokrovsk",
-      "osint": 11,
-      "firms": 0,
+      "sector": "Other / Unclassified",
+      "osint": 6,
+      "firms": 146,
       "score": 100
     },
     {
-      "sector": "Other / Unclassified",
-      "osint": 8,
-      "firms": 135,
-      "score": 100
+      "sector": "Pokrovsk",
+      "osint": 7,
+      "firms": 0,
+      "score": 84
+    },
+    {
+      "sector": "Zaporizhzhia",
+      "osint": 1,
+      "firms": 6,
+      "score": 17
     },
     {
       "sector": "Lyman",
       "osint": 0,
-      "firms": 3,
-      "score": 3
-    },
-    {
-      "sector": "Zaporizhzhia",
-      "osint": 0,
-      "firms": 2,
-      "score": 2
+      "firms": 1,
+      "score": 1
     },
     {
       "sector": "Kupiansk",
@@ -91,9 +91,14 @@
   ],
   "top_events": [
     {
-      "title": "Reported rear-area strike near Szaratov",
+      "title": "Reported rear-area strike near Zaporizzsja",
       "source": "forrás nélkül",
-      "sector": "Other / Unclassified"
+      "sector": "Zaporizhzhia"
+    },
+    {
+      "title": "Russian Offensive Campaign Assessment, November 7, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk"
     },
     {
       "title": "Russian Offensive Campaign Assessment, November 6, 2026",
@@ -112,11 +117,6 @@
     },
     {
       "title": "42 Killed in Komyshuvakha: The Money Behind Russia’s Bombing Campaign",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "German Far Right Shares “Little Jesus of Borshchahivka” Video, Then Admits Falling For Russian Propaganda",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     }

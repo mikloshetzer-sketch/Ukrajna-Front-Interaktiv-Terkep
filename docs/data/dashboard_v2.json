@@ -1,14 +1,14 @@
 {
-  "updated_utc": "2026-11-07T22:11:11.237811+00:00",
-  "date": "2026-11-07",
+  "updated_utc": "2026-11-08T22:20:16.961342+00:00",
+  "date": "2026-11-08",
   "territorial_sector": {
-    "sector": "Pokrovsk",
-    "lat": 48.372736055555556,
-    "lon": 37.05007647777777,
-    "distance_km": 14.1,
-    "change_type": "russian_gain",
-    "area_km2": 2.41,
-    "label": "Russian territorial gain"
+    "sector": "No territorial delta",
+    "lat": null,
+    "lon": null,
+    "distance_km": null,
+    "change_type": "none",
+    "area_km2": 0,
+    "label": "No mapped daily territorial change"
   },
   "priority_osint_events": [
     {
@@ -24,28 +24,16 @@
       "priority": 104
     },
     {
-      "title": "From Sabotage to Drone Strikes: Journalists Document Hundreds of Russia-Linked Hybrid Warfare Incidents Across Europe",
+      "title": "Russian Offensive Campaign Assessment, November 7, 2026",
       "source": "forrás nélkül",
       "sector": "Pokrovsk",
       "lat": 48.5,
       "lon": 36.5,
       "distance_to_sector_km": 55.9,
-      "event_type": "drone",
-      "event_label": "Drone / UAV activity",
-      "icon": "🛩",
-      "priority": 103
-    },
-    {
-      "title": "Reported ground assault or offensive activity near Kijev",
-      "source": "forrás nélkül",
-      "sector": "Kyiv Area",
-      "lat": 50.45,
-      "lon": 30.523,
-      "distance_to_sector_km": 0,
       "event_type": "frontline",
       "event_label": "Frontline pressure",
       "icon": "⚔",
-      "priority": 98
+      "priority": 95
     },
     {
       "title": "Russian Offensive Campaign Assessment, November 6, 2026",
@@ -61,18 +49,6 @@
     },
     {
       "title": "Russian Offensive Campaign Assessment, November 5, 2026",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "frontline",
-      "event_label": "Frontline pressure",
-      "icon": "⚔",
-      "priority": 95
-    },
-    {
-      "title": "Russian Offensive Campaign Assessment, November 4, 2026",
       "source": "forrás nélkül",
       "sector": "Pokrovsk",
       "lat": 48.5,
@@ -108,6 +84,18 @@
       "priority": 94
     },
     {
+      "title": "Reported rear-area strike near Zaporizzsja",
+      "source": "forrás nélkül",
+      "sector": "Zaporizhzhia",
+      "lat": 47.838,
+      "lon": 35.139,
+      "distance_to_sector_km": 0.2,
+      "event_type": "strike",
+      "event_label": "Strike / attack",
+      "icon": "✹",
+      "priority": 91
+    },
+    {
       "title": "Cyberattacks Reach French Blood Storage Facilities as Experts Investigate Possible Russian and Iranian Links",
       "source": "forrás nélkül",
       "sector": "Pokrovsk",
@@ -120,30 +108,6 @@
       "priority": 91
     },
     {
-      "title": "Hackers target supermarket refrigeration systems across Europe: how cyberattacks expose vulnerabilities to hybrid threats",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "strike",
-      "event_label": "Strike / attack",
-      "icon": "✹",
-      "priority": 91
-    },
-    {
-      "title": "Reported rear-area strike near Szaratov",
-      "source": "forrás nélkül",
-      "sector": "Rear Area / Strategic Depth",
-      "lat": 51.533,
-      "lon": 46.034,
-      "distance_to_sector_km": 627.5,
-      "event_type": "strike",
-      "event_label": "Strike / attack",
-      "icon": "✹",
-      "priority": 86
-    },
-    {
       "title": "Reported military-related update near Kijev",
       "source": "forrás nélkül",
       "sector": "Kyiv Area",
@@ -154,39 +118,75 @@
       "event_label": "Military update",
       "icon": "●",
       "priority": 66
+    },
+    {
+      "title": "Reported military-related update near Kyiv",
+      "source": "forrás nélkül",
+      "sector": "Kyiv Area",
+      "lat": 50.45,
+      "lon": 30.523,
+      "distance_to_sector_km": 0,
+      "event_type": "military_update",
+      "event_label": "Military update",
+      "icon": "●",
+      "priority": 66
+    },
+    {
+      "title": "Reported air defense activity near Kyiv",
+      "source": "forrás nélkül",
+      "sector": "Kyiv Area",
+      "lat": 50.45,
+      "lon": 30.523,
+      "distance_to_sector_km": 0,
+      "event_type": "military_update",
+      "event_label": "Military update",
+      "icon": "●",
+      "priority": 66
+    },
+    {
+      "title": "Fire at Russia’s Afipsky Oil Refinery: $2.65 Billion in Modernization Investments at Stake",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "military_update",
+      "event_label": "Military update",
+      "icon": "●",
+      "priority": 63
     }
   ],
   "front_pressure_points": [
     {
       "sector": "Pokrovsk",
-      "title": "Pokrovsk territorial gain axis",
+      "title": "Pokrovsk OSINT activity cluster",
       "lat": 48.28,
       "lon": 37.18,
-      "score": 130,
-      "osint": 11,
+      "score": 84,
+      "osint": 7,
       "firms": 0,
-      "pressure_type": "territorial_gain_axis",
-      "icon": "▲"
-    },
-    {
-      "sector": "Lyman",
-      "title": "Lyman pressure axis",
-      "lat": 48.99,
-      "lon": 37.8,
-      "score": 3,
-      "osint": 0,
-      "firms": 3,
-      "pressure_type": "pressure_axis",
-      "icon": "⚑"
+      "pressure_type": "osint_activity_cluster",
+      "icon": "⚔"
     },
     {
       "sector": "Zaporizhzhia",
       "title": "Zaporizhzhia pressure axis",
       "lat": 47.84,
       "lon": 35.14,
-      "score": 2,
+      "score": 17,
+      "osint": 1,
+      "firms": 6,
+      "pressure_type": "pressure_axis",
+      "icon": "⚑"
+    },
+    {
+      "sector": "Lyman",
+      "title": "Lyman pressure axis",
+      "lat": 48.99,
+      "lon": 37.8,
+      "score": 1,
       "osint": 0,
-      "firms": 2,
+      "firms": 1,
       "pressure_type": "pressure_axis",
       "icon": "⚑"
     },
@@ -238,31 +238,27 @@
   "event_categories": [
     {
       "category": "Strike / attack",
-      "count": 5
+      "count": 4
+    },
+    {
+      "category": "Military update",
+      "count": 4
     },
     {
       "category": "Frontline pressure",
-      "count": 4
+      "count": 3
     },
     {
       "category": "Missile / rocket strike",
       "count": 1
-    },
-    {
-      "category": "Drone / UAV activity",
-      "count": 1
-    },
-    {
-      "category": "Military update",
-      "count": 1
     }
   ],
-  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 70. Russian forces gained approximately 4.23 km², closest to the Pokrovsk sector. The main pressure focus is Pokrovsk. The strongest event category is Missile / rocket strike. The system processed 19 OSINT events, 140 short-term FIRMS hotspots and 3 active sectors.",
+  "ai_summary": "Front activity is assessed as ELEVATED with an FAI value of 53. No measurable net territorial change was detected. The main pressure focus is Pokrovsk. The strongest event category is Missile / rocket strike. The system processed 14 OSINT events, 153 short-term FIRMS hotspots and 3 active sectors.",
   "counts": {
     "priority_osint": 12,
     "pressure_points": 7,
-    "firms_3d": 140,
-    "firms_10d": 7283,
+    "firms_3d": 153,
+    "firms_10d": 4937,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."
