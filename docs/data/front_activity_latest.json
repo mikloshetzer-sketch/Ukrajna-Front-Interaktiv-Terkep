@@ -1,33 +1,33 @@
 {
   "date": "2026-11-10",
-  "updated_utc": "2026-11-10T01:43:17.591487+00:00",
-  "front_activity_index": 57,
-  "status": "ELEVATED",
+  "updated_utc": "2026-11-10T23:37:49.719861+00:00",
+  "front_activity_index": 68,
+  "status": "HIGH",
   "components": {
-    "osint_density": 12.5,
+    "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 16.2,
-    "active_sectors": 6,
-    "critical_events": 2
+    "territorial_change": 4.8,
+    "active_sectors": 8,
+    "critical_events": 10
   },
   "counts": {
-    "osint": 5,
-    "firms_3d": 177,
-    "firms_10d": 2720,
-    "firms_30d": 31083,
-    "critical_events": 1,
-    "active_sectors": 3
+    "osint": 15,
+    "firms_3d": 206,
+    "firms_10d": 1729,
+    "firms_30d": 29171,
+    "critical_events": 5,
+    "active_sectors": 4
   },
   "territorial": {
     "available": true,
     "error": null,
-    "previous_file": "deepstatemap_data_20261108.geojson",
-    "current_file": "deepstatemap_data_20261109.geojson",
-    "previous_total_km2": 116859.46,
-    "current_total_km2": 116864.85,
-    "russian_gain_km2": 5.39,
+    "previous_file": "deepstatemap_data_20261109.geojson",
+    "current_file": "deepstatemap_data_20261110.geojson",
+    "previous_total_km2": 116864.85,
+    "current_total_km2": 116866.44,
+    "russian_gain_km2": 1.59,
     "ukrainian_recapture_km2": 0,
-    "net_change_km2": 5.39,
+    "net_change_km2": 1.59,
     "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
@@ -35,31 +35,37 @@
     "lat": 48.28,
     "lon": 37.18,
     "zoom": 9,
-    "score": 48,
-    "change_km2": 5.39,
+    "score": 72,
+    "change_km2": 1.59,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
     {
       "sector": "Other / Unclassified",
-      "osint": 1,
-      "firms": 170,
+      "osint": 7,
+      "firms": 201,
       "score": 100
     },
     {
       "sector": "Pokrovsk",
-      "osint": 4,
+      "osint": 6,
       "firms": 0,
-      "score": 48
+      "score": 72
+    },
+    {
+      "sector": "Crimea",
+      "osint": 2,
+      "firms": 0,
+      "score": 24
     },
     {
       "sector": "Zaporizhzhia",
       "osint": 0,
-      "firms": 6,
-      "score": 5
+      "firms": 4,
+      "score": 4
     },
     {
-      "sector": "Lyman",
+      "sector": "Kherson-Dnipro",
       "osint": 0,
       "firms": 1,
       "score": 1
@@ -71,19 +77,13 @@
       "score": 0
     },
     {
+      "sector": "Lyman",
+      "osint": 0,
+      "firms": 0,
+      "score": 0
+    },
+    {
       "sector": "Bakhmut-Toretsk",
-      "osint": 0,
-      "firms": 0,
-      "score": 0
-    },
-    {
-      "sector": "Kurakhove",
-      "osint": 0,
-      "firms": 0,
-      "score": 0
-    },
-    {
-      "sector": "Velyka Novosilka",
       "osint": 0,
       "firms": 0,
       "score": 0
@@ -91,22 +91,32 @@
   ],
   "top_events": [
     {
+      "title": "Reported drone strike near Krím",
+      "source": "forrás nélkül",
+      "sector": "Crimea"
+    },
+    {
+      "title": "Gasoline as an Indicator of Russia’s Vulnerability: How Ukrainian Strikes on Oil Refineries Are Triggering a Fuel Crisis in Russian Regions",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk"
+    },
+    {
+      "title": "Reported military-related update near Szumi",
+      "source": "forrás nélkül",
+      "sector": "Other / Unclassified"
+    },
+    {
+      "title": "Reported rear-area strike near Krím",
+      "source": "forrás nélkül",
+      "sector": "Crimea"
+    },
+    {
+      "title": "Russian Offensive Campaign Assessment, November 9, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk"
+    },
+    {
       "title": "$144 Billion in Artillery and Drone Losses: Russia Crosses Two Major Military Milestones",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "274 Oil and Gas Incidents, 242 Sabotage Cases: Russia’s Own Infrastructure Comes Under Growing Pressure",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Russian Offensive Campaign Assessment, November 8, 2026",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Russian Offensive Campaign Assessment, November 7, 2026",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     }
