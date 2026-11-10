@@ -20986,5 +20986,127 @@
       "deepstate": "cyterat/deepstate-map-data via GitHub API"
     },
     "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
+  },
+  {
+    "date": "2026-11-10",
+    "updated_utc": "2026-11-10T01:43:17.591487+00:00",
+    "front_activity_index": 57,
+    "status": "ELEVATED",
+    "components": {
+      "osint_density": 12.5,
+      "firms_activity": 20,
+      "territorial_change": 16.2,
+      "active_sectors": 6,
+      "critical_events": 2
+    },
+    "counts": {
+      "osint": 5,
+      "firms_3d": 177,
+      "firms_10d": 2720,
+      "firms_30d": 31083,
+      "critical_events": 1,
+      "active_sectors": 3
+    },
+    "territorial": {
+      "available": true,
+      "error": null,
+      "previous_file": "deepstatemap_data_20261108.geojson",
+      "current_file": "deepstatemap_data_20261109.geojson",
+      "previous_total_km2": 116859.46,
+      "current_total_km2": 116864.85,
+      "russian_gain_km2": 5.39,
+      "ukrainian_recapture_km2": 0,
+      "net_change_km2": 5.39,
+      "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    },
+    "territorial_hotspot": {
+      "sector": "Pokrovsk",
+      "lat": 48.28,
+      "lon": 37.18,
+      "zoom": 9,
+      "score": 48,
+      "change_km2": 5.39,
+      "method": "Top classified sector based on OSINT + FIRMS density"
+    },
+    "top_sectors": [
+      {
+        "sector": "Other / Unclassified",
+        "osint": 1,
+        "firms": 170,
+        "score": 100
+      },
+      {
+        "sector": "Pokrovsk",
+        "osint": 4,
+        "firms": 0,
+        "score": 48
+      },
+      {
+        "sector": "Zaporizhzhia",
+        "osint": 0,
+        "firms": 6,
+        "score": 5
+      },
+      {
+        "sector": "Lyman",
+        "osint": 0,
+        "firms": 1,
+        "score": 1
+      },
+      {
+        "sector": "Kupiansk",
+        "osint": 0,
+        "firms": 0,
+        "score": 0
+      },
+      {
+        "sector": "Bakhmut-Toretsk",
+        "osint": 0,
+        "firms": 0,
+        "score": 0
+      },
+      {
+        "sector": "Kurakhove",
+        "osint": 0,
+        "firms": 0,
+        "score": 0
+      },
+      {
+        "sector": "Velyka Novosilka",
+        "osint": 0,
+        "firms": 0,
+        "score": 0
+      }
+    ],
+    "top_events": [
+      {
+        "title": "$144 Billion in Artillery and Drone Losses: Russia Crosses Two Major Military Milestones",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "274 Oil and Gas Incidents, 242 Sabotage Cases: Russia’s Own Infrastructure Comes Under Growing Pressure",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Russian Offensive Campaign Assessment, November 8, 2026",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Russian Offensive Campaign Assessment, November 7, 2026",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      }
+    ],
+    "data_sources": {
+      "osint": "data/osint_feed.json",
+      "firms_3d": "data/firms_3.json",
+      "firms_10d": "data/firms_10.json",
+      "firms_30d": "data/firms_30.json",
+      "deepstate": "cyterat/deepstate-map-data via GitHub API"
+    },
+    "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
   }
 ]
