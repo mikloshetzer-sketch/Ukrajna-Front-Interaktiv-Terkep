@@ -1,33 +1,33 @@
 {
   "date": "2026-11-12",
-  "updated_utc": "2026-11-12T00:55:26.301193+00:00",
-  "front_activity_index": 67,
-  "status": "HIGH",
+  "updated_utc": "2026-11-12T23:45:23.105795+00:00",
+  "front_activity_index": 55,
+  "status": "ELEVATED",
   "components": {
     "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 13.6,
-    "active_sectors": 4,
+    "territorial_change": 0.0,
+    "active_sectors": 6,
     "critical_events": 4
   },
   "counts": {
-    "osint": 13,
-    "firms_3d": 88,
-    "firms_10d": 950,
-    "firms_30d": 27340,
+    "osint": 17,
+    "firms_3d": 116,
+    "firms_10d": 978,
+    "firms_30d": 27368,
     "critical_events": 2,
-    "active_sectors": 2
+    "active_sectors": 3
   },
   "territorial": {
     "available": true,
     "error": null,
-    "previous_file": "deepstatemap_data_20261110.geojson",
-    "current_file": "deepstatemap_data_20261111.geojson",
-    "previous_total_km2": 116866.44,
+    "previous_file": "deepstatemap_data_20261111.geojson",
+    "current_file": "deepstatemap_data_20261112.geojson",
+    "previous_total_km2": 116870.98,
     "current_total_km2": 116870.98,
-    "russian_gain_km2": 4.54,
+    "russian_gain_km2": 0,
     "ukrainian_recapture_km2": 0,
-    "net_change_km2": 4.54,
+    "net_change_km2": 0.0,
     "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
@@ -35,22 +35,28 @@
     "lat": 48.28,
     "lon": 37.18,
     "zoom": 9,
-    "score": 96,
-    "change_km2": 4.54,
+    "score": 100,
+    "change_km2": 0.0,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
     {
-      "sector": "Other / Unclassified",
-      "osint": 5,
-      "firms": 87,
+      "sector": "Pokrovsk",
+      "osint": 10,
+      "firms": 0,
       "score": 100
     },
     {
-      "sector": "Pokrovsk",
-      "osint": 8,
+      "sector": "Other / Unclassified",
+      "osint": 6,
+      "firms": 115,
+      "score": 100
+    },
+    {
+      "sector": "Kurakhove",
+      "osint": 1,
       "firms": 0,
-      "score": 96
+      "score": 12
     },
     {
       "sector": "Kherson-Dnipro",
@@ -77,12 +83,6 @@
       "score": 0
     },
     {
-      "sector": "Kurakhove",
-      "osint": 0,
-      "firms": 0,
-      "score": 0
-    },
-    {
       "sector": "Velyka Novosilka",
       "osint": 0,
       "firms": 0,
@@ -90,6 +90,21 @@
     }
   ],
   "top_events": [
+    {
+      "title": "From Storage Tanks to Tankers: How Ukraine Is Weakening Russia’s Oil Exports by Striking Ust-Luga",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk"
+    },
+    {
+      "title": "Russia’s $4 Billion Naval Losses Highlight Ukraine’s Role in EU Black Sea Security Plans",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk"
+    },
+    {
+      "title": "Reported military-related update near Donyeck",
+      "source": "forrás nélkül",
+      "sector": "Kurakhove"
+    },
     {
       "title": "Ukrainian Strikes on Russian Oil Refineries: Russia’s Oil Processing Falls by a Third as the Aggressor’s Fuel System Loses Resilience",
       "source": "forrás nélkül",
@@ -101,22 +116,7 @@
       "sector": "Pokrovsk"
     },
     {
-      "title": "Gasoline as an Indicator of Russia’s Vulnerability: How Ukrainian Strikes on Oil Refineries Are Triggering a Fuel Crisis in Russian Regions",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Russian Offensive Campaign Assessment, November 10, 2026",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "$144 Billion in Artillery and Drone Losses: Russia Crosses Two Major Military Milestones",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "274 Oil and Gas Incidents, 242 Sabotage Cases: Russia’s Own Infrastructure Comes Under Growing Pressure",
+      "title": "Russian Offensive Campaign Assessment, November 11, 2026",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     }

@@ -1,22 +1,22 @@
 {
-  "updated_utc": "2026-11-12T00:55:28.421081+00:00",
+  "updated_utc": "2026-11-12T23:45:24.472869+00:00",
   "date": "2026-11-12",
   "territorial_sector": {
-    "sector": "Bakhmut-Toretsk",
-    "lat": 48.50135725384616,
-    "lon": 37.76336916923078,
-    "distance_km": 16.3,
-    "change_type": "russian_gain",
-    "area_km2": 4.18,
-    "label": "Russian territorial gain"
+    "sector": "No territorial delta",
+    "lat": null,
+    "lon": null,
+    "distance_km": null,
+    "change_type": "none",
+    "area_km2": 0,
+    "label": "No mapped daily territorial change"
   },
   "priority_osint_events": [
     {
-      "title": "Reported drone strike near Moszkva",
+      "title": "Reported drone strike near Kijev",
       "source": "forrás nélkül",
-      "sector": "Moscow / Russia Interior",
-      "lat": 55.755,
-      "lon": 37.617,
+      "sector": "Kyiv Area",
+      "lat": 50.45,
+      "lon": 30.523,
       "distance_to_sector_km": 0,
       "event_type": "drone",
       "event_label": "Drone / UAV activity",
@@ -48,6 +48,18 @@
       "priority": 97
     },
     {
+      "title": "Russian Offensive Campaign Assessment, November 11, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "frontline",
+      "event_label": "Frontline pressure",
+      "icon": "⚔",
+      "priority": 95
+    },
+    {
       "title": "Russian Offensive Campaign Assessment, November 10, 2026",
       "source": "forrás nélkül",
       "sector": "Pokrovsk",
@@ -61,18 +73,6 @@
     },
     {
       "title": "Russian Offensive Campaign Assessment, November 9, 2026",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "frontline",
-      "event_label": "Frontline pressure",
-      "icon": "⚔",
-      "priority": 95
-    },
-    {
-      "title": "Russian Offensive Campaign Assessment, November 8, 2026",
       "source": "forrás nélkül",
       "sector": "Pokrovsk",
       "lat": 48.5,
@@ -120,6 +120,18 @@
       "priority": 91
     },
     {
+      "title": "Russia’s $4 Billion Naval Losses Highlight Ukraine’s Role in EU Black Sea Security Plans",
+      "source": "forrás nélkül",
+      "sector": "Crimea",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 0,
+      "event_type": "naval_rear",
+      "event_label": "Rear-area / Crimea activity",
+      "icon": "⚓",
+      "priority": 88
+    },
+    {
       "title": "Reported military-related update near Kijev",
       "source": "forrás nélkül",
       "sector": "Kyiv Area",
@@ -132,19 +144,7 @@
       "priority": 66
     },
     {
-      "title": "Reported air defense activity near Moszkva",
-      "source": "forrás nélkül",
-      "sector": "Moscow / Russia Interior",
-      "lat": 55.755,
-      "lon": 37.617,
-      "distance_to_sector_km": 0,
-      "event_type": "military_update",
-      "event_label": "Military update",
-      "icon": "●",
-      "priority": 66
-    },
-    {
-      "title": "Reported naval-related military activity near Moszkva",
+      "title": "Reported military-related update near Moszkva",
       "source": "forrás nélkül",
       "sector": "Moscow / Russia Interior",
       "lat": 55.755,
@@ -162,22 +162,22 @@
       "title": "Pokrovsk OSINT activity cluster",
       "lat": 48.28,
       "lon": 37.18,
-      "score": 96,
-      "osint": 8,
+      "score": 100,
+      "osint": 10,
       "firms": 0,
       "pressure_type": "osint_activity_cluster",
       "icon": "⚔"
     },
     {
-      "sector": "Bakhmut-Toretsk",
-      "title": "Bakhmut-Toretsk territorial gain axis",
-      "lat": 48.58,
-      "lon": 37.95,
-      "score": 30,
-      "osint": 0,
+      "sector": "Kurakhove",
+      "title": "Kurakhove pressure axis",
+      "lat": 47.99,
+      "lon": 37.28,
+      "score": 12,
+      "osint": 1,
       "firms": 0,
-      "pressure_type": "territorial_gain_axis",
-      "icon": "▲"
+      "pressure_type": "pressure_axis",
+      "icon": "⚑"
     },
     {
       "sector": "Kherson-Dnipro",
@@ -213,10 +213,10 @@
       "icon": "⚑"
     },
     {
-      "sector": "Kurakhove",
-      "title": "Kurakhove pressure axis",
-      "lat": 47.99,
-      "lon": 37.28,
+      "sector": "Bakhmut-Toretsk",
+      "title": "Bakhmut-Toretsk pressure axis",
+      "lat": 48.58,
+      "lon": 37.95,
       "score": 0,
       "osint": 0,
       "firms": 0,
@@ -245,24 +245,28 @@
       "count": 3
     },
     {
-      "category": "Military update",
-      "count": 3
+      "category": "Drone / UAV activity",
+      "count": 2
     },
     {
-      "category": "Drone / UAV activity",
+      "category": "Military update",
       "count": 2
     },
     {
       "category": "Logistics / infrastructure strike",
       "count": 1
+    },
+    {
+      "category": "Rear-area / Crimea activity",
+      "count": 1
     }
   ],
-  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 67. Russian forces gained approximately 4.54 km², closest to the Bakhmut-Toretsk sector. The main pressure focus is Pokrovsk. The strongest event category is Drone / UAV activity. The system processed 13 OSINT events, 88 short-term FIRMS hotspots and 2 active sectors.",
+  "ai_summary": "Front activity is assessed as ELEVATED with an FAI value of 55. No measurable net territorial change was detected. The main pressure focus is Pokrovsk. The strongest event category is Drone / UAV activity. The system processed 17 OSINT events, 116 short-term FIRMS hotspots and 3 active sectors.",
   "counts": {
     "priority_osint": 12,
     "pressure_points": 7,
-    "firms_3d": 88,
-    "firms_10d": 950,
+    "firms_3d": 116,
+    "firms_10d": 978,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."
