@@ -1,19 +1,19 @@
 {
   "schema_version": "1.3.0",
   "dataset": "ukraine_conflict_dashboard_current",
-  "generated_at": "2026-11-15T06:37:13.526552Z",
+  "generated_at": "2026-11-15T16:23:11.475957Z",
   "latest_data_at": "2026-11-15T01:49:00Z",
   "periods": {
     "1": {
       "days": 1,
-      "start_at": "2026-11-14T06:37:13.526552Z",
-      "end_at": "2026-11-15T06:37:13.526552Z",
+      "start_at": "2026-11-14T16:23:11.475957Z",
+      "end_at": "2026-11-15T16:23:11.475957Z",
       "ru_gain_km2": 9.71,
       "ua_recapture_km2": 0.0,
       "net_change_km2": 9.71,
-      "firms_count": 63,
-      "conflict_index": 0,
-      "osint_events": 0,
+      "firms_count": 25,
+      "conflict_index": -10,
+      "osint_events": 4,
       "availability": {
         "territorial": "fresh",
         "firms": "fresh",
@@ -22,14 +22,14 @@
     },
     "7": {
       "days": 7,
-      "start_at": "2026-11-08T06:37:13.526552Z",
-      "end_at": "2026-11-15T06:37:13.526552Z",
+      "start_at": "2026-11-08T16:23:11.475957Z",
+      "end_at": "2026-11-15T16:23:11.475957Z",
       "ru_gain_km2": 22.73,
       "ua_recapture_km2": 0.0,
       "net_change_km2": 22.73,
-      "firms_count": 415,
-      "conflict_index": -33,
-      "osint_events": 14,
+      "firms_count": 372,
+      "conflict_index": -30,
+      "osint_events": 12,
       "availability": {
         "territorial": "fresh",
         "firms": "fresh",
@@ -38,14 +38,14 @@
     },
     "30": {
       "days": 30,
-      "start_at": "2026-10-16T06:37:13.526552Z",
-      "end_at": "2026-11-15T06:37:13.526552Z",
+      "start_at": "2026-10-16T16:23:11.475957Z",
+      "end_at": "2026-11-15T16:23:11.475957Z",
       "ru_gain_km2": 116.03,
       "ua_recapture_km2": 0.0,
       "net_change_km2": 116.03,
       "firms_count": 25788,
-      "conflict_index": -33,
-      "osint_events": 14,
+      "conflict_index": -30,
+      "osint_events": 12,
       "availability": {
         "territorial": "fresh",
         "firms": "fresh",
@@ -54,14 +54,14 @@
     },
     "90": {
       "days": 90,
-      "start_at": "2026-08-17T06:37:13.526552Z",
-      "end_at": "2026-11-15T06:37:13.526552Z",
+      "start_at": "2026-08-17T16:23:11.475957Z",
+      "end_at": "2026-11-15T16:23:11.475957Z",
       "ru_gain_km2": 0.0,
       "ua_recapture_km2": 0.0,
       "net_change_km2": 0.0,
       "firms_count": 25788,
-      "conflict_index": -33,
-      "osint_events": 14,
+      "conflict_index": -30,
+      "osint_events": 12,
       "availability": {
         "territorial": "fresh",
         "firms": "fresh",
@@ -92,16 +92,50 @@
         "id": "ukrainian_rear",
         "name": "Ukrán hátország",
         "sub": "mélységi csapások és infrastruktúra",
-        "score": 30,
+        "score": 40,
         "risk": "MODERATE",
         "ru_gain_km2": 0.0,
         "ua_recapture_km2": 0.0,
         "firms_count": 10,
-        "osint_events": 0,
+        "osint_events": 1,
         "components": {
           "territorial": 0.0,
           "firms": 25.0,
-          "osint": 0.0,
+          "osint": 8.3,
+          "activity_baseline": 7
+        }
+      },
+      {
+        "id": "pokrovsk",
+        "name": "Pokrovsk",
+        "sub": "folyamatos szárazföldi nyomás",
+        "score": 30,
+        "risk": "MODERATE",
+        "ru_gain_km2": 0.0,
+        "ua_recapture_km2": 0.0,
+        "firms_count": 0,
+        "osint_events": 2,
+        "components": {
+          "territorial": 0.0,
+          "firms": 0.0,
+          "osint": 25.0,
+          "activity_baseline": 5
+        }
+      },
+      {
+        "id": "south_donetsk",
+        "name": "Dél-Donyeck",
+        "sub": "szakaszos területi mozgás",
+        "score": 16,
+        "risk": "MODERATE",
+        "ru_gain_km2": 0.0,
+        "ua_recapture_km2": 0.0,
+        "firms_count": 0,
+        "osint_events": 1,
+        "components": {
+          "territorial": 0.0,
+          "firms": 0.0,
+          "osint": 10.7,
           "activity_baseline": 5
         }
       },
@@ -120,23 +154,6 @@
           "firms": 2.5,
           "osint": 0.0,
           "activity_baseline": 5
-        }
-      },
-      {
-        "id": "south_donetsk",
-        "name": "Dél-Donyeck",
-        "sub": "szakaszos területi mozgás",
-        "score": 3,
-        "risk": "MODERATE",
-        "ru_gain_km2": 0.0,
-        "ua_recapture_km2": 0.0,
-        "firms_count": 0,
-        "osint_events": 0,
-        "components": {
-          "territorial": 0.0,
-          "firms": 0.0,
-          "osint": 0.0,
-          "activity_baseline": 3
         }
       },
       {
@@ -174,23 +191,6 @@
         }
       },
       {
-        "id": "pokrovsk",
-        "name": "Pokrovsk",
-        "sub": "folyamatos szárazföldi nyomás",
-        "score": 3,
-        "risk": "MODERATE",
-        "ru_gain_km2": 0.0,
-        "ua_recapture_km2": 0.0,
-        "firms_count": 0,
-        "osint_events": 0,
-        "components": {
-          "territorial": 0.0,
-          "firms": 0.0,
-          "osint": 0.0,
-          "activity_baseline": 3
-        }
-      },
-      {
         "id": "zaporizhzhia",
         "name": "Zaporizzsja",
         "sub": "korlátozott, de növekvő aktivitás",
@@ -210,23 +210,6 @@
     ],
     "7": [
       {
-        "id": "ukrainian_rear",
-        "name": "Ukrán hátország",
-        "sub": "mélységi csapások és infrastruktúra",
-        "score": 43,
-        "risk": "MODERATE",
-        "ru_gain_km2": 0.0,
-        "ua_recapture_km2": 0.0,
-        "firms_count": 115,
-        "osint_events": 5,
-        "components": {
-          "territorial": 0.0,
-          "firms": 25.0,
-          "osint": 11.3,
-          "activity_baseline": 7
-        }
-      },
-      {
         "id": "kostiantynivka_chasiv_yar",
         "name": "Kostiantynivka–Csasziv Jar",
         "sub": "védelmi csomópontok térsége",
@@ -241,6 +224,23 @@
           "firms": 0.0,
           "osint": 0.0,
           "activity_baseline": 5
+        }
+      },
+      {
+        "id": "ukrainian_rear",
+        "name": "Ukrán hátország",
+        "sub": "mélységi csapások és infrastruktúra",
+        "score": 37,
+        "risk": "MODERATE",
+        "ru_gain_km2": 0.0,
+        "ua_recapture_km2": 0.0,
+        "firms_count": 106,
+        "osint_events": 2,
+        "components": {
+          "territorial": 0.0,
+          "firms": 25.0,
+          "osint": 5.1,
+          "activity_baseline": 7
         }
       },
       {
@@ -264,16 +264,16 @@
         "id": "south_donetsk",
         "name": "Dél-Donyeck",
         "sub": "szakaszos területi mozgás",
-        "score": 19,
+        "score": 21,
         "risk": "MODERATE",
         "ru_gain_km2": 5.3,
         "ua_recapture_km2": 0.0,
-        "firms_count": 1,
-        "osint_events": 0,
+        "firms_count": 0,
+        "osint_events": 1,
         "components": {
           "territorial": 12.0,
-          "firms": 0.2,
-          "osint": 0.0,
+          "firms": 0.0,
+          "osint": 2.4,
           "activity_baseline": 7
         }
       },
@@ -306,7 +306,7 @@
         "osint_events": 0,
         "components": {
           "territorial": 0.0,
-          "firms": 0.4,
+          "firms": 0.5,
           "osint": 0.0,
           "activity_baseline": 5
         }
@@ -402,16 +402,16 @@
         "id": "ukrainian_rear",
         "name": "Ukrán hátország",
         "sub": "mélységi csapások és infrastruktúra",
-        "score": 43,
+        "score": 37,
         "risk": "MODERATE",
         "ru_gain_km2": 0.0,
         "ua_recapture_km2": 0.0,
         "firms_count": 924,
-        "osint_events": 5,
+        "osint_events": 2,
         "components": {
           "territorial": 0.0,
           "firms": 25.0,
-          "osint": 11.3,
+          "osint": 5.1,
           "activity_baseline": 7
         }
       },
@@ -419,17 +419,17 @@
         "id": "south_donetsk",
         "name": "Dél-Donyeck",
         "sub": "szakaszos területi mozgás",
-        "score": 21,
+        "score": 25,
         "risk": "MODERATE",
         "ru_gain_km2": 15.49,
         "ua_recapture_km2": 0.0,
         "firms_count": 103,
-        "osint_events": 0,
+        "osint_events": 1,
         "components": {
           "territorial": 10.8,
           "firms": 2.8,
-          "osint": 0.0,
-          "activity_baseline": 7
+          "osint": 2.4,
+          "activity_baseline": 9
         }
       },
       {
@@ -486,23 +486,6 @@
     ],
     "90": [
       {
-        "id": "ukrainian_rear",
-        "name": "Ukrán hátország",
-        "sub": "mélységi csapások és infrastruktúra",
-        "score": 43,
-        "risk": "MODERATE",
-        "ru_gain_km2": 0.0,
-        "ua_recapture_km2": 0.0,
-        "firms_count": 924,
-        "osint_events": 5,
-        "components": {
-          "territorial": 0.0,
-          "firms": 25.0,
-          "osint": 11.3,
-          "activity_baseline": 7
-        }
-      },
-      {
         "id": "pokrovsk",
         "name": "Pokrovsk",
         "sub": "folyamatos szárazföldi nyomás",
@@ -516,6 +499,23 @@
           "territorial": 0.0,
           "firms": 7.3,
           "osint": 25.0,
+          "activity_baseline": 7
+        }
+      },
+      {
+        "id": "ukrainian_rear",
+        "name": "Ukrán hátország",
+        "sub": "mélységi csapások és infrastruktúra",
+        "score": 37,
+        "risk": "MODERATE",
+        "ru_gain_km2": 0.0,
+        "ua_recapture_km2": 0.0,
+        "firms_count": 924,
+        "osint_events": 2,
+        "components": {
+          "territorial": 0.0,
+          "firms": 25.0,
+          "osint": 5.1,
           "activity_baseline": 7
         }
       },
@@ -537,6 +537,23 @@
         }
       },
       {
+        "id": "south_donetsk",
+        "name": "Dél-Donyeck",
+        "sub": "szakaszos területi mozgás",
+        "score": 12,
+        "risk": "MODERATE",
+        "ru_gain_km2": 0.0,
+        "ua_recapture_km2": 0.0,
+        "firms_count": 103,
+        "osint_events": 1,
+        "components": {
+          "territorial": 0.0,
+          "firms": 2.8,
+          "osint": 2.4,
+          "activity_baseline": 7
+        }
+      },
+      {
         "id": "kostiantynivka_chasiv_yar",
         "name": "Kostiantynivka–Csasziv Jar",
         "sub": "védelmi csomópontok térsége",
@@ -549,23 +566,6 @@
         "components": {
           "territorial": 0.0,
           "firms": 3.6,
-          "osint": 0.0,
-          "activity_baseline": 5
-        }
-      },
-      {
-        "id": "south_donetsk",
-        "name": "Dél-Donyeck",
-        "sub": "szakaszos területi mozgás",
-        "score": 8,
-        "risk": "MODERATE",
-        "ru_gain_km2": 0.0,
-        "ua_recapture_km2": 0.0,
-        "firms_count": 103,
-        "osint_events": 0,
-        "components": {
-          "territorial": 0.0,
-          "firms": 2.8,
           "osint": 0.0,
           "activity_baseline": 5
         }
@@ -624,7 +624,40 @@
     ]
   },
   "events": {
-    "24": [],
+    "24": [
+      {
+        "id": "osint-2026-11-15T00:00:00+00:00-0",
+        "kind": "osint",
+        "type": "General Military Update",
+        "title": "Ukraine’s strikes are putting Russia’s oil industry under growing pressure",
+        "value": "8/10",
+        "value_numeric": 8,
+        "time": "2026-11-15T00:00:00Z",
+        "class_name": "strike",
+        "confidence": "Közepes",
+        "source": "ArmyInform",
+        "sector_id": "pokrovsk",
+        "url": "https://armyinform.com.ua/en/2026/11/15/ukraines-strikes-are-putting-russias-oil-industry-under-growing-pressure-2/",
+        "note": "Ukraine’s strikes are putting Russia’s oil industry under growing pressure",
+        "priority": 90
+      },
+      {
+        "id": "osint-2026-11-15T00:00:00+00:00-1",
+        "kind": "osint",
+        "type": "General Military Update",
+        "title": "Missing In Action, Endlessly: How Russian Soldiers Disappear on the Front Line and Their Families Are Left Without Answers",
+        "value": "8/10",
+        "value_numeric": 8,
+        "time": "2026-11-15T00:00:00Z",
+        "class_name": "strike",
+        "confidence": "Közepes",
+        "source": "ArmyInform",
+        "sector_id": "pokrovsk",
+        "url": "https://armyinform.com.ua/en/2026/11/15/missing-in-action-endlessly-how-russian-soldiers-disappear-on-the-front-line-and-their-families-are-left-without-answers/",
+        "note": "Missing In Action, Endlessly: How Russian Soldiers Disappear on the Front Line and Their Families Are Left Without Answers",
+        "priority": 90
+      }
+    ],
     "48": [
       {
         "id": "territorial-2026-11-14T00:00:00+00:00-0",
@@ -642,19 +675,52 @@
         "priority": 109.71000000000001
       },
       {
-        "id": "firms-48-52.55-39.63",
-        "kind": "firms",
-        "type": "Rendkívüli FIRMS-klaszter",
-        "title": "52.55, 39.63 térsége",
-        "value": "12 hőpont",
-        "value_numeric": 12,
-        "time": "2026-11-15T00:07:00Z",
-        "class_name": "firms",
+        "id": "osint-2026-11-14T00:00:00+00:00-2",
+        "kind": "osint",
+        "type": "Assault",
+        "title": "Russian Offensive Campaign Assessment, November 14, 2026",
+        "value": "8/10",
+        "value_numeric": 8,
+        "time": "2026-11-14T00:00:00Z",
+        "class_name": "strike",
         "confidence": "Közepes",
-        "source": "NASA FIRMS",
-        "sector_id": "unassigned",
-        "note": "A térben koncentrálódó hőpontok száma meghaladta az automatikus riasztási küszöböt. A hőpont önmagában nem bizonyít katonai eseményt.",
-        "priority": 72
+        "source": "Critical Threats",
+        "sector_id": "pokrovsk",
+        "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-november-14-2026",
+        "note": "Russian Offensive Campaign Assessment, November 14, 2026",
+        "priority": 90
+      },
+      {
+        "id": "osint-2026-11-15T00:00:00+00:00-0",
+        "kind": "osint",
+        "type": "General Military Update",
+        "title": "Ukraine’s strikes are putting Russia’s oil industry under growing pressure",
+        "value": "8/10",
+        "value_numeric": 8,
+        "time": "2026-11-15T00:00:00Z",
+        "class_name": "strike",
+        "confidence": "Közepes",
+        "source": "ArmyInform",
+        "sector_id": "pokrovsk",
+        "url": "https://armyinform.com.ua/en/2026/11/15/ukraines-strikes-are-putting-russias-oil-industry-under-growing-pressure-2/",
+        "note": "Ukraine’s strikes are putting Russia’s oil industry under growing pressure",
+        "priority": 90
+      },
+      {
+        "id": "osint-2026-11-15T00:00:00+00:00-1",
+        "kind": "osint",
+        "type": "General Military Update",
+        "title": "Missing In Action, Endlessly: How Russian Soldiers Disappear on the Front Line and Their Families Are Left Without Answers",
+        "value": "8/10",
+        "value_numeric": 8,
+        "time": "2026-11-15T00:00:00Z",
+        "class_name": "strike",
+        "confidence": "Közepes",
+        "source": "ArmyInform",
+        "sector_id": "pokrovsk",
+        "url": "https://armyinform.com.ua/en/2026/11/15/missing-in-action-endlessly-how-russian-soldiers-disappear-on-the-front-line-and-their-families-are-left-without-answers/",
+        "note": "Missing In Action, Endlessly: How Russian Soldiers Disappear on the Front Line and Their Families Are Left Without Answers",
+        "priority": 90
       }
     ],
     "72": [
@@ -689,7 +755,7 @@
         "priority": 101.56
       },
       {
-        "id": "osint-2026-11-13T00:00:00+00:00-0",
+        "id": "osint-2026-11-13T00:00:00+00:00-3",
         "kind": "osint",
         "type": "General Military Update",
         "title": "The EU Tightens Russia’s Financial Blockade: Why New Sanctions Could Hit Oil Revenues and Sanctions Evasion Networks",
@@ -705,7 +771,7 @@
         "priority": 90
       },
       {
-        "id": "osint-2026-11-13T00:00:00+00:00-1",
+        "id": "osint-2026-11-13T00:00:00+00:00-4",
         "kind": "osint",
         "type": "General Military Update",
         "title": "The Kremlin Hides the Numbers, but It Cannot Hide the Graves: What Russian Cemeteries, Rosstat Data Leaks and Demographics Reveal About the True Losses of the Russian Army",
@@ -732,9 +798,9 @@
         "source": "territorial",
         "path": "data/territorial_delta_30days.geojson",
         "exists": true,
-        "updated_at": "2026-11-15T06:37:10.800750Z",
+        "updated_at": "2026-11-15T16:23:10.133666Z",
         "latest_record_at": "2026-11-14T22:39:39.789781Z",
-        "age_hours": 8.0,
+        "age_hours": 17.7,
         "status": "fresh",
         "record_count": 67,
         "note": "A 90 napos ablakhoz a windows összesítő is elérhető."
@@ -745,7 +811,7 @@
         "exists": true,
         "updated_at": "2026-11-15T06:28:28.924075Z",
         "latest_record_at": "2026-11-15T01:49:00Z",
-        "age_hours": 4.8,
+        "age_hours": 14.6,
         "status": "fresh",
         "record_count": 25788,
         "note": ""
@@ -754,11 +820,11 @@
         "source": "osint",
         "path": "data/osint_feed.json",
         "exists": true,
-        "updated_at": "2026-11-14T21:25:48.134114Z",
-        "latest_record_at": "2026-11-14T00:00:00Z",
-        "age_hours": 30.6,
+        "updated_at": "2026-11-15T12:41:45.455584Z",
+        "latest_record_at": "2026-11-15T00:00:00Z",
+        "age_hours": 16.4,
         "status": "fresh",
-        "record_count": 14,
+        "record_count": 12,
         "note": ""
       }
     }
