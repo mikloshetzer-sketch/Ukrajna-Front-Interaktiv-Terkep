@@ -1,33 +1,33 @@
 {
-  "date": "2026-11-14",
-  "updated_utc": "2026-11-14T22:39:39.206065+00:00",
-  "front_activity_index": 78,
-  "status": "HIGH",
+  "date": "2026-11-15",
+  "updated_utc": "2026-11-15T23:03:13.142194+00:00",
+  "front_activity_index": 57,
+  "status": "ELEVATED",
   "components": {
     "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 29.1,
-    "active_sectors": 2,
-    "critical_events": 2
+    "territorial_change": 0.0,
+    "active_sectors": 8,
+    "critical_events": 4
   },
   "counts": {
     "osint": 14,
-    "firms_3d": 134,
-    "firms_10d": 536,
-    "firms_30d": 26272,
-    "critical_events": 1,
-    "active_sectors": 1
+    "firms_3d": 138,
+    "firms_10d": 534,
+    "firms_30d": 25797,
+    "critical_events": 2,
+    "active_sectors": 4
   },
   "territorial": {
     "available": true,
     "error": null,
-    "previous_file": "deepstatemap_data_20261113.geojson",
-    "current_file": "deepstatemap_data_20261114.geojson",
-    "previous_total_km2": 116872.54,
+    "previous_file": "deepstatemap_data_20261114.geojson",
+    "current_file": "deepstatemap_data_20261115.geojson",
+    "previous_total_km2": 116882.23,
     "current_total_km2": 116882.23,
-    "russian_gain_km2": 9.69,
+    "russian_gain_km2": 0,
     "ukrainian_recapture_km2": 0,
-    "net_change_km2": 9.69,
+    "net_change_km2": 0.0,
     "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
@@ -36,7 +36,7 @@
     "lon": 37.18,
     "zoom": 9,
     "score": 100,
-    "change_km2": 9.69,
+    "change_km2": 0.0,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
@@ -48,9 +48,27 @@
     },
     {
       "sector": "Other / Unclassified",
-      "osint": 5,
-      "firms": 134,
+      "osint": 4,
+      "firms": 136,
       "score": 100
+    },
+    {
+      "sector": "Kurakhove",
+      "osint": 1,
+      "firms": 0,
+      "score": 12
+    },
+    {
+      "sector": "Zaporizhzhia",
+      "osint": 0,
+      "firms": 1,
+      "score": 1
+    },
+    {
+      "sector": "Kherson-Dnipro",
+      "osint": 0,
+      "firms": 1,
+      "score": 1
     },
     {
       "sector": "Kupiansk",
@@ -69,27 +87,29 @@
       "osint": 0,
       "firms": 0,
       "score": 0
-    },
-    {
-      "sector": "Kurakhove",
-      "osint": 0,
-      "firms": 0,
-      "score": 0
-    },
-    {
-      "sector": "Velyka Novosilka",
-      "osint": 0,
-      "firms": 0,
-      "score": 0
-    },
-    {
-      "sector": "Zaporizhzhia",
-      "osint": 0,
-      "firms": 0,
-      "score": 0
     }
   ],
   "top_events": [
+    {
+      "title": "Ukraine’s strikes are putting Russia’s oil industry under growing pressure",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk"
+    },
+    {
+      "title": "Missing In Action, Endlessly: How Russian Soldiers Disappear on the Front Line and Their Families Are Left Without Answers",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk"
+    },
+    {
+      "title": "Reported rear-area strike near Donyeck",
+      "source": "forrás nélkül",
+      "sector": "Kurakhove"
+    },
+    {
+      "title": "Russian Offensive Campaign Assessment, November 14, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk"
+    },
     {
       "title": "The EU Tightens Russia’s Financial Blockade: Why New Sanctions Could Hit Oil Revenues and Sanctions Evasion Networks",
       "source": "forrás nélkül",
@@ -97,26 +117,6 @@
     },
     {
       "title": "The Kremlin Hides the Numbers, but It Cannot Hide the Graves: What Russian Cemeteries, Rosstat Data Leaks and Demographics Reveal About the True Losses of the Russian Army",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Volgograd Oil Refinery Under Attack: How Ukraine Is Deepening Russia’s Fuel Crisis and Why the Impact of the Strikes Is Accumulating",
-      "source": "forrás nélkül",
-      "sector": "Other / Unclassified"
-    },
-    {
-      "title": "Russian Offensive Campaign Assessment, November 13, 2026",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "From Storage Tanks to Tankers: How Ukraine Is Weakening Russia’s Oil Exports by Striking Ust-Luga",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk"
-    },
-    {
-      "title": "Russia’s $4 Billion Naval Losses Highlight Ukraine’s Role in EU Black Sea Security Plans",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     }
