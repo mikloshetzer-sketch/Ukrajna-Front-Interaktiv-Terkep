@@ -1,12 +1,12 @@
 {
   "date": "2026-11-17",
-  "updated_utc": "2026-11-17T01:56:43.241708+00:00",
-  "front_activity_index": 57,
-  "status": "ELEVATED",
+  "updated_utc": "2026-11-17T06:38:56.375243+00:00",
+  "front_activity_index": 87,
+  "status": "CRITICAL",
   "components": {
     "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 0.0,
+    "territorial_change": 30.1,
     "active_sectors": 8,
     "critical_events": 4
   },
@@ -19,16 +19,16 @@
     "active_sectors": 4
   },
   "territorial": {
-    "available": false,
-    "error": "HTTP Error 504: Gateway Timeout",
-    "previous_file": null,
-    "current_file": null,
-    "previous_total_km2": null,
-    "current_total_km2": null,
-    "russian_gain_km2": 0.0,
-    "ukrainian_recapture_km2": 0.0,
-    "net_change_km2": 0.0,
-    "method": "fallback"
+    "available": true,
+    "error": null,
+    "previous_file": "deepstatemap_data_20261115.geojson",
+    "current_file": "deepstatemap_data_20261116.geojson",
+    "previous_total_km2": 116882.23,
+    "current_total_km2": 116892.27,
+    "russian_gain_km2": 10.03,
+    "ukrainian_recapture_km2": 0,
+    "net_change_km2": 10.03,
+    "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
     "sector": "Pokrovsk",
@@ -36,7 +36,7 @@
     "lon": 37.18,
     "zoom": 9,
     "score": 100,
-    "change_km2": 0.0,
+    "change_km2": 10.03,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
