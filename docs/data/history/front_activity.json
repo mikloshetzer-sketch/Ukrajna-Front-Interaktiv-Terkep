@@ -21778,5 +21778,137 @@
       "deepstate": "cyterat/deepstate-map-data via GitHub API"
     },
     "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
+  },
+  {
+    "date": "2026-11-18",
+    "updated_utc": "2026-11-18T01:09:26.740353+00:00",
+    "front_activity_index": 61,
+    "status": "HIGH",
+    "components": {
+      "osint_density": 25,
+      "firms_activity": 20,
+      "territorial_change": 0.0,
+      "active_sectors": 6,
+      "critical_events": 10
+    },
+    "counts": {
+      "osint": 25,
+      "firms_3d": 161,
+      "firms_10d": 566,
+      "firms_30d": 24584,
+      "critical_events": 9,
+      "active_sectors": 3
+    },
+    "territorial": {
+      "available": true,
+      "error": null,
+      "previous_file": "deepstatemap_data_20261116.geojson",
+      "current_file": "deepstatemap_data_20261117.geojson",
+      "previous_total_km2": 116892.27,
+      "current_total_km2": 116892.27,
+      "russian_gain_km2": 0,
+      "ukrainian_recapture_km2": 0,
+      "net_change_km2": 0.0,
+      "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    },
+    "territorial_hotspot": {
+      "sector": "Pokrovsk",
+      "lat": 48.28,
+      "lon": 37.18,
+      "zoom": 9,
+      "score": 100,
+      "change_km2": 0.0,
+      "method": "Top classified sector based on OSINT + FIRMS density"
+    },
+    "top_sectors": [
+      {
+        "sector": "Pokrovsk",
+        "osint": 13,
+        "firms": 1,
+        "score": 100
+      },
+      {
+        "sector": "Other / Unclassified",
+        "osint": 5,
+        "firms": 159,
+        "score": 100
+      },
+      {
+        "sector": "Crimea",
+        "osint": 5,
+        "firms": 0,
+        "score": 60
+      },
+      {
+        "sector": "Zaporizhzhia",
+        "osint": 2,
+        "firms": 1,
+        "score": 25
+      },
+      {
+        "sector": "Kupiansk",
+        "osint": 0,
+        "firms": 0,
+        "score": 0
+      },
+      {
+        "sector": "Lyman",
+        "osint": 0,
+        "firms": 0,
+        "score": 0
+      },
+      {
+        "sector": "Bakhmut-Toretsk",
+        "osint": 0,
+        "firms": 0,
+        "score": 0
+      },
+      {
+        "sector": "Kurakhove",
+        "osint": 0,
+        "firms": 0,
+        "score": 0
+      }
+    ],
+    "top_events": [
+      {
+        "title": "Reported military-related update near Krím",
+        "source": "forrás nélkül",
+        "sector": "Crimea"
+      },
+      {
+        "title": "Reported rear-area strike near Krím",
+        "source": "forrás nélkül",
+        "sector": "Crimea"
+      },
+      {
+        "title": "Doubling drone supplies and strengthening air defence: Ukraine outlines priorities to EU partners",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "“He said he could not retreat”: How two police officers rescued a wounded woman and her grandson under a Russian UAV attack",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "The russian army is losing its willing recruits: Why money no longer guarantees new recruits for the kremlin",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "“Before we left, we were already eating once a day”: Ukrainian military delivered aid to residents of occupied Oleshky, but russian occupiers stole the food",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      }
+    ],
+    "data_sources": {
+      "osint": "data/osint_feed.json",
+      "firms_3d": "data/firms_3.json",
+      "firms_10d": "data/firms_10.json",
+      "firms_30d": "data/firms_30.json",
+      "deepstate": "cyterat/deepstate-map-data via GitHub API"
+    },
+    "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
   }
 ]
