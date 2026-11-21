@@ -1,19 +1,19 @@
 {
   "schema_version": "1.3.0",
   "dataset": "ukraine_conflict_dashboard_current",
-  "generated_at": "2026-11-20T20:24:30.039551Z",
-  "latest_data_at": "2026-11-20T11:44:00Z",
+  "generated_at": "2026-11-21T02:18:41.738510Z",
+  "latest_data_at": "2026-11-21T00:05:57.920568Z",
   "periods": {
     "1": {
       "days": 1,
-      "start_at": "2026-11-19T20:24:30.039551Z",
-      "end_at": "2026-11-20T20:24:30.039551Z",
+      "start_at": "2026-11-20T02:18:41.738510Z",
+      "end_at": "2026-11-21T02:18:41.738510Z",
       "ru_gain_km2": 0.0,
       "ua_recapture_km2": 0.0,
       "net_change_km2": 0.0,
-      "firms_count": 36,
-      "conflict_index": -23,
-      "osint_events": 9,
+      "firms_count": 20,
+      "conflict_index": 0,
+      "osint_events": 0,
       "availability": {
         "territorial": "fresh",
         "firms": "fresh",
@@ -22,12 +22,12 @@
     },
     "7": {
       "days": 7,
-      "start_at": "2026-11-13T20:24:30.039551Z",
-      "end_at": "2026-11-20T20:24:30.039551Z",
+      "start_at": "2026-11-14T02:18:41.738510Z",
+      "end_at": "2026-11-21T02:18:41.738510Z",
       "ru_gain_km2": 29.69,
       "ua_recapture_km2": 0.0,
       "net_change_km2": 29.69,
-      "firms_count": 340,
+      "firms_count": 330,
       "conflict_index": -80,
       "osint_events": 27,
       "availability": {
@@ -38,12 +38,12 @@
     },
     "30": {
       "days": 30,
-      "start_at": "2026-10-21T20:24:30.039551Z",
-      "end_at": "2026-11-20T20:24:30.039551Z",
+      "start_at": "2026-10-22T02:18:41.738510Z",
+      "end_at": "2026-11-21T02:18:41.738510Z",
       "ru_gain_km2": 110.49,
       "ua_recapture_km2": 0.0,
       "net_change_km2": 110.49,
-      "firms_count": 21201,
+      "firms_count": 21180,
       "conflict_index": -80,
       "osint_events": 27,
       "availability": {
@@ -54,8 +54,8 @@
     },
     "90": {
       "days": 90,
-      "start_at": "2026-08-22T20:24:30.039551Z",
-      "end_at": "2026-11-20T20:24:30.039551Z",
+      "start_at": "2026-08-23T02:18:41.738510Z",
+      "end_at": "2026-11-21T02:18:41.738510Z",
       "ru_gain_km2": 0.0,
       "ua_recapture_km2": 0.0,
       "net_change_km2": 0.0,
@@ -75,50 +75,16 @@
         "id": "ukrainian_rear",
         "name": "Ukrán hátország",
         "sub": "mélységi csapások és infrastruktúra",
-        "score": 49,
-        "risk": "MODERATE",
-        "ru_gain_km2": 0.0,
-        "ua_recapture_km2": 0.0,
-        "firms_count": 9,
-        "osint_events": 3,
-        "components": {
-          "territorial": 0.0,
-          "firms": 25.0,
-          "osint": 16.7,
-          "activity_baseline": 7
-        }
-      },
-      {
-        "id": "pokrovsk",
-        "name": "Pokrovsk",
-        "sub": "folyamatos szárazföldi nyomás",
         "score": 30,
         "risk": "MODERATE",
         "ru_gain_km2": 0.0,
         "ua_recapture_km2": 0.0,
-        "firms_count": 0,
-        "osint_events": 4,
+        "firms_count": 9,
+        "osint_events": 0,
         "components": {
           "territorial": 0.0,
-          "firms": 0.0,
-          "osint": 25.0,
-          "activity_baseline": 5
-        }
-      },
-      {
-        "id": "crimea",
-        "name": "Krím",
-        "sub": "csapások és légvédelmi aktivitás",
-        "score": 15,
-        "risk": "MODERATE",
-        "ru_gain_km2": 0.0,
-        "ua_recapture_km2": 0.0,
-        "firms_count": 0,
-        "osint_events": 2,
-        "components": {
-          "territorial": 0.0,
-          "firms": 0.0,
-          "osint": 9.5,
+          "firms": 25.0,
+          "osint": 0.0,
           "activity_baseline": 5
         }
       },
@@ -174,9 +140,43 @@
         }
       },
       {
+        "id": "crimea",
+        "name": "Krím",
+        "sub": "csapások és légvédelmi aktivitás",
+        "score": 3,
+        "risk": "MODERATE",
+        "ru_gain_km2": 0.0,
+        "ua_recapture_km2": 0.0,
+        "firms_count": 0,
+        "osint_events": 0,
+        "components": {
+          "territorial": 0.0,
+          "firms": 0.0,
+          "osint": 0.0,
+          "activity_baseline": 3
+        }
+      },
+      {
         "id": "kupiansk_lyman",
         "name": "Kupjanszk–Liman",
         "sub": "északi hadműveleti nyomás",
+        "score": 3,
+        "risk": "MODERATE",
+        "ru_gain_km2": 0.0,
+        "ua_recapture_km2": 0.0,
+        "firms_count": 0,
+        "osint_events": 0,
+        "components": {
+          "territorial": 0.0,
+          "firms": 0.0,
+          "osint": 0.0,
+          "activity_baseline": 3
+        }
+      },
+      {
+        "id": "pokrovsk",
+        "name": "Pokrovsk",
+        "sub": "folyamatos szárazföldi nyomás",
         "score": 3,
         "risk": "MODERATE",
         "ru_gain_km2": 0.0,
@@ -213,7 +213,7 @@
         "id": "kostiantynivka_chasiv_yar",
         "name": "Kostiantynivka–Csasziv Jar",
         "sub": "védelmi csomópontok térsége",
-        "score": 42,
+        "score": 43,
         "risk": "MODERATE",
         "ru_gain_km2": 17.14,
         "ua_recapture_km2": 0.0,
@@ -234,7 +234,7 @@
         "risk": "MODERATE",
         "ru_gain_km2": 0.0,
         "ua_recapture_km2": 0.0,
-        "firms_count": 51,
+        "firms_count": 49,
         "osint_events": 5,
         "components": {
           "territorial": 0.0,
@@ -298,7 +298,7 @@
         "id": "kherson",
         "name": "Herszon",
         "sub": "alacsonyabb területi dinamika",
-        "score": 5,
+        "score": 6,
         "risk": "MODERATE",
         "ru_gain_km2": 0.0,
         "ua_recapture_km2": 0.0,
@@ -624,9 +624,42 @@
     ]
   },
   "events": {
-    "24": [
+    "24": [],
+    "48": [
       {
         "id": "osint-2026-11-20T00:00:00+00:00-0",
+        "kind": "osint",
+        "type": "Rear Area Strike",
+        "title": "From a Pantsir System in Bryansk Oblast to Warehouses Near Lysychansk: Key Russian Targets Struck",
+        "value": "8/10",
+        "value_numeric": 8,
+        "time": "2026-11-20T00:00:00Z",
+        "class_name": "strike",
+        "confidence": "Közepes",
+        "source": "ArmyInform",
+        "sector_id": "unassigned",
+        "url": "https://armyinform.com.ua/en/2026/11/20/from-a-pantsir-system-in-bryansk-oblast-to-warehouses-near-lysychansk-key-russian-targets-struck/",
+        "note": "From a Pantsir System in Bryansk Oblast to Warehouses Near Lysychansk: Key Russian Targets Struck",
+        "priority": 90
+      },
+      {
+        "id": "osint-2026-11-20T00:00:00+00:00-1",
+        "kind": "osint",
+        "type": "Missile Strike",
+        "title": "Strike Against Enemy Ballistic Missile Capabilities: Defense Forces Hit Three Russian Launchers Overnight",
+        "value": "8/10",
+        "value_numeric": 8,
+        "time": "2026-11-20T00:00:00Z",
+        "class_name": "strike",
+        "confidence": "Közepes",
+        "source": "ArmyInform",
+        "sector_id": "pokrovsk",
+        "url": "https://armyinform.com.ua/en/2026/11/20/strike-against-enemy-ballistic-missile-capabilities-defense-forces-hit-three-russian-launchers-overnight/",
+        "note": "Strike Against Enemy Ballistic Missile Capabilities: Defense Forces Hit Three Russian Launchers Overnight",
+        "priority": 90
+      },
+      {
+        "id": "osint-2026-11-20T00:00:00+00:00-2",
         "kind": "osint",
         "type": "General Military Update",
         "title": "The “Heart” of the Druzhba Oil Pipeline in Flames: Defense Forces Strike Strategic Hub in Tatarstan",
@@ -642,7 +675,7 @@
         "priority": 90
       },
       {
-        "id": "osint-2026-11-20T00:00:00+00:00-1",
+        "id": "osint-2026-11-20T00:00:00+00:00-3",
         "kind": "osint",
         "type": "Air Defense",
         "title": "Ukraine and France Prepare Joint Defense Projects: Investments in the Defense Industry, Weapons Production, and Strengthening Air Defense",
@@ -656,41 +689,9 @@
         "url": "https://armyinform.com.ua/en/2026/11/20/ukraine-and-france-prepare-joint-defense-projects-investments-in-the-defense-industry-weapons-production-and-strengthening-air-defense/",
         "note": "Ukraine and France Prepare Joint Defense Projects: Investments in the Defense Industry, Weapons Production, and Strengthening Air Defense",
         "priority": 90
-      },
-      {
-        "id": "osint-2026-11-20T00:00:00+00:00-2",
-        "kind": "osint",
-        "type": "Naval",
-        "title": "Reaching russia’s military-industrial complex in siberia: unmanned systems forces report results of deep strikes over the past 50 days",
-        "value": "8/10",
-        "value_numeric": 8,
-        "time": "2026-11-20T00:00:00Z",
-        "class_name": "strike",
-        "confidence": "Közepes",
-        "source": "ArmyInform",
-        "sector_id": "pokrovsk",
-        "url": "https://armyinform.com.ua/en/2026/11/20/reaching-russias-military-industrial-complex-in-siberia-unmanned-systems-forces-report-results-of-deep-strikes-over-the-past-50-days/",
-        "note": "Reaching russia’s military-industrial complex in siberia: unmanned systems forces report results of deep strikes over the past 50 days",
-        "priority": 90
-      },
-      {
-        "id": "osint-2026-11-20T00:00:00+00:00-3",
-        "kind": "osint",
-        "type": "Missile Strike",
-        "title": "Kyiv sees increase in death toll following massive russian missile strike",
-        "value": "8/10",
-        "value_numeric": 8,
-        "time": "2026-11-20T00:00:00Z",
-        "class_name": "strike",
-        "confidence": "Közepes",
-        "source": "ArmyInform",
-        "sector_id": "ukrainian_rear",
-        "url": "https://armyinform.com.ua/en/2026/11/20/kyiv-sees-increase-in-death-toll-following-massive-russian-missile-strike/",
-        "note": "Kyiv sees increase in death toll following massive russian missile strike",
-        "priority": 90
       }
     ],
-    "48": [
+    "72": [
       {
         "id": "territorial-2026-11-19T00:00:00+00:00-0",
         "kind": "territorial",
@@ -707,7 +708,7 @@
         "priority": 104.09
       },
       {
-        "id": "osint-2026-11-19T00:00:00+00:00-5",
+        "id": "osint-2026-11-19T00:00:00+00:00-7",
         "kind": "osint",
         "type": "General Military Update",
         "title": "More than 40 partners and U.S. representatives: Volodymyr Zelenskyy arrives in Berlin for the Coalition of the Willing meeting",
@@ -723,7 +724,7 @@
         "priority": 90
       },
       {
-        "id": "osint-2026-11-19T00:00:00+00:00-6",
+        "id": "osint-2026-11-19T00:00:00+00:00-8",
         "kind": "osint",
         "type": "General Military Update",
         "title": "More than sanctions: Ukraine is using its courts to make russia pay for the war",
@@ -739,7 +740,7 @@
         "priority": 90
       },
       {
-        "id": "osint-2026-11-19T00:00:00+00:00-7",
+        "id": "osint-2026-11-19T00:00:00+00:00-9",
         "kind": "osint",
         "type": "Assault",
         "title": "“Poisoning them to force them out of their trenches”: russia wages chemical terror against Ukraine’s Armed Forces — thousands of attacks and banned grenades documented",
@@ -754,69 +755,6 @@
         "note": "“Poisoning them to force them out of their trenches”: russia wages chemical terror against Ukraine’s Armed Forces — thousands of attacks and banned grenades documented",
         "priority": 90
       }
-    ],
-    "72": [
-      {
-        "id": "territorial-2026-11-19T00:00:00+00:00-2",
-        "kind": "territorial",
-        "type": "Orosz területi nyereség",
-        "title": "Kupjanszk–Liman",
-        "value": "4.09 km²",
-        "value_numeric": 4.09,
-        "time": "2026-11-19T00:00:00Z",
-        "class_name": "",
-        "confidence": "Magas",
-        "source": "Területi delta",
-        "sector_id": "kupiansk_lyman",
-        "note": "A gördülő frontgeometria a küszöbértéket meghaladó területi változást azonosított.",
-        "priority": 104.09
-      },
-      {
-        "id": "territorial-2026-11-18T00:00:00+00:00-0",
-        "kind": "territorial",
-        "type": "Orosz területi nyereség",
-        "title": "Kostiantynivka–Csasziv Jar",
-        "value": "3.61 km²",
-        "value_numeric": 3.61,
-        "time": "2026-11-18T00:00:00Z",
-        "class_name": "",
-        "confidence": "Magas",
-        "source": "Területi delta",
-        "sector_id": "kostiantynivka_chasiv_yar",
-        "note": "A gördülő frontgeometria a küszöbértéket meghaladó területi változást azonosított.",
-        "priority": 103.61
-      },
-      {
-        "id": "territorial-2026-11-18T00:00:00+00:00-1",
-        "kind": "territorial",
-        "type": "Orosz területi nyereség",
-        "title": "Kostiantynivka–Csasziv Jar",
-        "value": "2.02 km²",
-        "value_numeric": 2.02,
-        "time": "2026-11-18T00:00:00Z",
-        "class_name": "",
-        "confidence": "Magas",
-        "source": "Területi delta",
-        "sector_id": "kostiantynivka_chasiv_yar",
-        "note": "A gördülő frontgeometria a küszöbértéket meghaladó területi változást azonosított.",
-        "priority": 102.02
-      },
-      {
-        "id": "osint-2026-11-18T00:00:00+00:00-16",
-        "kind": "osint",
-        "type": "Logistics",
-        "title": "An oil double strike: Defense Forces hit oil refineries supplying the enemy grouping in Southern Ukraine",
-        "value": "8/10",
-        "value_numeric": 8,
-        "time": "2026-11-18T00:00:00Z",
-        "class_name": "strike",
-        "confidence": "Közepes",
-        "source": "ArmyInform",
-        "sector_id": "pokrovsk",
-        "url": "https://armyinform.com.ua/en/2026/11/18/an-oil-double-strike-defense-forces-hit-oil-refineries-supplying-the-enemy-grouping-in-southern-ukraine/",
-        "note": "An oil double strike: Defense Forces hit oil refineries supplying the enemy grouping in Southern Ukraine",
-        "priority": 90
-      }
     ]
   },
   "freshness": {
@@ -829,9 +767,9 @@
         "source": "territorial",
         "path": "data/territorial_delta_30days.geojson",
         "exists": true,
-        "updated_at": "2026-11-20T20:24:28.261180Z",
-        "latest_record_at": "2026-11-20T00:47:05.645130Z",
-        "age_hours": 19.6,
+        "updated_at": "2026-11-21T02:18:40.058767Z",
+        "latest_record_at": "2026-11-21T00:05:57.920568Z",
+        "age_hours": 2.2,
         "status": "fresh",
         "record_count": 67,
         "note": "A 90 napos ablakhoz a windows összesítő is elérhető."
@@ -842,7 +780,7 @@
         "exists": true,
         "updated_at": "2026-11-20T20:15:48.012892Z",
         "latest_record_at": "2026-11-20T11:44:00Z",
-        "age_hours": 8.7,
+        "age_hours": 14.6,
         "status": "fresh",
         "record_count": 21201,
         "note": ""
@@ -851,9 +789,9 @@
         "source": "osint",
         "path": "data/osint_feed.json",
         "exists": true,
-        "updated_at": "2026-11-20T13:58:01.791896Z",
+        "updated_at": "2026-11-20T23:03:11.982429Z",
         "latest_record_at": "2026-11-20T00:00:00Z",
-        "age_hours": 20.4,
+        "age_hours": 26.3,
         "status": "fresh",
         "record_count": 27,
         "note": ""
