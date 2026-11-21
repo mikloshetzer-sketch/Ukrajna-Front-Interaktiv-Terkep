@@ -1,14 +1,14 @@
 {
-  "updated_utc": "2026-11-21T00:05:58.765539+00:00",
+  "updated_utc": "2026-11-21T23:31:15.225726+00:00",
   "date": "2026-11-21",
   "territorial_sector": {
-    "sector": "No territorial delta",
-    "lat": null,
-    "lon": null,
-    "distance_km": null,
-    "change_type": "none",
-    "area_km2": 0,
-    "label": "No mapped daily territorial change"
+    "sector": "Pokrovsk",
+    "lat": 48.47865523571428,
+    "lon": 37.32864317857142,
+    "distance_km": 24.7,
+    "change_type": "russian_gain",
+    "area_km2": 3.56,
+    "label": "Russian territorial gain"
   },
   "priority_osint_events": [
     {
@@ -108,6 +108,18 @@
       "priority": 97
     },
     {
+      "title": "Russian Offensive Campaign Assessment, November 20, 2026",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "frontline",
+      "event_label": "Frontline pressure",
+      "icon": "⚔",
+      "priority": 95
+    },
+    {
       "title": "Russian Offensive Campaign Assessment, November 19, 2026",
       "source": "forrás nélkül",
       "sector": "Pokrovsk",
@@ -121,18 +133,6 @@
     },
     {
       "title": "Russian Offensive Campaign Assessment, November 18, 2026",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "frontline",
-      "event_label": "Frontline pressure",
-      "icon": "⚔",
-      "priority": 95
-    },
-    {
-      "title": "Russian Offensive Campaign Assessment, November 17, 2026",
       "source": "forrás nélkül",
       "sector": "Pokrovsk",
       "lat": 48.5,
@@ -159,25 +159,36 @@
   "front_pressure_points": [
     {
       "sector": "Pokrovsk",
-      "title": "Pokrovsk OSINT activity cluster",
+      "title": "Pokrovsk territorial gain axis",
       "lat": 48.28,
       "lon": 37.18,
-      "score": 100,
+      "score": 130,
       "osint": 17,
       "firms": 0,
-      "pressure_type": "osint_activity_cluster",
-      "icon": "⚔"
+      "pressure_type": "territorial_gain_axis",
+      "icon": "▲"
     },
     {
       "sector": "Crimea",
       "title": "Crimea OSINT activity cluster",
       "lat": 45.2,
       "lon": 34.1,
-      "score": 48,
-      "osint": 4,
+      "score": 36,
+      "osint": 3,
       "firms": 0,
       "pressure_type": "osint_activity_cluster",
       "icon": "⚔"
+    },
+    {
+      "sector": "Zaporizhzhia",
+      "title": "Zaporizhzhia pressure axis",
+      "lat": 47.84,
+      "lon": 35.14,
+      "score": 13,
+      "osint": 1,
+      "firms": 1,
+      "pressure_type": "pressure_axis",
+      "icon": "⚑"
     },
     {
       "sector": "Lyman",
@@ -222,17 +233,6 @@
       "firms": 0,
       "pressure_type": "pressure_axis",
       "icon": "⚑"
-    },
-    {
-      "sector": "Velyka Novosilka",
-      "title": "Velyka Novosilka pressure axis",
-      "lat": 47.84,
-      "lon": 36.84,
-      "score": 0,
-      "osint": 0,
-      "firms": 0,
-      "pressure_type": "pressure_axis",
-      "icon": "⚑"
     }
   ],
   "event_categories": [
@@ -257,12 +257,12 @@
       "count": 1
     }
   ],
-  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 61. No measurable net territorial change was detected. The main pressure focus is Pokrovsk. The strongest event category is Drone / UAV activity. The system processed 27 OSINT events, 112 short-term FIRMS hotspots and 3 active sectors.",
+  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 74. Russian forces gained approximately 3.55 km², closest to the Pokrovsk sector. The main pressure focus is Pokrovsk. The strongest event category is Drone / UAV activity. The system processed 27 OSINT events, 84 short-term FIRMS hotspots and 4 active sectors.",
   "counts": {
     "priority_osint": 12,
     "pressure_points": 7,
-    "firms_3d": 112,
-    "firms_10d": 480,
+    "firms_3d": 84,
+    "firms_10d": 462,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."

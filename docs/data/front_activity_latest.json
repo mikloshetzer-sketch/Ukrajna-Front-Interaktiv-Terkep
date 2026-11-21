@@ -1,33 +1,33 @@
 {
   "date": "2026-11-21",
-  "updated_utc": "2026-11-21T00:05:56.912130+00:00",
-  "front_activity_index": 61,
+  "updated_utc": "2026-11-21T23:31:12.941902+00:00",
+  "front_activity_index": 74,
   "status": "HIGH",
   "components": {
     "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 0.0,
-    "active_sectors": 6,
+    "territorial_change": 10.6,
+    "active_sectors": 8,
     "critical_events": 10
   },
   "counts": {
     "osint": 27,
-    "firms_3d": 112,
-    "firms_10d": 480,
-    "firms_30d": 21201,
+    "firms_3d": 84,
+    "firms_10d": 462,
+    "firms_30d": 20437,
     "critical_events": 8,
-    "active_sectors": 3
+    "active_sectors": 4
   },
   "territorial": {
     "available": true,
     "error": null,
-    "previous_file": "deepstatemap_data_20261119.geojson",
-    "current_file": "deepstatemap_data_20261120.geojson",
+    "previous_file": "deepstatemap_data_20261120.geojson",
+    "current_file": "deepstatemap_data_20261121.geojson",
     "previous_total_km2": 116901.95,
-    "current_total_km2": 116901.95,
-    "russian_gain_km2": 0,
+    "current_total_km2": 116905.51,
+    "russian_gain_km2": 3.55,
     "ukrainian_recapture_km2": 0,
-    "net_change_km2": 0.0,
+    "net_change_km2": 3.55,
     "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
@@ -36,7 +36,7 @@
     "lon": 37.18,
     "zoom": 9,
     "score": 100,
-    "change_km2": 0.0,
+    "change_km2": 3.55,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
@@ -49,14 +49,20 @@
     {
       "sector": "Other / Unclassified",
       "osint": 5,
-      "firms": 112,
+      "firms": 83,
       "score": 100
     },
     {
       "sector": "Crimea",
-      "osint": 4,
+      "osint": 3,
       "firms": 0,
-      "score": 48
+      "score": 36
+    },
+    {
+      "sector": "Zaporizhzhia",
+      "osint": 1,
+      "firms": 1,
+      "score": 13
     },
     {
       "sector": "Lyman",
@@ -81,22 +87,16 @@
       "osint": 0,
       "firms": 0,
       "score": 0
-    },
-    {
-      "sector": "Velyka Novosilka",
-      "osint": 0,
-      "firms": 0,
-      "score": 0
     }
   ],
   "top_events": [
     {
-      "title": "Reported rear-area strike near Krím",
+      "title": "Reported rear-area strike near Zaporizzsja",
       "source": "forrás nélkül",
-      "sector": "Crimea"
+      "sector": "Zaporizhzhia"
     },
     {
-      "title": "Reported military-related update near Krím",
+      "title": "Reported rear-area strike near Krím",
       "source": "forrás nélkül",
       "sector": "Crimea"
     },
