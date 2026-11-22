@@ -1,13 +1,13 @@
 {
-  "updated_utc": "2026-11-21T23:31:15.225726+00:00",
-  "date": "2026-11-21",
+  "updated_utc": "2026-11-22T23:43:27.725259+00:00",
+  "date": "2026-11-22",
   "territorial_sector": {
-    "sector": "Pokrovsk",
-    "lat": 48.47865523571428,
-    "lon": 37.32864317857142,
-    "distance_km": 24.7,
+    "sector": "Bakhmut-Toretsk",
+    "lat": 48.680625133333336,
+    "lon": 37.77880131111111,
+    "distance_km": 16.8,
     "change_type": "russian_gain",
-    "area_km2": 3.56,
+    "area_km2": 3.42,
     "label": "Russian territorial gain"
   },
   "priority_osint_events": [
@@ -84,28 +84,28 @@
       "priority": 101
     },
     {
-      "title": "“Are these real photos or artificial intelligence?” Ambassador reveals NATO Headquarters’ reaction to the strike on the Kerch Bridge",
+      "title": "Reported ground assault or offensive activity near Krím",
       "source": "forrás nélkül",
       "sector": "Crimea",
-      "lat": 48.5,
-      "lon": 36.5,
+      "lat": 45.3,
+      "lon": 34.4,
       "distance_to_sector_km": 0,
-      "event_type": "logistics",
-      "event_label": "Logistics / infrastructure strike",
-      "icon": "⛓",
-      "priority": 100
+      "event_type": "frontline",
+      "event_label": "Frontline pressure",
+      "icon": "⚔",
+      "priority": 98
     },
     {
-      "title": "Another bridge and three aircraft: Defense Forces strike a crossing over the Siverskyi Donets and damage russian aircraft",
+      "title": "Russian Offensive Campaign Assessment, November 21, 2026",
       "source": "forrás nélkül",
       "sector": "Pokrovsk",
       "lat": 48.5,
       "lon": 36.5,
       "distance_to_sector_km": 55.9,
-      "event_type": "logistics",
-      "event_label": "Logistics / infrastructure strike",
-      "icon": "⛓",
-      "priority": 97
+      "event_type": "frontline",
+      "event_label": "Frontline pressure",
+      "icon": "⚔",
+      "priority": 95
     },
     {
       "title": "Russian Offensive Campaign Assessment, November 20, 2026",
@@ -132,18 +132,6 @@
       "priority": 95
     },
     {
-      "title": "Russian Offensive Campaign Assessment, November 18, 2026",
-      "source": "forrás nélkül",
-      "sector": "Pokrovsk",
-      "lat": 48.5,
-      "lon": 36.5,
-      "distance_to_sector_km": 55.9,
-      "event_type": "frontline",
-      "event_label": "Frontline pressure",
-      "icon": "⚔",
-      "priority": 95
-    },
-    {
       "title": "Reported rear-area strike near Krím",
       "source": "forrás nélkül",
       "sector": "Crimea",
@@ -154,30 +142,53 @@
       "event_label": "Strike / attack",
       "icon": "✹",
       "priority": 94
+    },
+    {
+      "title": "The “Heart” of the Druzhba Oil Pipeline in Flames: Defense Forces Strike Strategic Hub in Tatarstan",
+      "source": "forrás nélkül",
+      "sector": "Moscow / Russia Interior",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 0,
+      "event_type": "strike",
+      "event_label": "Strike / attack",
+      "icon": "✹",
+      "priority": 94
     }
   ],
   "front_pressure_points": [
     {
       "sector": "Pokrovsk",
-      "title": "Pokrovsk territorial gain axis",
+      "title": "Pokrovsk OSINT activity cluster",
       "lat": 48.28,
       "lon": 37.18,
-      "score": 130,
-      "osint": 17,
+      "score": 100,
+      "osint": 16,
       "firms": 0,
-      "pressure_type": "territorial_gain_axis",
-      "icon": "▲"
+      "pressure_type": "osint_activity_cluster",
+      "icon": "⚔"
     },
     {
       "sector": "Crimea",
       "title": "Crimea OSINT activity cluster",
       "lat": 45.2,
       "lon": 34.1,
-      "score": 36,
-      "osint": 3,
+      "score": 48,
+      "osint": 4,
       "firms": 0,
       "pressure_type": "osint_activity_cluster",
       "icon": "⚔"
+    },
+    {
+      "sector": "Bakhmut-Toretsk",
+      "title": "Bakhmut-Toretsk territorial gain axis",
+      "lat": 48.58,
+      "lon": 37.95,
+      "score": 30,
+      "osint": 0,
+      "firms": 0,
+      "pressure_type": "territorial_gain_axis",
+      "icon": "▲"
     },
     {
       "sector": "Zaporizhzhia",
@@ -187,17 +198,6 @@
       "score": 13,
       "osint": 1,
       "firms": 1,
-      "pressure_type": "pressure_axis",
-      "icon": "⚑"
-    },
-    {
-      "sector": "Lyman",
-      "title": "Lyman pressure axis",
-      "lat": 48.99,
-      "lon": 37.8,
-      "score": 12,
-      "osint": 1,
-      "firms": 0,
       "pressure_type": "pressure_axis",
       "icon": "⚑"
     },
@@ -213,10 +213,10 @@
       "icon": "⚑"
     },
     {
-      "sector": "Bakhmut-Toretsk",
-      "title": "Bakhmut-Toretsk pressure axis",
-      "lat": 48.58,
-      "lon": 37.95,
+      "sector": "Lyman",
+      "title": "Lyman pressure axis",
+      "lat": 48.99,
+      "lon": 37.8,
       "score": 0,
       "osint": 0,
       "firms": 0,
@@ -237,6 +237,10 @@
   ],
   "event_categories": [
     {
+      "category": "Frontline pressure",
+      "count": 4
+    },
+    {
       "category": "Drone / UAV activity",
       "count": 3
     },
@@ -245,24 +249,16 @@
       "count": 3
     },
     {
-      "category": "Frontline pressure",
-      "count": 3
-    },
-    {
-      "category": "Logistics / infrastructure strike",
-      "count": 2
-    },
-    {
       "category": "Strike / attack",
-      "count": 1
+      "count": 2
     }
   ],
-  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 74. Russian forces gained approximately 3.55 km², closest to the Pokrovsk sector. The main pressure focus is Pokrovsk. The strongest event category is Drone / UAV activity. The system processed 27 OSINT events, 84 short-term FIRMS hotspots and 4 active sectors.",
+  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 75. Russian forces gained approximately 4.66 km², closest to the Bakhmut-Toretsk sector. The main pressure focus is Pokrovsk. The strongest event category is Drone / UAV activity. The system processed 29 OSINT events, 106 short-term FIRMS hotspots and 3 active sectors.",
   "counts": {
     "priority_osint": 12,
     "pressure_points": 7,
-    "firms_3d": 84,
-    "firms_10d": 462,
+    "firms_3d": 106,
+    "firms_10d": 468,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."
