@@ -1048,6 +1048,26 @@
         </div>
       </section>
 
+      <section class="panel deep-strike-panel" id="navalAttacksPanel">
+        <h2>🚢 Hajók elleni támadások</h2>
+        <div class="deep-strike-master">
+          <label for="toggleNavalAttacks"><input id="toggleNavalAttacks" type="checkbox" /> Hajók megjelenítése</label>
+          <span class="small">Excel → JSON</span>
+        </div>
+        <div class="deep-strike-controls">
+          <div class="deep-strike-row"><label for="navalPurpose">Hajótípus</label>
+            <select id="navalPurpose"><option value="">Összes hajó</option><option value="Katonai">Katonai</option><option value="Kereskedelmi">Kereskedelmi</option></select>
+          </div>
+          <div class="deep-strike-row"><label for="navalConfidence">Bizonyosság</label>
+            <select id="navalConfidence"><option value="">Mindegyik</option><option value="Magas">Magas</option><option value="Közepes">Közepes</option><option value="Alacsony">Alacsony</option></select>
+          </div>
+          <div class="deep-strike-row"><label for="navalStartDate">Kezdő dátum</label><input id="navalStartDate" type="date" style="width:100%;min-width:0;padding:7px;border:1px solid var(--ui-line-strong);border-radius:8px" /></div>
+          <div class="deep-strike-row"><label for="navalEndDate">Záró dátum</label><input id="navalEndDate" type="date" style="width:100%;min-width:0;padding:7px;border:1px solid var(--ui-line-strong);border-radius:8px" /></div>
+        </div>
+        <div id="navalAttacksSummary" class="deep-strike-summary">Hajós támadások betöltése…</div>
+        <div class="deep-strike-note">Piros hajó: katonai · narancssárga hajó: kereskedelmi. A helyszínek becsült referenciapontok, nem igazolt támadási koordináták.</div>
+      </section>
+
       <section class="panel" id="satelliteIntelligencePanel">
         <h2>🛰 Satellite Intelligence</h2>
 
