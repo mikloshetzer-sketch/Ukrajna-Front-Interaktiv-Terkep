@@ -20,6 +20,7 @@ import {
   setSatelliteContrastMode,
   resetAllSavedDeltaLabels,
   renderDeepStrikesLayer,
+  renderNavalAttacksLayer,
   resetAllSavedDeepStrikeLabels
 } from './map/layers.js';
 import { initAnnotations } from './map/annotations.js';
@@ -33,6 +34,7 @@ import { fetchFirmsLayer } from './data/firms.js';
 import { categorizeFirmsPoints, summarizeFirmsHotspots } from './data/firmsSummary.js';
 import { fetchOsintFeed, summarizeOsintFeed, buildDashboardSummary } from './data/osintFeeds.js';
 import { fetchDeepStrikes } from './data/deepStrikes.js';
+import { fetchShipAttacks, filterShipAttacks, summarizeShipAttacks } from './data/shipAttacks.js';
 import { bindTimeline, setTimelineBounds, setTimelineValue } from './ui/timeline.js';
 import { createPlayer } from './ui/player.js';
 import { clamp } from './utils/date.js';
@@ -2718,6 +2720,102 @@ const player = createPlayer({
   },
 });
 
+// Independent naval-attack control: does not require changes to index.html.
+const navalUi = {
+  events: [],
+  loaded: false,
+  enabled: false,
+  purpose: '',
+  startDate: '',
+  endDate: '',
+  confidence: '',
+  panel: null,
+  count: null
+};
+
+function refreshNavalAttacks() {
+  const group = layerState.navalAttacksLayer;
+  if (!group) return;
+  if (!navalUi.enabled) {
+    if (map.hasLayer(group)) map.removeLayer(group);
+    if (layerState.navalAttackLabelsLayer && map.hasLayer(layerState.navalAttackLabelsLayer)) {
+      map.removeLayer(layerState.navalAttackLabelsLayer);
+    }
+    return;
+  }
+
+  const filtered = filterShipAttacks(navalUi.events, {
+    startDate: navalUi.startDate || null,
+    endDate: navalUi.endDate || null,
+    vesselPurpose: navalUi.purpose,
+    confidence: navalUi.confidence
+  });
+  renderNavalAttacksLayer(layerState, filtered);
+  if (!map.hasLayer(group)) group.addTo(map);
+  if (navalUi.count) {
+    navalUi.count.textContent = `${filtered.length} / ${navalUi.events.length} esemény`;
+  }
+}
+
+function initNavalAttackControl() {
+  if (typeof L === 'undefined') return;
+  const control = L.control({ position: 'bottomright' });
+  control.onAdd = () => {
+    const panel = L.DomUtil.create('div', 'leaflet-bar');
+    panel.style.cssText = 'background:#fff;color:#222;padding:10px 12px;max-width:235px;max-height:42vh;overflow:auto;font:13px/1.4 sans-serif;box-shadow:0 2px 10px #0003;border-radius:7px;';
+    panel.innerHTML = `
+      <label style="display:flex;align-items:center;gap:6px;font-weight:700;cursor:pointer">
+        <input type="checkbox" data-naval="enabled"> 🚢 Hajók elleni támadások
+      </label>
+      <div data-naval="details" style="display:none;margin-top:8px">
+        <label style="display:block;margin-bottom:5px">Hajó besorolása
+          <select data-naval="purpose" style="display:block;width:100%;padding:3px">
+            <option value="">Összes hajó</option><option value="Katonai">Katonai</option><option value="Kereskedelmi">Kereskedelmi</option>
+          </select>
+        </label>
+        <label style="display:block;margin-bottom:5px">Bizonyosság
+          <select data-naval="confidence" style="display:block;width:100%;padding:3px">
+            <option value="">Mindegyik</option><option value="Magas">Magas</option><option value="Közepes">Közepes</option><option value="Alacsony">Alacsony</option>
+          </select>
+        </label>
+        <label style="display:block;margin-bottom:5px">Kezdő dátum<input type="date" data-naval="start" style="display:block;width:100%;box-sizing:border-box"></label>
+        <label style="display:block;margin-bottom:5px">Záró dátum<input type="date" data-naval="end" style="display:block;width:100%;box-sizing:border-box"></label>
+        <div data-naval="count" style="font-weight:600;margin-top:6px">Adatok betöltése…</div>
+        <div style="font-size:11px;margin-top:5px">🔴 katonai · 🟠 kereskedelmi<br>Becsült helyszínek, nem igazolt támadási koordináták.</div>
+      </div>`;
+    L.DomEvent.disableClickPropagation(panel);
+    L.DomEvent.disableScrollPropagation(panel);
+    const get = key => panel.querySelector(`[data-naval="${key}"]`);
+    navalUi.panel = panel;
+    navalUi.count = get('count');
+    get('enabled').addEventListener('change', event => {
+      navalUi.enabled = event.target.checked;
+      get('details').style.display = navalUi.enabled ? 'block' : 'none';
+      refreshNavalAttacks();
+    });
+    for (const [key, field] of [['purpose','purpose'], ['confidence','confidence'], ['start','startDate'], ['end','endDate']]) {
+      get(key).addEventListener('change', event => {
+        navalUi[field] = event.target.value;
+        refreshNavalAttacks();
+      });
+    }
+    return panel;
+  };
+  control.addTo(map);
+}
+
+async function loadNavalAttacks() {
+  try {
+    navalUi.events = await fetchShipAttacks();
+    navalUi.loaded = true;
+    if (navalUi.count) navalUi.count.textContent = `${navalUi.events.length} esemény elérhető`;
+    if (navalUi.enabled) refreshNavalAttacks();
+  } catch (error) {
+    console.error('Hajós támadások betöltési hiba:', error);
+    if (navalUi.count) navalUi.count.textContent = 'Adatbetöltési hiba';
+  }
+}
+
 async function init() {
   try {
     setStatus('DeepState index betöltése…');
@@ -2739,6 +2837,10 @@ async function init() {
 
     // Deep strike overlay is isolated from the core front-map startup.
     await refreshDeepStrikes();
+
+    // Naval attack overlay has its own map control and data source.
+    initNavalAttackControl();
+    await loadNavalAttacks();
 
     updateSuriyakSubpanelVisibility(Boolean(dom.toggleSuriyak?.checked));
     await syncSuriyakLegendPanel();
@@ -2803,4 +2905,5 @@ async function init() {
 }
 
 init();
+
 
