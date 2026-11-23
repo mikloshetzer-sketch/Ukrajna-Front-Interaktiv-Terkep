@@ -1518,6 +1518,28 @@
       .pdf-button{width:100%}
     }
 
+
+/* Naval attacks analysis */
+.naval-panel{border-top:4px solid var(--orange)}
+.naval-kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:12px}
+.naval-kpi{background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:13px;text-align:center}
+.naval-kpi strong{display:block;font-size:24px;color:var(--text)}
+.naval-kpi span{display:block;font-size:9px;color:var(--muted);font-weight:800;text-transform:uppercase}
+.naval-toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.naval-toolbar label{font-size:11px;color:var(--muted);font-weight:800}
+.naval-charts{display:grid;grid-template-columns:1.3fr 1fr;gap:10px}
+.naval-chart{background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:12px;min-width:0}
+.naval-chart h3{margin:0 0 8px;font-size:15px}
+.naval-chart-canvas{height:260px;position:relative}
+.naval-events{margin-top:12px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.naval-event{background:var(--soft);border:1px solid var(--line);border-left:4px solid var(--orange);border-radius:9px;padding:10px;font-size:11px}
+.naval-event.military{border-left-color:var(--red)}
+.naval-event strong{display:block;font-size:13px;margin:3px 0}
+.naval-event small{color:var(--muted)}
+.naval-note{margin-top:12px;color:var(--muted);font-size:10px;line-height:1.6}
+@media(max-width:950px){.naval-kpis{grid-template-columns:repeat(3,1fr)}.naval-charts{grid-template-columns:1fr}}
+@media(max-width:620px){.naval-kpis{grid-template-columns:repeat(2,1fr)}.naval-events{grid-template-columns:1fr}}
+
   </style>
 </head>
 
@@ -1821,6 +1843,38 @@
         távolságmutató csak akkor kerül be, amikor minden eseményhez egységes
         referencia alapján kiszámított távolságmező áll rendelkezésre.
       </div>
+    </div>
+  </section>
+
+
+  <section class="panel naval-panel" id="navalAnalysis">
+    <div class="panel-head"><div>
+      <h2 class="panel-title">🚢 Russian-linked Ship Attacks – Naval Analysis</h2>
+      <div class="panel-subtitle">Orosz katonai és orosz kötődésű kereskedelmi hajókat érintő rögzített támadások</div>
+    </div><div class="panel-badge" id="navalBadge">adatok betöltése</div></div>
+    <div class="panel-body">
+      <div class="naval-toolbar"><label for="navalPeriod">Vizsgált időszak</label>
+        <select id="navalPeriod"><option value="all" selected>Teljes adatbázis</option><option value="1">Utolsó 24 óra</option><option value="7">Utolsó 7 nap</option><option value="30">Utolsó 30 nap</option><option value="90">Utolsó 90 nap</option></select>
+        <label for="navalType">Hajótípus</label><select id="navalType"><option value="all">Összes</option><option value="Katonai">Katonai</option><option value="Kereskedelmi">Kereskedelmi</option></select>
+      </div>
+      <div class="naval-kpis">
+        <div class="naval-kpi"><strong id="navalTotal">–</strong><span>Rögzített esemény</span></div>
+        <div class="naval-kpi"><strong id="navalMilitary">–</strong><span>Katonai</span></div>
+        <div class="naval-kpi"><strong id="navalCommercial">–</strong><span>Kereskedelmi</span></div>
+        <div class="naval-kpi"><strong id="navalShips">–</strong><span>Eltérő hajómegnevezés</span></div>
+        <div class="naval-kpi"><strong id="navalRange">–</strong><span>Adatbázis időszaka</span></div>
+      </div>
+      <div class="naval-charts">
+        <article class="naval-chart"><h3>Támadások havi alakulása</h3><div class="naval-chart-canvas"><canvas id="navalTimelineChart"></canvas></div></article>
+        <article class="naval-chart"><h3>Célpontok megoszlása</h3><div class="naval-chart-canvas"><canvas id="navalTypeChart"></canvas></div></article>
+      </div>
+      <div class="naval-charts" style="margin-top:10px">
+        <article class="naval-chart"><h3>Bizonyossági szintek</h3><div class="naval-chart-canvas"><canvas id="navalConfidenceChart"></canvas></div></article>
+        <article class="naval-chart"><h3>Leggyakoribb támadástípusok</h3><div class="naval-chart-canvas"><canvas id="navalStrikeChart"></canvas></div></article>
+      </div>
+      <h3 style="margin:18px 0 8px;font-size:16px">Legutóbbi rögzített események</h3>
+      <div class="naval-events" id="navalRecentEvents">Adatok betöltése…</div>
+      <div class="naval-note" id="navalMethod">Forrás: data/ship_attacks.json. Az események nyílt forrású nyilvántartást alkotnak, nem teljes körű veszteséglistát. A becsült koordináták nem igazolt támadási helyszínek. A hajómegnevezések száma nem feltétlenül egyezik az egyedi hajótestek számával.</div>
     </div>
   </section>
 
@@ -4348,14 +4402,65 @@ document.querySelectorAll('[data-pdf-filter]').forEach(button=>{
 });
 
 
+
+// Russian-linked ship attack statistics, independent of the deep-strike dataset.
+const NAVAL_URLS=['./data/ship_attacks.json','data/ship_attacks.json','../data/ship_attacks.json'];
+let NAVAL_EVENTS=[];
+const NAVAL_CHARTS={};
+function navalText(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function navalSet(id,v){const el=document.getElementById(id);if(el)el.textContent=v;}
+function navalCount(items,key){const m=new Map();items.forEach(x=>{const k=String(x[key]||'Ismeretlen').trim()||'Ismeretlen';m.set(k,(m.get(k)||0)+1)});return [...m].sort((a,b)=>b[1]-a[1]);}
+function navalChart(id,type,labels,datasets,options={}){
+ const el=document.getElementById(id);if(!el||typeof Chart==='undefined')return;
+ if(NAVAL_CHARTS[id])NAVAL_CHARTS[id].destroy();
+ NAVAL_CHARTS[id]=new Chart(el,{type,data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:type==='doughnut'||datasets.length>1}},...options}});
+}
+function renderNavalAnalysis(){
+ const period=document.getElementById('navalPeriod')?.value||'all';
+ const purpose=document.getElementById('navalType')?.value||'all';
+ const dates=NAVAL_EVENTS.map(x=>String(x.date||'').slice(0,10)).filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x)).sort();
+ const latest=dates.at(-1)||'';
+ let start='';
+ if(period!=='all'&&latest){const d=new Date(latest+'T00:00:00Z');d.setUTCDate(d.getUTCDate()-(Number(period)-1));start=d.toISOString().slice(0,10);}
+ const items=NAVAL_EVENTS.filter(x=>{const date=String(x.date||'').slice(0,10);return (purpose==='all'||x.vessel_purpose===purpose)&&(!start||(date>=start&&date<=latest));});
+ navalSet('navalTotal',items.length);
+ navalSet('navalMilitary',items.filter(x=>x.vessel_purpose==='Katonai').length);
+ navalSet('navalCommercial',items.filter(x=>x.vessel_purpose==='Kereskedelmi').length);
+ navalSet('navalShips',new Set(items.map(x=>String(x.ship_name||'').trim()).filter(Boolean)).size);
+ navalSet('navalRange',dates.length?`${dates[0].slice(0,7)} – ${latest.slice(0,7)}`:'–');
+ navalSet('navalBadge',`${items.length} esemény`);
+ const monthCounts=new Map();items.forEach(x=>{const k=String(x.date||'').slice(0,7);if(/^\d{4}-\d{2}$/.test(k))monthCounts.set(k,(monthCounts.get(k)||0)+1)});
+ const months=[...monthCounts.keys()].sort();
+ navalChart('navalTimelineChart','bar',months,[{label:'Események',data:months.map(k=>monthCounts.get(k)),backgroundColor:'#d97832'}]);
+ const types=navalCount(items,'vessel_purpose');
+ navalChart('navalTypeChart','doughnut',types.map(x=>x[0]),[{data:types.map(x=>x[1]),backgroundColor:types.map(x=>x[0]==='Katonai'?'#d8463f':'#d97832')}]);
+ const confidence=navalCount(items,'confidence');
+ navalChart('navalConfidenceChart','bar',confidence.map(x=>x[0]),[{label:'Események',data:confidence.map(x=>x[1]),backgroundColor:'#2f83bd'}],{indexAxis:'y'});
+ const strikes=navalCount(items,'strike_type').slice(0,8);
+ navalChart('navalStrikeChart','bar',strikes.map(x=>x[0]),[{label:'Események',data:strikes.map(x=>x[1]),backgroundColor:'#6c4dc5'}],{indexAxis:'y'});
+ const box=document.getElementById('navalRecentEvents');
+ if(box)box.innerHTML=items.length?items.slice().sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))).slice(0,8).map(x=>`<article class="naval-event ${x.vessel_purpose==='Katonai'?'military':''}"><small>${navalText(x.date)} · ${navalText(x.vessel_purpose||'Ismeretlen')}</small><strong>${navalText(x.ship_name||'Ismeretlen hajó')}</strong><div>${navalText(x.location||'Ismeretlen helyszín')} · ${navalText(x.strike_type||'Ismeretlen támadástípus')}</div><small>Eredmény: ${navalText(x.outcome||'Ismeretlen')} · Bizonyosság: ${navalText(x.confidence||'Ismeretlen')}</small>${/^https?:\/\//.test(String(x.source_url||''))?`<div><a href="${navalText(x.source_url)}" target="_blank" rel="noopener noreferrer">Forrás megnyitása</a></div>`:''}</article>`).join(''):'<div class="chart-empty">A kiválasztott időszakban nincs rögzített esemény.</div>';
+}
+async function loadNavalAnalysis(){
+ try{
+   const payload=await fetchFirstAvailableJson(NAVAL_URLS);
+   NAVAL_EVENTS=Array.isArray(payload?.events)?payload.events:[];
+   renderNavalAnalysis();
+ }catch(err){console.warn('Naval analysis:',err);navalSet('navalBadge','adatbetöltési hiba');const box=document.getElementById('navalRecentEvents');if(box)box.textContent='A ship_attacks.json nem tölthető be. Ellenőrizd a data/ship_attacks.json elérési útját.';}
+}
+document.getElementById('navalPeriod')?.addEventListener('change',renderNavalAnalysis);
+document.getElementById('navalType')?.addEventListener('change',renderNavalAnalysis);
+
 loadDashboardCurrent();
 loadFrontComparisonAndFortressCities();
 loadDeepStrikeAnalysis();
+loadNavalAnalysis();
 loadPdfReports();
 </script>
 
 </body>
 </html>
+
 
 
 
