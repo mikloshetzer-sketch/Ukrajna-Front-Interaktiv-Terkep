@@ -1,4 +1,5 @@
-name: Process Deep Strikes
+
+name: Process Deep Strikes and Ship Attacks
 
 on:
   workflow_dispatch:
@@ -28,12 +29,21 @@ jobs:
         run: |
           python scripts/process_deep_strikes.py
 
+      - name: Process ship attacks Excel
+        run: |
+          python scripts/process_ship_attacks.py
+
       - name: Show generated files
         run: |
-          echo "Generated files:"
+          echo "Deep strike files:"
           ls -lh data/deep_strikes.json
           ls -lh data/deep_strikes_summary.json
           ls -lh data/deep_strikes_validation.json
+
+          echo "Ship attack files:"
+          ls -lh data/ship_attacks.json
+          ls -lh data/ship_attacks_summary.json
+          ls -lh data/ship_attacks_validation.json
 
       - name: Commit generated data
         run: |
@@ -44,10 +54,14 @@ jobs:
           git add data/deep_strikes_summary.json
           git add data/deep_strikes_validation.json
 
+          git add data/ship_attacks.json
+          git add data/ship_attacks_summary.json
+          git add data/ship_attacks_validation.json
+
           if git diff --cached --quiet; then
             echo "No changes detected."
             exit 0
           fi
 
-          git commit -m "Update deep strike data"
+          git commit -m "Update deep strike and ship attack data"
           git push
