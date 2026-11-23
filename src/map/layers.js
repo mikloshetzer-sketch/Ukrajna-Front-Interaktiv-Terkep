@@ -1936,6 +1936,8 @@ export function createLayers(map) {
   const osintHighlightLayer = L.layerGroup();
   const deepStrikesLayer = L.layerGroup();
   const deepStrikeLabelsLayer = L.layerGroup();
+  const navalAttacksLayer = L.layerGroup();
+  const navalAttackLabelsLayer = L.layerGroup();
 
   const heatmapLayer =
     typeof L.heatLayer === 'function'
@@ -1964,6 +1966,8 @@ export function createLayers(map) {
     osintHighlightLayer,
     deepStrikesLayer,
     deepStrikeLabelsLayer,
+    navalAttacksLayer,
+    navalAttackLabelsLayer,
     heatmapLayer,
     satelliteContrastEnabled: false,
     lastSuriyakData: null,
@@ -2058,5 +2062,79 @@ export function renderOsintLayer(layerState, points) {
       ${point.url ? `<div><a href="${point.url}" target="_blank" rel="noopener noreferrer">Open source</a></div>` : ''}
     `).addTo(layerState.osintLayer);
   });
+}
+
+
+
+// Independent naval-attack layer. Coordinates are reference locations,
+// not necessarily verified positions of the attacks.
+function escapeNavalHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, char => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  })[char]);
+}
+
+function navalShipIcon(military, approximate) {
+  const color = military ? '#c62828' : '#ed8b23';
+  const stroke = approximate ? '#ffffff' : '#263238';
+  const dash = approximate ? 'stroke-dasharray="3 2"' : '';
+  // Military and merchant vessels use different silhouettes.
+  const silhouette = military
+    ? '<path d="M5 19h30l-5 9H12zM15 19V12h11v7M19 12V7h3v5M10 19v-4h5"/>'
+    : '<path d="M4 20h32l-6 9H11zM10 20v-7h7v7M18 20v-9h8v9M27 20v-6h5v6"/>';
+  return L.divIcon({
+    className: 'naval-ship-marker',
+    iconSize: [42, 42],
+    iconAnchor: [21, 21],
+    popupAnchor: [0, -18],
+    html: `<svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" aria-hidden="true">
+      <circle cx="21" cy="21" r="19" fill="${color}" fill-opacity="0.14" stroke="${color}" stroke-width="2" ${dash}/>
+      <g transform="translate(1 2)" fill="${color}" stroke="${stroke}" stroke-width="1.4" stroke-linejoin="round">${silhouette}</g>
+    </svg>`
+  });
+}
+
+export function renderNavalAttacksLayer(layerState, events = [], options = {}) {
+  const group = layerState.navalAttacksLayer;
+  if (!group) return;
+  group.clearLayers();
+  const { startDate = null, endDate = null, vesselPurpose = '', confidence = '' } = options;
+  for (const event of Array.isArray(events) ? events : []) {
+    const lat = Number(event.lat ?? event.latitude);
+    const lng = Number(event.lng ?? event.longitude);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng) || Math.abs(lat) > 90 || Math.abs(lng) > 180) continue;
+    if (startDate && event.date < startDate) continue;
+    if (endDate && event.date > endDate) continue;
+    if (vesselPurpose && event.vesselPurpose !== vesselPurpose) continue;
+    if (confidence && event.confidence !== confidence) continue;
+
+    const military = event.vesselPurpose === 'Katonai';
+    const approximate = event.coordinateIsApproximate !== false;
+    const source = String(event.sourceUrl || '').trim();
+    const safeSource = /^https?:\/\//i.test(source) ? escapeNavalHtml(source) : '';
+    const row = (label, value) => value
+      ? `<div><strong>${label}:</strong> ${escapeNavalHtml(value)}</div>` : '';
+    const popup = `<div style="min-width:230px;max-width:320px;line-height:1.5">
+      <strong style="font-size:15px">${escapeNavalHtml(event.shipName || 'Ismeretlen hajó')}</strong>
+      ${row('Dátum', event.date)}
+      ${row('Hajótípus', event.shipType)}
+      ${row('Besorolás', event.vesselPurpose)}
+      ${row('Flotta / kapcsolat', event.fleetClassification || event.russianConnection)}
+      ${row('Helyszín', event.location)}
+      ${row('Támadás', event.strikeType)}
+      ${row('Elkövető', event.attribution)}
+      ${row('Eredmény', event.outcome)}
+      ${row('Bizonyosság', event.confidence)}
+      ${row('Koordináta minősége', event.coordinateQuality)}
+      ${event.notes ? row('Megjegyzés', event.notes) : ''}
+      ${approximate ? '<div style="margin-top:6px;color:#9a5700"><strong>Figyelem:</strong> becsült/térségi referenciapont, nem igazolt támadási pozíció.</div>' : ''}
+      ${safeSource ? `<div style="margin-top:8px"><a href="${safeSource}" target="_blank" rel="noopener noreferrer">Forrás megnyitása</a></div>` : ''}
+    </div>`;
+    L.marker([lat, lng], {
+      icon: navalShipIcon(military, approximate),
+      title: event.shipName || 'Hajó elleni támadás',
+      riseOnHover: true
+    }).bindPopup(popup, { maxWidth: 360 }).addTo(group);
+  }
 }
 
