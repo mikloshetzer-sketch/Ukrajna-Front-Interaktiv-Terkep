@@ -2789,6 +2789,32 @@ async function loadNavalAttacks() {
   try {
     navalUi.events = await fetchShipAttacks();
     navalUi.loaded = true;
+
+    // A dátumszűrők induláskor az adatbázis teljes időszakát mutatják.
+    // Új esemény hozzáadásakor a határok automatikusan frissülnek.
+    const eventDates = navalUi.events
+      .map(event => String(event.date || '').slice(0, 10))
+      .filter(date => /^\d{4}-\d{2}-\d{2}$/.test(date))
+      .sort();
+    if (eventDates.length) {
+      const earliest = eventDates[0];
+      const latest = eventDates[eventDates.length - 1];
+      const startInput = document.getElementById('navalStartDate');
+      const endInput = document.getElementById('navalEndDate');
+      if (startInput) {
+        startInput.min = earliest;
+        startInput.max = latest;
+        startInput.value = earliest;
+        navalUi.startDate = earliest;
+      }
+      if (endInput) {
+        endInput.min = earliest;
+        endInput.max = latest;
+        endInput.value = latest;
+        navalUi.endDate = latest;
+      }
+    }
+
     if (navalUi.count) navalUi.count.textContent = `${navalUi.events.length} esemény elérhető`;
     if (navalUi.enabled) refreshNavalAttacks();
   } catch (error) {
