@@ -1521,7 +1521,7 @@
 
 /* Naval attacks analysis */
 .naval-panel{border-top:4px solid var(--orange)}
-.naval-kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:12px}
+.naval-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:12px}
 .naval-kpi{background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:13px;text-align:center}
 .naval-kpi strong{display:block;font-size:24px;color:var(--text)}
 .naval-kpi span{display:block;font-size:9px;color:var(--muted);font-weight:800;text-transform:uppercase}
@@ -1540,6 +1540,19 @@
 @media(max-width:950px){.naval-kpis{grid-template-columns:repeat(3,1fr)}.naval-charts{grid-template-columns:1fr}}
 @media(max-width:620px){.naval-kpis{grid-template-columns:repeat(2,1fr)}.naval-events{grid-template-columns:1fr}}
 
+
+/* Naval detailed breakdown */
+.naval-detail-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:10px;margin-top:12px}
+.naval-table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;margin-top:10px}
+.naval-table{border-collapse:collapse;width:100%;font-size:11px;min-width:760px}
+.naval-table th,.naval-table td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.naval-table th{background:var(--soft);color:var(--muted);font-size:10px}
+.naval-table tbody tr:last-child td{border-bottom:0}
+.naval-table tbody tr:nth-child(even){background:var(--soft)}
+.naval-table a{color:var(--blue-dark)}
+.naval-small-note{color:var(--muted);font-size:10px;line-height:1.55;margin:8px 0}
+.naval-subtitle{font-size:15px;margin:18px 0 6px}
+@media(max-width:900px){.naval-detail-grid{grid-template-columns:1fr}}
   </style>
 </head>
 
@@ -1856,6 +1869,7 @@
       <div class="naval-toolbar"><label for="navalPeriod">Vizsgált időszak</label>
         <select id="navalPeriod"><option value="all" selected>Teljes adatbázis</option><option value="1">Utolsó 24 óra</option><option value="7">Utolsó 7 nap</option><option value="30">Utolsó 30 nap</option><option value="90">Utolsó 90 nap</option></select>
         <label for="navalType">Hajótípus</label><select id="navalType"><option value="all">Összes</option><option value="Katonai">Katonai</option><option value="Kereskedelmi">Kereskedelmi</option></select>
+        <label for="navalFleet">Flottabesorolás</label><select id="navalFleet"><option value="all">Összes besorolás</option><option value="confirmed">Igazolt árnyékflotta</option><option value="probable">Valószínűsíthető árnyékflotta</option><option value="unverified">Nem igazolt árnyékflotta-státusz</option><option value="navy">Orosz haditengerészet</option><option value="other">Egyéb / ismeretlen</option></select>
       </div>
       <div class="naval-kpis">
         <div class="naval-kpi"><strong id="navalTotal">–</strong><span>Rögzített esemény</span></div>
@@ -1863,6 +1877,9 @@
         <div class="naval-kpi"><strong id="navalCommercial">–</strong><span>Kereskedelmi</span></div>
         <div class="naval-kpi"><strong id="navalShips">–</strong><span>Eltérő hajómegnevezés</span></div>
         <div class="naval-kpi"><strong id="navalRange">–</strong><span>Adatbázis időszaka</span></div>
+        <div class="naval-kpi"><strong id="navalShadowConfirmed">–</strong><span>Igazolt árnyékflotta-esemény</span></div>
+        <div class="naval-kpi"><strong id="navalShadowUnverified">–</strong><span>Nem igazolt árnyékflotta-státusz</span></div>
+        <div class="naval-kpi"><strong id="navalShadowProbable">–</strong><span>Valószínűsíthető árnyékflotta</span></div>
       </div>
       <div class="naval-charts">
         <article class="naval-chart"><h3>Támadások havi alakulása</h3><div class="naval-chart-canvas"><canvas id="navalTimelineChart"></canvas></div></article>
@@ -1872,9 +1889,23 @@
         <article class="naval-chart"><h3>Bizonyossági szintek</h3><div class="naval-chart-canvas"><canvas id="navalConfidenceChart"></canvas></div></article>
         <article class="naval-chart"><h3>Leggyakoribb támadástípusok</h3><div class="naval-chart-canvas"><canvas id="navalStrikeChart"></canvas></div></article>
       </div>
+      <div class="naval-charts" style="margin-top:10px">
+        <article class="naval-chart"><h3>Orosz / árnyékflotta besorolás</h3><div class="naval-chart-canvas"><canvas id="navalFleetChart"></canvas></div></article>
+        <article class="naval-chart"><h3>Árnyékflotta – értelmezés</h3><p id="navalFleetAssessment" class="naval-note" style="font-size:12px">Az adatok betöltése folyamatban…</p></article>
+      </div>
+      <h3 class="naval-subtitle">Orosz kötődés és árnyékflotta – részletes megoszlás</h3>
+      <p class="naval-small-note">A kategóriák az Excelben rögzített besorolások, nem függetlenül igazolt árnyékflotta-tagságok. A darabszám eseményeket jelöl.</p>
+      <div class="naval-table-wrap"><table class="naval-table" style="min-width:0"><thead><tr><th>Flottabesorolás</th><th>Esemény</th><th>Arány</th></tr></thead><tbody id="navalClassificationRows"><tr><td colspan="3">Betöltés…</td></tr></tbody></table></div>
+      <div class="naval-detail-grid">
+        <article class="naval-chart"><h3>Zászlóország szerinti megoszlás</h3><div class="naval-chart-canvas"><canvas id="navalFlagChart"></canvas></div><p class="naval-small-note" id="navalFlagNote">A zászlóadatok hiányosságait külön jelöljük; a zászlóország nem bizonyít orosz tulajdont vagy árnyékflotta-tagságot.</p></article>
+        <article class="naval-chart"><h3>Orosz kapcsolat – nyilvántartott megnevezések</h3><div class="naval-chart-canvas"><canvas id="navalConnectionChart"></canvas></div></article>
+      </div>
+      <h3 class="naval-subtitle">Részletes hajó- és eseményjegyzék</h3>
+      <p class="naval-small-note">A kiválasztott időszak és szűrők összes eseménye; a zászló és IMO mező hiányát nem helyettesítjük becsléssel.</p>
+      <div class="naval-table-wrap"><table class="naval-table"><thead><tr><th>Dátum</th><th>Hajó</th><th>Rendeltetés</th><th>Zászló</th><th>IMO</th><th>Orosz / árnyékflotta besorolás</th><th>Forrás</th></tr></thead><tbody id="navalDetailRows"><tr><td colspan="7">Betöltés…</td></tr></tbody></table></div>
       <h3 style="margin:18px 0 8px;font-size:16px">Legutóbbi rögzített események</h3>
       <div class="naval-events" id="navalRecentEvents">Adatok betöltése…</div>
-      <div class="naval-note" id="navalMethod">Forrás: data/ship_attacks.json. Az események nyílt forrású nyilvántartást alkotnak, nem teljes körű veszteséglistát. A becsült koordináták nem igazolt támadási helyszínek. A hajómegnevezések száma nem feltétlenül egyezik az egyedi hajótestek számával.</div>
+      <div class="naval-note" id="navalMethod">Forrás: data/ship_attacks.json. Az események nyílt forrású nyilvántartást alkotnak, nem teljes körű veszteséglistát. A becsült koordináták nem igazolt támadási helyszínek. A hajómegnevezések száma nem feltétlenül egyezik az egyedi hajótestek számával. Az árnyékflotta-státusz külön ellenőrzendő, az orosz kapcsolat önmagában nem bizonyít tagságot. A számok eseményeket, nem feltétlenül különálló hajókat jelölnek.</div>
     </div>
   </section>
 
@@ -4415,17 +4446,29 @@ function navalChart(id,type,labels,datasets,options={}){
  if(NAVAL_CHARTS[id])NAVAL_CHARTS[id].destroy();
  NAVAL_CHARTS[id]=new Chart(el,{type,data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:type==='doughnut'||datasets.length>1}},...options}});
 }
+function navalFleetGroup(x){
+ const t=String(x.fleet_classification||'').toLocaleLowerCase('hu');
+ if(t.includes('haditengerészet'))return 'navy';
+ if(t.includes('nem igazolt')||t.includes('nem megerősített'))return 'unverified';
+ if(t.includes('valószínű')||t.includes('feltételezett'))return 'probable';
+ if((t.includes('árnyékflotta')||t.includes('shadow fleet'))&&(t.includes('igazolt')||t.includes('megerősített')||t.includes('szankciós listán')))return 'confirmed';
+ return 'other';
+}
 function renderNavalAnalysis(){
  const period=document.getElementById('navalPeriod')?.value||'all';
  const purpose=document.getElementById('navalType')?.value||'all';
+ const fleet=document.getElementById('navalFleet')?.value||'all';
  const dates=NAVAL_EVENTS.map(x=>String(x.date||'').slice(0,10)).filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x)).sort();
  const latest=dates.at(-1)||'';
  let start='';
  if(period!=='all'&&latest){const d=new Date(latest+'T00:00:00Z');d.setUTCDate(d.getUTCDate()-(Number(period)-1));start=d.toISOString().slice(0,10);}
- const items=NAVAL_EVENTS.filter(x=>{const date=String(x.date||'').slice(0,10);return (purpose==='all'||x.vessel_purpose===purpose)&&(!start||(date>=start&&date<=latest));});
+ const items=NAVAL_EVENTS.filter(x=>{const date=String(x.date||'').slice(0,10);return (purpose==='all'||x.vessel_purpose===purpose)&&(fleet==='all'||navalFleetGroup(x)===fleet)&&(!start||(date>=start&&date<=latest));});
  navalSet('navalTotal',items.length);
  navalSet('navalMilitary',items.filter(x=>x.vessel_purpose==='Katonai').length);
  navalSet('navalCommercial',items.filter(x=>x.vessel_purpose==='Kereskedelmi').length);
+ navalSet('navalShadowConfirmed',items.filter(x=>navalFleetGroup(x)==='confirmed').length);
+ navalSet('navalShadowUnverified',items.filter(x=>navalFleetGroup(x)==='unverified').length);
+ navalSet('navalShadowProbable',items.filter(x=>navalFleetGroup(x)==='probable').length);
  navalSet('navalShips',new Set(items.map(x=>String(x.ship_name||'').trim()).filter(Boolean)).size);
  navalSet('navalRange',dates.length?`${dates[0].slice(0,7)} – ${latest.slice(0,7)}`:'–');
  navalSet('navalBadge',`${items.length} esemény`);
@@ -4438,8 +4481,24 @@ function renderNavalAnalysis(){
  navalChart('navalConfidenceChart','bar',confidence.map(x=>x[0]),[{label:'Események',data:confidence.map(x=>x[1]),backgroundColor:'#2f83bd'}],{indexAxis:'y'});
  const strikes=navalCount(items,'strike_type').slice(0,8);
  navalChart('navalStrikeChart','bar',strikes.map(x=>x[0]),[{label:'Események',data:strikes.map(x=>x[1]),backgroundColor:'#6c4dc5'}],{indexAxis:'y'});
+ const fleets=navalCount(items,'fleet_classification');
+ navalChart('navalFleetChart','bar',fleets.map(x=>x[0]),[{label:'Rögzített események',data:fleets.map(x=>x[1]),backgroundColor:'#d97832'}],{indexAxis:'y',plugins:{legend:{display:false}},scales:{y:{ticks:{autoSkip:false,font:{size:10}}}}});
+ const clsRows=document.getElementById('navalClassificationRows');
+ if(clsRows){const breakdown=navalCount(items,'fleet_classification');clsRows.innerHTML=breakdown.length?breakdown.map(([name,count])=>`<tr><td>${navalText(name)}</td><td>${count}</td><td>${items.length?(100*count/items.length).toFixed(1).replace('.',','):0}%</td></tr>`).join(''):'<tr><td colspan="3">Nincs esemény a szűrésben.</td></tr>';}
+ const flagCounts=navalCount(items,'flag').map(([name,count])=>[name==='Ismeretlen'?'Nincs adat':name,count]);
+ navalChart('navalFlagChart','doughnut',flagCounts.map(x=>x[0]),[{data:flagCounts.map(x=>x[1]),backgroundColor:flagCounts.map(x=>x[0]==='Nincs adat'?'#b4c4d3':'#2f83bd')}]);
+ const flagMissing=items.filter(x=>!String(x.flag||'').trim()).length;
+ navalSet('navalFlagNote',`${items.length} eseményből ${flagMissing} esetben nincs rögzített zászlóország. A kitöltött mező nem feltétlenül a támadás napján érvényes zászlót jelöli. Az adatok ellenőrzéséhez IMO-azonosító és időponthoz kötött forrás szükséges.`);
+ const connections=navalCount(items,'russian_connection').slice(0,8);
+ navalChart('navalConnectionChart','bar',connections.map(x=>x[0]),[{label:'Események',data:connections.map(x=>x[1]),backgroundColor:'#6c4dc5'}],{indexAxis:'y',plugins:{legend:{display:false}},scales:{y:{ticks:{autoSkip:false,font:{size:10}}}}});
+ const detailRows=document.getElementById('navalDetailRows');
+ if(detailRows){detailRows.innerHTML=items.length?items.slice().sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))).map(x=>`<tr><td>${navalText(x.date||'–')}</td><td><strong>${navalText(x.ship_name||'Ismeretlen')}</strong></td><td>${navalText(x.vessel_purpose||'–')}</td><td>${navalText(x.flag||'Nincs adat')}</td><td>${navalText(x.imo||'Nincs adat')}</td><td>${navalText(x.fleet_classification||'Ismeretlen')}</td><td>${/^https?:\/\//.test(String(x.source_url||''))?`<a href="${navalText(x.source_url)}" target="_blank" rel="noopener noreferrer">Forrás</a>`:'–'}</td></tr>`).join(''):'<tr><td colspan="7">Nincs esemény a szűrésben.</td></tr>';}
+ const confirmed=items.filter(x=>navalFleetGroup(x)==='confirmed').length;
+ const probable=items.filter(x=>navalFleetGroup(x)==='probable').length;
+ const unverified=items.filter(x=>navalFleetGroup(x)==='unverified').length;
+ navalSet('navalFleetAssessment',`A kiválasztott események között ${confirmed} igazolt és ${probable} valószínűsíthető árnyékflotta-besorolás szerepel; ${unverified} esetnél az árnyékflotta-státusz nem igazolt. Az orosz kötődés és az árnyékflotta-tagság nem azonos. A besorolások az Excel adatain alapulnak, nem jelentenek önálló külső ellenőrzést. A számok eseményekre vonatkoznak, nem egyedi hajókra.`);
  const box=document.getElementById('navalRecentEvents');
- if(box)box.innerHTML=items.length?items.slice().sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))).slice(0,8).map(x=>`<article class="naval-event ${x.vessel_purpose==='Katonai'?'military':''}"><small>${navalText(x.date)} · ${navalText(x.vessel_purpose||'Ismeretlen')}</small><strong>${navalText(x.ship_name||'Ismeretlen hajó')}</strong><div>${navalText(x.location||'Ismeretlen helyszín')} · ${navalText(x.strike_type||'Ismeretlen támadástípus')}</div><small>Eredmény: ${navalText(x.outcome||'Ismeretlen')} · Bizonyosság: ${navalText(x.confidence||'Ismeretlen')}</small>${/^https?:\/\//.test(String(x.source_url||''))?`<div><a href="${navalText(x.source_url)}" target="_blank" rel="noopener noreferrer">Forrás megnyitása</a></div>`:''}</article>`).join(''):'<div class="chart-empty">A kiválasztott időszakban nincs rögzített esemény.</div>';
+ if(box)box.innerHTML=items.length?items.slice().sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))).slice(0,8).map(x=>`<article class="naval-event ${x.vessel_purpose==='Katonai'?'military':''}"><small>${navalText(x.date)} · ${navalText(x.vessel_purpose||'Ismeretlen')}</small><strong>${navalText(x.ship_name||'Ismeretlen hajó')}</strong><div>${navalText(x.location||'Ismeretlen helyszín')} · ${navalText(x.strike_type||'Ismeretlen támadástípus')}</div><small>Eredmény: ${navalText(x.outcome||'Ismeretlen')} · Bizonyosság: ${navalText(x.confidence||'Ismeretlen')}</small><div style="margin-top:6px"><b>Flottabesorolás:</b> ${navalText(x.fleet_classification||'Ismeretlen')}</div><small>Orosz kapcsolat: ${navalText(x.russian_connection||'Nincs megadva')}</small>${/^https?:\/\//.test(String(x.source_url||''))?`<div><a href="${navalText(x.source_url)}" target="_blank" rel="noopener noreferrer">Forrás megnyitása</a></div>`:''}</article>`).join(''):'<div class="chart-empty">A kiválasztott időszakban nincs rögzített esemény.</div>';
 }
 async function loadNavalAnalysis(){
  try{
@@ -4450,6 +4509,7 @@ async function loadNavalAnalysis(){
 }
 document.getElementById('navalPeriod')?.addEventListener('change',renderNavalAnalysis);
 document.getElementById('navalType')?.addEventListener('change',renderNavalAnalysis);
+document.getElementById('navalFleet')?.addEventListener('change',renderNavalAnalysis);
 
 loadDashboardCurrent();
 loadFrontComparisonAndFortressCities();
@@ -4460,6 +4520,9 @@ loadPdfReports();
 
 </body>
 </html>
+
+
+
 
 
 
