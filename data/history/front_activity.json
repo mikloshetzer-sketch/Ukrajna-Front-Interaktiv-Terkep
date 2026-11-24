@@ -22438,5 +22438,132 @@
       "deepstate": "cyterat/deepstate-map-data via GitHub API"
     },
     "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
+  },
+  {
+    "date": "2026-11-24",
+    "updated_utc": "2026-11-24T04:01:11.206703+00:00",
+    "front_activity_index": 47,
+    "status": "ELEVATED",
+    "components": {
+      "osint_density": 17.5,
+      "firms_activity": 20,
+      "territorial_change": 1.8,
+      "active_sectors": 4,
+      "critical_events": 4
+    },
+    "counts": {
+      "osint": 7,
+      "firms_3d": 165,
+      "firms_10d": 511,
+      "firms_30d": 17907,
+      "critical_events": 2,
+      "active_sectors": 2
+    },
+    "territorial": {
+      "available": true,
+      "error": null,
+      "previous_file": "deepstatemap_data_20261122.geojson",
+      "current_file": "deepstatemap_data_20261123.geojson",
+      "previous_total_km2": 116910.16,
+      "current_total_km2": 116910.76,
+      "russian_gain_km2": 0.6,
+      "ukrainian_recapture_km2": 0,
+      "net_change_km2": 0.6,
+      "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    },
+    "territorial_hotspot": {
+      "sector": "Pokrovsk",
+      "lat": 48.28,
+      "lon": 37.18,
+      "zoom": 9,
+      "score": 36,
+      "change_km2": 0.6,
+      "method": "Top classified sector based on OSINT + FIRMS density"
+    },
+    "top_sectors": [
+      {
+        "sector": "Other / Unclassified",
+        "osint": 3,
+        "firms": 165,
+        "score": 100
+      },
+      {
+        "sector": "Pokrovsk",
+        "osint": 3,
+        "firms": 0,
+        "score": 36
+      },
+      {
+        "sector": "Kharkiv",
+        "osint": 1,
+        "firms": 0,
+        "score": 12
+      },
+      {
+        "sector": "Kupiansk",
+        "osint": 0,
+        "firms": 0,
+        "score": 0
+      },
+      {
+        "sector": "Lyman",
+        "osint": 0,
+        "firms": 0,
+        "score": 0
+      },
+      {
+        "sector": "Bakhmut-Toretsk",
+        "osint": 0,
+        "firms": 0,
+        "score": 0
+      },
+      {
+        "sector": "Kurakhove",
+        "osint": 0,
+        "firms": 0,
+        "score": 0
+      },
+      {
+        "sector": "Velyka Novosilka",
+        "osint": 0,
+        "firms": 0,
+        "score": 0
+      }
+    ],
+    "top_events": [
+      {
+        "title": "Reported rear-area strike near Rosztov",
+        "source": "forrás nélkül",
+        "sector": "Other / Unclassified"
+      },
+      {
+        "title": "Russian Offensive Campaign Assessment, November 23, 2026",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Reported ground assault or offensive activity near Harkiv",
+        "source": "forrás nélkül",
+        "sector": "Kharkiv"
+      },
+      {
+        "title": "Russian Offensive Campaign Assessment, November 22, 2026",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Russian Offensive Campaign Assessment, November 21, 2026",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      }
+    ],
+    "data_sources": {
+      "osint": "data/osint_feed.json",
+      "firms_3d": "data/firms_3.json",
+      "firms_10d": "data/firms_10.json",
+      "firms_30d": "data/firms_30.json",
+      "deepstate": "cyterat/deepstate-map-data via GitHub API"
+    },
+    "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
   }
 ]
