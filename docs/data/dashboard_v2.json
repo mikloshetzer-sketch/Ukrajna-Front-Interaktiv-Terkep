@@ -1,27 +1,87 @@
 {
-  "updated_utc": "2026-11-24T04:01:12.646267+00:00",
-  "date": "2026-11-24",
+  "updated_utc": "2026-11-25T02:42:59.724876+00:00",
+  "date": "2026-11-25",
   "territorial_sector": {
-    "sector": "Velyka Novosilka",
-    "lat": 47.721608622222234,
-    "lon": 36.104006033333334,
-    "distance_km": 56.5,
+    "sector": "Zaporizhzhia",
+    "lat": 47.524337360000004,
+    "lon": 35.968820029999996,
+    "distance_km": 71.3,
     "change_type": "russian_gain",
-    "area_km2": 6.38,
+    "area_km2": 2.85,
     "label": "Russian territorial gain"
   },
   "priority_osint_events": [
     {
-      "title": "Reported ground assault or offensive activity near Kijev",
+      "title": "Reported missile strike near Moszkva",
       "source": "forrás nélkül",
-      "sector": "Kyiv Area",
-      "lat": 50.45,
-      "lon": 30.523,
+      "sector": "Moscow / Russia Interior",
+      "lat": 55.755,
+      "lon": 37.617,
       "distance_to_sector_km": 0,
-      "event_type": "frontline",
-      "event_label": "Frontline pressure",
-      "icon": "⚔",
-      "priority": 98
+      "event_type": "missile",
+      "event_label": "Missile / rocket strike",
+      "icon": "☄",
+      "priority": 104
+    },
+    {
+      "title": "A kill zone stretching dozens of kilometers: NYT analyzes how drones have changed the war in Ukraine",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "drone",
+      "event_label": "Drone / UAV activity",
+      "icon": "🛩",
+      "priority": 103
+    },
+    {
+      "title": "russian drone strikes railway station in Korosten, leaving one person dead",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "drone",
+      "event_label": "Drone / UAV activity",
+      "icon": "🛩",
+      "priority": 103
+    },
+    {
+      "title": "Ukraine and Germany to establish joint production of reconnaissance UAVs",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "drone",
+      "event_label": "Drone / UAV activity",
+      "icon": "🛩",
+      "priority": 103
+    },
+    {
+      "title": "They hunted Ukrainian drones but came under attack themselves: Defense Forces strike Rubikon in Berdiansk",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "drone",
+      "event_label": "Drone / UAV activity",
+      "icon": "🛩",
+      "priority": 103
+    },
+    {
+      "title": "At least $7 billion, air defense missiles and access to DELTA: what Ukraine has agreed with Norway",
+      "source": "forrás nélkül",
+      "sector": "Pokrovsk",
+      "lat": 48.5,
+      "lon": 36.5,
+      "distance_to_sector_km": 55.9,
+      "event_type": "missile",
+      "event_label": "Missile / rocket strike",
+      "icon": "☄",
+      "priority": 101
     },
     {
       "title": "Russian Offensive Campaign Assessment, November 23, 2026",
@@ -30,18 +90,6 @@
       "lat": 48.5,
       "lon": 36.5,
       "distance_to_sector_km": 55.9,
-      "event_type": "frontline",
-      "event_label": "Frontline pressure",
-      "icon": "⚔",
-      "priority": 95
-    },
-    {
-      "title": "Reported ground assault or offensive activity near Harkiv",
-      "source": "forrás nélkül",
-      "sector": "Kharkiv",
-      "lat": 49.993,
-      "lon": 36.23,
-      "distance_to_sector_km": 0.3,
       "event_type": "frontline",
       "event_label": "Frontline pressure",
       "icon": "⚔",
@@ -60,40 +108,52 @@
       "priority": 95
     },
     {
-      "title": "Russian Offensive Campaign Assessment, November 21, 2026",
+      "title": "Defense Forces strike an enemy crossing and a concentration of trucks",
       "source": "forrás nélkül",
       "sector": "Pokrovsk",
       "lat": 48.5,
       "lon": 36.5,
       "distance_to_sector_km": 55.9,
-      "event_type": "frontline",
-      "event_label": "Frontline pressure",
-      "icon": "⚔",
-      "priority": 95
+      "event_type": "strike",
+      "event_label": "Strike / attack",
+      "icon": "✹",
+      "priority": 91
     },
     {
-      "title": "Reported rear-area strike near Kyiv",
+      "title": "Two killed and 40 injured: russia strikes Zaporizhzhia",
+      "source": "forrás nélkül",
+      "sector": "Zaporizhzhia",
+      "lat": 47.838,
+      "lon": 35.139,
+      "distance_to_sector_km": 0.2,
+      "event_type": "strike",
+      "event_label": "Strike / attack",
+      "icon": "✹",
+      "priority": 91
+    },
+    {
+      "title": "Reported military-related update near Kijev",
       "source": "forrás nélkül",
       "sector": "Kyiv Area",
       "lat": 50.45,
       "lon": 30.523,
       "distance_to_sector_km": 0,
-      "event_type": "strike",
-      "event_label": "Strike / attack",
-      "icon": "✹",
-      "priority": 94
+      "event_type": "military_update",
+      "event_label": "Military update",
+      "icon": "●",
+      "priority": 66
     },
     {
-      "title": "Reported rear-area strike near Rosztov",
+      "title": "Novoshakhtinsk Oil Refinery hit in Russia’s Rostov Region",
       "source": "forrás nélkül",
-      "sector": "Rear Area / Strategic Depth",
+      "sector": "Moscow / Russia Interior",
       "lat": 47.235,
       "lon": 39.701,
-      "distance_to_sector_km": 198.5,
-      "event_type": "strike",
-      "event_label": "Strike / attack",
-      "icon": "✹",
-      "priority": 86
+      "distance_to_sector_km": 0,
+      "event_type": "military_update",
+      "event_label": "Military update",
+      "icon": "●",
+      "priority": 66
     }
   ],
   "front_pressure_points": [
@@ -102,33 +162,22 @@
       "title": "Pokrovsk OSINT activity cluster",
       "lat": 48.28,
       "lon": 37.18,
-      "score": 36,
-      "osint": 3,
+      "score": 100,
+      "osint": 16,
       "firms": 0,
       "pressure_type": "osint_activity_cluster",
       "icon": "⚔"
     },
     {
-      "sector": "Velyka Novosilka",
-      "title": "Velyka Novosilka territorial gain axis",
+      "sector": "Zaporizhzhia",
+      "title": "Zaporizhzhia territorial gain axis",
       "lat": 47.84,
-      "lon": 36.84,
-      "score": 30,
-      "osint": 0,
+      "lon": 35.14,
+      "score": 42,
+      "osint": 1,
       "firms": 0,
       "pressure_type": "territorial_gain_axis",
       "icon": "▲"
-    },
-    {
-      "sector": "Kharkiv",
-      "title": "Kharkiv pressure axis",
-      "lat": 49.99,
-      "lon": 36.23,
-      "score": 12,
-      "osint": 1,
-      "firms": 0,
-      "pressure_type": "pressure_axis",
-      "icon": "⚑"
     },
     {
       "sector": "Kupiansk",
@@ -173,24 +222,47 @@
       "firms": 0,
       "pressure_type": "pressure_axis",
       "icon": "⚑"
+    },
+    {
+      "sector": "Velyka Novosilka",
+      "title": "Velyka Novosilka pressure axis",
+      "lat": 47.84,
+      "lon": 36.84,
+      "score": 0,
+      "osint": 0,
+      "firms": 0,
+      "pressure_type": "pressure_axis",
+      "icon": "⚑"
     }
   ],
   "event_categories": [
     {
+      "category": "Drone / UAV activity",
+      "count": 4
+    },
+    {
+      "category": "Missile / rocket strike",
+      "count": 2
+    },
+    {
       "category": "Frontline pressure",
-      "count": 5
+      "count": 2
     },
     {
       "category": "Strike / attack",
       "count": 2
+    },
+    {
+      "category": "Military update",
+      "count": 2
     }
   ],
-  "ai_summary": "Front activity is assessed as ELEVATED with an FAI value of 47. Russian forces gained approximately 0.60 km², closest to the Velyka Novosilka sector. The main pressure focus is Pokrovsk. The strongest event category is Frontline pressure. The system processed 7 OSINT events, 165 short-term FIRMS hotspots and 2 active sectors.",
+  "ai_summary": "Front activity is assessed as HIGH with an FAI value of 76. Russian forces gained approximately 5.50 km², closest to the Zaporizhzhia sector. The main pressure focus is Pokrovsk. The strongest event category is Missile / rocket strike. The system processed 20 OSINT events, 192 short-term FIRMS hotspots and 2 active sectors.",
   "counts": {
-    "priority_osint": 7,
+    "priority_osint": 12,
     "pressure_points": 7,
-    "firms_3d": 165,
-    "firms_10d": 511,
+    "firms_3d": 192,
+    "firms_10d": 515,
     "unit_items": 1
   },
   "note": "Dashboard v2 enrichment layer generated from existing OSINT, FIRMS, DeepState territorial delta and front activity data. Kyiv, Moscow/Russia interior and rear-area events are separated from frontline sectors. Moscow/Russia Interior is keyword-based and no longer captures Kharkiv by distance."
