@@ -1,33 +1,33 @@
 {
-  "date": "2026-11-27",
-  "updated_utc": "2026-11-27T01:52:01.802179+00:00",
-  "front_activity_index": 65,
-  "status": "HIGH",
+  "date": "2026-11-28",
+  "updated_utc": "2026-11-28T01:33:50.427085+00:00",
+  "front_activity_index": 84,
+  "status": "CRITICAL",
   "components": {
     "osint_density": 25,
     "firms_activity": 20,
-    "territorial_change": 0.0,
-    "active_sectors": 10,
-    "critical_events": 10
+    "territorial_change": 24.8,
+    "active_sectors": 6,
+    "critical_events": 8
   },
   "counts": {
-    "osint": 34,
-    "firms_3d": 107,
-    "firms_10d": 469,
-    "firms_30d": 10520,
-    "critical_events": 9,
-    "active_sectors": 6
+    "osint": 23,
+    "firms_3d": 79,
+    "firms_10d": 447,
+    "firms_30d": 8306,
+    "critical_events": 4,
+    "active_sectors": 3
   },
   "territorial": {
     "available": true,
     "error": null,
-    "previous_file": "deepstatemap_data_20261125.geojson",
-    "current_file": "deepstatemap_data_20261126.geojson",
+    "previous_file": "deepstatemap_data_20261126.geojson",
+    "current_file": "deepstatemap_data_20261127.geojson",
     "previous_total_km2": 116917.21,
-    "current_total_km2": 116917.21,
-    "russian_gain_km2": 0,
+    "current_total_km2": 116925.49,
+    "russian_gain_km2": 8.28,
     "ukrainian_recapture_km2": 0,
-    "net_change_km2": 0.0,
+    "net_change_km2": 8.28,
     "method": "Approximate total area difference between latest two DeepState GeoJSON files"
   },
   "territorial_hotspot": {
@@ -36,39 +36,21 @@
     "lon": 37.18,
     "zoom": 9,
     "score": 100,
-    "change_km2": 0.0,
+    "change_km2": 8.28,
     "method": "Top classified sector based on OSINT + FIRMS density"
   },
   "top_sectors": [
     {
       "sector": "Pokrovsk",
-      "osint": 20,
+      "osint": 18,
       "firms": 0,
       "score": 100
     },
     {
       "sector": "Other / Unclassified",
-      "osint": 8,
-      "firms": 107,
+      "osint": 3,
+      "firms": 79,
       "score": 100
-    },
-    {
-      "sector": "Kharkiv",
-      "osint": 2,
-      "firms": 0,
-      "score": 24
-    },
-    {
-      "sector": "Lyman",
-      "osint": 1,
-      "firms": 0,
-      "score": 12
-    },
-    {
-      "sector": "Zaporizhzhia",
-      "osint": 1,
-      "firms": 0,
-      "score": 12
     },
     {
       "sector": "Kherson-Dnipro",
@@ -77,7 +59,7 @@
       "score": 12
     },
     {
-      "sector": "Crimea",
+      "sector": "Kharkiv",
       "osint": 1,
       "firms": 0,
       "score": 12
@@ -87,36 +69,54 @@
       "osint": 0,
       "firms": 0,
       "score": 0
+    },
+    {
+      "sector": "Lyman",
+      "osint": 0,
+      "firms": 0,
+      "score": 0
+    },
+    {
+      "sector": "Bakhmut-Toretsk",
+      "osint": 0,
+      "firms": 0,
+      "score": 0
+    },
+    {
+      "sector": "Kurakhove",
+      "osint": 0,
+      "firms": 0,
+      "score": 0
     }
   ],
   "top_events": [
     {
-      "title": "From former cop to torturer: Collaborator sentenced to 15 years in prison in Kherson",
-      "source": "forrás nélkül",
-      "sector": "Kherson-Dnipro"
-    },
-    {
-      "title": "“Love at first browning”: how Khan of the 60th Brigade found his 60-kilogram passion",
+      "title": "‘While you were sleeping, we won’: Sky News film about Ukrainian National Guard unit wins International Emmy",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     },
     {
-      "title": "“Like it or don’t, you’ll have to put up with it, my handsome man”: Why Kim Jong Un brought putin to his knees",
+      "title": "DESNA: Ukraine and Norway develop new air defense system to counter drones",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     },
     {
-      "title": "Finish off the old man, and take the girls”: Occupier who shot at a car marked “Children” sentenced to life in prison",
+      "title": "UK Defence Secretary makes first visit to Kharkiv, announces more Rapid Ranger air defense systems for Ukraine",
+      "source": "forrás nélkül",
+      "sector": "Kharkiv"
+    },
+    {
+      "title": "‘Germany is building its first drone regiment, and it will have Ukrainian drones’: what Ukraine gains from its deals with Germany and Norway",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     },
     {
-      "title": "Kostiantynivka in the spotlight: Volodymyr Zelenskyy announces special tasks for troops defending the city",
+      "title": "Ukraine awaits US date for four-way peace talks, Zelensky says",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     },
     {
-      "title": "Graves keep growing — mayors keep rejoicing: in russia, patriotism is “growing stronger” at the expense of dead soldiers",
+      "title": "North Korea suspends military support for Russia as diplomatic tensions grow, Ukrainian intelligence says",
       "source": "forrás nélkül",
       "sector": "Pokrovsk"
     }

@@ -22961,5 +22961,137 @@
       "deepstate": "cyterat/deepstate-map-data via GitHub API"
     },
     "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
+  },
+  {
+    "date": "2026-11-28",
+    "updated_utc": "2026-11-28T01:33:50.427085+00:00",
+    "front_activity_index": 84,
+    "status": "CRITICAL",
+    "components": {
+      "osint_density": 25,
+      "firms_activity": 20,
+      "territorial_change": 24.8,
+      "active_sectors": 6,
+      "critical_events": 8
+    },
+    "counts": {
+      "osint": 23,
+      "firms_3d": 79,
+      "firms_10d": 447,
+      "firms_30d": 8306,
+      "critical_events": 4,
+      "active_sectors": 3
+    },
+    "territorial": {
+      "available": true,
+      "error": null,
+      "previous_file": "deepstatemap_data_20261126.geojson",
+      "current_file": "deepstatemap_data_20261127.geojson",
+      "previous_total_km2": 116917.21,
+      "current_total_km2": 116925.49,
+      "russian_gain_km2": 8.28,
+      "ukrainian_recapture_km2": 0,
+      "net_change_km2": 8.28,
+      "method": "Approximate total area difference between latest two DeepState GeoJSON files"
+    },
+    "territorial_hotspot": {
+      "sector": "Pokrovsk",
+      "lat": 48.28,
+      "lon": 37.18,
+      "zoom": 9,
+      "score": 100,
+      "change_km2": 8.28,
+      "method": "Top classified sector based on OSINT + FIRMS density"
+    },
+    "top_sectors": [
+      {
+        "sector": "Pokrovsk",
+        "osint": 18,
+        "firms": 0,
+        "score": 100
+      },
+      {
+        "sector": "Other / Unclassified",
+        "osint": 3,
+        "firms": 79,
+        "score": 100
+      },
+      {
+        "sector": "Kherson-Dnipro",
+        "osint": 1,
+        "firms": 0,
+        "score": 12
+      },
+      {
+        "sector": "Kharkiv",
+        "osint": 1,
+        "firms": 0,
+        "score": 12
+      },
+      {
+        "sector": "Kupiansk",
+        "osint": 0,
+        "firms": 0,
+        "score": 0
+      },
+      {
+        "sector": "Lyman",
+        "osint": 0,
+        "firms": 0,
+        "score": 0
+      },
+      {
+        "sector": "Bakhmut-Toretsk",
+        "osint": 0,
+        "firms": 0,
+        "score": 0
+      },
+      {
+        "sector": "Kurakhove",
+        "osint": 0,
+        "firms": 0,
+        "score": 0
+      }
+    ],
+    "top_events": [
+      {
+        "title": "‘While you were sleeping, we won’: Sky News film about Ukrainian National Guard unit wins International Emmy",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "DESNA: Ukraine and Norway develop new air defense system to counter drones",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "UK Defence Secretary makes first visit to Kharkiv, announces more Rapid Ranger air defense systems for Ukraine",
+        "source": "forrás nélkül",
+        "sector": "Kharkiv"
+      },
+      {
+        "title": "‘Germany is building its first drone regiment, and it will have Ukrainian drones’: what Ukraine gains from its deals with Germany and Norway",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "Ukraine awaits US date for four-way peace talks, Zelensky says",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      },
+      {
+        "title": "North Korea suspends military support for Russia as diplomatic tensions grow, Ukrainian intelligence says",
+        "source": "forrás nélkül",
+        "sector": "Pokrovsk"
+      }
+    ],
+    "data_sources": {
+      "osint": "data/osint_feed.json",
+      "firms_3d": "data/firms_3.json",
+      "firms_10d": "data/firms_10.json",
+      "firms_30d": "data/firms_30.json",
+      "deepstate": "cyterat/deepstate-map-data via GitHub API"
+    },
+    "note": "Front Activity Index: nem hivatalos katonai mutató, blogos vizuális támogatásra."
   }
 ]
