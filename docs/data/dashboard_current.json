@@ -1,19 +1,19 @@
 {
   "schema_version": "1.3.0",
   "dataset": "ukraine_conflict_dashboard_current",
-  "generated_at": "2026-11-28T07:52:38.617098Z",
+  "generated_at": "2026-11-28T17:34:38.043734Z",
   "latest_data_at": "2026-11-28T01:33:50.949250Z",
   "periods": {
     "1": {
       "days": 1,
-      "start_at": "2026-11-27T07:52:38.617098Z",
-      "end_at": "2026-11-28T07:52:38.617098Z",
-      "ru_gain_km2": 8.51,
-      "ua_recapture_km2": 0.0,
-      "net_change_km2": 8.51,
-      "firms_count": 27,
-      "conflict_index": 0,
-      "osint_events": 0,
+      "start_at": "2026-11-27T17:34:38.043734Z",
+      "end_at": "2026-11-28T17:34:38.043734Z",
+      "ru_gain_km2": 5.35,
+      "ua_recapture_km2": 0.08,
+      "net_change_km2": 5.27,
+      "firms_count": 22,
+      "conflict_index": -10,
+      "osint_events": 3,
       "availability": {
         "territorial": "fresh",
         "firms": "fresh",
@@ -22,14 +22,14 @@
     },
     "7": {
       "days": 7,
-      "start_at": "2026-11-21T07:52:38.617098Z",
-      "end_at": "2026-11-28T07:52:38.617098Z",
-      "ru_gain_km2": 29.5,
-      "ua_recapture_km2": 6.08,
-      "net_change_km2": 23.42,
-      "firms_count": 343,
-      "conflict_index": -52,
-      "osint_events": 23,
+      "start_at": "2026-11-21T17:34:38.043734Z",
+      "end_at": "2026-11-28T17:34:38.043734Z",
+      "ru_gain_km2": 31.29,
+      "ua_recapture_km2": 6.16,
+      "net_change_km2": 25.13,
+      "firms_count": 321,
+      "conflict_index": -62,
+      "osint_events": 25,
       "availability": {
         "territorial": "fresh",
         "firms": "fresh",
@@ -38,14 +38,14 @@
     },
     "30": {
       "days": 30,
-      "start_at": "2026-10-29T07:52:38.617098Z",
-      "end_at": "2026-11-28T07:52:38.617098Z",
-      "ru_gain_km2": 117.88,
-      "ua_recapture_km2": 6.08,
-      "net_change_km2": 111.8,
+      "start_at": "2026-10-29T17:34:38.043734Z",
+      "end_at": "2026-11-28T17:34:38.043734Z",
+      "ru_gain_km2": 113.73,
+      "ua_recapture_km2": 6.16,
+      "net_change_km2": 107.57,
       "firms_count": 5933,
-      "conflict_index": -52,
-      "osint_events": 23,
+      "conflict_index": -62,
+      "osint_events": 25,
       "availability": {
         "territorial": "fresh",
         "firms": "fresh",
@@ -54,14 +54,14 @@
     },
     "90": {
       "days": 90,
-      "start_at": "2026-08-30T07:52:38.617098Z",
-      "end_at": "2026-11-28T07:52:38.617098Z",
+      "start_at": "2026-08-30T17:34:38.043734Z",
+      "end_at": "2026-11-28T17:34:38.043734Z",
       "ru_gain_km2": 0.0,
       "ua_recapture_km2": 0.0,
       "net_change_km2": 0.0,
       "firms_count": 5933,
-      "conflict_index": -52,
-      "osint_events": 23,
+      "conflict_index": -62,
+      "osint_events": 25,
       "availability": {
         "territorial": "fresh",
         "firms": "fresh",
@@ -72,12 +72,12 @@
   "sectors": {
     "1": [
       {
-        "id": "kupiansk_lyman",
-        "name": "Kupjanszk–Liman",
-        "sub": "északi hadműveleti nyomás",
+        "id": "south_donetsk",
+        "name": "Dél-Donyeck",
+        "sub": "szakaszos területi mozgás",
         "score": 40,
         "risk": "MODERATE",
-        "ru_gain_km2": 8.51,
+        "ru_gain_km2": 5.35,
         "ua_recapture_km2": 0.0,
         "firms_count": 0,
         "osint_events": 0,
@@ -96,30 +96,13 @@
         "risk": "MODERATE",
         "ru_gain_km2": 0.0,
         "ua_recapture_km2": 0.0,
-        "firms_count": 1,
-        "osint_events": 0,
-        "components": {
-          "territorial": 0.0,
-          "firms": 25.0,
-          "osint": 0.0,
-          "activity_baseline": 5
-        }
-      },
-      {
-        "id": "south_donetsk",
-        "name": "Dél-Donyeck",
-        "sub": "szakaszos területi mozgás",
-        "score": 3,
-        "risk": "MODERATE",
-        "ru_gain_km2": 0.0,
-        "ua_recapture_km2": 0.0,
         "firms_count": 0,
-        "osint_events": 0,
+        "osint_events": 3,
         "components": {
           "territorial": 0.0,
           "firms": 0.0,
-          "osint": 0.0,
-          "activity_baseline": 3
+          "osint": 25.0,
+          "activity_baseline": 5
         }
       },
       {
@@ -160,6 +143,23 @@
         "id": "crimea",
         "name": "Krím",
         "sub": "csapások és légvédelmi aktivitás",
+        "score": 3,
+        "risk": "MODERATE",
+        "ru_gain_km2": 0.0,
+        "ua_recapture_km2": 0.0,
+        "firms_count": 0,
+        "osint_events": 0,
+        "components": {
+          "territorial": 0.0,
+          "firms": 0.0,
+          "osint": 0.0,
+          "activity_baseline": 3
+        }
+      },
+      {
+        "id": "kupiansk_lyman",
+        "name": "Kupjanszk–Liman",
+        "sub": "északi hadműveleti nyomás",
         "score": 3,
         "risk": "MODERATE",
         "ru_gain_km2": 0.0,
@@ -215,10 +215,10 @@
         "sub": "folyamatos szárazföldi nyomás",
         "score": 47,
         "risk": "MODERATE",
-        "ru_gain_km2": 7.42,
+        "ru_gain_km2": 7.48,
         "ua_recapture_km2": 0.0,
         "firms_count": 0,
-        "osint_events": 18,
+        "osint_events": 19,
         "components": {
           "territorial": 15.5,
           "firms": 0.0,
@@ -232,7 +232,7 @@
         "sub": "északi hadműveleti nyomás",
         "score": 43,
         "risk": "MODERATE",
-        "ru_gain_km2": 16.76,
+        "ru_gain_km2": 16.89,
         "ua_recapture_km2": 0.0,
         "firms_count": 0,
         "osint_events": 1,
@@ -247,16 +247,16 @@
         "id": "ukrainian_rear",
         "name": "Ukrán hátország",
         "sub": "mélységi csapások és infrastruktúra",
-        "score": 36,
+        "score": 37,
         "risk": "MODERATE",
         "ru_gain_km2": 0.0,
         "ua_recapture_km2": 0.0,
-        "firms_count": 44,
-        "osint_events": 3,
+        "firms_count": 41,
+        "osint_events": 4,
         "components": {
           "territorial": 0.0,
           "firms": 25.0,
-          "osint": 3.8,
+          "osint": 5.0,
           "activity_baseline": 7
         }
       },
@@ -264,34 +264,17 @@
         "id": "south_donetsk",
         "name": "Dél-Donyeck",
         "sub": "szakaszos területi mozgás",
-        "score": 13,
+        "score": 23,
         "risk": "MODERATE",
-        "ru_gain_km2": 2.36,
+        "ru_gain_km2": 6.92,
         "ua_recapture_km2": 0.0,
         "firms_count": 2,
         "osint_events": 0,
         "components": {
-          "territorial": 4.9,
-          "firms": 1.1,
+          "territorial": 14.3,
+          "firms": 1.2,
           "osint": 0.0,
           "activity_baseline": 7
-        }
-      },
-      {
-        "id": "kostiantynivka_chasiv_yar",
-        "name": "Kostiantynivka–Csasziv Jar",
-        "sub": "védelmi csomópontok térsége",
-        "score": 11,
-        "risk": "MODERATE",
-        "ru_gain_km2": 2.95,
-        "ua_recapture_km2": 0.0,
-        "firms_count": 0,
-        "osint_events": 0,
-        "components": {
-          "territorial": 6.2,
-          "firms": 0.0,
-          "osint": 0.0,
-          "activity_baseline": 5
         }
       },
       {
@@ -309,6 +292,23 @@
           "firms": 0.0,
           "osint": 1.2,
           "activity_baseline": 5
+        }
+      },
+      {
+        "id": "kostiantynivka_chasiv_yar",
+        "name": "Kostiantynivka–Csasziv Jar",
+        "sub": "védelmi csomópontok térsége",
+        "score": 3,
+        "risk": "MODERATE",
+        "ru_gain_km2": 0.0,
+        "ua_recapture_km2": 0.0,
+        "firms_count": 0,
+        "osint_events": 0,
+        "components": {
+          "territorial": 0.0,
+          "firms": 0.0,
+          "osint": 0.0,
+          "activity_baseline": 3
         }
       },
       {
@@ -351,9 +351,9 @@
         "id": "kupiansk_lyman",
         "name": "Kupjanszk–Liman",
         "sub": "északi hadműveleti nyomás",
-        "score": 68,
+        "score": 67,
         "risk": "ELEVATED",
-        "ru_gain_km2": 50.89,
+        "ru_gain_km2": 47.74,
         "ua_recapture_km2": 0.0,
         "firms_count": 277,
         "osint_events": 1,
@@ -368,14 +368,14 @@
         "id": "pokrovsk",
         "name": "Pokrovsk",
         "sub": "folyamatos szárazföldi nyomás",
-        "score": 57,
+        "score": 55,
         "risk": "ELEVATED",
-        "ru_gain_km2": 16.65,
+        "ru_gain_km2": 13.01,
         "ua_recapture_km2": 0.0,
         "firms_count": 140,
-        "osint_events": 18,
+        "osint_events": 19,
         "components": {
-          "territorial": 11.5,
+          "territorial": 9.5,
           "firms": 11.3,
           "osint": 25.0,
           "activity_baseline": 9
@@ -385,14 +385,14 @@
         "id": "kostiantynivka_chasiv_yar",
         "name": "Kostiantynivka–Csasziv Jar",
         "sub": "védelmi csomópontok térsége",
-        "score": 37,
+        "score": 39,
         "risk": "MODERATE",
-        "ru_gain_km2": 40.2,
+        "ru_gain_km2": 40.1,
         "ua_recapture_km2": 0.0,
         "firms_count": 29,
         "osint_events": 0,
         "components": {
-          "territorial": 27.6,
+          "territorial": 29.4,
           "firms": 2.3,
           "osint": 0.0,
           "activity_baseline": 7
@@ -402,16 +402,16 @@
         "id": "ukrainian_rear",
         "name": "Ukrán hátország",
         "sub": "mélységi csapások és infrastruktúra",
-        "score": 36,
+        "score": 37,
         "risk": "MODERATE",
         "ru_gain_km2": 0.0,
         "ua_recapture_km2": 0.0,
         "firms_count": 310,
-        "osint_events": 3,
+        "osint_events": 4,
         "components": {
           "territorial": 0.0,
           "firms": 25.0,
-          "osint": 3.8,
+          "osint": 5.0,
           "activity_baseline": 7
         }
       },
@@ -419,14 +419,14 @@
         "id": "south_donetsk",
         "name": "Dél-Donyeck",
         "sub": "szakaszos területi mozgás",
-        "score": 15,
+        "score": 18,
         "risk": "MODERATE",
-        "ru_gain_km2": 10.14,
+        "ru_gain_km2": 12.88,
         "ua_recapture_km2": 0.0,
         "firms_count": 18,
         "osint_events": 0,
         "components": {
-          "territorial": 7.0,
+          "territorial": 9.4,
           "firms": 1.5,
           "osint": 0.0,
           "activity_baseline": 7
@@ -494,7 +494,7 @@
         "ru_gain_km2": 0.0,
         "ua_recapture_km2": 0.0,
         "firms_count": 140,
-        "osint_events": 18,
+        "osint_events": 19,
         "components": {
           "territorial": 0.0,
           "firms": 11.3,
@@ -506,16 +506,16 @@
         "id": "ukrainian_rear",
         "name": "Ukrán hátország",
         "sub": "mélységi csapások és infrastruktúra",
-        "score": 36,
+        "score": 37,
         "risk": "MODERATE",
         "ru_gain_km2": 0.0,
         "ua_recapture_km2": 0.0,
         "firms_count": 310,
-        "osint_events": 3,
+        "osint_events": 4,
         "components": {
           "territorial": 0.0,
           "firms": 25.0,
-          "osint": 3.8,
+          "osint": 5.0,
           "activity_baseline": 7
         }
       },
@@ -523,7 +523,7 @@
         "id": "kupiansk_lyman",
         "name": "Kupjanszk–Liman",
         "sub": "északi hadműveleti nyomás",
-        "score": 31,
+        "score": 30,
         "risk": "MODERATE",
         "ru_gain_km2": 0.0,
         "ua_recapture_km2": 0.0,
@@ -624,7 +624,23 @@
     ]
   },
   "events": {
-    "24": [],
+    "24": [
+      {
+        "id": "territorial-2026-11-28T00:00:00+00:00-0",
+        "kind": "territorial",
+        "type": "Orosz területi nyereség",
+        "title": "Dél-Donyeck",
+        "value": "5.35 km²",
+        "value_numeric": 5.35,
+        "time": "2026-11-28T00:00:00Z",
+        "class_name": "",
+        "confidence": "Magas",
+        "source": "Területi delta",
+        "sector_id": "south_donetsk",
+        "note": "A gördülő frontgeometria a küszöbértéket meghaladó területi változást azonosított.",
+        "priority": 105.35
+      }
+    ],
     "48": [
       {
         "id": "territorial-2026-11-27T00:00:00+00:00-0",
@@ -640,6 +656,21 @@
         "sector_id": "kupiansk_lyman",
         "note": "A gördülő frontgeometria a küszöbértéket meghaladó területi változást azonosított.",
         "priority": 108.51
+      },
+      {
+        "id": "territorial-2026-11-28T00:00:00+00:00-1",
+        "kind": "territorial",
+        "type": "Orosz területi nyereség",
+        "title": "Dél-Donyeck",
+        "value": "5.35 km²",
+        "value_numeric": 5.35,
+        "time": "2026-11-28T00:00:00Z",
+        "class_name": "",
+        "confidence": "Magas",
+        "source": "Területi delta",
+        "sector_id": "south_donetsk",
+        "note": "A gördülő frontgeometria a küszöbértéket meghaladó területi változást azonosított.",
+        "priority": 105.35
       },
       {
         "id": "osint-2026-11-27T00:00:00+00:00-0",
@@ -672,22 +703,6 @@
         "url": "https://armyinform.com.ua/en/2026/11/27/desna-ukraine-and-norway-develop-new-air-defense-system-to-counter-drones/",
         "note": "DESNA: Ukraine and Norway develop new air defense system to counter drones",
         "priority": 90
-      },
-      {
-        "id": "osint-2026-11-27T00:00:00+00:00-2",
-        "kind": "osint",
-        "type": "Air Defense",
-        "title": "UK Defence Secretary makes first visit to Kharkiv, announces more Rapid Ranger air defense systems for Ukraine",
-        "value": "8/10",
-        "value_numeric": 8,
-        "time": "2026-11-27T00:00:00Z",
-        "class_name": "strike",
-        "confidence": "Közepes",
-        "source": "ArmyInform",
-        "sector_id": "kupiansk_lyman",
-        "url": "https://armyinform.com.ua/en/2026/11/27/uk-defence-secretary-makes-first-visit-to-kharkiv-announces-more-rapid-ranger-air-defense-systems-for-ukraine/",
-        "note": "UK Defence Secretary makes first visit to Kharkiv, announces more Rapid Ranger air defense systems for Ukraine",
-        "priority": 90
       }
     ],
     "72": [
@@ -707,7 +722,22 @@
         "priority": 108.51
       },
       {
-        "id": "osint-2026-11-26T00:00:00+00:00-8",
+        "id": "territorial-2026-11-28T00:00:00+00:00-1",
+        "kind": "territorial",
+        "type": "Orosz területi nyereség",
+        "title": "Dél-Donyeck",
+        "value": "5.35 km²",
+        "value_numeric": 5.35,
+        "time": "2026-11-28T00:00:00Z",
+        "class_name": "",
+        "confidence": "Magas",
+        "source": "Területi delta",
+        "sector_id": "south_donetsk",
+        "note": "A gördülő frontgeometria a küszöbértéket meghaladó területi változást azonosított.",
+        "priority": 105.35
+      },
+      {
+        "id": "osint-2026-11-26T00:00:00+00:00-9",
         "kind": "osint",
         "type": "General Military Update",
         "title": "From former cop to torturer: Collaborator sentenced to 15 years in prison in Kherson",
@@ -723,7 +753,7 @@
         "priority": 90
       },
       {
-        "id": "osint-2026-11-26T00:00:00+00:00-9",
+        "id": "osint-2026-11-26T00:00:00+00:00-10",
         "kind": "osint",
         "type": "General Military Update",
         "title": "“Love at first browning”: how Khan of the 60th Brigade found his 60-kilogram passion",
@@ -736,22 +766,6 @@
         "sector_id": "pokrovsk",
         "url": "https://armyinform.com.ua/en/2026/11/26/love-at-first-browning-how-khan-of-the-60th-brigade-found-his-60-kilogram-passion/",
         "note": "“Love at first browning”: how Khan of the 60th Brigade found his 60-kilogram passion",
-        "priority": 90
-      },
-      {
-        "id": "osint-2026-11-26T00:00:00+00:00-10",
-        "kind": "osint",
-        "type": "General Military Update",
-        "title": "“Like it or don’t, you’ll have to put up with it, my handsome man”: Why Kim Jong Un brought putin to his knees",
-        "value": "8/10",
-        "value_numeric": 8,
-        "time": "2026-11-26T00:00:00Z",
-        "class_name": "strike",
-        "confidence": "Közepes",
-        "source": "ArmyInform",
-        "sector_id": "pokrovsk",
-        "url": "https://armyinform.com.ua/en/2026/11/26/like-it-or-dont-youll-have-to-put-up-with-it-my-handsome-man-why-kim-jong-un-brought-putin-to-his-knees/",
-        "note": "“Like it or don’t, you’ll have to put up with it, my handsome man”: Why Kim Jong Un brought putin to his knees",
         "priority": 90
       }
     ]
@@ -766,11 +780,11 @@
         "source": "territorial",
         "path": "data/territorial_delta_30days.geojson",
         "exists": true,
-        "updated_at": "2026-11-28T07:52:36.498978Z",
+        "updated_at": "2026-11-28T17:34:36.651325Z",
         "latest_record_at": "2026-11-28T01:33:50.949250Z",
-        "age_hours": 6.3,
+        "age_hours": 16.0,
         "status": "fresh",
-        "record_count": 68,
+        "record_count": 67,
         "note": "A 90 napos ablakhoz a windows összesítő is elérhető."
       },
       "firms": {
@@ -779,7 +793,7 @@
         "exists": true,
         "updated_at": "2026-11-28T07:45:46.722491Z",
         "latest_record_at": "2026-11-28T00:07:00Z",
-        "age_hours": 7.8,
+        "age_hours": 17.5,
         "status": "fresh",
         "record_count": 5933,
         "note": ""
@@ -788,11 +802,11 @@
         "source": "osint",
         "path": "data/osint_feed.json",
         "exists": true,
-        "updated_at": "2026-11-28T00:30:44.996055Z",
-        "latest_record_at": "2026-11-27T00:00:00Z",
-        "age_hours": 31.9,
+        "updated_at": "2026-11-28T14:07:49.073997Z",
+        "latest_record_at": "2026-11-28T00:00:00Z",
+        "age_hours": 17.6,
         "status": "fresh",
-        "record_count": 23,
+        "record_count": 25,
         "note": ""
       }
     }
